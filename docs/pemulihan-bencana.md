@@ -99,7 +99,7 @@ dimulai dari cadangan, bukan dari menghapus data.
 4. Jalankan:
 
    ```
-   Seruni22Bakery.exe --restore "D:\Cadangan Seruni\auto-20261029-075055.db"
+   Seruni22Bakery.Host.exe --restore "D:\Cadangan Seruni\auto-20261029-075055.db"
    ```
 
 5. Perhatikan keluarannya. Yang diperiksa berurutan sebelum dan sesudah menimpa:
@@ -127,7 +127,7 @@ Kode keluar perintah `--restore`:
 ## 7. Membuat cadangan dari baris perintah (tanpa membuka aplikasi)
 
 ```
-Seruni22Bakery.exe --backup
+Seruni22Bakery.Host.exe --backup
 ```
 
 Perintah ini membuat cadangan bertanda `manual`, menerapkan retensi, lalu mencetak path
@@ -136,8 +136,13 @@ Bila `--Database:Path` tidak disebut, perintah bekerja pada lokasi bawaan; selal
 path secara eksplisit bila basis data berada di tempat lain:
 
 ```
-Seruni22Bakery.exe --backup --Database:Path="D:\Data Seruni\seruni22bakery.db"
+Seruni22Bakery.Host.exe --backup --Database:Path="D:\Data Seruni\seruni22bakery.db"
 ```
+
+**Penting (1.2.7):** pakai `Seruni22Bakery.Host.exe`, bukan peluncur `Seruni22Bakery.exe`.
+Peluncur hanya mengenali `--tanpa-browser` dan tidak meneruskan `--backup`/`--restore`,
+sehingga perintah lewat peluncur akan menyalakan aplikasi seperti biasa tanpa membuat
+cadangan atau memulihkan apa pun.
 
 ## 8. Retensi: cadangan mana yang dihapus
 
