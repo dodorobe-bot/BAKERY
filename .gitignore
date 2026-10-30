@@ -1,0 +1,29 @@
+# Keluaran build
+bin/
+obj/
+dist/publish/
+dist/publish-single/
+dist/build-logs/
+dist/installer/*.exe
+dist/installer/*.msi
+frontend/node_modules/
+frontend/dist/
+desktop/
+
+# Cache alat dan hasil kustom aksi WiX
+.wix/
+.vs/
+*.CA.dll
+
+# Data, kunci, dan rahasia
+*.db
+*.db-wal
+*.db-shm
+*.key
+*.pfx
+.env
+appsettings.Development.json
+
+# Log scratch di akar repo
+/*.log
+/*.txt

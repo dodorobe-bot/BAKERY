@@ -1,0 +1,6772 @@
+{
+  "Label": "besar",
+  "BaseUrl": "http://127.0.0.1:57479",
+  "BasisData": "C:/tmp/perf/besar.db",
+  "BasisDataByte": 10788864,
+  "Dibuat": "2026-10-29 13:33:22",
+  "MuatAwal": {
+    "Tab": "dashboard",
+    "MsSiap": 241,
+    "MsData": 154,
+    "Dcl": 23,
+    "Load": 23,
+    "Heap": 10000000,
+    "Reqs": [
+      {
+        "Jalur": "/api/settings",
+        "Metode": "GET",
+        "Status": 200,
+        "Mulai": 114,
+        "Ms": 82,
+        "DurasiPeladen": 62.5
+      },
+      {
+        "Jalur": "/api/dashboard",
+        "Metode": "GET",
+        "Status": 200,
+        "Mulai": 104,
+        "Ms": 97,
+        "DurasiPeladen": 72.2
+      }
+    ]
+  },
+  "Hasil": [
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "Putaran": 1,
+      "MsSiap": 108.1,
+      "MsData": 55,
+      "Penanda": true,
+      "Heap": 22241904,
+      "Layout": 11,
+      "RecalcStyle": 21,
+      "LayoutMs": 5.2,
+      "RecalcMs": 15.8,
+      "ScriptMs": 8.9,
+      "TaskMs": 72.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 11070,
+          "Ms": 37,
+          "DurasiPeladen": 33.5
+        }
+      ]
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "Putaran": 1,
+      "MsSiap": 56.4,
+      "MsData": 23,
+      "Penanda": true,
+      "Heap": 23410384,
+      "Layout": 6,
+      "RecalcStyle": 12,
+      "LayoutMs": 6.5,
+      "RecalcMs": 16.5,
+      "ScriptMs": 8,
+      "TaskMs": 63.6,
+      "Reqs": []
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "Putaran": 1,
+      "MsSiap": 149.8,
+      "MsData": 88,
+      "Penanda": true,
+      "Heap": 21287256,
+      "Layout": 10,
+      "RecalcStyle": 16,
+      "LayoutMs": 35.6,
+      "RecalcMs": 39.4,
+      "ScriptMs": 28.4,
+      "TaskMs": 196.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "Putaran": 1,
+      "MsSiap": 245.5,
+      "MsData": 182,
+      "Penanda": true,
+      "Heap": 23603804,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 55.1,
+      "RecalcMs": 97.2,
+      "ScriptMs": 43.7,
+      "TaskMs": 298.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "Putaran": 1,
+      "MsSiap": 121.9,
+      "MsData": 22,
+      "Penanda": true,
+      "Heap": 25872648,
+      "Layout": 11,
+      "RecalcStyle": 20,
+      "LayoutMs": 4.9,
+      "RecalcMs": 17.7,
+      "ScriptMs": 37.5,
+      "TaskMs": 209.2,
+      "Reqs": []
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "Putaran": 1,
+      "MsSiap": 145.3,
+      "MsData": 30,
+      "Penanda": true,
+      "Heap": 15691776,
+      "Layout": 7,
+      "RecalcStyle": 19,
+      "LayoutMs": 4.3,
+      "RecalcMs": 16.8,
+      "ScriptMs": 44.9,
+      "TaskMs": 210.2,
+      "Reqs": []
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "Putaran": 1,
+      "MsSiap": 108.6,
+      "MsData": 31,
+      "Penanda": true,
+      "Heap": 16443188,
+      "Layout": 5,
+      "RecalcStyle": 14,
+      "LayoutMs": 2.7,
+      "RecalcMs": 11,
+      "ScriptMs": 47.7,
+      "TaskMs": 145.4,
+      "Reqs": []
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "Putaran": 1,
+      "MsSiap": 114.8,
+      "MsData": 24,
+      "Penanda": true,
+      "Heap": 17481508,
+      "Layout": 8,
+      "RecalcStyle": 18,
+      "LayoutMs": 4.1,
+      "RecalcMs": 15.1,
+      "ScriptMs": 39.8,
+      "TaskMs": 177,
+      "Reqs": []
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "Putaran": 1,
+      "MsSiap": 57.7,
+      "MsData": 16,
+      "Penanda": true,
+      "Heap": 14547496,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 3,
+      "RecalcMs": 8.8,
+      "ScriptMs": 13.8,
+      "TaskMs": 78.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "Putaran": 1,
+      "MsSiap": 55.2,
+      "MsData": 21,
+      "Penanda": true,
+      "Heap": 15316072,
+      "Layout": 8,
+      "RecalcStyle": 13,
+      "LayoutMs": 5.4,
+      "RecalcMs": 12.7,
+      "ScriptMs": 4.5,
+      "TaskMs": 49.8,
+      "Reqs": []
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "Putaran": 1,
+      "MsSiap": 53.4,
+      "MsData": 20,
+      "Penanda": true,
+      "Heap": 16042852,
+      "Layout": 8,
+      "RecalcStyle": 14,
+      "LayoutMs": 3.6,
+      "RecalcMs": 11.7,
+      "ScriptMs": 3,
+      "TaskMs": 44.2,
+      "Reqs": []
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "Putaran": 1,
+      "MsSiap": 58.5,
+      "MsData": 21,
+      "Penanda": true,
+      "Heap": 16781328,
+      "Layout": 7,
+      "RecalcStyle": 14,
+      "LayoutMs": 3.8,
+      "RecalcMs": 18.1,
+      "ScriptMs": 5.8,
+      "TaskMs": 61.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "Putaran": 1,
+      "MsSiap": 265,
+      "MsData": 172,
+      "Penanda": true,
+      "Heap": 16431564,
+      "Layout": 10,
+      "RecalcStyle": 16,
+      "LayoutMs": 39.1,
+      "RecalcMs": 102.4,
+      "ScriptMs": 67.8,
+      "TaskMs": 298,
+      "Reqs": []
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "Putaran": 1,
+      "MsSiap": 60.9,
+      "MsData": 17,
+      "Penanda": true,
+      "Heap": 18191016,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 3.1,
+      "RecalcMs": 11.5,
+      "ScriptMs": 13.9,
+      "TaskMs": 78,
+      "Reqs": []
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "Putaran": 1,
+      "MsSiap": 109.2,
+      "MsData": 62,
+      "Penanda": true,
+      "Heap": 19269860,
+      "Layout": 10,
+      "RecalcStyle": 15,
+      "LayoutMs": 27,
+      "RecalcMs": 36.3,
+      "ScriptMs": 18.6,
+      "TaskMs": 128.2,
+      "Reqs": []
+    },
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "Putaran": 1,
+      "MsSiap": 581.6,
+      "MsData": 419,
+      "Penanda": true,
+      "Heap": 19084368,
+      "Layout": 8,
+      "RecalcStyle": 15,
+      "LayoutMs": 110.4,
+      "RecalcMs": 104.5,
+      "ScriptMs": 217.2,
+      "TaskMs": 591,
+      "Reqs": []
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "Putaran": 1,
+      "MsSiap": 324.3,
+      "MsData": 15,
+      "Penanda": true,
+      "Heap": 14830352,
+      "Layout": 4,
+      "RecalcStyle": 15,
+      "LayoutMs": 4.7,
+      "RecalcMs": 10.1,
+      "ScriptMs": 226.2,
+      "TaskMs": 353.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "Putaran": 1,
+      "MsSiap": 542.3,
+      "MsData": 412,
+      "Penanda": true,
+      "Heap": 18856716,
+      "Layout": 5,
+      "RecalcStyle": 13,
+      "LayoutMs": 151.9,
+      "RecalcMs": 169.1,
+      "ScriptMs": 153.6,
+      "TaskMs": 575.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "Putaran": 1,
+      "MsSiap": 217.7,
+      "MsData": 141,
+      "Penanda": true,
+      "Heap": 19963316,
+      "Layout": 9,
+      "RecalcStyle": 18,
+      "LayoutMs": 18.1,
+      "RecalcMs": 44.1,
+      "ScriptMs": 47.4,
+      "TaskMs": 214.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 15806,
+          "Ms": 85,
+          "DurasiPeladen": 1.9
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 15807,
+          "Ms": 84,
+          "DurasiPeladen": 3.2
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 15808,
+          "Ms": 93,
+          "DurasiPeladen": 2.9
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 15903,
+          "Ms": 6,
+          "DurasiPeladen": 0.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 15902,
+          "Ms": 8,
+          "DurasiPeladen": 0.8
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 15901,
+          "Ms": 9,
+          "DurasiPeladen": 3
+        }
+      ]
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "Putaran": 1,
+      "MsSiap": 430.1,
+      "MsData": 338,
+      "Penanda": true,
+      "Heap": 22058096,
+      "Layout": 5,
+      "RecalcStyle": 17,
+      "LayoutMs": 49.2,
+      "RecalcMs": 77.9,
+      "ScriptMs": 178.3,
+      "TaskMs": 402.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16114,
+          "Ms": 220,
+          "DurasiPeladen": 1.1
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16115,
+          "Ms": 219,
+          "DurasiPeladen": 3.9
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16116,
+          "Ms": 219,
+          "DurasiPeladen": 2.1
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16117,
+          "Ms": 218,
+          "DurasiPeladen": 3
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16335,
+          "Ms": 7,
+          "DurasiPeladen": 1
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16336,
+          "Ms": 7,
+          "DurasiPeladen": 0.8
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16334,
+          "Ms": 10,
+          "DurasiPeladen": 3.6
+        }
+      ]
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "Putaran": 1,
+      "MsSiap": 439.3,
+      "MsData": 311,
+      "Penanda": true,
+      "Heap": 24170688,
+      "Layout": 7,
+      "RecalcStyle": 16,
+      "LayoutMs": 70.2,
+      "RecalcMs": 107.8,
+      "ScriptMs": 132.2,
+      "TaskMs": 437,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16646,
+          "Ms": 248,
+          "DurasiPeladen": 1.8
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16648,
+          "Ms": 247,
+          "DurasiPeladen": 4.8
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16896,
+          "Ms": 8,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16897,
+          "Ms": 8,
+          "DurasiPeladen": 0.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 16895,
+          "Ms": 12,
+          "DurasiPeladen": 3.5
+        }
+      ]
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "Putaran": 1,
+      "MsSiap": 87.4,
+      "MsData": 41,
+      "Penanda": true,
+      "Heap": 26638940,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 3.6,
+      "RecalcMs": 13.3,
+      "ScriptMs": 22.5,
+      "TaskMs": 77.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17103,
+          "Ms": 21,
+          "DurasiPeladen": 4.2
+        },
+        {
+          "Jalur": "/api/inventory/batches",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17104,
+          "Ms": 20,
+          "DurasiPeladen": 0.9
+        }
+      ]
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "Putaran": 1,
+      "MsSiap": 547,
+      "MsData": 486,
+      "Penanda": true,
+      "Heap": 13541644,
+      "Layout": 9,
+      "RecalcStyle": 17,
+      "LayoutMs": 116.3,
+      "RecalcMs": 181.8,
+      "ScriptMs": 101.9,
+      "TaskMs": 577,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal?from=2026-10-01\u0026to=2026-10-29\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17245,
+          "Ms": 73,
+          "DurasiPeladen": 9
+        },
+        {
+          "Jalur": "/api/journal/balances?asOf=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17245,
+          "Ms": 72,
+          "DurasiPeladen": 5.9
+        },
+        {
+          "Jalur": "/api/journal/summary?from=2026-10-01\u0026to=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17246,
+          "Ms": 72,
+          "DurasiPeladen": 16
+        },
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17248,
+          "Ms": 70,
+          "DurasiPeladen": 9
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17249,
+          "Ms": 69,
+          "DurasiPeladen": 2.8
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17250,
+          "Ms": 74,
+          "DurasiPeladen": 8.1
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17251,
+          "Ms": 73,
+          "DurasiPeladen": 12.7
+        }
+      ]
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "Putaran": 1,
+      "MsSiap": 246.3,
+      "MsData": 165,
+      "Penanda": true,
+      "Heap": 18229304,
+      "Layout": 7,
+      "RecalcStyle": 16,
+      "LayoutMs": 22.4,
+      "RecalcMs": 60.6,
+      "ScriptMs": 95.7,
+      "TaskMs": 243.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17905,
+          "Ms": 133,
+          "DurasiPeladen": 6
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17906,
+          "Ms": 132,
+          "DurasiPeladen": 2.8
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17907,
+          "Ms": 131,
+          "DurasiPeladen": 7.5
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 17907,
+          "Ms": 131,
+          "DurasiPeladen": 12.4
+        }
+      ]
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "Putaran": 1,
+      "MsSiap": 344.8,
+      "MsData": 267,
+      "Penanda": true,
+      "Heap": 18473960,
+      "Layout": 10,
+      "RecalcStyle": 19,
+      "LayoutMs": 80.6,
+      "RecalcMs": 72.9,
+      "ScriptMs": 96,
+      "TaskMs": 358.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18213,
+          "Ms": 229,
+          "DurasiPeladen": 5.6
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18214,
+          "Ms": 228,
+          "DurasiPeladen": 2.9
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18214,
+          "Ms": 228,
+          "DurasiPeladen": 8.7
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18214,
+          "Ms": 228,
+          "DurasiPeladen": 11.7
+        }
+      ]
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "Putaran": 1,
+      "MsSiap": 103.3,
+      "MsData": 63,
+      "Penanda": true,
+      "Heap": 20766260,
+      "Layout": 6,
+      "RecalcStyle": 14,
+      "LayoutMs": 4.3,
+      "RecalcMs": 18.4,
+      "ScriptMs": 23.7,
+      "TaskMs": 91.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18611,
+          "Ms": 39,
+          "DurasiPeladen": 6
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18612,
+          "Ms": 38,
+          "DurasiPeladen": 2.4
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18612,
+          "Ms": 38,
+          "DurasiPeladen": 21.3
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18613,
+          "Ms": 37,
+          "DurasiPeladen": 10.9
+        }
+      ]
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "Putaran": 1,
+      "MsSiap": 108.4,
+      "MsData": 56,
+      "Penanda": true,
+      "Heap": 18147132,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 7.7,
+      "RecalcMs": 18.9,
+      "ScriptMs": 16.3,
+      "TaskMs": 87.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/analytics/sales?days=90",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18774,
+          "Ms": 33,
+          "DurasiPeladen": 25.8
+        }
+      ]
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "Putaran": 1,
+      "MsSiap": 54.3,
+      "MsData": 18,
+      "Penanda": true,
+      "Heap": 18895600,
+      "Layout": 7,
+      "RecalcStyle": 12,
+      "LayoutMs": 8,
+      "RecalcMs": 15.7,
+      "ScriptMs": 9,
+      "TaskMs": 66.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/audit?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 18942,
+          "Ms": 12,
+          "DurasiPeladen": 5.2
+        }
+      ]
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "Putaran": 1,
+      "MsSiap": 67.3,
+      "MsData": 34,
+      "Penanda": true,
+      "Heap": 19966692,
+      "Layout": 9,
+      "RecalcStyle": 15,
+      "LayoutMs": 7.5,
+      "RecalcMs": 29.4,
+      "ScriptMs": 9.7,
+      "TaskMs": 101.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/users",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 19100,
+          "Ms": 13,
+          "DurasiPeladen": 1.2
+        }
+      ]
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "Putaran": 1,
+      "MsSiap": 96.2,
+      "MsData": 53,
+      "Penanda": true,
+      "Heap": 21107700,
+      "Layout": 10,
+      "RecalcStyle": 15,
+      "LayoutMs": 11.9,
+      "RecalcMs": 21.4,
+      "ScriptMs": 18.5,
+      "TaskMs": 97.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/backup",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 19236,
+          "Ms": 29,
+          "DurasiPeladen": 8.6
+        },
+        {
+          "Jalur": "/api/settings",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 19237,
+          "Ms": 28,
+          "DurasiPeladen": 0.9
+        },
+        {
+          "Jalur": "/api/system/storage",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 19237,
+          "Ms": 35,
+          "DurasiPeladen": 26.9
+        }
+      ]
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "Putaran": 1,
+      "MsSiap": 128.7,
+      "MsData": 74,
+      "Penanda": true,
+      "Heap": 22252840,
+      "Layout": 11,
+      "RecalcStyle": 16,
+      "LayoutMs": 11.8,
+      "RecalcMs": 32.2,
+      "ScriptMs": 20.8,
+      "TaskMs": 130.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/devices",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 19419,
+          "Ms": 42,
+          "DurasiPeladen": 2
+        },
+        {
+          "Jalur": "/api/devices/print-jobs?limit=50",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 19420,
+          "Ms": 40,
+          "DurasiPeladen": 1.4
+        }
+      ]
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "Putaran": 2,
+      "MsSiap": 84.8,
+      "MsData": 34,
+      "Penanda": true,
+      "Heap": 18088848,
+      "Layout": 6,
+      "RecalcStyle": 12,
+      "LayoutMs": 6.6,
+      "RecalcMs": 19.9,
+      "ScriptMs": 9.9,
+      "TaskMs": 88.3,
+      "Reqs": []
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "Putaran": 2,
+      "MsSiap": 102.9,
+      "MsData": 60,
+      "Penanda": true,
+      "Heap": 19279556,
+      "Layout": 8,
+      "RecalcStyle": 12,
+      "LayoutMs": 14.6,
+      "RecalcMs": 27.8,
+      "ScriptMs": 10.3,
+      "TaskMs": 109.9,
+      "Reqs": []
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "Putaran": 2,
+      "MsSiap": 117.4,
+      "MsData": 46,
+      "Penanda": true,
+      "Heap": 21360444,
+      "Layout": 10,
+      "RecalcStyle": 16,
+      "LayoutMs": 19.9,
+      "RecalcMs": 31.2,
+      "ScriptMs": 29.4,
+      "TaskMs": 155.9,
+      "Reqs": []
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "Putaran": 2,
+      "MsSiap": 406.6,
+      "MsData": 318,
+      "Penanda": true,
+      "Heap": 23893768,
+      "Layout": 10,
+      "RecalcStyle": 13,
+      "LayoutMs": 86.7,
+      "RecalcMs": 148.8,
+      "ScriptMs": 85.7,
+      "TaskMs": 456.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "Putaran": 2,
+      "MsSiap": 161.6,
+      "MsData": 126,
+      "Penanda": true,
+      "Heap": 24271884,
+      "Layout": 8,
+      "RecalcStyle": 20,
+      "LayoutMs": 4.3,
+      "RecalcMs": 19.4,
+      "ScriptMs": 57.4,
+      "TaskMs": 219.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 20719,
+          "Ms": 95,
+          "DurasiPeladen": 4.3
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 20722,
+          "Ms": 92,
+          "DurasiPeladen": 3.3
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 20723,
+          "Ms": 91,
+          "DurasiPeladen": 4.3
+        }
+      ]
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "Putaran": 2,
+      "MsSiap": 178.8,
+      "MsData": 104,
+      "Penanda": true,
+      "Heap": 26715496,
+      "Layout": 7,
+      "RecalcStyle": 17,
+      "LayoutMs": 4.2,
+      "RecalcMs": 17.4,
+      "ScriptMs": 73.9,
+      "TaskMs": 215.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 20954,
+          "Ms": 72,
+          "DurasiPeladen": 4.6
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 20955,
+          "Ms": 71,
+          "DurasiPeladen": 3.2
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 20956,
+          "Ms": 69,
+          "DurasiPeladen": 3.8
+        }
+      ]
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "Putaran": 2,
+      "MsSiap": 188.6,
+      "MsData": 125,
+      "Penanda": true,
+      "Heap": 29005008,
+      "Layout": 8,
+      "RecalcStyle": 17,
+      "LayoutMs": 4.5,
+      "RecalcMs": 16.5,
+      "ScriptMs": 73.9,
+      "TaskMs": 211.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21210,
+          "Ms": 76,
+          "DurasiPeladen": 3.5
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21211,
+          "Ms": 76,
+          "DurasiPeladen": 3.2
+        }
+      ]
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "Putaran": 2,
+      "MsSiap": 210.4,
+      "MsData": 149,
+      "Penanda": true,
+      "Heap": 26516532,
+      "Layout": 7,
+      "RecalcStyle": 22,
+      "LayoutMs": 3.7,
+      "RecalcMs": 19.7,
+      "ScriptMs": 82.8,
+      "TaskMs": 235.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21486,
+          "Ms": 116,
+          "DurasiPeladen": 4.7
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21487,
+          "Ms": 114,
+          "DurasiPeladen": 3.1
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21488,
+          "Ms": 114,
+          "DurasiPeladen": 3.3
+        }
+      ]
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "Putaran": 2,
+      "MsSiap": 145.5,
+      "MsData": 81,
+      "Penanda": true,
+      "Heap": 28976580,
+      "Layout": 9,
+      "RecalcStyle": 17,
+      "LayoutMs": 6.6,
+      "RecalcMs": 18.4,
+      "ScriptMs": 23.9,
+      "TaskMs": 95.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21750,
+          "Ms": 28,
+          "DurasiPeladen": 5.7
+        },
+        {
+          "Jalur": "/api/returns",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21751,
+          "Ms": 48,
+          "DurasiPeladen": 40.5
+        }
+      ]
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "Putaran": 2,
+      "MsSiap": 80.5,
+      "MsData": 44,
+      "Penanda": true,
+      "Heap": 30009508,
+      "Layout": 7,
+      "RecalcStyle": 13,
+      "LayoutMs": 6.9,
+      "RecalcMs": 13.1,
+      "ScriptMs": 8.6,
+      "TaskMs": 63.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21947,
+          "Ms": 21,
+          "DurasiPeladen": 2.3
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 21948,
+          "Ms": 20,
+          "DurasiPeladen": 3.6
+        }
+      ]
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "Putaran": 2,
+      "MsSiap": 72.6,
+      "MsData": 43,
+      "Penanda": true,
+      "Heap": 26593408,
+      "Layout": 8,
+      "RecalcStyle": 15,
+      "LayoutMs": 3.8,
+      "RecalcMs": 15.6,
+      "ScriptMs": 9.3,
+      "TaskMs": 66.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22087,
+          "Ms": 19,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22088,
+          "Ms": 21,
+          "DurasiPeladen": 3.6
+        }
+      ]
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "Putaran": 2,
+      "MsSiap": 72.8,
+      "MsData": 38,
+      "Penanda": true,
+      "Heap": 27601856,
+      "Layout": 8,
+      "RecalcStyle": 14,
+      "LayoutMs": 5,
+      "RecalcMs": 14.4,
+      "ScriptMs": 7.3,
+      "TaskMs": 60.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22221,
+          "Ms": 15,
+          "DurasiPeladen": 1.1
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22221,
+          "Ms": 15,
+          "DurasiPeladen": 2.7
+        }
+      ]
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "Putaran": 2,
+      "MsSiap": 371.2,
+      "MsData": 279,
+      "Penanda": true,
+      "Heap": 10030968,
+      "Layout": 11,
+      "RecalcStyle": 19,
+      "LayoutMs": 51,
+      "RecalcMs": 93.3,
+      "ScriptMs": 82.1,
+      "TaskMs": 409.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22405,
+          "Ms": 195,
+          "DurasiPeladen": 2.8
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22406,
+          "Ms": 212,
+          "DurasiPeladen": 3.8
+        }
+      ]
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "Putaran": 2,
+      "MsSiap": 77.3,
+      "MsData": 36,
+      "Penanda": true,
+      "Heap": 12030656,
+      "Layout": 5,
+      "RecalcStyle": 15,
+      "LayoutMs": 3.3,
+      "RecalcMs": 9.5,
+      "ScriptMs": 17.4,
+      "TaskMs": 68.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22823,
+          "Ms": 15,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/production/quality-checks",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22825,
+          "Ms": 14,
+          "DurasiPeladen": 2.8
+        }
+      ]
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "Putaran": 2,
+      "MsSiap": 138.3,
+      "MsData": 93,
+      "Penanda": true,
+      "Heap": 14336944,
+      "Layout": 10,
+      "RecalcStyle": 15,
+      "LayoutMs": 19.1,
+      "RecalcMs": 39.6,
+      "ScriptMs": 34.9,
+      "TaskMs": 146.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/cost-summary",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 22966,
+          "Ms": 74,
+          "DurasiPeladen": 5
+        }
+      ]
+    },
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "Putaran": 2,
+      "MsSiap": 787.3,
+      "MsData": 578,
+      "Penanda": true,
+      "Heap": 15976512,
+      "Layout": 8,
+      "RecalcStyle": 15,
+      "LayoutMs": 127,
+      "RecalcMs": 156.8,
+      "ScriptMs": 381.5,
+      "TaskMs": 837.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/purchases?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 23255,
+          "Ms": 491,
+          "DurasiPeladen": 9.2
+        },
+        {
+          "Jalur": "/api/suppliers",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 23257,
+          "Ms": 490,
+          "DurasiPeladen": 3.9
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 23257,
+          "Ms": 489,
+          "DurasiPeladen": 3.7
+        },
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 23258,
+          "Ms": 488,
+          "DurasiPeladen": 1.4
+        }
+      ]
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "Putaran": 2,
+      "MsSiap": 648.1,
+      "MsData": 349,
+      "Penanda": true,
+      "Heap": 20796860,
+      "Layout": 4,
+      "RecalcStyle": 19,
+      "LayoutMs": 2.5,
+      "RecalcMs": 13.8,
+      "ScriptMs": 451.6,
+      "TaskMs": 672.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/purchases?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24178,
+          "Ms": 191,
+          "DurasiPeladen": 10.8
+        },
+        {
+          "Jalur": "/api/suppliers",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24186,
+          "Ms": 205,
+          "DurasiPeladen": 1.5
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24187,
+          "Ms": 204,
+          "DurasiPeladen": 5.5
+        },
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24190,
+          "Ms": 202,
+          "DurasiPeladen": 0.9
+        }
+      ]
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "Putaran": 2,
+      "MsSiap": 733.1,
+      "MsData": 571,
+      "Penanda": true,
+      "Heap": 14423172,
+      "Layout": 5,
+      "RecalcStyle": 19,
+      "LayoutMs": 113.2,
+      "RecalcMs": 131.9,
+      "ScriptMs": 315.4,
+      "TaskMs": 737.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24955,
+          "Ms": 437,
+          "DurasiPeladen": 1.1
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24956,
+          "Ms": 442,
+          "DurasiPeladen": 4.1
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 24957,
+          "Ms": 441,
+          "DurasiPeladen": 1.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 25399,
+          "Ms": 19,
+          "DurasiPeladen": 1.1
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 25400,
+          "Ms": 18,
+          "DurasiPeladen": 2.4
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 25398,
+          "Ms": 20,
+          "DurasiPeladen": 5.2
+        }
+      ]
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "Putaran": 2,
+      "MsSiap": 119.5,
+      "MsData": 58,
+      "Penanda": true,
+      "Heap": 18236148,
+      "Layout": 3,
+      "RecalcStyle": 12,
+      "LayoutMs": 14.2,
+      "RecalcMs": 25.6,
+      "ScriptMs": 42.2,
+      "TaskMs": 137.8,
+      "Reqs": []
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "Putaran": 2,
+      "MsSiap": 290.9,
+      "MsData": 195,
+      "Penanda": true,
+      "Heap": 18506988,
+      "Layout": 8,
+      "RecalcStyle": 13,
+      "LayoutMs": 56.5,
+      "RecalcMs": 91.2,
+      "ScriptMs": 83.5,
+      "TaskMs": 327.5,
+      "Reqs": []
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "Putaran": 2,
+      "MsSiap": 330,
+      "MsData": 225,
+      "Penanda": true,
+      "Heap": 18836476,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 66,
+      "RecalcMs": 111.2,
+      "ScriptMs": 73.6,
+      "TaskMs": 356.5,
+      "Reqs": []
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "Putaran": 2,
+      "MsSiap": 52.6,
+      "MsData": 8,
+      "Penanda": true,
+      "Heap": 21030532,
+      "Layout": 6,
+      "RecalcStyle": 17,
+      "LayoutMs": 4.1,
+      "RecalcMs": 14.3,
+      "ScriptMs": 18.4,
+      "TaskMs": 98.3,
+      "Reqs": []
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "Putaran": 2,
+      "MsSiap": 350.6,
+      "MsData": 46,
+      "Penanda": true,
+      "Heap": 20271148,
+      "Layout": 12,
+      "RecalcStyle": 16,
+      "LayoutMs": 78.8,
+      "RecalcMs": 154.5,
+      "ScriptMs": 69.3,
+      "TaskMs": 394.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal?from=2026-10-01\u0026to=2026-10-29\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 26829,
+          "Ms": 73,
+          "DurasiPeladen": 11.5
+        },
+        {
+          "Jalur": "/api/journal/balances?asOf=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 26830,
+          "Ms": 71,
+          "DurasiPeladen": 6.8
+        },
+        {
+          "Jalur": "/api/journal/summary?from=2026-10-01\u0026to=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 26831,
+          "Ms": 70,
+          "DurasiPeladen": 11.4
+        }
+      ]
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "Putaran": 2,
+      "MsSiap": 267.4,
+      "MsData": 182,
+      "Penanda": true,
+      "Heap": 20170076,
+      "Layout": 4,
+      "RecalcStyle": 12,
+      "LayoutMs": 53.8,
+      "RecalcMs": 69.6,
+      "ScriptMs": 84.5,
+      "TaskMs": 286.9,
+      "Reqs": []
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "Putaran": 2,
+      "MsSiap": 314.2,
+      "MsData": 206,
+      "Penanda": true,
+      "Heap": 23814408,
+      "Layout": 7,
+      "RecalcStyle": 16,
+      "LayoutMs": 79.8,
+      "RecalcMs": 89.9,
+      "ScriptMs": 96.4,
+      "TaskMs": 345.4,
+      "Reqs": []
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "Putaran": 2,
+      "MsSiap": 91.3,
+      "MsData": 39,
+      "Penanda": true,
+      "Heap": 21473768,
+      "Layout": 7,
+      "RecalcStyle": 15,
+      "LayoutMs": 6.8,
+      "RecalcMs": 22.7,
+      "ScriptMs": 20.9,
+      "TaskMs": 121.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "Putaran": 2,
+      "MsSiap": 60.1,
+      "MsData": 16,
+      "Penanda": true,
+      "Heap": 22069328,
+      "Layout": 7,
+      "RecalcStyle": 11,
+      "LayoutMs": 5.9,
+      "RecalcMs": 15.5,
+      "ScriptMs": 11.6,
+      "TaskMs": 66.3,
+      "Reqs": []
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "Putaran": 2,
+      "MsSiap": 101.2,
+      "MsData": 23,
+      "Penanda": true,
+      "Heap": 22798144,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 24.7,
+      "RecalcMs": 43.3,
+      "ScriptMs": 15.1,
+      "TaskMs": 142.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/audit?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 28370,
+          "Ms": 32,
+          "DurasiPeladen": 8.9
+        }
+      ]
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "Putaran": 2,
+      "MsSiap": 76.3,
+      "MsData": 29,
+      "Penanda": true,
+      "Heap": 23392464,
+      "Layout": 7,
+      "RecalcStyle": 14,
+      "LayoutMs": 8.2,
+      "RecalcMs": 24.2,
+      "ScriptMs": 10.5,
+      "TaskMs": 92.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "Putaran": 2,
+      "MsSiap": 107,
+      "MsData": 36,
+      "Penanda": true,
+      "Heap": 24044868,
+      "Layout": 8,
+      "RecalcStyle": 12,
+      "LayoutMs": 16.6,
+      "RecalcMs": 28.5,
+      "ScriptMs": 20.4,
+      "TaskMs": 124.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/system/storage",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 28750,
+          "Ms": 50,
+          "DurasiPeladen": 38.7
+        },
+        {
+          "Jalur": "/api/backup",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 28749,
+          "Ms": 66,
+          "DurasiPeladen": 55.9
+        }
+      ]
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "Putaran": 2,
+      "MsSiap": 61.5,
+      "MsData": 23,
+      "Penanda": true,
+      "Heap": 24641932,
+      "Layout": 7,
+      "RecalcStyle": 16,
+      "LayoutMs": 4.6,
+      "RecalcMs": 17,
+      "ScriptMs": 6.9,
+      "TaskMs": 62.6,
+      "Reqs": []
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "Putaran": 3,
+      "MsSiap": 99.9,
+      "MsData": 67,
+      "Penanda": true,
+      "Heap": 25664724,
+      "Layout": 11,
+      "RecalcStyle": 15,
+      "LayoutMs": 7.8,
+      "RecalcMs": 27.6,
+      "ScriptMs": 11.6,
+      "TaskMs": 93.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29071,
+          "Ms": 39,
+          "DurasiPeladen": 13.9
+        }
+      ]
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "Putaran": 3,
+      "MsSiap": 106.8,
+      "MsData": 67,
+      "Penanda": true,
+      "Heap": 23501992,
+      "Layout": 9,
+      "RecalcStyle": 15,
+      "LayoutMs": 11.1,
+      "RecalcMs": 25.4,
+      "ScriptMs": 14.1,
+      "TaskMs": 115.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/tasks",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29230,
+          "Ms": 48,
+          "DurasiPeladen": 15.4
+        }
+      ]
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "Putaran": 3,
+      "MsSiap": 273.5,
+      "MsData": 188,
+      "Penanda": true,
+      "Heap": 27195288,
+      "Layout": 15,
+      "RecalcStyle": 25,
+      "LayoutMs": 22.3,
+      "RecalcMs": 45.2,
+      "ScriptMs": 71.6,
+      "TaskMs": 238.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/notifications?unreadOnly=false\u0026limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29470,
+          "Ms": 162,
+          "DurasiPeladen": 150.3
+        }
+      ]
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "Putaran": 3,
+      "MsSiap": 420.1,
+      "MsData": 294,
+      "Penanda": true,
+      "Heap": 11488152,
+      "Layout": 7,
+      "RecalcStyle": 17,
+      "LayoutMs": 55.5,
+      "RecalcMs": 93.7,
+      "ScriptMs": 93.3,
+      "TaskMs": 547,
+      "Reqs": [
+        {
+          "Jalur": "/api/devices/status",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29883,
+          "Ms": 230,
+          "DurasiPeladen": 4
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29884,
+          "Ms": 249,
+          "DurasiPeladen": 3.6
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29885,
+          "Ms": 249,
+          "DurasiPeladen": 11.2
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 29886,
+          "Ms": 248,
+          "DurasiPeladen": 2.2
+        }
+      ]
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "Putaran": 3,
+      "MsSiap": 130.8,
+      "MsData": 34,
+      "Penanda": true,
+      "Heap": 13500672,
+      "Layout": 4,
+      "RecalcStyle": 15,
+      "LayoutMs": 2.7,
+      "RecalcMs": 10.5,
+      "ScriptMs": 58.9,
+      "TaskMs": 180,
+      "Reqs": []
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "Putaran": 3,
+      "MsSiap": 141.2,
+      "MsData": 39,
+      "Penanda": true,
+      "Heap": 14018940,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 3.1,
+      "RecalcMs": 13.4,
+      "ScriptMs": 65.4,
+      "TaskMs": 190.6,
+      "Reqs": []
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "Putaran": 3,
+      "MsSiap": 105.7,
+      "MsData": 28,
+      "Penanda": true,
+      "Heap": 14573528,
+      "Layout": 5,
+      "RecalcStyle": 15,
+      "LayoutMs": 2.5,
+      "RecalcMs": 9.7,
+      "ScriptMs": 42.9,
+      "TaskMs": 134.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "Putaran": 3,
+      "MsSiap": 120.3,
+      "MsData": 21,
+      "Penanda": true,
+      "Heap": 15092044,
+      "Layout": 9,
+      "RecalcStyle": 19,
+      "LayoutMs": 3.7,
+      "RecalcMs": 15.4,
+      "ScriptMs": 35.4,
+      "TaskMs": 164,
+      "Reqs": []
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "Putaran": 3,
+      "MsSiap": 81.6,
+      "MsData": 22,
+      "Penanda": true,
+      "Heap": 17315032,
+      "Layout": 7,
+      "RecalcStyle": 17,
+      "LayoutMs": 5.8,
+      "RecalcMs": 15.9,
+      "ScriptMs": 15,
+      "TaskMs": 107,
+      "Reqs": []
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "Putaran": 3,
+      "MsSiap": 65.5,
+      "MsData": 19,
+      "Penanda": true,
+      "Heap": 18067692,
+      "Layout": 9,
+      "RecalcStyle": 13,
+      "LayoutMs": 9.5,
+      "RecalcMs": 24.8,
+      "ScriptMs": 10.1,
+      "TaskMs": 89.9,
+      "Reqs": []
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "Putaran": 3,
+      "MsSiap": 112.2,
+      "MsData": 25,
+      "Penanda": true,
+      "Heap": 18792036,
+      "Layout": 8,
+      "RecalcStyle": 15,
+      "LayoutMs": 9.6,
+      "RecalcMs": 42.3,
+      "ScriptMs": 16.8,
+      "TaskMs": 135.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "Putaran": 3,
+      "MsSiap": 69.6,
+      "MsData": 30,
+      "Penanda": true,
+      "Heap": 14782500,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 4.2,
+      "RecalcMs": 13.2,
+      "ScriptMs": 5.3,
+      "TaskMs": 61.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "Putaran": 3,
+      "MsSiap": 152.6,
+      "MsData": 97,
+      "Penanda": true,
+      "Heap": 18783796,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 23.8,
+      "RecalcMs": 51.5,
+      "ScriptMs": 44,
+      "TaskMs": 181.6,
+      "Reqs": []
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "Putaran": 3,
+      "MsSiap": 85,
+      "MsData": 29,
+      "Penanda": true,
+      "Heap": 7994416,
+      "Layout": 8,
+      "RecalcStyle": 16,
+      "LayoutMs": 7,
+      "RecalcMs": 16.1,
+      "ScriptMs": 14.7,
+      "TaskMs": 177.1,
+      "Reqs": []
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "Putaran": 3,
+      "MsSiap": 193.9,
+      "MsData": 123,
+      "Penanda": true,
+      "Heap": 9092508,
+      "Layout": 7,
+      "RecalcStyle": 15,
+      "LayoutMs": 38.2,
+      "RecalcMs": 82.3,
+      "ScriptMs": 32.1,
+      "TaskMs": 240.3,
+      "Reqs": []
+    },
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "Putaran": 3,
+      "MsSiap": 1153.4,
+      "MsData": 598,
+      "Penanda": true,
+      "Heap": 14175032,
+      "Layout": 7,
+      "RecalcStyle": 16,
+      "LayoutMs": 126.9,
+      "RecalcMs": 246.9,
+      "ScriptMs": 601.5,
+      "TaskMs": 1211.5,
+      "Reqs": []
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "Putaran": 3,
+      "MsSiap": 593.9,
+      "MsData": 164,
+      "Penanda": true,
+      "Heap": 14424208,
+      "Layout": 2,
+      "RecalcStyle": 15,
+      "LayoutMs": 2.3,
+      "RecalcMs": 12.1,
+      "ScriptMs": 444.1,
+      "TaskMs": 629.7,
+      "Reqs": []
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "Putaran": 3,
+      "MsSiap": 549,
+      "MsData": 330,
+      "Penanda": true,
+      "Heap": 19897216,
+      "Layout": 4,
+      "RecalcStyle": 13,
+      "LayoutMs": 95.5,
+      "RecalcMs": 137.4,
+      "ScriptMs": 243.7,
+      "TaskMs": 611.9,
+      "Reqs": []
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "Putaran": 3,
+      "MsSiap": 402.1,
+      "MsData": 279,
+      "Penanda": true,
+      "Heap": 24348380,
+      "Layout": 9,
+      "RecalcStyle": 20,
+      "LayoutMs": 26.4,
+      "RecalcMs": 66.7,
+      "ScriptMs": 155.7,
+      "TaskMs": 405.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35541,
+          "Ms": 220,
+          "DurasiPeladen": 3.1
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35599,
+          "Ms": 163,
+          "DurasiPeladen": 12.4
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35601,
+          "Ms": 161,
+          "DurasiPeladen": 6.6
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35764,
+          "Ms": 9,
+          "DurasiPeladen": 1.6
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35765,
+          "Ms": 8,
+          "DurasiPeladen": 2.1
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35762,
+          "Ms": 26,
+          "DurasiPeladen": 5.6
+        }
+      ]
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "Putaran": 3,
+      "MsSiap": 421.7,
+      "MsData": 314,
+      "Penanda": true,
+      "Heap": 25093808,
+      "Layout": 5,
+      "RecalcStyle": 17,
+      "LayoutMs": 52.1,
+      "RecalcMs": 83.1,
+      "ScriptMs": 151.7,
+      "TaskMs": 374.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35974,
+          "Ms": 236,
+          "DurasiPeladen": 1
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35975,
+          "Ms": 235,
+          "DurasiPeladen": 7.8
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35975,
+          "Ms": 234,
+          "DurasiPeladen": 3.8
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 35976,
+          "Ms": 234,
+          "DurasiPeladen": 5.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 36211,
+          "Ms": 8,
+          "DurasiPeladen": 0.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 36212,
+          "Ms": 7,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 36210,
+          "Ms": 12,
+          "DurasiPeladen": 4.8
+        }
+      ]
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "Putaran": 3,
+      "MsSiap": 809.2,
+      "MsData": 647,
+      "Penanda": true,
+      "Heap": 14590964,
+      "Layout": 4,
+      "RecalcStyle": 21,
+      "LayoutMs": 133.9,
+      "RecalcMs": 188.9,
+      "ScriptMs": 211.3,
+      "TaskMs": 784.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 36546,
+          "Ms": 525,
+          "DurasiPeladen": 1.4
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 36547,
+          "Ms": 547,
+          "DurasiPeladen": 5.2
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37094,
+          "Ms": 47,
+          "DurasiPeladen": 3.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37107,
+          "Ms": 39,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37108,
+          "Ms": 38,
+          "DurasiPeladen": 1.6
+        }
+      ]
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "Putaran": 3,
+      "MsSiap": 145,
+      "MsData": 79,
+      "Penanda": true,
+      "Heap": 17113444,
+      "Layout": 6,
+      "RecalcStyle": 16,
+      "LayoutMs": 7.5,
+      "RecalcMs": 21.9,
+      "ScriptMs": 53.9,
+      "TaskMs": 158.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37384,
+          "Ms": 46,
+          "DurasiPeladen": 5.3
+        },
+        {
+          "Jalur": "/api/inventory/batches",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37395,
+          "Ms": 34,
+          "DurasiPeladen": 3.7
+        }
+      ]
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "Putaran": 3,
+      "MsSiap": 648.5,
+      "MsData": 544,
+      "Penanda": true,
+      "Heap": 18048500,
+      "Layout": 8,
+      "RecalcStyle": 18,
+      "LayoutMs": 102.9,
+      "RecalcMs": 198.1,
+      "ScriptMs": 161.1,
+      "TaskMs": 616.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal?from=2026-10-01\u0026to=2026-10-29\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37608,
+          "Ms": 67,
+          "DurasiPeladen": 32.2
+        },
+        {
+          "Jalur": "/api/journal/summary?from=2026-10-01\u0026to=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37611,
+          "Ms": 64,
+          "DurasiPeladen": 27.4
+        },
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37613,
+          "Ms": 64,
+          "DurasiPeladen": 19.2
+        },
+        {
+          "Jalur": "/api/journal/balances?asOf=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37610,
+          "Ms": 67,
+          "DurasiPeladen": 47.1
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37614,
+          "Ms": 458,
+          "DurasiPeladen": 47.5
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37616,
+          "Ms": 478,
+          "DurasiPeladen": 39.8
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 37615,
+          "Ms": 479,
+          "DurasiPeladen": 65.4
+        }
+      ]
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "Putaran": 3,
+      "MsSiap": 417.3,
+      "MsData": 322,
+      "Penanda": true,
+      "Heap": 18986780,
+      "Layout": 4,
+      "RecalcStyle": 15,
+      "LayoutMs": 58,
+      "RecalcMs": 101.7,
+      "ScriptMs": 166.2,
+      "TaskMs": 431.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38416,
+          "Ms": 260,
+          "DurasiPeladen": 35.1
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38418,
+          "Ms": 258,
+          "DurasiPeladen": 4.5
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38419,
+          "Ms": 256,
+          "DurasiPeladen": 14.3
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38420,
+          "Ms": 255,
+          "DurasiPeladen": 56.1
+        }
+      ]
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "Putaran": 3,
+      "MsSiap": 354,
+      "MsData": 270,
+      "Penanda": true,
+      "Heap": 19622412,
+      "Layout": 7,
+      "RecalcStyle": 18,
+      "LayoutMs": 61.2,
+      "RecalcMs": 79.2,
+      "ScriptMs": 90.4,
+      "TaskMs": 330.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38855,
+          "Ms": 219,
+          "DurasiPeladen": 5.6
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38855,
+          "Ms": 219,
+          "DurasiPeladen": 4.6
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38856,
+          "Ms": 227,
+          "DurasiPeladen": 10.8
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 38856,
+          "Ms": 227,
+          "DurasiPeladen": 15.1
+        }
+      ]
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "Putaran": 3,
+      "MsSiap": 124.9,
+      "MsData": 72,
+      "Penanda": true,
+      "Heap": 21888204,
+      "Layout": 6,
+      "RecalcStyle": 16,
+      "LayoutMs": 8.5,
+      "RecalcMs": 25.6,
+      "ScriptMs": 28.8,
+      "TaskMs": 118.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39248,
+          "Ms": 47,
+          "DurasiPeladen": 6.9
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39249,
+          "Ms": 46,
+          "DurasiPeladen": 15
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39250,
+          "Ms": 46,
+          "DurasiPeladen": 11.9
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39252,
+          "Ms": 43,
+          "DurasiPeladen": 9.4
+        }
+      ]
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "Putaran": 3,
+      "MsSiap": 146.9,
+      "MsData": 80,
+      "Penanda": true,
+      "Heap": 18134132,
+      "Layout": 11,
+      "RecalcStyle": 20,
+      "LayoutMs": 9.2,
+      "RecalcMs": 28.1,
+      "ScriptMs": 20.7,
+      "TaskMs": 115.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/analytics/sales?days=90",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39465,
+          "Ms": 50,
+          "DurasiPeladen": 40.5
+        }
+      ]
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "Putaran": 3,
+      "MsSiap": 60.5,
+      "MsData": 24,
+      "Penanda": true,
+      "Heap": 18854620,
+      "Layout": 5,
+      "RecalcStyle": 13,
+      "LayoutMs": 10.6,
+      "RecalcMs": 15.4,
+      "ScriptMs": 10.2,
+      "TaskMs": 70.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/audit?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39668,
+          "Ms": 14,
+          "DurasiPeladen": 6.8
+        }
+      ]
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "Putaran": 3,
+      "MsSiap": 72.3,
+      "MsData": 39,
+      "Penanda": true,
+      "Heap": 19879564,
+      "Layout": 9,
+      "RecalcStyle": 16,
+      "LayoutMs": 8.3,
+      "RecalcMs": 17.5,
+      "ScriptMs": 8.5,
+      "TaskMs": 69.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/users",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39788,
+          "Ms": 20,
+          "DurasiPeladen": 3
+        }
+      ]
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "Putaran": 3,
+      "MsSiap": 90.6,
+      "MsData": 51,
+      "Penanda": true,
+      "Heap": 21032980,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 11.7,
+      "RecalcMs": 19.6,
+      "ScriptMs": 17.4,
+      "TaskMs": 85.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/backup",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39925,
+          "Ms": 31,
+          "DurasiPeladen": 7.4
+        },
+        {
+          "Jalur": "/api/system/storage",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39926,
+          "Ms": 31,
+          "DurasiPeladen": 8.9
+        },
+        {
+          "Jalur": "/api/settings",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 39927,
+          "Ms": 30,
+          "DurasiPeladen": 2
+        }
+      ]
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "Putaran": 3,
+      "MsSiap": 93.3,
+      "MsData": 56,
+      "Penanda": true,
+      "Heap": 22121748,
+      "Layout": 10,
+      "RecalcStyle": 17,
+      "LayoutMs": 6.8,
+      "RecalcMs": 21.4,
+      "ScriptMs": 13.2,
+      "TaskMs": 81.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/devices",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 40073,
+          "Ms": 29,
+          "DurasiPeladen": 10.6
+        },
+        {
+          "Jalur": "/api/devices/print-jobs?limit=50",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 40074,
+          "Ms": 28,
+          "DurasiPeladen": 1.6
+        }
+      ]
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "Putaran": 4,
+      "MsSiap": 134,
+      "MsData": 74,
+      "Penanda": true,
+      "Heap": 23149140,
+      "Layout": 13,
+      "RecalcStyle": 17,
+      "LayoutMs": 8.6,
+      "RecalcMs": 22.1,
+      "ScriptMs": 8.4,
+      "TaskMs": 90.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 40230,
+          "Ms": 49,
+          "DurasiPeladen": 44.2
+        }
+      ]
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "Putaran": 4,
+      "MsSiap": 212.7,
+      "MsData": 165,
+      "Penanda": true,
+      "Heap": 20825372,
+      "Layout": 6,
+      "RecalcStyle": 14,
+      "LayoutMs": 25.9,
+      "RecalcMs": 39.1,
+      "ScriptMs": 31.7,
+      "TaskMs": 200.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/tasks",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 40453,
+          "Ms": 127,
+          "DurasiPeladen": 31.9
+        }
+      ]
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "Putaran": 4,
+      "MsSiap": 285.6,
+      "MsData": 203,
+      "Penanda": true,
+      "Heap": 24502240,
+      "Layout": 11,
+      "RecalcStyle": 22,
+      "LayoutMs": 20.3,
+      "RecalcMs": 31.6,
+      "ScriptMs": 72.6,
+      "TaskMs": 214.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/notifications?unreadOnly=false\u0026limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 40736,
+          "Ms": 173,
+          "DurasiPeladen": 162.2
+        }
+      ]
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "Putaran": 4,
+      "MsSiap": 382.3,
+      "MsData": 300,
+      "Penanda": true,
+      "Heap": 24298588,
+      "Layout": 4,
+      "RecalcStyle": 13,
+      "LayoutMs": 62.1,
+      "RecalcMs": 113.5,
+      "ScriptMs": 102.9,
+      "TaskMs": 422,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 41108,
+          "Ms": 246,
+          "DurasiPeladen": 16.7
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 41109,
+          "Ms": 245,
+          "DurasiPeladen": 12.5
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 41109,
+          "Ms": 245,
+          "DurasiPeladen": 3.7
+        }
+      ]
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "Putaran": 4,
+      "MsSiap": 261,
+      "MsData": 192,
+      "Penanda": true,
+      "Heap": 28230020,
+      "Layout": 9,
+      "RecalcStyle": 22,
+      "LayoutMs": 7.9,
+      "RecalcMs": 26.8,
+      "ScriptMs": 89.9,
+      "TaskMs": 330.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 41631,
+          "Ms": 92,
+          "DurasiPeladen": 4.7
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 41633,
+          "Ms": 113,
+          "DurasiPeladen": 13.1
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 41634,
+          "Ms": 112,
+          "DurasiPeladen": 7.6
+        }
+      ]
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "Putaran": 4,
+      "MsSiap": 242.3,
+      "MsData": 170,
+      "Penanda": true,
+      "Heap": 15019008,
+      "Layout": 6,
+      "RecalcStyle": 21,
+      "LayoutMs": 4.4,
+      "RecalcMs": 17.3,
+      "ScriptMs": 73.6,
+      "TaskMs": 410.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42075,
+          "Ms": 121,
+          "DurasiPeladen": 6.6
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42077,
+          "Ms": 137,
+          "DurasiPeladen": 3.4
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42078,
+          "Ms": 136,
+          "DurasiPeladen": 6.6
+        }
+      ]
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "Putaran": 4,
+      "MsSiap": 284,
+      "MsData": 197,
+      "Penanda": true,
+      "Heap": 17102304,
+      "Layout": 8,
+      "RecalcStyle": 23,
+      "LayoutMs": 6,
+      "RecalcMs": 22.7,
+      "ScriptMs": 93.9,
+      "TaskMs": 284.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42394,
+          "Ms": 123,
+          "DurasiPeladen": 4.5
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42395,
+          "Ms": 143,
+          "DurasiPeladen": 3.8
+        }
+      ]
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "Putaran": 4,
+      "MsSiap": 169.8,
+      "MsData": 126,
+      "Penanda": true,
+      "Heap": 19416596,
+      "Layout": 8,
+      "RecalcStyle": 18,
+      "LayoutMs": 4.3,
+      "RecalcMs": 13.8,
+      "ScriptMs": 63.9,
+      "TaskMs": 189.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42735,
+          "Ms": 80,
+          "DurasiPeladen": 4.4
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42737,
+          "Ms": 79,
+          "DurasiPeladen": 3.6
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42738,
+          "Ms": 78,
+          "DurasiPeladen": 6.1
+        }
+      ]
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "Putaran": 4,
+      "MsSiap": 130,
+      "MsData": 72,
+      "Penanda": true,
+      "Heap": 17113608,
+      "Layout": 9,
+      "RecalcStyle": 18,
+      "LayoutMs": 5.2,
+      "RecalcMs": 16.5,
+      "ScriptMs": 20.6,
+      "TaskMs": 91.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42974,
+          "Ms": 28,
+          "DurasiPeladen": 4.2
+        },
+        {
+          "Jalur": "/api/returns",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 42976,
+          "Ms": 44,
+          "DurasiPeladen": 39
+        }
+      ]
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "Putaran": 4,
+      "MsSiap": 76.2,
+      "MsData": 41,
+      "Penanda": true,
+      "Heap": 18154864,
+      "Layout": 7,
+      "RecalcStyle": 13,
+      "LayoutMs": 5,
+      "RecalcMs": 13,
+      "ScriptMs": 7.5,
+      "TaskMs": 54.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43150,
+          "Ms": 18,
+          "DurasiPeladen": 2.7
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43151,
+          "Ms": 18,
+          "DurasiPeladen": 4.7
+        }
+      ]
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "Putaran": 4,
+      "MsSiap": 69.4,
+      "MsData": 35,
+      "Penanda": true,
+      "Heap": 19154272,
+      "Layout": 9,
+      "RecalcStyle": 14,
+      "LayoutMs": 5.6,
+      "RecalcMs": 15.7,
+      "ScriptMs": 8.4,
+      "TaskMs": 63.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43290,
+          "Ms": 15,
+          "DurasiPeladen": 2.5
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43291,
+          "Ms": 14,
+          "DurasiPeladen": 3.5
+        }
+      ]
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "Putaran": 4,
+      "MsSiap": 72.3,
+      "MsData": 42,
+      "Penanda": true,
+      "Heap": 20156620,
+      "Layout": 8,
+      "RecalcStyle": 14,
+      "LayoutMs": 4.5,
+      "RecalcMs": 14.2,
+      "ScriptMs": 7.7,
+      "TaskMs": 58.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43419,
+          "Ms": 18,
+          "DurasiPeladen": 1.6
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43420,
+          "Ms": 17,
+          "DurasiPeladen": 3.8
+        }
+      ]
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "Putaran": 4,
+      "MsSiap": 241.2,
+      "MsData": 183,
+      "Penanda": true,
+      "Heap": 20735152,
+      "Layout": 10,
+      "RecalcStyle": 16,
+      "LayoutMs": 31.6,
+      "RecalcMs": 60.5,
+      "ScriptMs": 78.1,
+      "TaskMs": 258.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43579,
+          "Ms": 152,
+          "DurasiPeladen": 3.8
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43581,
+          "Ms": 151,
+          "DurasiPeladen": 3.6
+        }
+      ]
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "Putaran": 4,
+      "MsSiap": 96,
+      "MsData": 50,
+      "Penanda": true,
+      "Heap": 22718816,
+      "Layout": 5,
+      "RecalcStyle": 15,
+      "LayoutMs": 5.7,
+      "RecalcMs": 12.7,
+      "ScriptMs": 19.8,
+      "TaskMs": 94.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43893,
+          "Ms": 26,
+          "DurasiPeladen": 0.7
+        },
+        {
+          "Jalur": "/api/production/quality-checks",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 43895,
+          "Ms": 24,
+          "DurasiPeladen": 6.3
+        }
+      ]
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "Putaran": 4,
+      "MsSiap": 187.6,
+      "MsData": 132,
+      "Penanda": true,
+      "Heap": 20327172,
+      "Layout": 11,
+      "RecalcStyle": 17,
+      "LayoutMs": 24.2,
+      "RecalcMs": 54,
+      "ScriptMs": 48.5,
+      "TaskMs": 204.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/cost-summary",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 44083,
+          "Ms": 106,
+          "DurasiPeladen": 15.2
+        }
+      ]
+    },
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "Putaran": 4,
+      "MsSiap": 874.2,
+      "MsData": 522,
+      "Penanda": true,
+      "Heap": 27249520,
+      "Layout": 6,
+      "RecalcStyle": 19,
+      "LayoutMs": 67.9,
+      "RecalcMs": 177.2,
+      "ScriptMs": 509.7,
+      "TaskMs": 905.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/purchases?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 44601,
+          "Ms": 402,
+          "DurasiPeladen": 16.6
+        },
+        {
+          "Jalur": "/api/suppliers",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 44603,
+          "Ms": 404,
+          "DurasiPeladen": 3.9
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 44604,
+          "Ms": 403,
+          "DurasiPeladen": 7.3
+        },
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 44605,
+          "Ms": 401,
+          "DurasiPeladen": 1.3
+        }
+      ]
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "Putaran": 4,
+      "MsSiap": 653.7,
+      "MsData": 495,
+      "Penanda": true,
+      "Heap": 25492652,
+      "Layout": 2,
+      "RecalcStyle": 16,
+      "LayoutMs": 1.5,
+      "RecalcMs": 10.6,
+      "ScriptMs": 490.5,
+      "TaskMs": 694.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/purchases?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 45428,
+          "Ms": 307,
+          "DurasiPeladen": 22.7
+        },
+        {
+          "Jalur": "/api/suppliers",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 45430,
+          "Ms": 305,
+          "DurasiPeladen": 2
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 45431,
+          "Ms": 304,
+          "DurasiPeladen": 12.5
+        },
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 45432,
+          "Ms": 303,
+          "DurasiPeladen": 1.1
+        }
+      ]
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "Putaran": 4,
+      "MsSiap": 1111,
+      "MsData": 923,
+      "Penanda": true,
+      "Heap": 21050856,
+      "Layout": 3,
+      "RecalcStyle": 22,
+      "LayoutMs": 184.1,
+      "RecalcMs": 231.9,
+      "ScriptMs": 394.4,
+      "TaskMs": 1130,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 46128,
+          "Ms": 728,
+          "DurasiPeladen": 1.7
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 46129,
+          "Ms": 737,
+          "DurasiPeladen": 6
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 46130,
+          "Ms": 737,
+          "DurasiPeladen": 3.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 46867,
+          "Ms": 47,
+          "DurasiPeladen": 5.3
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 46877,
+          "Ms": 48,
+          "DurasiPeladen": 1.1
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 46877,
+          "Ms": 47,
+          "DurasiPeladen": 2.5
+        }
+      ]
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "Putaran": 4,
+      "MsSiap": 538.7,
+      "MsData": 400,
+      "Penanda": true,
+      "Heap": 21161948,
+      "Layout": 5,
+      "RecalcStyle": 20,
+      "LayoutMs": 90.6,
+      "RecalcMs": 114.2,
+      "ScriptMs": 125.1,
+      "TaskMs": 518.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 47331,
+          "Ms": 309,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 47355,
+          "Ms": 285,
+          "DurasiPeladen": 6.2
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 47357,
+          "Ms": 283,
+          "DurasiPeladen": 2.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 47643,
+          "Ms": 39,
+          "DurasiPeladen": 6.3
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 47641,
+          "Ms": 41,
+          "DurasiPeladen": 10
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 47643,
+          "Ms": 38,
+          "DurasiPeladen": 9.9
+        }
+      ]
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "Putaran": 4,
+      "MsSiap": 768.3,
+      "MsData": 550,
+      "Penanda": true,
+      "Heap": 20266000,
+      "Layout": 6,
+      "RecalcStyle": 21,
+      "LayoutMs": 72.2,
+      "RecalcMs": 240.7,
+      "ScriptMs": 273.5,
+      "TaskMs": 729,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48075,
+          "Ms": 458,
+          "DurasiPeladen": 3.1
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48077,
+          "Ms": 466,
+          "DurasiPeladen": 26.2
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48078,
+          "Ms": 465,
+          "DurasiPeladen": 3.1
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48080,
+          "Ms": 463,
+          "DurasiPeladen": 6.9
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48545,
+          "Ms": 7,
+          "DurasiPeladen": 1.3
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48544,
+          "Ms": 8,
+          "DurasiPeladen": 1.8
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 48543,
+          "Ms": 12,
+          "DurasiPeladen": 4.1
+        }
+      ]
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "Putaran": 4,
+      "MsSiap": 1068.8,
+      "MsData": 810,
+      "Penanda": true,
+      "Heap": 22158656,
+      "Layout": 4,
+      "RecalcStyle": 17,
+      "LayoutMs": 123.1,
+      "RecalcMs": 455.5,
+      "ScriptMs": 276.9,
+      "TaskMs": 1045.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49007,
+          "Ms": 679,
+          "DurasiPeladen": 2.6
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49009,
+          "Ms": 677,
+          "DurasiPeladen": 6.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49688,
+          "Ms": 43,
+          "DurasiPeladen": 2.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49689,
+          "Ms": 41,
+          "DurasiPeladen": 1.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49686,
+          "Ms": 44,
+          "DurasiPeladen": 11.5
+        }
+      ]
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "Putaran": 4,
+      "MsSiap": 131.4,
+      "MsData": 65,
+      "Penanda": true,
+      "Heap": 24621844,
+      "Layout": 8,
+      "RecalcStyle": 16,
+      "LayoutMs": 4.6,
+      "RecalcMs": 19.8,
+      "ScriptMs": 23.1,
+      "TaskMs": 101.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49979,
+          "Ms": 19,
+          "DurasiPeladen": 7.7
+        },
+        {
+          "Jalur": "/api/inventory/batches",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 49980,
+          "Ms": 36,
+          "DurasiPeladen": 31.5
+        }
+      ]
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "Putaran": 4,
+      "MsSiap": 990.4,
+      "MsData": 877,
+      "Penanda": true,
+      "Heap": 26573868,
+      "Layout": 9,
+      "RecalcStyle": 18,
+      "LayoutMs": 302.2,
+      "RecalcMs": 212.5,
+      "ScriptMs": 219.2,
+      "TaskMs": 943.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal?from=2026-10-01\u0026to=2026-10-29\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50192,
+          "Ms": 80,
+          "DurasiPeladen": 19.5
+        },
+        {
+          "Jalur": "/api/journal/balances?asOf=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50194,
+          "Ms": 82,
+          "DurasiPeladen": 17
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50200,
+          "Ms": 77,
+          "DurasiPeladen": 26.9
+        },
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50197,
+          "Ms": 159,
+          "DurasiPeladen": 34.8
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50198,
+          "Ms": 158,
+          "DurasiPeladen": 41.7
+        },
+        {
+          "Jalur": "/api/journal/summary?from=2026-10-01\u0026to=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50195,
+          "Ms": 569,
+          "DurasiPeladen": 72.5
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 50202,
+          "Ms": 610,
+          "DurasiPeladen": 83.3
+        }
+      ]
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "Putaran": 4,
+      "MsSiap": 660.3,
+      "MsData": 487,
+      "Penanda": true,
+      "Heap": 26542880,
+      "Layout": 4,
+      "RecalcStyle": 20,
+      "LayoutMs": 74.8,
+      "RecalcMs": 180.4,
+      "ScriptMs": 261.3,
+      "TaskMs": 655.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 51556,
+          "Ms": 414,
+          "DurasiPeladen": 8.3
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 51558,
+          "Ms": 412,
+          "DurasiPeladen": 5
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 51561,
+          "Ms": 410,
+          "DurasiPeladen": 25.2
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 51563,
+          "Ms": 408,
+          "DurasiPeladen": 21.6
+        }
+      ]
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "Putaran": 4,
+      "MsSiap": 417.3,
+      "MsData": 317,
+      "Penanda": true,
+      "Heap": 27176852,
+      "Layout": 8,
+      "RecalcStyle": 17,
+      "LayoutMs": 72.2,
+      "RecalcMs": 99.1,
+      "ScriptMs": 111.6,
+      "TaskMs": 394.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52201,
+          "Ms": 255,
+          "DurasiPeladen": 9.3
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52202,
+          "Ms": 264,
+          "DurasiPeladen": 4.5
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52203,
+          "Ms": 263,
+          "DurasiPeladen": 11.5
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52204,
+          "Ms": 261,
+          "DurasiPeladen": 21.6
+        }
+      ]
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "Putaran": 4,
+      "MsSiap": 179.1,
+      "MsData": 122,
+      "Penanda": true,
+      "Heap": 29449316,
+      "Layout": 11,
+      "RecalcStyle": 19,
+      "LayoutMs": 6.5,
+      "RecalcMs": 28.3,
+      "ScriptMs": 23.6,
+      "TaskMs": 124.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52666,
+          "Ms": 43,
+          "DurasiPeladen": 6.7
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52667,
+          "Ms": 43,
+          "DurasiPeladen": 5.4
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52668,
+          "Ms": 43,
+          "DurasiPeladen": 11.3
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52668,
+          "Ms": 89,
+          "DurasiPeladen": 82.5
+        }
+      ]
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "Putaran": 4,
+      "MsSiap": 119.4,
+      "MsData": 62,
+      "Penanda": true,
+      "Heap": 25776028,
+      "Layout": 9,
+      "RecalcStyle": 16,
+      "LayoutMs": 5.1,
+      "RecalcMs": 16.9,
+      "ScriptMs": 18,
+      "TaskMs": 79.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/analytics/sales?days=90",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 52931,
+          "Ms": 38,
+          "DurasiPeladen": 32.5
+        }
+      ]
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "Putaran": 4,
+      "MsSiap": 56.3,
+      "MsData": 21,
+      "Penanda": true,
+      "Heap": 26499340,
+      "Layout": 7,
+      "RecalcStyle": 14,
+      "LayoutMs": 10.4,
+      "RecalcMs": 20.5,
+      "ScriptMs": 8.3,
+      "TaskMs": 75.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/audit?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53104,
+          "Ms": 15,
+          "DurasiPeladen": 8.1
+        }
+      ]
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "Putaran": 4,
+      "MsSiap": 73.3,
+      "MsData": 37,
+      "Penanda": true,
+      "Heap": 27543940,
+      "Layout": 10,
+      "RecalcStyle": 16,
+      "LayoutMs": 5.9,
+      "RecalcMs": 17,
+      "ScriptMs": 8.1,
+      "TaskMs": 65.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/users",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53220,
+          "Ms": 15,
+          "DurasiPeladen": 3.7
+        }
+      ]
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "Putaran": 4,
+      "MsSiap": 122.2,
+      "MsData": 75,
+      "Penanda": true,
+      "Heap": 28648444,
+      "Layout": 10,
+      "RecalcStyle": 17,
+      "LayoutMs": 13.2,
+      "RecalcMs": 30.6,
+      "ScriptMs": 21.4,
+      "TaskMs": 120,
+      "Reqs": [
+        {
+          "Jalur": "/api/settings",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53382,
+          "Ms": 43,
+          "DurasiPeladen": 2.6
+        },
+        {
+          "Jalur": "/api/backup",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53379,
+          "Ms": 45,
+          "DurasiPeladen": 34.3
+        },
+        {
+          "Jalur": "/api/system/storage",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53381,
+          "Ms": 49,
+          "DurasiPeladen": 42.7
+        }
+      ]
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "Putaran": 4,
+      "MsSiap": 114.4,
+      "MsData": 52,
+      "Penanda": true,
+      "Heap": 29700236,
+      "Layout": 8,
+      "RecalcStyle": 14,
+      "LayoutMs": 8.4,
+      "RecalcMs": 25.3,
+      "ScriptMs": 17.3,
+      "TaskMs": 96.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/devices",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53567,
+          "Ms": 28,
+          "DurasiPeladen": 14.9
+        },
+        {
+          "Jalur": "/api/devices/print-jobs?limit=50",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53568,
+          "Ms": 27,
+          "DurasiPeladen": 3
+        }
+      ]
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "Putaran": 5,
+      "MsSiap": 105.8,
+      "MsData": 67,
+      "Penanda": true,
+      "Heap": 30726544,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 10.8,
+      "RecalcMs": 19,
+      "ScriptMs": 13.6,
+      "TaskMs": 96.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53755,
+          "Ms": 33,
+          "DurasiPeladen": 11.2
+        }
+      ]
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "Putaran": 5,
+      "MsSiap": 144.3,
+      "MsData": 91,
+      "Penanda": true,
+      "Heap": 28396432,
+      "Layout": 8,
+      "RecalcStyle": 16,
+      "LayoutMs": 21.4,
+      "RecalcMs": 45,
+      "ScriptMs": 29.4,
+      "TaskMs": 162.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/tasks",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 53964,
+          "Ms": 71,
+          "DurasiPeladen": 31.3
+        }
+      ]
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "Putaran": 5,
+      "MsSiap": 449.8,
+      "MsData": 301,
+      "Penanda": true,
+      "Heap": 9966900,
+      "Layout": 10,
+      "RecalcStyle": 22,
+      "LayoutMs": 28.8,
+      "RecalcMs": 35.4,
+      "ScriptMs": 99.7,
+      "TaskMs": 499.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/notifications?unreadOnly=false\u0026limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 54227,
+          "Ms": 257,
+          "DurasiPeladen": 177.4
+        }
+      ]
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "Putaran": 5,
+      "MsSiap": 767.4,
+      "MsData": 392,
+      "Penanda": true,
+      "Heap": 14016304,
+      "Layout": 6,
+      "RecalcStyle": 23,
+      "LayoutMs": 65.5,
+      "RecalcMs": 146.5,
+      "ScriptMs": 417.9,
+      "TaskMs": 1080.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/devices/status",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55289,
+          "Ms": 364,
+          "DurasiPeladen": 3.3
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55336,
+          "Ms": 345,
+          "DurasiPeladen": 20.1
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55339,
+          "Ms": 342,
+          "DurasiPeladen": 7.3
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55341,
+          "Ms": 340,
+          "DurasiPeladen": 3.1
+        }
+      ]
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "Putaran": 5,
+      "MsSiap": 171.2,
+      "MsData": 121,
+      "Penanda": true,
+      "Heap": 17986544,
+      "Layout": 7,
+      "RecalcStyle": 19,
+      "LayoutMs": 3.4,
+      "RecalcMs": 13.1,
+      "ScriptMs": 55.1,
+      "TaskMs": 181.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55852,
+          "Ms": 84,
+          "DurasiPeladen": 5.1
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55853,
+          "Ms": 83,
+          "DurasiPeladen": 3.1
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 55853,
+          "Ms": 82,
+          "DurasiPeladen": 5.6
+        }
+      ]
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "Putaran": 5,
+      "MsSiap": 150.3,
+      "MsData": 92,
+      "Penanda": true,
+      "Heap": 15393032,
+      "Layout": 8,
+      "RecalcStyle": 16,
+      "LayoutMs": 3.6,
+      "RecalcMs": 13.4,
+      "ScriptMs": 48.9,
+      "TaskMs": 179,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56075,
+          "Ms": 62,
+          "DurasiPeladen": 4.4
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56076,
+          "Ms": 61,
+          "DurasiPeladen": 3.4
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56077,
+          "Ms": 61,
+          "DurasiPeladen": 5.3
+        }
+      ]
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "Putaran": 5,
+      "MsSiap": 199.5,
+      "MsData": 121,
+      "Penanda": true,
+      "Heap": 17724404,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 4.7,
+      "RecalcMs": 17.4,
+      "ScriptMs": 79.3,
+      "TaskMs": 227.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56314,
+          "Ms": 76,
+          "DurasiPeladen": 12.7
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56315,
+          "Ms": 75,
+          "DurasiPeladen": 2.3
+        }
+      ]
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "Putaran": 5,
+      "MsSiap": 185.4,
+      "MsData": 118,
+      "Penanda": true,
+      "Heap": 20097604,
+      "Layout": 8,
+      "RecalcStyle": 22,
+      "LayoutMs": 4.4,
+      "RecalcMs": 17.3,
+      "ScriptMs": 59.3,
+      "TaskMs": 204.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56633,
+          "Ms": 64,
+          "DurasiPeladen": 4.2
+        },
+        {
+          "Jalur": "/api/customers?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56634,
+          "Ms": 77,
+          "DurasiPeladen": 3.7
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56635,
+          "Ms": 76,
+          "DurasiPeladen": 3.2
+        }
+      ]
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "Putaran": 5,
+      "MsSiap": 130.2,
+      "MsData": 64,
+      "Penanda": true,
+      "Heap": 17521020,
+      "Layout": 5,
+      "RecalcStyle": 13,
+      "LayoutMs": 12.7,
+      "RecalcMs": 18,
+      "ScriptMs": 32.8,
+      "TaskMs": 130.1,
+      "Reqs": [
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56930,
+          "Ms": 34,
+          "DurasiPeladen": 6.8
+        },
+        {
+          "Jalur": "/api/returns",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 56931,
+          "Ms": 32,
+          "DurasiPeladen": 5.2
+        }
+      ]
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "Putaran": 5,
+      "MsSiap": 66.2,
+      "MsData": 35,
+      "Penanda": true,
+      "Heap": 18548260,
+      "Layout": 7,
+      "RecalcStyle": 13,
+      "LayoutMs": 5.4,
+      "RecalcMs": 12.2,
+      "ScriptMs": 10.3,
+      "TaskMs": 58.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57099,
+          "Ms": 18,
+          "DurasiPeladen": 2.9
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57100,
+          "Ms": 18,
+          "DurasiPeladen": 2.4
+        }
+      ]
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "Putaran": 5,
+      "MsSiap": 70.9,
+      "MsData": 36,
+      "Penanda": true,
+      "Heap": 19547828,
+      "Layout": 8,
+      "RecalcStyle": 14,
+      "LayoutMs": 4.9,
+      "RecalcMs": 16,
+      "ScriptMs": 6.5,
+      "TaskMs": 63.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57221,
+          "Ms": 14,
+          "DurasiPeladen": 1.6
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57222,
+          "Ms": 13,
+          "DurasiPeladen": 3.1
+        }
+      ]
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "Putaran": 5,
+      "MsSiap": 74.8,
+      "MsData": 37,
+      "Penanda": true,
+      "Heap": 20547548,
+      "Layout": 8,
+      "RecalcStyle": 15,
+      "LayoutMs": 5.4,
+      "RecalcMs": 19.1,
+      "ScriptMs": 8.4,
+      "TaskMs": 78.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57374,
+          "Ms": 16,
+          "DurasiPeladen": 1.6
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57375,
+          "Ms": 15,
+          "DurasiPeladen": 3.9
+        }
+      ]
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "Putaran": 5,
+      "MsSiap": 221.5,
+      "MsData": 146,
+      "Penanda": true,
+      "Heap": 20715592,
+      "Layout": 13,
+      "RecalcStyle": 18,
+      "LayoutMs": 26.1,
+      "RecalcMs": 54.9,
+      "ScriptMs": 57.1,
+      "TaskMs": 233,
+      "Reqs": [
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57532,
+          "Ms": 121,
+          "DurasiPeladen": 3.8
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57533,
+          "Ms": 121,
+          "DurasiPeladen": 3.8
+        }
+      ]
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "Putaran": 5,
+      "MsSiap": 122.4,
+      "MsData": 80,
+      "Penanda": true,
+      "Heap": 8559852,
+      "Layout": 7,
+      "RecalcStyle": 17,
+      "LayoutMs": 4.8,
+      "RecalcMs": 14.8,
+      "ScriptMs": 14.3,
+      "TaskMs": 153.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57813,
+          "Ms": 54,
+          "DurasiPeladen": 0.9
+        },
+        {
+          "Jalur": "/api/production/quality-checks",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 57814,
+          "Ms": 53,
+          "DurasiPeladen": 2.1
+        }
+      ]
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "Putaran": 5,
+      "MsSiap": 152.5,
+      "MsData": 107,
+      "Penanda": true,
+      "Heap": 10862112,
+      "Layout": 10,
+      "RecalcStyle": 16,
+      "LayoutMs": 19.5,
+      "RecalcMs": 40.6,
+      "ScriptMs": 34.4,
+      "TaskMs": 149.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/production/cost-summary",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 58000,
+          "Ms": 82,
+          "DurasiPeladen": 6.5
+        }
+      ]
+    },
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "Putaran": 5,
+      "MsSiap": 654.5,
+      "MsData": 445,
+      "Penanda": true,
+      "Heap": 17935620,
+      "Layout": 8,
+      "RecalcStyle": 18,
+      "LayoutMs": 60.3,
+      "RecalcMs": 104.8,
+      "ScriptMs": 355.2,
+      "TaskMs": 685,
+      "Reqs": [
+        {
+          "Jalur": "/api/purchases?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 58339,
+          "Ms": 329,
+          "DurasiPeladen": 9.2
+        },
+        {
+          "Jalur": "/api/suppliers",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 58340,
+          "Ms": 343,
+          "DurasiPeladen": 1.9
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 58340,
+          "Ms": 343,
+          "DurasiPeladen": 5
+        },
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 58341,
+          "Ms": 342,
+          "DurasiPeladen": 0.8
+        }
+      ]
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "Putaran": 5,
+      "MsSiap": 463.1,
+      "MsData": 249,
+      "Penanda": true,
+      "Heap": 15473608,
+      "Layout": 3,
+      "RecalcStyle": 17,
+      "LayoutMs": 1.5,
+      "RecalcMs": 9.4,
+      "ScriptMs": 359.2,
+      "TaskMs": 533.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/purchases?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59031,
+          "Ms": 163,
+          "DurasiPeladen": 8
+        },
+        {
+          "Jalur": "/api/suppliers",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59033,
+          "Ms": 163,
+          "DurasiPeladen": 6.1
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59033,
+          "Ms": 162,
+          "DurasiPeladen": 6.1
+        },
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59034,
+          "Ms": 161,
+          "DurasiPeladen": 0.6
+        }
+      ]
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "Putaran": 5,
+      "MsSiap": 577.9,
+      "MsData": 425,
+      "Penanda": true,
+      "Heap": 24202132,
+      "Layout": 8,
+      "RecalcStyle": 21,
+      "LayoutMs": 88.4,
+      "RecalcMs": 126.2,
+      "ScriptMs": 224.2,
+      "TaskMs": 570,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59634,
+          "Ms": 326,
+          "DurasiPeladen": 1.8
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59635,
+          "Ms": 326,
+          "DurasiPeladen": 5.4
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59636,
+          "Ms": 338,
+          "DurasiPeladen": 6.4
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59975,
+          "Ms": 16,
+          "DurasiPeladen": 1
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59974,
+          "Ms": 17,
+          "DurasiPeladen": 3.2
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 59976,
+          "Ms": 16,
+          "DurasiPeladen": 1.1
+        }
+      ]
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "Putaran": 5,
+      "MsSiap": 203.7,
+      "MsData": 131,
+      "Penanda": true,
+      "Heap": 25372360,
+      "Layout": 12,
+      "RecalcStyle": 22,
+      "LayoutMs": 18.8,
+      "RecalcMs": 46.2,
+      "ScriptMs": 45.9,
+      "TaskMs": 216.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60207,
+          "Ms": 82,
+          "DurasiPeladen": 1.5
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60208,
+          "Ms": 81,
+          "DurasiPeladen": 4.5
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60209,
+          "Ms": 80,
+          "DurasiPeladen": 2.1
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60291,
+          "Ms": 21,
+          "DurasiPeladen": 0.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60291,
+          "Ms": 22,
+          "DurasiPeladen": 1.3
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60289,
+          "Ms": 24,
+          "DurasiPeladen": 4.8
+        }
+      ]
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "Putaran": 5,
+      "MsSiap": 450.1,
+      "MsData": 332,
+      "Penanda": true,
+      "Heap": 10895684,
+      "Layout": 7,
+      "RecalcStyle": 21,
+      "LayoutMs": 45.8,
+      "RecalcMs": 88.2,
+      "ScriptMs": 159.1,
+      "TaskMs": 448.5,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60529,
+          "Ms": 211,
+          "DurasiPeladen": 2.6
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60530,
+          "Ms": 211,
+          "DurasiPeladen": 5.8
+        },
+        {
+          "Jalur": "/api/inventory/movements?limit=100",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60531,
+          "Ms": 210,
+          "DurasiPeladen": 2.9
+        },
+        {
+          "Jalur": "/api/products",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60532,
+          "Ms": 209,
+          "DurasiPeladen": 4.2
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60742,
+          "Ms": 21,
+          "DurasiPeladen": 1.3
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60743,
+          "Ms": 21,
+          "DurasiPeladen": 0.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 60741,
+          "Ms": 43,
+          "DurasiPeladen": 4.6
+        }
+      ]
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "Putaran": 5,
+      "MsSiap": 384.4,
+      "MsData": 295,
+      "Penanda": true,
+      "Heap": 16162112,
+      "Layout": 10,
+      "RecalcStyle": 20,
+      "LayoutMs": 57.3,
+      "RecalcMs": 94.8,
+      "ScriptMs": 76.5,
+      "TaskMs": 362.7,
+      "Reqs": [
+        {
+          "Jalur": "/api/inventory/locations",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61003,
+          "Ms": 209,
+          "DurasiPeladen": 1.2
+        },
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61004,
+          "Ms": 226,
+          "DurasiPeladen": 3.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/1/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61231,
+          "Ms": 27,
+          "DurasiPeladen": 3.5
+        },
+        {
+          "Jalur": "/api/inventory/locations/2/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61232,
+          "Ms": 26,
+          "DurasiPeladen": 1.7
+        },
+        {
+          "Jalur": "/api/inventory/locations/3/stock",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61232,
+          "Ms": 25,
+          "DurasiPeladen": 0.9
+        }
+      ]
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "Putaran": 5,
+      "MsSiap": 110.3,
+      "MsData": 53,
+      "Penanda": true,
+      "Heap": 13654428,
+      "Layout": 6,
+      "RecalcStyle": 15,
+      "LayoutMs": 4.4,
+      "RecalcMs": 14.4,
+      "ScriptMs": 38.4,
+      "TaskMs": 113.9,
+      "Reqs": [
+        {
+          "Jalur": "/api/ingredients",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61465,
+          "Ms": 31,
+          "DurasiPeladen": 4.6
+        },
+        {
+          "Jalur": "/api/inventory/batches",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61467,
+          "Ms": 30,
+          "DurasiPeladen": 1.9
+        }
+      ]
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "Putaran": 5,
+      "MsSiap": 387.3,
+      "MsData": 339,
+      "Penanda": true,
+      "Heap": 16758088,
+      "Layout": 10,
+      "RecalcStyle": 17,
+      "LayoutMs": 67.3,
+      "RecalcMs": 140.2,
+      "ScriptMs": 101.5,
+      "TaskMs": 387.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal?from=2026-10-01\u0026to=2026-10-29\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61611,
+          "Ms": 42,
+          "DurasiPeladen": 16.6
+        },
+        {
+          "Jalur": "/api/journal/balances?asOf=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61612,
+          "Ms": 49,
+          "DurasiPeladen": 6.8
+        },
+        {
+          "Jalur": "/api/journal/summary?from=2026-10-01\u0026to=2026-10-29",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61613,
+          "Ms": 48,
+          "DurasiPeladen": 12.9
+        },
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61614,
+          "Ms": 47,
+          "DurasiPeladen": 6.3
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61615,
+          "Ms": 47,
+          "DurasiPeladen": 3.2
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61616,
+          "Ms": 45,
+          "DurasiPeladen": 11.9
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 61617,
+          "Ms": 93,
+          "DurasiPeladen": 24.1
+        }
+      ]
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "Putaran": 5,
+      "MsSiap": 283.6,
+      "MsData": 194,
+      "Penanda": true,
+      "Heap": 17519068,
+      "Layout": 10,
+      "RecalcStyle": 18,
+      "LayoutMs": 25.3,
+      "RecalcMs": 66.8,
+      "ScriptMs": 103.9,
+      "TaskMs": 284,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62106,
+          "Ms": 141,
+          "DurasiPeladen": 6.1
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62107,
+          "Ms": 153,
+          "DurasiPeladen": 3.6
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62108,
+          "Ms": 152,
+          "DurasiPeladen": 14.8
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62109,
+          "Ms": 151,
+          "DurasiPeladen": 9.3
+        }
+      ]
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "Putaran": 5,
+      "MsSiap": 449.3,
+      "MsData": 327,
+      "Penanda": true,
+      "Heap": 14223644,
+      "Layout": 7,
+      "RecalcStyle": 19,
+      "LayoutMs": 73.4,
+      "RecalcMs": 101.3,
+      "ScriptMs": 152.2,
+      "TaskMs": 455,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62493,
+          "Ms": 279,
+          "DurasiPeladen": 8.6
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62494,
+          "Ms": 284,
+          "DurasiPeladen": 9.2
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62495,
+          "Ms": 283,
+          "DurasiPeladen": 15.2
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62496,
+          "Ms": 282,
+          "DurasiPeladen": 16.7
+        }
+      ]
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "Putaran": 5,
+      "MsSiap": 98.4,
+      "MsData": 56,
+      "Penanda": true,
+      "Heap": 16505620,
+      "Layout": 5,
+      "RecalcStyle": 15,
+      "LayoutMs": 3.7,
+      "RecalcMs": 16.2,
+      "ScriptMs": 19.8,
+      "TaskMs": 78.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/journal/balances",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62934,
+          "Ms": 31,
+          "DurasiPeladen": 7.2
+        },
+        {
+          "Jalur": "/api/orders",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62935,
+          "Ms": 30,
+          "DurasiPeladen": 4.4
+        },
+        {
+          "Jalur": "/api/purchases?status=open\u0026limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62936,
+          "Ms": 30,
+          "DurasiPeladen": 9.7
+        },
+        {
+          "Jalur": "/api/dashboard",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 62936,
+          "Ms": 29,
+          "DurasiPeladen": 12.7
+        }
+      ]
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "Putaran": 5,
+      "MsSiap": 105.9,
+      "MsData": 56,
+      "Penanda": true,
+      "Heap": 17581772,
+      "Layout": 12,
+      "RecalcStyle": 16,
+      "LayoutMs": 7,
+      "RecalcMs": 20.3,
+      "ScriptMs": 11.6,
+      "TaskMs": 80.4,
+      "Reqs": [
+        {
+          "Jalur": "/api/analytics/sales?days=90",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63090,
+          "Ms": 31,
+          "DurasiPeladen": 21.7
+        }
+      ]
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "Putaran": 5,
+      "MsSiap": 59.1,
+      "MsData": 20,
+      "Penanda": true,
+      "Heap": 18327372,
+      "Layout": 7,
+      "RecalcStyle": 12,
+      "LayoutMs": 9.8,
+      "RecalcMs": 17,
+      "ScriptMs": 8.8,
+      "TaskMs": 75.2,
+      "Reqs": [
+        {
+          "Jalur": "/api/audit?limit=300",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63254,
+          "Ms": 13,
+          "DurasiPeladen": 5.2
+        }
+      ]
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "Putaran": 5,
+      "MsSiap": 90.8,
+      "MsData": 51,
+      "Penanda": true,
+      "Heap": 14499912,
+      "Layout": 10,
+      "RecalcStyle": 17,
+      "LayoutMs": 8.7,
+      "RecalcMs": 28.4,
+      "ScriptMs": 13.2,
+      "TaskMs": 107.8,
+      "Reqs": [
+        {
+          "Jalur": "/api/users",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63421,
+          "Ms": 21,
+          "DurasiPeladen": 1.5
+        }
+      ]
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "Putaran": 5,
+      "MsSiap": 92.8,
+      "MsData": 53,
+      "Penanda": true,
+      "Heap": 15605260,
+      "Layout": 10,
+      "RecalcStyle": 15,
+      "LayoutMs": 10.4,
+      "RecalcMs": 20.7,
+      "ScriptMs": 15.1,
+      "TaskMs": 97.6,
+      "Reqs": [
+        {
+          "Jalur": "/api/backup",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63574,
+          "Ms": 33,
+          "DurasiPeladen": 5.6
+        },
+        {
+          "Jalur": "/api/system/storage",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63575,
+          "Ms": 32,
+          "DurasiPeladen": 8.4
+        },
+        {
+          "Jalur": "/api/settings",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63576,
+          "Ms": 31,
+          "DurasiPeladen": 1.1
+        }
+      ]
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "Putaran": 5,
+      "MsSiap": 80.5,
+      "MsData": 40,
+      "Penanda": true,
+      "Heap": 16657192,
+      "Layout": 10,
+      "RecalcStyle": 14,
+      "LayoutMs": 7.2,
+      "RecalcMs": 16.4,
+      "ScriptMs": 12.5,
+      "TaskMs": 73.3,
+      "Reqs": [
+        {
+          "Jalur": "/api/devices",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63728,
+          "Ms": 19,
+          "DurasiPeladen": 2.1
+        },
+        {
+          "Jalur": "/api/devices/print-jobs?limit=50",
+          "Metode": "GET",
+          "Status": 200,
+          "Mulai": 63729,
+          "Ms": 18,
+          "DurasiPeladen": 1.3
+        }
+      ]
+    }
+  ],
+  "Soak": {
+    "Jumlah": 100,
+    "P50": 56.4,
+    "P95": 130.9,
+    "Maks": 869.4,
+    "HeapAwal": 16661592,
+    "HeapAkhir": 38180684,
+    "PermintaanUbah": 0,
+    "PermintaanGagal": 0,
+    "Waktu": [
+      326.6,
+      93.6,
+      410.7,
+      68.4,
+      58.5,
+      59.3,
+      336.3,
+      354.2,
+      62.3,
+      72.1,
+      101.6,
+      440.6,
+      429.4,
+      83,
+      323.8,
+      116.1,
+      448.9,
+      517.7,
+      276.9,
+      359.8,
+      216.4,
+      59.8,
+      73.3,
+      438.7,
+      246.3,
+      795.1,
+      233,
+      436,
+      401.8,
+      360.2,
+      126.1,
+      664.3,
+      66.2,
+      69.5,
+      237.1,
+      525,
+      72.1,
+      614.1,
+      95.1,
+      78.8,
+      52.1,
+      90.1,
+      459.1,
+      100.7,
+      505.8,
+      71.2,
+      70.8,
+      56.7,
+      54.9,
+      56.4,
+      241.8,
+      55.9,
+      406.4,
+      60.1,
+      390.2,
+      323,
+      613.4,
+      293.5,
+      150.6,
+      696.1,
+      106.8,
+      461.8,
+      117,
+      56.4,
+      315.4,
+      175.8,
+      264.9,
+      128.4,
+      69.7,
+      251.2,
+      138.4,
+      126.1,
+      72.7,
+      258.5,
+      771.9,
+      275.2,
+      125.4,
+      345.7,
+      242.4,
+      87.5,
+      389.5,
+      92,
+      174.7,
+      869.4,
+      91,
+      487.7,
+      98.9,
+      701.2,
+      132.1,
+      643.2,
+      117.2,
+      56.8,
+      864.6,
+      533.3,
+      130.9,
+      413.7,
+      63.4,
+      638.9,
+      152.4,
+      64.2
+    ]
+  },
+  "GalatKonsol": [],
+  "GagalJaringan": [],
+  "Ringkasan": [
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "N": 5,
+      "P50": 787.3,
+      "P95": 1153.4,
+      "Maks": 1153.4,
+      "DataP50": 522,
+      "SkripP50": 381.5,
+      "TataP50": 245.1,
+      "Permintaan": 4,
+      "PeladenP50": 3.9,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "N": 5,
+      "P50": 577.9,
+      "P95": 1111,
+      "Maks": 1111,
+      "DataP50": 425,
+      "SkripP50": 243.7,
+      "TataP50": 245.1,
+      "Permintaan": 6,
+      "PeladenP50": 2.4,
+      "PeladenJumlah": 18,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "N": 5,
+      "P50": 439.3,
+      "P95": 1068.8,
+      "Maks": 1068.8,
+      "DataP50": 311,
+      "SkripP50": 132.2,
+      "TataP50": 178,
+      "Permintaan": 5,
+      "PeladenP50": 1.8,
+      "PeladenJumlah": 20,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "N": 5,
+      "P50": 547,
+      "P95": 990.4,
+      "Maks": 990.4,
+      "DataP50": 486,
+      "SkripP50": 101.9,
+      "TataP50": 298.1,
+      "Permintaan": 7,
+      "PeladenP50": 16.6,
+      "PeladenJumlah": 31,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "N": 5,
+      "P50": 430.1,
+      "P95": 768.3,
+      "Maks": 768.3,
+      "DataP50": 332,
+      "SkripP50": 159.1,
+      "TataP50": 135.2,
+      "Permintaan": 7,
+      "PeladenP50": 3,
+      "PeladenJumlah": 28,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "N": 5,
+      "P50": 406.6,
+      "P95": 767.4,
+      "Maks": 767.4,
+      "DataP50": 300,
+      "SkripP50": 93.3,
+      "TataP50": 175.6,
+      "Permintaan": 3,
+      "PeladenP50": 4,
+      "PeladenJumlah": 11,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "N": 5,
+      "P50": 283.6,
+      "P95": 660.3,
+      "Maks": 660.3,
+      "DataP50": 194,
+      "SkripP50": 103.9,
+      "TataP50": 123.4,
+      "Permintaan": 4,
+      "PeladenP50": 8.3,
+      "PeladenJumlah": 16,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "N": 5,
+      "P50": 593.9,
+      "P95": 653.7,
+      "Maks": 653.7,
+      "DataP50": 249,
+      "SkripP50": 444.1,
+      "TataP50": 14.4,
+      "Permintaan": 4,
+      "PeladenP50": 5.5,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "N": 5,
+      "P50": 217.7,
+      "P95": 538.7,
+      "Maks": 538.7,
+      "DataP50": 141,
+      "SkripP50": 47.4,
+      "TataP50": 65,
+      "Permintaan": 6,
+      "PeladenP50": 2.9,
+      "PeladenJumlah": 24,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "N": 5,
+      "P50": 273.5,
+      "P95": 449.8,
+      "Maks": 449.8,
+      "DataP50": 188,
+      "SkripP50": 71.6,
+      "TataP50": 64.2,
+      "Permintaan": 1,
+      "PeladenP50": 162.2,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "N": 5,
+      "P50": 354,
+      "P95": 449.3,
+      "Maks": 449.3,
+      "DataP50": 270,
+      "SkripP50": 96.4,
+      "TataP50": 169.7,
+      "Permintaan": 4,
+      "PeladenP50": 9.2,
+      "PeladenJumlah": 16,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "N": 5,
+      "P50": 241.2,
+      "P95": 371.2,
+      "Maks": 371.2,
+      "DataP50": 172,
+      "SkripP50": 67.8,
+      "TataP50": 92.1,
+      "Permintaan": 2,
+      "PeladenP50": 3.8,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "N": 5,
+      "P50": 188.6,
+      "P95": 284,
+      "Maks": 284,
+      "DataP50": 121,
+      "SkripP50": 73.9,
+      "TataP50": 21,
+      "Permintaan": 2,
+      "PeladenP50": 3.5,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "N": 5,
+      "P50": 161.6,
+      "P95": 261,
+      "Maks": 261,
+      "DataP50": 121,
+      "SkripP50": 57.4,
+      "TataP50": 22.6,
+      "Permintaan": 3,
+      "PeladenP50": 4.7,
+      "PeladenJumlah": 9,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "N": 5,
+      "P50": 150.3,
+      "P95": 242.3,
+      "Maks": 242.3,
+      "DataP50": 92,
+      "SkripP50": 65.4,
+      "TataP50": 21.1,
+      "Permintaan": 3,
+      "PeladenP50": 4.4,
+      "PeladenJumlah": 9,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "N": 5,
+      "P50": 106.8,
+      "P95": 212.7,
+      "Maks": 212.7,
+      "DataP50": 67,
+      "SkripP50": 14.1,
+      "TataP50": 42.4,
+      "Permintaan": 1,
+      "PeladenP50": 31.3,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "N": 5,
+      "P50": 169.8,
+      "P95": 210.4,
+      "Maks": 210.4,
+      "DataP50": 118,
+      "SkripP50": 59.3,
+      "TataP50": 19.2,
+      "Permintaan": 3,
+      "PeladenP50": 3.7,
+      "PeladenJumlah": 9,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "N": 5,
+      "P50": 152.5,
+      "P95": 193.9,
+      "Maks": 193.9,
+      "DataP50": 107,
+      "SkripP50": 34.4,
+      "TataP50": 63.3,
+      "Permintaan": 1,
+      "PeladenP50": 6.5,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "N": 5,
+      "P50": 103.3,
+      "P95": 179.1,
+      "Maks": 179.1,
+      "DataP50": 63,
+      "SkripP50": 23.6,
+      "TataP50": 29.5,
+      "Permintaan": 4,
+      "PeladenP50": 9.4,
+      "PeladenJumlah": 16,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "N": 5,
+      "P50": 108.4,
+      "P95": 146.9,
+      "Maks": 146.9,
+      "DataP50": 56,
+      "SkripP50": 16.3,
+      "TataP50": 26.6,
+      "Permintaan": 1,
+      "PeladenP50": 25.8,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "N": 5,
+      "P50": 130,
+      "P95": 145.5,
+      "Maks": 145.5,
+      "DataP50": 64,
+      "SkripP50": 20.6,
+      "TataP50": 21.7,
+      "Permintaan": 2,
+      "PeladenP50": 5.7,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "N": 5,
+      "P50": 110.3,
+      "P95": 145,
+      "Maks": 145,
+      "DataP50": 53,
+      "SkripP50": 23.1,
+      "TataP50": 18.8,
+      "Permintaan": 2,
+      "PeladenP50": 4.2,
+      "PeladenJumlah": 8,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "N": 5,
+      "P50": 105.8,
+      "P95": 134,
+      "Maks": 134,
+      "DataP50": 67,
+      "SkripP50": 9.9,
+      "TataP50": 29.8,
+      "Permintaan": 1,
+      "PeladenP50": 13.9,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "N": 5,
+      "P50": 93.3,
+      "P95": 128.7,
+      "Maks": 128.7,
+      "DataP50": 52,
+      "SkripP50": 13.2,
+      "TataP50": 28.2,
+      "Permintaan": 2,
+      "PeladenP50": 2,
+      "PeladenJumlah": 8,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "N": 5,
+      "P50": 85,
+      "P95": 122.4,
+      "Maks": 122.4,
+      "DataP50": 36,
+      "SkripP50": 14.7,
+      "TataP50": 18.4,
+      "Permintaan": 2,
+      "PeladenP50": 1.2,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "N": 5,
+      "P50": 96.2,
+      "P95": 122.2,
+      "Maks": 122.2,
+      "DataP50": 53,
+      "SkripP50": 18.5,
+      "TataP50": 33.3,
+      "Permintaan": 3,
+      "PeladenP50": 8.4,
+      "PeladenJumlah": 14,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "N": 5,
+      "P50": 70.9,
+      "P95": 112.2,
+      "Maks": 112.2,
+      "DataP50": 35,
+      "SkripP50": 8.4,
+      "TataP50": 20.9,
+      "Permintaan": 2,
+      "PeladenP50": 2.5,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "N": 5,
+      "P50": 59.1,
+      "P95": 101.2,
+      "Maks": 101.2,
+      "DataP50": 21,
+      "SkripP50": 9,
+      "TataP50": 26.8,
+      "Permintaan": 1,
+      "PeladenP50": 6.8,
+      "PeladenJumlah": 5,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "N": 5,
+      "P50": 73.3,
+      "P95": 90.8,
+      "Maks": 90.8,
+      "DataP50": 37,
+      "SkripP50": 9.7,
+      "TataP50": 32.4,
+      "Permintaan": 1,
+      "PeladenP50": 1.5,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "N": 5,
+      "P50": 66.2,
+      "P95": 80.5,
+      "Maks": 80.5,
+      "DataP50": 35,
+      "SkripP50": 8.6,
+      "TataP50": 18.1,
+      "Permintaan": 2,
+      "PeladenP50": 2.7,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "N": 5,
+      "P50": 72.3,
+      "P95": 74.8,
+      "Maks": 74.8,
+      "DataP50": 37,
+      "SkripP50": 7.3,
+      "TataP50": 19.4,
+      "Permintaan": 2,
+      "PeladenP50": 1.6,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    }
+  ],
+  "RingkasanDingin": [
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "N": 1,
+      "P50": 581.6,
+      "P95": 581.6,
+      "Maks": 581.6,
+      "DataP50": 419,
+      "SkripP50": 217.2,
+      "TataP50": 214.9,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "N": 1,
+      "P50": 547,
+      "P95": 547,
+      "Maks": 547,
+      "DataP50": 486,
+      "SkripP50": 101.9,
+      "TataP50": 298.1,
+      "Permintaan": 7,
+      "PeladenP50": 9,
+      "PeladenJumlah": 7,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "N": 1,
+      "P50": 542.3,
+      "P95": 542.3,
+      "Maks": 542.3,
+      "DataP50": 412,
+      "SkripP50": 153.6,
+      "TataP50": 321,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "N": 1,
+      "P50": 439.3,
+      "P95": 439.3,
+      "Maks": 439.3,
+      "DataP50": 311,
+      "SkripP50": 132.2,
+      "TataP50": 178,
+      "Permintaan": 5,
+      "PeladenP50": 1.8,
+      "PeladenJumlah": 5,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "N": 1,
+      "P50": 430.1,
+      "P95": 430.1,
+      "Maks": 430.1,
+      "DataP50": 338,
+      "SkripP50": 178.3,
+      "TataP50": 127.1,
+      "Permintaan": 7,
+      "PeladenP50": 2.1,
+      "PeladenJumlah": 7,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "N": 1,
+      "P50": 344.8,
+      "P95": 344.8,
+      "Maks": 344.8,
+      "DataP50": 267,
+      "SkripP50": 96,
+      "TataP50": 153.5,
+      "Permintaan": 4,
+      "PeladenP50": 5.6,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "N": 1,
+      "P50": 324.3,
+      "P95": 324.3,
+      "Maks": 324.3,
+      "DataP50": 15,
+      "SkripP50": 226.2,
+      "TataP50": 14.8,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "N": 1,
+      "P50": 265,
+      "P95": 265,
+      "Maks": 265,
+      "DataP50": 172,
+      "SkripP50": 67.8,
+      "TataP50": 141.5,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "N": 1,
+      "P50": 246.3,
+      "P95": 246.3,
+      "Maks": 246.3,
+      "DataP50": 165,
+      "SkripP50": 95.7,
+      "TataP50": 83,
+      "Permintaan": 4,
+      "PeladenP50": 6,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "N": 1,
+      "P50": 245.5,
+      "P95": 245.5,
+      "Maks": 245.5,
+      "DataP50": 182,
+      "SkripP50": 43.7,
+      "TataP50": 152.3,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "N": 1,
+      "P50": 217.7,
+      "P95": 217.7,
+      "Maks": 217.7,
+      "DataP50": 141,
+      "SkripP50": 47.4,
+      "TataP50": 62.2,
+      "Permintaan": 6,
+      "PeladenP50": 1.9,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "N": 1,
+      "P50": 149.8,
+      "P95": 149.8,
+      "Maks": 149.8,
+      "DataP50": 88,
+      "SkripP50": 28.4,
+      "TataP50": 75,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "N": 1,
+      "P50": 145.3,
+      "P95": 145.3,
+      "Maks": 145.3,
+      "DataP50": 30,
+      "SkripP50": 44.9,
+      "TataP50": 21.1,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "N": 1,
+      "P50": 128.7,
+      "P95": 128.7,
+      "Maks": 128.7,
+      "DataP50": 74,
+      "SkripP50": 20.8,
+      "TataP50": 44,
+      "Permintaan": 2,
+      "PeladenP50": 1.4,
+      "PeladenJumlah": 2,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "N": 1,
+      "P50": 121.9,
+      "P95": 121.9,
+      "Maks": 121.9,
+      "DataP50": 22,
+      "SkripP50": 37.5,
+      "TataP50": 22.6,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "N": 1,
+      "P50": 114.8,
+      "P95": 114.8,
+      "Maks": 114.8,
+      "DataP50": 24,
+      "SkripP50": 39.8,
+      "TataP50": 19.2,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "N": 1,
+      "P50": 109.2,
+      "P95": 109.2,
+      "Maks": 109.2,
+      "DataP50": 62,
+      "SkripP50": 18.6,
+      "TataP50": 63.3,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "N": 1,
+      "P50": 108.6,
+      "P95": 108.6,
+      "Maks": 108.6,
+      "DataP50": 31,
+      "SkripP50": 47.7,
+      "TataP50": 13.7,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "N": 1,
+      "P50": 108.4,
+      "P95": 108.4,
+      "Maks": 108.4,
+      "DataP50": 56,
+      "SkripP50": 16.3,
+      "TataP50": 26.6,
+      "Permintaan": 1,
+      "PeladenP50": 25.8,
+      "PeladenJumlah": 1,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "N": 1,
+      "P50": 108.1,
+      "P95": 108.1,
+      "Maks": 108.1,
+      "DataP50": 55,
+      "SkripP50": 8.9,
+      "TataP50": 21,
+      "Permintaan": 1,
+      "PeladenP50": 33.5,
+      "PeladenJumlah": 1,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "N": 1,
+      "P50": 103.3,
+      "P95": 103.3,
+      "Maks": 103.3,
+      "DataP50": 63,
+      "SkripP50": 23.7,
+      "TataP50": 22.7,
+      "Permintaan": 4,
+      "PeladenP50": 6,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "N": 1,
+      "P50": 96.2,
+      "P95": 96.2,
+      "Maks": 96.2,
+      "DataP50": 53,
+      "SkripP50": 18.5,
+      "TataP50": 33.3,
+      "Permintaan": 3,
+      "PeladenP50": 8.6,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "N": 1,
+      "P50": 87.4,
+      "P95": 87.4,
+      "Maks": 87.4,
+      "DataP50": 41,
+      "SkripP50": 22.5,
+      "TataP50": 16.9,
+      "Permintaan": 2,
+      "PeladenP50": 0.9,
+      "PeladenJumlah": 2,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "N": 1,
+      "P50": 67.3,
+      "P95": 67.3,
+      "Maks": 67.3,
+      "DataP50": 34,
+      "SkripP50": 9.7,
+      "TataP50": 36.9,
+      "Permintaan": 1,
+      "PeladenP50": 1.2,
+      "PeladenJumlah": 1,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "N": 1,
+      "P50": 60.9,
+      "P95": 60.9,
+      "Maks": 60.9,
+      "DataP50": 17,
+      "SkripP50": 13.9,
+      "TataP50": 14.6,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "N": 1,
+      "P50": 58.5,
+      "P95": 58.5,
+      "Maks": 58.5,
+      "DataP50": 21,
+      "SkripP50": 5.8,
+      "TataP50": 21.9,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "N": 1,
+      "P50": 57.7,
+      "P95": 57.7,
+      "Maks": 57.7,
+      "DataP50": 16,
+      "SkripP50": 13.8,
+      "TataP50": 11.8,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "N": 1,
+      "P50": 56.4,
+      "P95": 56.4,
+      "Maks": 56.4,
+      "DataP50": 23,
+      "SkripP50": 8,
+      "TataP50": 23,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "N": 1,
+      "P50": 55.2,
+      "P95": 55.2,
+      "Maks": 55.2,
+      "DataP50": 21,
+      "SkripP50": 4.5,
+      "TataP50": 18.1,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "N": 1,
+      "P50": 54.3,
+      "P95": 54.3,
+      "Maks": 54.3,
+      "DataP50": 18,
+      "SkripP50": 9,
+      "TataP50": 23.7,
+      "Permintaan": 1,
+      "PeladenP50": 5.2,
+      "PeladenJumlah": 1,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "N": 1,
+      "P50": 53.4,
+      "P95": 53.4,
+      "Maks": 53.4,
+      "DataP50": 20,
+      "SkripP50": 3,
+      "TataP50": 15.3,
+      "Permintaan": 0,
+      "PeladenP50": null,
+      "PeladenJumlah": 0,
+      "PenandaCocok": true
+    }
+  ],
+  "RingkasanUlang": [
+    {
+      "Menu": "purchases",
+      "Label": "Pembelian \u0026 Penerimaan Barang",
+      "N": 4,
+      "P50": 787.3,
+      "P95": 1153.4,
+      "Maks": 1153.4,
+      "DataP50": 522,
+      "SkripP50": 381.5,
+      "TataP50": 245.1,
+      "Permintaan": 4,
+      "PeladenP50": 3.9,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "inventory_locations",
+      "Label": "Gudang \u0026 Lokasi Rak",
+      "N": 4,
+      "P50": 577.9,
+      "P95": 1111,
+      "Maks": 1111,
+      "DataP50": 425,
+      "SkripP50": 243.7,
+      "TataP50": 232.9,
+      "Permintaan": 6,
+      "PeladenP50": 2.4,
+      "PeladenJumlah": 18,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "stock_opname",
+      "Label": "Pemeriksaan Fisik (Stok Opname)",
+      "N": 4,
+      "P50": 384.4,
+      "P95": 1068.8,
+      "Maks": 1068.8,
+      "DataP50": 295,
+      "SkripP50": 76.5,
+      "TataP50": 177.2,
+      "Permintaan": 5,
+      "PeladenP50": 2.5,
+      "PeladenJumlah": 15,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "general_ledger",
+      "Label": "Buku Besar \u0026 Jurnal Umum",
+      "N": 4,
+      "P50": 387.3,
+      "P95": 990.4,
+      "Maks": 990.4,
+      "DataP50": 339,
+      "SkripP50": 101.5,
+      "TataP50": 233.3,
+      "Permintaan": 7,
+      "PeladenP50": 19.5,
+      "PeladenJumlah": 24,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "stock_catalog",
+      "Label": "Katalog Bahan \u0026 Produk Jadi",
+      "N": 4,
+      "P50": 421.7,
+      "P95": 768.3,
+      "Maks": 768.3,
+      "DataP50": 314,
+      "SkripP50": 151.7,
+      "TataP50": 135.2,
+      "Permintaan": 7,
+      "PeladenP50": 3.1,
+      "PeladenJumlah": 21,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "pos",
+      "Label": "Kasir Penjualan Cepat",
+      "N": 4,
+      "P50": 406.6,
+      "P95": 767.4,
+      "Maks": 767.4,
+      "DataP50": 300,
+      "SkripP50": 93.3,
+      "TataP50": 175.6,
+      "Permintaan": 4,
+      "PeladenP50": 4,
+      "PeladenJumlah": 11,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "cash_bank",
+      "Label": "Kas Toko \u0026 Rekening Bank",
+      "N": 4,
+      "P50": 283.6,
+      "P95": 660.3,
+      "Maks": 660.3,
+      "DataP50": 194,
+      "SkripP50": 103.9,
+      "TataP50": 123.4,
+      "Permintaan": 4,
+      "PeladenP50": 9.3,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "suppliers",
+      "Label": "Pemasok \u0026 Rekanan",
+      "N": 4,
+      "P50": 593.9,
+      "P95": 653.7,
+      "Maks": 653.7,
+      "DataP50": 249,
+      "SkripP50": 444.1,
+      "TataP50": 12.1,
+      "Permintaan": 4,
+      "PeladenP50": 5.5,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "kitchen_transfer",
+      "Label": "Mutasi Gudang ke Dapur",
+      "N": 4,
+      "P50": 203.7,
+      "P95": 538.7,
+      "Maks": 538.7,
+      "DataP50": 131,
+      "SkripP50": 45.9,
+      "TataP50": 65,
+      "Permintaan": 6,
+      "PeladenP50": 3.1,
+      "PeladenJumlah": 18,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "notifications",
+      "Label": "Pemberitahuan \u0026 Catatan Aktivitas",
+      "N": 4,
+      "P50": 273.5,
+      "P95": 449.8,
+      "Maks": 449.8,
+      "DataP50": 188,
+      "SkripP50": 71.6,
+      "TataP50": 51.9,
+      "Permintaan": 1,
+      "PeladenP50": 162.2,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "payables_receivables",
+      "Label": "Utang \u0026 Piutang Usaha",
+      "N": 4,
+      "P50": 354,
+      "P95": 449.3,
+      "Maks": 449.3,
+      "DataP50": 270,
+      "SkripP50": 96.4,
+      "TataP50": 169.7,
+      "Permintaan": 4,
+      "PeladenP50": 9.3,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "recipes_bom",
+      "Label": "Resep \u0026 Daftar Bahan Baku",
+      "N": 4,
+      "P50": 221.5,
+      "P95": 371.2,
+      "Maks": 371.2,
+      "DataP50": 146,
+      "SkripP50": 57.1,
+      "TataP50": 81,
+      "Permintaan": 2,
+      "PeladenP50": 3.8,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "customers",
+      "Label": "Data Pelanggan \u0026 Klien",
+      "N": 4,
+      "P50": 188.6,
+      "P95": 284,
+      "Maks": 284,
+      "DataP50": 121,
+      "SkripP50": 73.9,
+      "TataP50": 21,
+      "Permintaan": 2,
+      "PeladenP50": 3.5,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "orders",
+      "Label": "Daftar Pesanan \u0026 Penjualan",
+      "N": 4,
+      "P50": 161.6,
+      "P95": 261,
+      "Maks": 261,
+      "DataP50": 121,
+      "SkripP50": 57.4,
+      "TataP50": 16.5,
+      "Permintaan": 3,
+      "PeladenP50": 4.7,
+      "PeladenJumlah": 9,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "preorders",
+      "Label": "Pesanan Terjadwal (Pre-Order)",
+      "N": 4,
+      "P50": 150.3,
+      "P95": 242.3,
+      "Maks": 242.3,
+      "DataP50": 92,
+      "SkripP50": 65.4,
+      "TataP50": 17,
+      "Permintaan": 3,
+      "PeladenP50": 4.4,
+      "PeladenJumlah": 9,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "tasks",
+      "Label": "Kotak Tugas \u0026 Persetujuan",
+      "N": 4,
+      "P50": 106.8,
+      "P95": 212.7,
+      "Maks": 212.7,
+      "DataP50": 67,
+      "SkripP50": 14.1,
+      "TataP50": 42.4,
+      "Permintaan": 1,
+      "PeladenP50": 31.3,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "receivables",
+      "Label": "Piutang \u0026 Pembayaran",
+      "N": 4,
+      "P50": 169.8,
+      "P95": 210.4,
+      "Maks": 210.4,
+      "DataP50": 118,
+      "SkripP50": 59.3,
+      "TataP50": 19.1,
+      "Permintaan": 3,
+      "PeladenP50": 3.7,
+      "PeladenJumlah": 9,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "cost_calc",
+      "Label": "Harga Pokok Produksi (HPP)",
+      "N": 4,
+      "P50": 152.5,
+      "P95": 193.9,
+      "Maks": 193.9,
+      "DataP50": 107,
+      "SkripP50": 34.4,
+      "TataP50": 60.1,
+      "Permintaan": 1,
+      "PeladenP50": 6.5,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "financial_reports",
+      "Label": "Laporan Keuangan \u0026 Laba Rugi",
+      "N": 4,
+      "P50": 98.4,
+      "P95": 179.1,
+      "Maks": 179.1,
+      "DataP50": 56,
+      "SkripP50": 20.9,
+      "TataP50": 29.5,
+      "Permintaan": 4,
+      "PeladenP50": 9.4,
+      "PeladenJumlah": 12,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "executive_analytics",
+      "Label": "Analisis \u0026 Tren Penjualan",
+      "N": 4,
+      "P50": 105.9,
+      "P95": 146.9,
+      "Maks": 146.9,
+      "DataP50": 56,
+      "SkripP50": 11.6,
+      "TataP50": 22,
+      "Permintaan": 1,
+      "PeladenP50": 32.5,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "sales_returns",
+      "Label": "Retur Penjualan",
+      "N": 4,
+      "P50": 130,
+      "P95": 145.5,
+      "Maks": 145.5,
+      "DataP50": 64,
+      "SkripP50": 20.6,
+      "TataP50": 21.7,
+      "Permintaan": 2,
+      "PeladenP50": 5.7,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "batch_expiry",
+      "Label": "Nomor Batch \u0026 Kedaluwarsa",
+      "N": 4,
+      "P50": 110.3,
+      "P95": 145,
+      "Maks": 145,
+      "DataP50": 53,
+      "SkripP50": 23.1,
+      "TataP50": 18.8,
+      "Permintaan": 2,
+      "PeladenP50": 4.6,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "dashboard",
+      "Label": "Dasbor \u0026 Indikator Utama",
+      "N": 4,
+      "P50": 99.9,
+      "P95": 134,
+      "Maks": 134,
+      "DataP50": 67,
+      "SkripP50": 9.9,
+      "TataP50": 29.8,
+      "Permintaan": 1,
+      "PeladenP50": 13.9,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "quality_control",
+      "Label": "Pemeriksaan Mutu (QC)",
+      "N": 4,
+      "P50": 85,
+      "P95": 122.4,
+      "Maks": 122.4,
+      "DataP50": 36,
+      "SkripP50": 14.7,
+      "TataP50": 18.4,
+      "Permintaan": 2,
+      "PeladenP50": 1.2,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "settings",
+      "Label": "Pengaturan Toko \u0026 Cabang",
+      "N": 4,
+      "P50": 92.8,
+      "P95": 122.2,
+      "Maks": 122.2,
+      "DataP50": 51,
+      "SkripP50": 17.4,
+      "TataP50": 31.3,
+      "Permintaan": 3,
+      "PeladenP50": 8.4,
+      "PeladenJumlah": 11,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "device_settings",
+      "Label": "Perangkat Kasir",
+      "N": 4,
+      "P50": 80.5,
+      "P95": 114.4,
+      "Maks": 114.4,
+      "DataP50": 40,
+      "SkripP50": 12.5,
+      "TataP50": 23.6,
+      "Permintaan": 2,
+      "PeladenP50": 2.1,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_orders",
+      "Label": "Perintah Kerja (SPK)",
+      "N": 4,
+      "P50": 70.9,
+      "P95": 112.2,
+      "Maks": 112.2,
+      "DataP50": 35,
+      "SkripP50": 8.4,
+      "TataP50": 20.9,
+      "Permintaan": 2,
+      "PeladenP50": 2.5,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "audit_log",
+      "Label": "Jejak Audit \u0026 Riwayat Sistem",
+      "N": 4,
+      "P50": 59.1,
+      "P95": 101.2,
+      "Maks": 101.2,
+      "DataP50": 21,
+      "SkripP50": 8.8,
+      "TataP50": 26.8,
+      "Permintaan": 1,
+      "PeladenP50": 6.8,
+      "PeladenJumlah": 4,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "user_management",
+      "Label": "Hak Akses \u0026 Pegawai",
+      "N": 4,
+      "P50": 73.3,
+      "P95": 90.8,
+      "Maks": 90.8,
+      "DataP50": 37,
+      "SkripP50": 8.5,
+      "TataP50": 25.8,
+      "Permintaan": 1,
+      "PeladenP50": 3,
+      "PeladenJumlah": 3,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_plan",
+      "Label": "Perencanaan Jadwal Dapur",
+      "N": 4,
+      "P50": 66.2,
+      "P95": 80.5,
+      "Maks": 80.5,
+      "DataP50": 35,
+      "SkripP50": 8.6,
+      "TataP50": 18,
+      "Permintaan": 2,
+      "PeladenP50": 2.7,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    },
+    {
+      "Menu": "production_actual",
+      "Label": "Pemakaian Aktual \u0026 Hasil",
+      "N": 4,
+      "P50": 72.3,
+      "P95": 74.8,
+      "Maks": 74.8,
+      "DataP50": 37,
+      "SkripP50": 7.3,
+      "TataP50": 18.7,
+      "Permintaan": 2,
+      "PeladenP50": 1.6,
+      "PeladenJumlah": 6,
+      "PenandaCocok": true
+    }
+  ]
+}

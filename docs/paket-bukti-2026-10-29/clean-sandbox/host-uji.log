@@ -1,0 +1,57 @@
+[15:45:02 INF] Jwt:Secret dibuat otomatis untuk instalasi ini dan disimpan di C:\data\uji.key
+[15:45:03 INF] Migrasi 1 diterapkan.
+[Migration] Applied version 1
+[15:45:03 INF] Migrasi 2 diterapkan.
+[Migration] Applied version 2
+[15:45:03 INF] Migrasi 3 diterapkan.
+[Migration] Applied version 3
+[15:45:03 INF] Migrasi 4 diterapkan.
+[Migration] Applied version 4
+[15:45:03 INF] Migrasi 5 diterapkan.
+[Migration] Applied version 5
+[15:45:03 INF] Migrasi 6 diterapkan.
+[Migration] Applied version 6
+[15:45:03 INF] Migrasi 7 diterapkan.
+[Migration] Applied version 7
+[15:45:03 INF] Migrasi 8 diterapkan.
+[Migration] Applied version 8
+[15:45:03 INF] Migrasi 9 diterapkan.
+[Migration] Applied version 9
+[15:45:03 INF] Migrasi 10 diterapkan.
+[Migration] Applied version 10
+[15:45:03 INF] Migrasi 11 diterapkan.
+[Migration] Applied version 11
+[15:45:03 INF] Migrasi 12 diterapkan.
+[Migration] Applied version 12
+[15:45:03 INF] Migrasi 13 diterapkan.
+[Migration] Applied version 13
+[15:45:03 INF] Migrasi 14 diterapkan.
+[Migration] Applied version 14
+[15:45:03 INF] Migrasi 15 diterapkan.
+[Migration] Applied version 15
+[15:45:03 INF] Migrasi 16 diterapkan.
+[Migration] Applied version 16
+[15:45:03 INF] Migrasi 17 diterapkan.
+[Migration] Applied version 17
+[15:45:03 INF] Seruni 22 Bakery service starting on 
+[15:45:04 INF] User profile is available. Using 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[15:45:04 INF] Creating key {578ec5a7-a265-4c3b-b39c-f8743a6639c7} with creation date 2026-10-29 08:45:04Z, activation date 2026-10-29 08:45:04Z, and expiration date 2027-01-27 08:45:04Z.
+[15:45:04 INF] Writing data to file 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys\key-578ec5a7-a265-4c3b-b39c-f8743a6639c7.xml'.
+[15:45:05 INF] Now listening on: http://127.0.0.1:5292
+[15:45:05 INF] Application started. Press Ctrl+C to shut down.
+[15:45:05 INF] Hosting environment: Production
+[15:45:05 INF] Content root path: C:\Program Files\Seruni 22 Bakery
+[15:45:07 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5292/health - null null
+[15:45:07 INF] Executing endpoint 'HTTP: GET /health'
+[15:45:07 INF] Setting HTTP status code 200.
+[15:45:07 INF] Writing value of type '<>f__AnonymousType11`3' as Json.
+[15:45:07 INF] Executed endpoint 'HTTP: GET /health'
+[15:45:07 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5292/health - 200 null application/json; charset=utf-8 568.9125ms
+[15:45:09 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5292/ - null null
+[15:45:09 INF] Executing endpoint 'Fallback {*path:nonfile}'
+[15:45:09 INF] Sending file. Request path: '/index.html'. Physical path: 'C:\Program Files\Seruni 22 Bakery\wwwroot\index.html'
+[15:45:09 INF] Executed endpoint 'Fallback {*path:nonfile}'
+[15:45:09 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5292/index.html - 200 466 text/html 45.9727ms
+[15:45:09 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5292/assets/index-CKgTNzb_.js - null null
+[15:45:09 INF] Sending file. Request path: '/assets/index-CKgTNzb_.js'. Physical path: 'C:\Program Files\Seruni 22 Bakery\wwwroot\assets\index-CKgTNzb_.js'
+[15:45:09 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5292/assets/index-CKgTNzb_.js - 200 573778 text/javascript 78.0822ms

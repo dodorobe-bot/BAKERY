@@ -1,0 +1,6 @@
+@BakeryDesktop.Host.Service_HostAddress = http://localhost:5084
+
+GET {{BakeryDesktop.Host.Service_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

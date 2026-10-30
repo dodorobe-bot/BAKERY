@@ -1,0 +1,9 @@
+﻿Versi          : 1.2.7
+Installer      : D:\bakery-desktop\dist\installer\Seruni22Bakery_Setup_v1.2.7.exe
+Ukuran         : 42641033 byte
+SHA-256 setup  : adb779c1d6c4ceb1c424ae3700b6f435e6223ae372104827d3ef4b9a943cd36b
+SHA-256 host dll: 4773a367836b117a8106e45a2d345b7d15d61fdf774768183c97cd28f07c8b49
+SHA-256 peluncur : 777f2fcc55d5e5bdcb14c00daf73662d1f41f91dea5b0dc77bdb11ce71d281b0
+SHA-256 index  : f4a2fc04ca04e10fd665704c11b63e1bb57677a8ac3b4570db411dfdb694bd2e
+Tanda tangan   : NotSigned
+Dibuat         : 2026-10-30 17:28:03 +07:00

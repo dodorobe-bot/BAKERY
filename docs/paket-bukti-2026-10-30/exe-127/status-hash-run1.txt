@@ -1,0 +1,9 @@
+﻿
+03:20:19 | pasang senyap EXE | PASS | exit 0
+03:20:20 | seluruh berkas payload identik dengan publish | PASS | 393 berkas diperiksa, 0 beda
+03:20:20 | berkas tambahan dari installer | INFO | 4: app.ico, unins000.dat, unins000.exe, Uninstall Seruni 22 Bakery.lnk
+03:20:20 | hanya tiga berkas tambahan yang wajar | FAIL | 4 berkas tambahan: app.ico, unins000.dat, unins000.exe, Uninstall Seruni 22 Bakery.lnk
+03:20:20 | jumlah berkas terpasang | INFO | 397 berkas = 393 payload + app.ico + 4 berkas Inno
+03:20:21 | copot senyap EXE | PASS | exit 0
+03:20:24 | folder uji hilang | PASS | terhapus
+03:20:24 | ARP kembali satu entri MSI | PASS | tidak ada entri per-pengguna

@@ -1,0 +1,14 @@
+[PASS] inventory_locations ronde 1: tombol 1, baris 50 -> 150, baris pertama tetap, sisa tombol 1
+[PASS] inventory_locations ronde 2: tombol 1, baris 150 -> 250, baris pertama tetap, sisa tombol 1
+[PASS] inventory_locations ronde 3: tombol 1, baris 250 -> 350, baris pertama tetap, sisa tombol 1
+[PASS] stock_catalog ronde 1: tombol 2, baris 100 -> 270, baris pertama tetap, sisa tombol 1
+[PASS] stock_catalog ronde 2: tombol 1, baris 270 -> 370, baris pertama tetap, sisa tombol 1
+[PASS] stock_catalog ronde 3: tombol 1, baris 370 -> 470, baris pertama tetap, sisa tombol 1
+[PASS] stock_opname ronde 1: tombol 1, baris 50 -> 150, baris pertama tetap, sisa tombol 1
+[PASS] stock_opname ronde 2: tombol 1, baris 150 -> 250, baris pertama tetap, sisa tombol 1
+[PASS] stock_opname ronde 3: tombol 1, baris 250 -> 350, baris pertama tetap, sisa tombol 1
+[PASS] payables_receivables ronde 1: tombol 2, baris 100 -> 250, baris pertama tetap, sisa tombol 1
+[PASS] payables_receivables ronde 2: tombol 1, baris 250 -> 350, baris pertama tetap, sisa tombol 1
+[PASS] payables_receivables ronde 3: tombol 1, baris 350 -> 400, baris pertama tetap, sisa tombol 0
+[PASS] orders ronde 1: tombol 1, baris 100 -> 150, baris pertama tetap, sisa tombol 0
+Cek tombol: 5 menu, 15 klik, 0 gagal, 0 galat konsol.

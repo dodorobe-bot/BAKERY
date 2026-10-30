@@ -1,0 +1,42 @@
+[03:18:35 INF] Seruni 22 Bakery service starting on 
+[03:18:35 INF] User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[03:18:35 INF] Now listening on: http://127.0.0.1:5311
+[03:18:35 INF] Application started. Press Ctrl+C to shut down.
+[03:18:35 INF] Hosting environment: Production
+[03:18:35 INF] Content root path: C:\tmp\seruni-exe-127
+[03:18:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5311/health - null null
+[03:18:36 INF] Executing endpoint 'HTTP: GET /health'
+[03:18:36 INF] Setting HTTP status code 200.
+[03:18:36 INF] Writing value of type '<>f__AnonymousType11`3' as Json.
+[03:18:36 INF] Executed endpoint 'HTTP: GET /health'
+[03:18:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5311/health - 200 null application/json; charset=utf-8 129.2794ms
+[03:18:36 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5311/api/auth/login - application/json 60
+[03:18:36 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[03:18:37 INF] Setting HTTP status code 200.
+[03:18:37 INF] Writing value of type 'LoginResponse' as Json.
+[03:18:37 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[03:18:37 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5311/api/auth/login - 200 null application/json; charset=utf-8 443.6254ms
+[03:18:37 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5311/api/auth/change-password - application/json 75
+[03:18:37 INF] Executing endpoint 'HTTP: POST /api/auth/change-password'
+[03:18:38 INF] Setting HTTP status code 200.
+[03:18:38 INF] Executed endpoint 'HTTP: POST /api/auth/change-password'
+[03:18:38 WRN] [Lambat] POST /api/auth/change-password 200 1003 ms (id -)
+[03:18:38 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5311/api/auth/change-password - 200 0 null 1006.1668ms
+[03:18:38 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5311/api/auth/login - application/json 62
+[03:18:38 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[03:18:38 INF] Setting HTTP status code 200.
+[03:18:38 INF] Writing value of type 'LoginResponse' as Json.
+[03:18:38 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[03:18:38 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5311/api/auth/login - 200 null application/json; charset=utf-8 248.8148ms
+[03:18:38 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5311/api/system/self-check - null null
+[03:18:38 INF] Executing endpoint 'HTTP: GET /api/system/self-check'
+[03:18:38 INF] Setting HTTP status code 200.
+[03:18:38 INF] Writing value of type '<>f__AnonymousType38`6' as Json.
+[03:18:38 INF] Executed endpoint 'HTTP: GET /api/system/self-check'
+[03:18:38 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5311/api/system/self-check - 200 null application/json; charset=utf-8 10.8259ms
+[03:18:38 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5311/api/brand - null null
+[03:18:38 INF] Executing endpoint 'HTTP: GET /api/brand'
+[03:18:38 INF] Setting HTTP status code 200.
+[03:18:38 INF] Writing value of type '<>f__AnonymousType43`3' as Json.
+[03:18:38 INF] Executed endpoint 'HTTP: GET /api/brand'
+[03:18:38 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5311/api/brand - 200 null application/json; charset=utf-8 4.0874ms

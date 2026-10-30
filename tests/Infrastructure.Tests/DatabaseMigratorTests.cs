@@ -1,0 +1,389 @@
+using FluentAssertions;
+using Microsoft.Data.Sqlite;
+using Seruni22Bakery.Infrastructure.Sqlite.Database;
+
+namespace BakeryDesktop.Infrastructure.Tests;
+
+/// <summary>DB sekali-pakai berisi seluruh migrasi yang sudah diterapkan, dibersihkan setelah dipakai.</summary>
+internal sealed class TempDatabase : IDisposable
+{
+    public string FilePath { get; }
+    public string ConnectionString => $"Data Source={FilePath};";
+
+    public TempDatabase()
+    {
+        FilePath = System.IO.Path.Combine(
+            System.IO.Path.GetTempPath(), $"bakedb-{Guid.NewGuid():N}.db");
+        new DatabaseMigrator(ConnectionString).Migrate();
+    }
+
+    public SqliteConnection Open()
+    {
+        var conn = new SqliteConnection(ConnectionString);
+        conn.Open();
+        using var pragma = conn.CreateCommand();
+        pragma.CommandText = "PRAGMA foreign_keys=ON;";
+        pragma.ExecuteNonQuery();
+        return conn;
+    }
+
+    public void Exec(string sql)
+    {
+        using var conn = Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = sql;
+        cmd.ExecuteNonQuery();
+    }
+
+    public object? Scalar(string sql)
+    {
+        using var conn = Open();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = sql;
+        return cmd.ExecuteScalar();
+    }
+
+    public int Count(string table, string where = "1=1") =>
+        Convert.ToInt32(Scalar($"SELECT COUNT(*) FROM {table} WHERE {where};"));
+
+    public void Dispose()
+    {
+        SqliteConnection.ClearAllPools();
+        foreach (var file in new[] { FilePath, FilePath + "-wal", FilePath + "-shm" })
+        {
+            try { if (File.Exists(file)) File.Delete(file); } catch { /* file sementara */ }
+        }
+    }
+}
+
+public class DatabaseMigratorTests
+{
+    [Fact]
+    public void SplitStatements_SemicolonInsideCommentOrString_KeepsStatementWhole()
+    {
+        const string sql = "-- komentar berisi; titik-koma tidak boleh memecah\n" +
+                           "INSERT INTO T VALUES ('a;b');\nSELECT 1;";
+
+        var statements = DatabaseMigrator.SplitStatements(sql).ToList();
+
+        statements.Should().HaveCount(2);
+        statements[0].Should().Contain("'a;b'");
+    }
+
+    [Fact]
+    public void SplitStatements_MigrationFileFromDisk_HasNoFragmentStartingWithProse()
+    {
+        // Regresi startup: potongan komentar "kolomnya diisi ..." sempat dijalankan sebagai SQL
+        var sql = "-- Ledger dicatat sebelum lokasi mutasi diketahui, kolomnya diisi\n" +
+                  "ALTER TABLE StockMovements ADD COLUMN LocationId INTEGER;";
+
+        DatabaseMigrator.SplitStatements(sql).Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void SplitStatements_TriggerBody_KeepsBeginEndWhole()
+    {
+        const string sql =
+            "CREATE TRIGGER IF NOT EXISTS trg_x BEFORE INSERT ON T\n" +
+            "BEGIN\n" +
+            "    SELECT RAISE(ABORT, 'nominal harus lebih dari nol') WHERE NEW.Amount <= 0;\n" +
+            "END;\n" +
+            "SELECT 1;";
+
+        var statements = DatabaseMigrator.SplitStatements(sql).ToList();
+
+        statements.Should().HaveCount(2);
+        statements[0].Should().Contain("BEGIN").And.Contain("END")
+            .And.NotContain("SELECT 1");
+    }
+
+    [Fact]
+    public void SplitStatements_TriggerBodyWithCommentWordBegin_StaysWhole()
+    {
+        // Kata BEGIN/END di dalam komentar atau pesan RAISE tidak boleh dihitung sebagai penutup blok.
+        const string sql =
+            "-- BEGIN catatan END\n" +
+            "CREATE TRIGGER trg_y BEFORE INSERT ON T\n" +
+            "BEGIN\n" +
+            "    SELECT RAISE(ABORT, 'BEGIN END bukan blok') WHERE NEW.A < 0;\n" +
+            "END;\n";
+
+        DatabaseMigrator.SplitStatements(sql).Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void SplitStatements_TriggerBodyWithCaseEnd_StaysWhole()
+    {
+        // Regresi migrasi 013: END milik CASE pernah dianggap penutup badan trigger,
+        // sehingga CREATE TRIGGER terpotong dan migrasi gagal "incomplete input".
+        const string sql =
+            "CREATE TRIGGER trg_z BEFORE INSERT ON T\n" +
+            "BEGIN\n" +
+            "    SELECT RAISE(ABORT, 'keputusan salah')\n" +
+            "        WHERE NEW.Decision != (CASE WHEN NEW.Failed = 0 THEN 'Passed' ELSE 'Failed' END);\n" +
+            "END;\n" +
+            "SELECT 1;";
+
+        var statements = DatabaseMigrator.SplitStatements(sql).ToList();
+
+        statements.Should().HaveCount(2);
+        statements[0].Should().Contain("CASE").And.Contain("Passed")
+            .And.NotContain("SELECT 1");
+    }
+
+    [Fact]
+    public void Migrate_EmptyDatabase_ReachesVersionTertinggiDenganStokProdukJadiLotDanSesi()
+    {
+        using var db = new TempDatabase();
+
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(17);
+
+        // Migrasi 016: indeks untuk dashboard, analitik, kotak tugas, dan riwayat stok.
+        // Migrasi 017 mengganti dua di antaranya dengan indeks penutup dan menambah indeks
+        // urutan daftar pembelian; nama lama tidak boleh tersisa karena sudah tidak dipakai.
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name IN (
+                'idx_journallines_account_amounts', 'idx_journalentries_status_date',
+                'idx_salesorders_status_pickup',
+                'idx_purchaseorders_status_expected', 'idx_locationstock_ingredient',
+                'idx_stockmovements_created');")).Should().Be(6);
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name IN (
+                'idx_salesorders_created_agg', 'idx_purchaseorders_created',
+                'idx_salespayments_order_amount', 'idx_salesorders_open');")).Should().Be(4);
+        var indeksTerbuka = (string)db.Scalar(
+            "SELECT sql FROM sqlite_master WHERE name='idx_salesorders_open';")!;
+        indeksTerbuka.Should().Contain("WHERE Status NOT IN ('Paid','Cancelled')",
+            "syarat indeks parsial harus sama persis dengan syarat kueri piutang supaya dipakai");
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name IN (
+                'idx_salesorders_created', 'idx_salespayments_salesorder');"))
+            .Should().Be(0, "indeks sempit yang diganti migrasi 017 tidak boleh tetap ada");
+        var indeksBayar = (string)db.Scalar(
+            "SELECT sql FROM sqlite_master WHERE name='idx_salespayments_order_amount';")!;
+        indeksBayar.Should().Contain("Amount", "ringkasan piutang menjumlahkan Amount; tanpa kolom itu indeks tidak menutup");
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_journallines_entryid';"))
+            .Should().Be(1, "indeks baris jurnal per entri dipertahankan: pola baca jurnal bergantung padanya");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE name='sqlite_stat1';"))
+            .Should().Be(1, "ANALYZE wajib jalan supaya perencana query memakai indeks baru");
+
+        // Migrasi 014: antrean cetak dan barcode produk.
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='PrintJobs';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('ProductTemplates') WHERE name='Barcode';"))
+            .Should().Be(1);
+
+        // Migrasi 015: kotak notifikasi internal yang dibaca layar Pemberitahuan.
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Notifications';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='ux_notifications_dedupe';"))
+            .Should().Be(1);
+
+        // Kunci idempotensi harus benar-benar menolak kunci kembar, bukan hanya punya kolom.
+        db.Exec("INSERT INTO IdempotencyKeys (Key, Route) VALUES ('kunci-sama-1', 'POST /api/orders');");
+        var dobel = () => db.Exec("INSERT INTO IdempotencyKeys (Key, Route) VALUES ('kunci-sama-1', 'POST /api/orders');");
+        dobel.Should().Throw<Microsoft.Data.Sqlite.SqliteException>();
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM IdempotencyKeys WHERE CompletedAt IS NULL;")).Should().Be(1);
+
+        // Stok produk jadi dan jumlah pesanan harus benar-benar ada, bukan hanya tercatat di file migrasi.
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('SalesOrders') WHERE name='Quantity';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('FinishedGoodsStock','FinishedGoodsMovements');"))
+            .Should().Be(2);
+
+        // Migrasi 012: nomor lot & kedaluwarsa menempel pada baris penerimaan dan lot bahan.
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('GoodsReceiptLines') WHERE name IN ('BatchNumber','ExpiryDate');"))
+            .Should().Be(2);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('ItemBatches') WHERE name='GoodsReceiptLineId';"))
+            .Should().Be(1);
+
+        // Migrasi 013: versi token untuk mencabut sesi, tempat hasil QC, dan dokumen retur.
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('Users') WHERE name='TokenVersion';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('QualityChecks','SalesReturns');"))
+            .Should().Be(2);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name LIKE 'trg_qualitychecks_%';"))
+            .Should().Be(2);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name='trg_salesreturns_insert';"))
+            .Should().Be(1);
+        var mutasi = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='FinishedGoodsMovements';")!;
+        mutasi.Should().Contain("'Return'");
+    }
+
+    [Fact]
+    public void Migrate_BasisDataVersiLama_SekaliJalanMenutupKekosongan()
+    {
+        // Simulasi basis data dari versi aplikasi sebelumnya: migrasi berikutnya harus bisa
+        // menutup kekurangan tanpa menyentuh baris yang sudah ada.
+        using var db = new TempDatabase();
+        MigrationRollback.Run(db, "017_CoveringIndexesForLargeData.down.sql");
+        MigrationRollback.Run(db, "016_QueryPerformanceIndexes.down.sql");
+        MigrationRollback.Run(db, "015_InternalNotifications.down.sql");
+        MigrationRollback.Run(db, "014_PosDevicesAndBarcode.down.sql");
+        MigrationRollback.Run013Down(db);
+        MigrationRollback.Run012Down(db);
+        MigrationRollback.Run011Down(db);
+        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17);");
+
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(10);
+
+        new DatabaseMigrator(db.ConnectionString).Migrate();
+
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(17);
+        db.Scalar("PRAGMA integrity_check;").Should().Be("ok");
+        db.Scalar("PRAGMA foreign_key_check;").Should().BeNull();
+    }
+
+    [Fact]
+    public void Rollback013Lalu012Lalu011_MenghapusSkemaDanKembaliNaikTanpaSisa()
+    {
+        using var db = new TempDatabase();
+
+        MigrationRollback.Run(db, "017_CoveringIndexesForLargeData.down.sql");
+        MigrationRollback.Run(db, "016_QueryPerformanceIndexes.down.sql");
+        MigrationRollback.Run(db, "015_InternalNotifications.down.sql");
+        MigrationRollback.Run(db, "014_PosDevicesAndBarcode.down.sql");
+        MigrationRollback.Run013Down(db);
+        MigrationRollback.Run012Down(db);
+        MigrationRollback.Run011Down(db);
+
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name IN (
+                'idx_salesorders_status_pickup', 'idx_salesorders_created',
+                'idx_journallines_account_amounts', 'idx_locationstock_ingredient');"))
+            .Should().Be(0, "rollback 016 harus mencabut indeks performa yang ditambahkannya");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name IN ('idx_salespayments_order_amount','idx_salesorders_open');"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_salespayments_salesorder';"))
+            .Should().Be(1, "rollback 017 harus mengembalikan indeks pembayaran yang digantikannya");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('QualityChecks','SalesReturns');"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='PrintJobs';"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Notifications';"))
+            .Should().Be(0, "rollback 015 harus mencabut kotak notifikasi beserta indeksnya");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('ProductTemplates') WHERE name='Barcode';"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('Users') WHERE name='TokenVersion';"))
+            .Should().Be(0);
+        var mutasi = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='FinishedGoodsMovements';")!;
+        mutasi.Should().NotContain("'Return'");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name LIKE 'FinishedGoods%';"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('SalesOrders') WHERE name='Quantity';"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name LIKE 'trg_salesorders_quantity%';"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('GoodsReceiptLines') WHERE name IN ('BatchNumber','ExpiryDate');"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_auditlog_entity';"))
+            .Should().Be(0);
+        db.Scalar("PRAGMA integrity_check;").Should().Be("ok");
+
+        // Naik lagi ke versi terbaru harus bisa: rollback tidak meninggalkan keadaan yang macet.
+        new DatabaseMigrator(db.ConnectionString).Migrate();
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(17);
+    }
+
+    [Fact]
+    public void SalesOrders_JumlahNol_DitolakPemicuBukanHanyaValidasiAplikasi()
+    {
+        using var db = new TempDatabase();
+
+        var insertNol = () => db.Exec(
+            "INSERT INTO SalesOrders (OrderNumber, CustomerNameSnapshot, Description, PickupDate, TotalAmount, Quantity) " +
+            "VALUES ('ORD-TEST-1', 'Uji', 'Uji', '2030-01-01', 10000, 0);");
+        insertNol.Should().Throw<SqliteException>()
+            .WithMessage("*Jumlah pesanan harus lebih dari nol*");
+
+        db.Exec("INSERT INTO SalesOrders (OrderNumber, CustomerNameSnapshot, Description, PickupDate, TotalAmount, Quantity) " +
+                "VALUES ('ORD-TEST-2', 'Uji', 'Uji', '2030-01-01', 10000, 3);");
+        var ubahNol = () => db.Exec("UPDATE SalesOrders SET Quantity = 0 WHERE OrderNumber = 'ORD-TEST-2';");
+        ubahNol.Should().Throw<SqliteException>();
+
+        // Baris lama tanpa jumlah tetap sah dan bernilai satu butir, bukan nol.
+        Convert.ToDouble(db.Scalar("SELECT Quantity FROM SalesOrders WHERE OrderNumber = 'ORD-TEST-2';"))
+            .Should().Be(3);
+    }
+
+    [Fact]
+    public void FinishedGoodsStock_TidakBolehNegatifDanUnikPerLokasiProduk()
+    {
+        using var db = new TempDatabase();
+        db.Exec("INSERT INTO ProductTemplates (Name, Category, SellingPrice, IsActive) " +
+                "VALUES ('Roti Tawar Uji', 'Roti', 12000, 1);");
+        var produk = Convert.ToInt32(db.Scalar("SELECT Id FROM ProductTemplates WHERE Name = 'Roti Tawar Uji';"));
+
+        var negatif = () => db.Exec(
+            $"INSERT INTO FinishedGoodsStock (LocationId, ProductTemplateId, Quantity) VALUES (3, {produk}, -1);");
+        negatif.Should().Throw<SqliteException>();
+
+        db.Exec($"INSERT INTO FinishedGoodsStock (LocationId, ProductTemplateId, Quantity) VALUES (3, {produk}, 10);");
+        var dobelLokasi = () => db.Exec(
+            $"INSERT INTO FinishedGoodsStock (LocationId, ProductTemplateId, Quantity) VALUES (3, {produk}, 5);");
+        dobelLokasi.Should().Throw<SqliteException>();
+    }
+
+
+    [Fact]
+    public void Migrate_BentukBangunanDasar_TerpasangDariKosong()
+    {
+        using var db = new TempDatabase();
+
+        var ddl = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='LocationStock';")!;
+        ddl.Should().Contain("CHECK (Quantity >= 0)");
+        ddl.Should().Contain("UpdatedAt");
+        db.Scalar("SELECT COUNT(*) FROM pragma_table_info('StockMovements') WHERE name='LocationId';")
+            .Should().Be(Convert.ToInt32(1));
+        db.Scalar("PRAGMA integrity_check;").Should().Be("ok");
+
+        // Pemicu integritas v008 harus benar-benar terpasang, bukan hanya ada di file.
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger';"))
+            .Should().BeGreaterThan(10);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND sql LIKE '%SalesPayments%';"))
+            .Should().Be(1);
+
+        // Penghitung nomor dokumen: kunci (jenis, hari) supaya dua hari berbeda tidak salaman.
+        var nomor = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='DocumentSequences';")!;
+        nomor.Should().Contain("PRIMARY KEY (Kind, DayKey)");
+    }
+
+    [Fact]
+    public void Migrate_RerunOnSameDatabase_IsIdempotent()
+    {
+        var filePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"bakedb-{Guid.NewGuid():N}.db");
+        var connString = $"Data Source={filePath};";
+        try
+        {
+            new DatabaseMigrator(connString).Migrate();
+            var act = () => new DatabaseMigrator(connString).Migrate();
+
+            act.Should().NotThrow();
+        }
+        finally
+        {
+            // Pool SQLite menutup koneksinya di latar belakang; menunggu berkas benar-benar
+            // bebas mencegah tes gagal karena pegangan yang belum lepas, bukan karena produk.
+            SqliteConnection.ClearAllPools();
+            DatabaseBackupService.TungguBerkasBebas(filePath);
+            if (File.Exists(filePath)) File.Delete(filePath);
+            foreach (var suffix in new[] { "-wal", "-shm" })
+                if (File.Exists(filePath + suffix)) DatabaseBackupService.HapusSidecar(filePath + suffix);
+        }
+    }
+
+    [Fact]
+    public void LocationStock_CheckConstraint_RejectsNegativeQuantityAtDatabaseLevel()
+    {
+        using var db = new TempDatabase();
+        db.Exec("INSERT INTO Ingredients (Name, Unit, PricePerUnit, CurrentStock, MinStockAlert, IsActive) " +
+                "VALUES ('Gula', 'kg', 15000, 0, 0, 1);");
+        var ingredientId = Convert.ToInt32(db.Scalar("SELECT last_insert_rowid();"));
+
+        var act = () => db.Exec(
+            $"INSERT INTO LocationStock (LocationId, IngredientId, Quantity) VALUES (1, {ingredientId}, -1);");
+
+        act.Should().Throw<SqliteException>();
+    }
+}

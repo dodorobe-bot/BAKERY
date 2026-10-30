@@ -1,0 +1,95 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Seruni22Bakery.Host</RootNamespace>
+    <AssemblyName>Seruni22Bakery.Host</AssemblyName>
+    <!-- Satu sumber versi: FileVersion/AssemblyVersion diturunkan dari $(Version) sehingga
+         -p:Version dari pipeline build tidak tertinggal di metadata berkas. -->
+    <Version>1.2.7</Version>
+    <FileVersion>$(Version).0</FileVersion>
+    <AssemblyVersion>$(Version).0</AssemblyVersion>
+    <Company>Seruni 22</Company>
+    <Product>Seruni 22 Bakery</Product>
+    <Description>Sistem Toko &amp; Pabrik Roti Seruni 22</Description>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- Berkas .pdb tidak diperlukan pemasangan dan ikut membesarkan paket; simpan hanya simbol
+         untuk build Debug saat menelusuri masalah. -->
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Pengurai argumen pemeliharaan diuji langsung supaya bug path yang tertelan tidak kembali. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BakeryDesktop.UI.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Berkas khusus pengembangan tidak ikut dipaketkan: log verbose dan alamat dev tidak
+         diperlukan di mesin kasir, dan paket produksi harus berisi konfigurasi minimum. -->
+    <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <!-- Pencetakan lewat driver Windows memakai PrintDocument; hanya berjalan di Windows,
+         jadi paket ini tidak menambah ketergantungan lintas sistem operasi. -->
+    <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application\BakeryDesktop.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure.Sqlite\BakeryDesktop.Infrastructure.Sqlite.csproj" />
+  </ItemGroup>
+  <Target Name="HapusBinerNonWindows" AfterTargets="Publish">
+    <!-- Aplikasi ini hanya berjalan di Windows. Pustaka native Linux/macOS/browser-wasm
+         tidak pernah dipakai, jadi dibuang dari hasil publish agar tidak ikut ke installer.
+         PublishDir bisa relatif terhadap direktori pemanggilan dotnet, jadi dinormalkan dulu.
+         Daftar RID eksplisit karena wildcard Include MSBuild hanya mencocokkan berkas,
+         bukan folder; Delete di akhir menjadi jaring pengaman untuk RID baru. -->
+    <PropertyGroup>
+      <BinerRuntimesDir>$([MSBuild]::NormalizeDirectory('$(MSBuildStartupDirectory)', '$(PublishDir)', 'runtimes'))</BinerRuntimesDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <BinerNonWindows Include="$(BinerRuntimesDir)browser-wasm" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-arm" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-arm64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-armel" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-mips64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-musl-arm" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-musl-arm64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-musl-x64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-ppc64le" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-s390x" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-x64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)linux-x86" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)maccatalyst-arm64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)maccatalyst-x64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)osx-arm64" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)osx-x64" />
+      <!-- Pemasang hanya menyediakan host 64-bit (x64). Pustaka native Windows 32-bit dan ARM
+           tidak akan pernah dimuat di mesin itu, jadi tidak perlu ikut dipaketkan. -->
+      <BinerNonWindows Include="$(BinerRuntimesDir)win-x86" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)win-arm" />
+      <BinerNonWindows Include="$(BinerRuntimesDir)win-arm64" />
+    </ItemGroup>
+    <RemoveDir Directories="@(BinerNonWindows)" />
+    <ItemGroup>
+      <BinerLintasSistem Include="$(BinerRuntimesDir)**\*.so" />
+      <BinerLintasSistem Include="$(BinerRuntimesDir)**\*.dylib" />
+      <BinerLintasSistem Include="$(BinerRuntimesDir)**\*.a" />
+    </ItemGroup>
+    <Delete Files="@(BinerLintasSistem)" />
+  </Target>
+  <Target Name="HapusSimbolDebug" AfterTargets="Publish">
+    <!-- ProjectReference tetap membawa .pdb-nya sendiri walaupun Host memakai DebugType none,
+         jadi simbol dibersihkan dari hasil publish secara eksplisit. -->
+    <ItemGroup>
+      <SimbolDebug Include="$([MSBuild]::NormalizeDirectory('$(MSBuildStartupDirectory)', '$(PublishDir)'))**\*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(SimbolDebug)" />
+  </Target>
+</Project>

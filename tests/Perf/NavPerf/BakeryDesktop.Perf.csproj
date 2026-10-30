@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Perkakas ukur kinerja perpindahan menu. Sengaja TIDAK dimasukkan ke BakeryDesktop.slnx:
+    menjalankan "dotnet test" tidak boleh ikut membuka peramban dan mengukur waktu, dan angka
+    kinerja tidak boleh menjadi penentu hijau/merahnya rangkaian tes biasa.
+
+      Contoh: dotnet run (proyek ini, -c Release) dengan argumen db dan label.
+      Daftar argumen ada di Opsi.Baca pada Program.cs.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
+  </ItemGroup>
+
+</Project>

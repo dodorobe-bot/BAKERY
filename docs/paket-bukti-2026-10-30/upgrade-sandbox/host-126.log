@@ -1,0 +1,96 @@
+[18:17:56 INF] Jwt:Secret dibuat otomatis untuk instalasi ini dan disimpan di C:\data\uji.key
+[18:17:56 INF] Migrasi 1 diterapkan.
+[Migration] Applied version 1
+[18:17:56 INF] Migrasi 2 diterapkan.
+[Migration] Applied version 2
+[18:17:56 INF] Migrasi 3 diterapkan.
+[Migration] Applied version 3
+[18:17:56 INF] Migrasi 4 diterapkan.
+[Migration] Applied version 4
+[18:17:56 INF] Migrasi 5 diterapkan.
+[Migration] Applied version 5
+[18:17:56 INF] Migrasi 6 diterapkan.
+[Migration] Applied version 6
+[18:17:56 INF] Migrasi 7 diterapkan.
+[Migration] Applied version 7
+[18:17:56 INF] Migrasi 8 diterapkan.
+[Migration] Applied version 8
+[18:17:56 INF] Migrasi 9 diterapkan.
+[Migration] Applied version 9
+[18:17:56 INF] Migrasi 10 diterapkan.
+[Migration] Applied version 10
+[18:17:56 INF] Migrasi 11 diterapkan.
+[Migration] Applied version 11
+[18:17:56 INF] Migrasi 12 diterapkan.
+[Migration] Applied version 12
+[18:17:56 INF] Migrasi 13 diterapkan.
+[Migration] Applied version 13
+[18:17:56 INF] Migrasi 14 diterapkan.
+[Migration] Applied version 14
+[18:17:56 INF] Migrasi 15 diterapkan.
+[Migration] Applied version 15
+[18:17:56 INF] Migrasi 16 diterapkan.
+[Migration] Applied version 16
+[18:17:56 INF] Migrasi 17 diterapkan.
+[Migration] Applied version 17
+[18:17:57 INF] Seruni 22 Bakery service starting on 
+[18:17:57 INF] User profile is available. Using 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[18:17:57 INF] Creating key {b0a87e2e-f7d2-40c2-bdc2-5a1de81cd2b3} with creation date 2026-10-30 11:17:57Z, activation date 2026-10-30 11:17:57Z, and expiration date 2027-01-28 11:17:57Z.
+[18:17:57 INF] Writing data to file 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys\key-b0a87e2e-f7d2-40c2-bdc2-5a1de81cd2b3.xml'.
+[18:17:58 INF] Now listening on: http://127.0.0.1:5301
+[18:17:58 INF] Application started. Press Ctrl+C to shut down.
+[18:17:58 INF] Hosting environment: Production
+[18:17:58 INF] Content root path: C:\Program Files\Seruni 22 Bakery
+[18:17:58 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5301/health - null null
+[18:17:58 INF] Executing endpoint 'HTTP: GET /health'
+[18:17:58 INF] Setting HTTP status code 200.
+[18:17:58 INF] Writing value of type '<>f__AnonymousType11`3' as Json.
+[18:17:58 INF] Executed endpoint 'HTTP: GET /health'
+[18:17:58 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5301/health - 200 null application/json; charset=utf-8 374.505ms
+[18:17:59 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5301/ - null null
+[18:17:59 INF] Executing endpoint 'Fallback {*path:nonfile}'
+[18:17:59 INF] Sending file. Request path: '/index.html'. Physical path: 'C:\Program Files\Seruni 22 Bakery\wwwroot\index.html'
+[18:17:59 INF] Executed endpoint 'Fallback {*path:nonfile}'
+[18:17:59 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5301/index.html - 200 466 text/html 26.3244ms
+[18:17:59 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5301/api/auth/login - application/json 60
+[18:17:59 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:18:00 INF] Setting HTTP status code 200.
+[18:18:00 INF] Writing value of type 'LoginResponse' as Json.
+[18:18:00 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:18:00 WRN] [Lambat] POST /api/auth/login 200 518 ms (id -)
+[18:18:00 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5301/api/auth/login - 200 null application/json; charset=utf-8 523.8075ms
+[18:18:00 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5301/api/auth/change-password - application/json 80
+[18:18:00 INF] Executing endpoint 'HTTP: POST /api/auth/change-password'
+[18:18:01 INF] Setting HTTP status code 200.
+[18:18:01 INF] Executed endpoint 'HTTP: POST /api/auth/change-password'
+[18:18:01 WRN] [Lambat] POST /api/auth/change-password 200 865 ms (id -)
+[18:18:01 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5301/api/auth/change-password - 200 0 null 871.7369ms
+[18:18:01 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5301/api/auth/login - application/json 67
+[18:18:01 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:18:01 INF] Setting HTTP status code 200.
+[18:18:01 INF] Writing value of type 'LoginResponse' as Json.
+[18:18:01 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:18:01 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5301/api/auth/login - 200 null application/json; charset=utf-8 291.1613ms
+[18:18:01 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5301/api/products - application/json 166
+[18:18:01 INF] Executing endpoint 'HTTP: POST /api/products'
+[18:18:01 INF] Setting HTTP status code 200.
+[18:18:01 INF] Writing value of type '<>f__AnonymousType18`1' as Json.
+[18:18:01 INF] Executed endpoint 'HTTP: POST /api/products'
+[18:18:01 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5301/api/products - 200 null application/json; charset=utf-8 32.7365ms
+[18:18:01 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5301/api/brand - null null
+[18:18:01 INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+[18:18:01 INF] AuthenticationScheme: Bearer was challenged.
+[18:18:01 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5301/api/brand - 401 0 null 8.7717ms
+[18:18:01 INF] Request starting HTTP/1.1 PUT http://127.0.0.1:5301/api/settings - application/json 43
+[18:18:01 INF] Executing endpoint 'HTTP: PUT /api/settings'
+[18:18:01 INF] Setting HTTP status code 200.
+[18:18:01 INF] Writing value of type '<>f__AnonymousType44`1' as Json.
+[18:18:01 INF] Executed endpoint 'HTTP: PUT /api/settings'
+[18:18:01 INF] Request finished HTTP/1.1 PUT http://127.0.0.1:5301/api/settings - 200 null application/json; charset=utf-8 16.6014ms
+[18:18:01 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5301/api/settings - null null
+[18:18:01 INF] Executing endpoint 'HTTP: GET /api/settings'
+[18:18:01 INF] Setting HTTP status code 200.
+[18:18:01 INF] Writing value of type 'Dictionary`2' as Json.
+[18:18:01 INF] Executed endpoint 'HTTP: GET /api/settings'
+[18:18:01 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5301/api/settings - 200 null application/json; charset=utf-8 5.3267ms

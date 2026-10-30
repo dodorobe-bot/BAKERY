@@ -1,0 +1,2013 @@
+﻿2026-10-29 14:33:24.377   Log opened. (Time zone: UTC+07:00)
+2026-10-29 14:33:24.377   Setup version: Inno Setup version 6.7.3
+2026-10-29 14:33:24.377   Original Setup EXE: D:\bakery-desktop\dist\installer\Seruni22Bakery_Setup_v1.2.4.exe
+2026-10-29 14:33:24.377   Setup command line: /SL5="$300748,41342052,909312,D:\bakery-desktop\dist\installer\Seruni22Bakery_Setup_v1.2.4.exe" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /NOICONS /TASKS= /DIR=C:\tmp\seruni-exe-baru /LOG=C:\tmp\seruni-exe-baru-install.log 
+2026-10-29 14:33:24.377   Windows version: 10.0.26300
+2026-10-29 14:33:24.377   Windows architecture: x64 (64-bit)
+2026-10-29 14:33:24.377   Machine types supported by system: x86 x64
+2026-10-29 14:33:24.377   User privileges: None
+2026-10-29 14:33:24.381   Administrative install mode: No
+2026-10-29 14:33:24.381   Install mode root key: HKEY_CURRENT_USER
+2026-10-29 14:33:24.381   64-bit install mode: No
+2026-10-29 14:33:24.381   RedirectionGuard status for current process: Enabled in enforcing mode
+2026-10-29 14:33:24.382   Created temporary directory: C:\Users\ADMINI~1\AppData\Local\Temp\is-7KVENEW15A.tmp
+2026-10-29 14:33:24.726   Found 364 files to register with RestartManager.
+2026-10-29 14:33:24.726   Calling RestartManager's RmGetList.
+2026-10-29 14:33:24.754   RmGetList finished successfully.
+2026-10-29 14:33:24.754   RestartManager found no applications using one of our files.
+2026-10-29 14:33:24.759   Starting the installation process.
+2026-10-29 14:33:24.764   Creating directory: C:\tmp\seruni-exe-baru
+2026-10-29 14:33:24.766   Directory for uninstall files: C:\tmp\seruni-exe-baru
+2026-10-29 14:33:24.766   Creating new uninstall log: C:\tmp\seruni-exe-baru\unins000.dat
+2026-10-29 14:33:24.791   -- File entry --
+2026-10-29 14:33:24.791   Dest filename: C:\tmp\seruni-exe-baru\unins000.exe
+2026-10-29 14:33:24.812   Time stamp of our file: 2026-10-29 14:33:23.520
+2026-10-29 14:33:24.812   Installing the file.
+2026-10-29 14:33:24.822   Successfully installed the file.
+2026-10-29 14:33:24.823   -- File entry --
+2026-10-29 14:33:24.823   Dest filename: C:\tmp\seruni-exe-baru\appsettings.json
+2026-10-29 14:33:24.824   Time stamp of our file: 2026-10-28 20:42:38.000
+2026-10-29 14:33:24.824   Installing the file.
+2026-10-29 14:33:24.826   Successfully installed the file.
+2026-10-29 14:33:24.826   -- File entry --
+2026-10-29 14:33:24.826   Dest filename: C:\tmp\seruni-exe-baru\aspnetcorev2_inprocess.dll
+2026-10-29 14:33:24.826   Time stamp of our file: 2026-08-22 07:52:40.000
+2026-10-29 14:33:24.826   Installing the file.
+2026-10-29 14:33:24.845   Successfully installed the file.
+2026-10-29 14:33:24.845   -- File entry --
+2026-10-29 14:33:24.845   Dest filename: C:\tmp\seruni-exe-baru\BCrypt.Net-Next.dll
+2026-10-29 14:33:24.845   Time stamp of our file: 2022-03-03 23:10:20.000
+2026-10-29 14:33:24.845   Installing the file.
+2026-10-29 14:33:24.848   Successfully installed the file.
+2026-10-29 14:33:24.848   -- File entry --
+2026-10-29 14:33:24.848   Dest filename: C:\tmp\seruni-exe-baru\ClosedXML.dll
+2026-10-29 14:33:24.848   Time stamp of our file: 2024-07-18 21:16:06.000
+2026-10-29 14:33:24.848   Installing the file.
+2026-10-29 14:33:24.884   Successfully installed the file.
+2026-10-29 14:33:24.884   -- File entry --
+2026-10-29 14:33:24.884   Dest filename: C:\tmp\seruni-exe-baru\clretwrc.dll
+2026-10-29 14:33:24.884   Time stamp of our file: 2026-08-21 04:03:28.000
+2026-10-29 14:33:24.884   Installing the file.
+2026-10-29 14:33:24.890   Successfully installed the file.
+2026-10-29 14:33:24.890   -- File entry --
+2026-10-29 14:33:24.890   Dest filename: C:\tmp\seruni-exe-baru\clrgc.dll
+2026-10-29 14:33:24.893   Time stamp of our file: 2026-08-21 04:01:24.000
+2026-10-29 14:33:24.893   Installing the file.
+2026-10-29 14:33:24.913   Successfully installed the file.
+2026-10-29 14:33:24.913   -- File entry --
+2026-10-29 14:33:24.913   Dest filename: C:\tmp\seruni-exe-baru\clrjit.dll
+2026-10-29 14:33:24.913   Time stamp of our file: 2026-08-21 04:00:36.000
+2026-10-29 14:33:24.913   Installing the file.
+2026-10-29 14:33:24.966   Successfully installed the file.
+2026-10-29 14:33:24.966   -- File entry --
+2026-10-29 14:33:24.966   Dest filename: C:\tmp\seruni-exe-baru\coreclr.dll
+2026-10-29 14:33:24.966   Time stamp of our file: 2026-08-21 03:57:48.000
+2026-10-29 14:33:24.966   Installing the file.
+2026-10-29 14:33:25.094   Successfully installed the file.
+2026-10-29 14:33:25.094   -- File entry --
+2026-10-29 14:33:25.094   Dest filename: C:\tmp\seruni-exe-baru\createdump.exe
+2026-10-29 14:33:25.094   Time stamp of our file: 2026-08-21 04:03:28.000
+2026-10-29 14:33:25.094   Installing the file.
+2026-10-29 14:33:25.097   Successfully installed the file.
+2026-10-29 14:33:25.097   -- File entry --
+2026-10-29 14:33:25.097   Dest filename: C:\tmp\seruni-exe-baru\DocumentFormat.OpenXml.dll
+2026-10-29 14:33:25.098   Time stamp of our file: 2022-03-15 08:39:30.000
+2026-10-29 14:33:25.098   Installing the file.
+2026-10-29 14:33:25.191   Successfully installed the file.
+2026-10-29 14:33:25.191   -- File entry --
+2026-10-29 14:33:25.191   Dest filename: C:\tmp\seruni-exe-baru\ExcelNumberFormat.dll
+2026-10-29 14:33:25.191   Time stamp of our file: 2020-10-02 15:42:28.000
+2026-10-29 14:33:25.191   Installing the file.
+2026-10-29 14:33:25.194   Successfully installed the file.
+2026-10-29 14:33:25.194   -- File entry --
+2026-10-29 14:33:25.194   Dest filename: C:\tmp\seruni-exe-baru\e_sqlite3.dll
+2026-10-29 14:33:25.195   Time stamp of our file: 2023-08-24 01:33:44.000
+2026-10-29 14:33:25.195   Installing the file.
+2026-10-29 14:33:25.242   Successfully installed the file.
+2026-10-29 14:33:25.242   -- File entry --
+2026-10-29 14:33:25.242   Dest filename: C:\tmp\seruni-exe-baru\hostfxr.dll
+2026-10-29 14:33:25.242   Time stamp of our file: 2026-08-21 04:13:26.000
+2026-10-29 14:33:25.242   Installing the file.
+2026-10-29 14:33:25.251   Successfully installed the file.
+2026-10-29 14:33:25.252   -- File entry --
+2026-10-29 14:33:25.252   Dest filename: C:\tmp\seruni-exe-baru\hostpolicy.dll
+2026-10-29 14:33:25.252   Time stamp of our file: 2026-08-21 04:13:28.000
+2026-10-29 14:33:25.252   Installing the file.
+2026-10-29 14:33:25.261   Successfully installed the file.
+2026-10-29 14:33:25.261   -- File entry --
+2026-10-29 14:33:25.261   Dest filename: C:\tmp\seruni-exe-baru\Irony.dll
+2026-10-29 14:33:25.261   Time stamp of our file: 2018-07-18 08:40:26.000
+2026-10-29 14:33:25.261   Installing the file.
+2026-10-29 14:33:25.267   Successfully installed the file.
+2026-10-29 14:33:25.267   -- File entry --
+2026-10-29 14:33:25.267   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Antiforgery.dll
+2026-10-29 14:33:25.267   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:25.267   Installing the file.
+2026-10-29 14:33:25.273   Successfully installed the file.
+2026-10-29 14:33:25.273   -- File entry --
+2026-10-29 14:33:25.273   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.Abstractions.dll
+2026-10-29 14:33:25.273   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:25.273   Installing the file.
+2026-10-29 14:33:25.277   Successfully installed the file.
+2026-10-29 14:33:25.277   -- File entry --
+2026-10-29 14:33:25.277   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.BearerToken.dll
+2026-10-29 14:33:25.278   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.278   Installing the file.
+2026-10-29 14:33:25.283   Successfully installed the file.
+2026-10-29 14:33:25.283   -- File entry --
+2026-10-29 14:33:25.283   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.Cookies.dll
+2026-10-29 14:33:25.283   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.283   Installing the file.
+2026-10-29 14:33:25.288   Successfully installed the file.
+2026-10-29 14:33:25.289   -- File entry --
+2026-10-29 14:33:25.289   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.Core.dll
+2026-10-29 14:33:25.289   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.289   Installing the file.
+2026-10-29 14:33:25.295   Successfully installed the file.
+2026-10-29 14:33:25.295   -- File entry --
+2026-10-29 14:33:25.295   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.dll
+2026-10-29 14:33:25.295   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.295   Installing the file.
+2026-10-29 14:33:25.302   Successfully installed the file.
+2026-10-29 14:33:25.302   -- File entry --
+2026-10-29 14:33:25.302   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+2026-10-29 14:33:25.302   Time stamp of our file: 2024-09-19 01:41:00.000
+2026-10-29 14:33:25.302   Installing the file.
+2026-10-29 14:33:25.304   Successfully installed the file.
+2026-10-29 14:33:25.304   -- File entry --
+2026-10-29 14:33:25.304   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authentication.OAuth.dll
+2026-10-29 14:33:25.305   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.305   Installing the file.
+2026-10-29 14:33:25.309   Successfully installed the file.
+2026-10-29 14:33:25.309   -- File entry --
+2026-10-29 14:33:25.309   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authorization.dll
+2026-10-29 14:33:25.309   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.309   Installing the file.
+2026-10-29 14:33:25.315   Successfully installed the file.
+2026-10-29 14:33:25.315   -- File entry --
+2026-10-29 14:33:25.315   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Authorization.Policy.dll
+2026-10-29 14:33:25.316   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.316   Installing the file.
+2026-10-29 14:33:25.318   Successfully installed the file.
+2026-10-29 14:33:25.318   -- File entry --
+2026-10-29 14:33:25.318   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Components.Authorization.dll
+2026-10-29 14:33:25.318   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.318   Installing the file.
+2026-10-29 14:33:25.322   Successfully installed the file.
+2026-10-29 14:33:25.322   -- File entry --
+2026-10-29 14:33:25.322   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Components.dll
+2026-10-29 14:33:25.323   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-10-29 14:33:25.323   Installing the file.
+2026-10-29 14:33:25.345   Successfully installed the file.
+2026-10-29 14:33:25.345   -- File entry --
+2026-10-29 14:33:25.345   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Components.Endpoints.dll
+2026-10-29 14:33:25.345   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.345   Installing the file.
+2026-10-29 14:33:25.365   Successfully installed the file.
+2026-10-29 14:33:25.365   -- File entry --
+2026-10-29 14:33:25.365   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Components.Forms.dll
+2026-10-29 14:33:25.365   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.365   Installing the file.
+2026-10-29 14:33:25.369   Successfully installed the file.
+2026-10-29 14:33:25.369   -- File entry --
+2026-10-29 14:33:25.369   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Components.Server.dll
+2026-10-29 14:33:25.371   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.371   Installing the file.
+2026-10-29 14:33:25.393   Successfully installed the file.
+2026-10-29 14:33:25.394   -- File entry --
+2026-10-29 14:33:25.394   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Components.Web.dll
+2026-10-29 14:33:25.394   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.394   Installing the file.
+2026-10-29 14:33:25.405   Successfully installed the file.
+2026-10-29 14:33:25.405   -- File entry --
+2026-10-29 14:33:25.405   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Connections.Abstractions.dll
+2026-10-29 14:33:25.406   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.406   Installing the file.
+2026-10-29 14:33:25.408   Successfully installed the file.
+2026-10-29 14:33:25.408   -- File entry --
+2026-10-29 14:33:25.408   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.CookiePolicy.dll
+2026-10-29 14:33:25.408   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.408   Installing the file.
+2026-10-29 14:33:25.411   Successfully installed the file.
+2026-10-29 14:33:25.411   -- File entry --
+2026-10-29 14:33:25.411   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Cors.dll
+2026-10-29 14:33:25.411   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-10-29 14:33:25.411   Installing the file.
+2026-10-29 14:33:25.414   Successfully installed the file.
+2026-10-29 14:33:25.414   -- File entry --
+2026-10-29 14:33:25.414   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Cryptography.Internal.dll
+2026-10-29 14:33:25.415   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.415   Installing the file.
+2026-10-29 14:33:25.419   Successfully installed the file.
+2026-10-29 14:33:25.419   -- File entry --
+2026-10-29 14:33:25.419   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+2026-10-29 14:33:25.420   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.420   Installing the file.
+2026-10-29 14:33:25.422   Successfully installed the file.
+2026-10-29 14:33:25.422   -- File entry --
+2026-10-29 14:33:25.422   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.DataProtection.Abstractions.dll
+2026-10-29 14:33:25.422   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.422   Installing the file.
+2026-10-29 14:33:25.424   Successfully installed the file.
+2026-10-29 14:33:25.424   -- File entry --
+2026-10-29 14:33:25.424   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.DataProtection.dll
+2026-10-29 14:33:25.424   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.424   Installing the file.
+2026-10-29 14:33:25.435   Successfully installed the file.
+2026-10-29 14:33:25.435   -- File entry --
+2026-10-29 14:33:25.435   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.DataProtection.Extensions.dll
+2026-10-29 14:33:25.437   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.437   Installing the file.
+2026-10-29 14:33:25.440   Successfully installed the file.
+2026-10-29 14:33:25.440   -- File entry --
+2026-10-29 14:33:25.440   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Diagnostics.Abstractions.dll
+2026-10-29 14:33:25.440   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.440   Installing the file.
+2026-10-29 14:33:25.441   Successfully installed the file.
+2026-10-29 14:33:25.441   -- File entry --
+2026-10-29 14:33:25.441   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Diagnostics.dll
+2026-10-29 14:33:25.441   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.441   Installing the file.
+2026-10-29 14:33:25.454   Successfully installed the file.
+2026-10-29 14:33:25.454   -- File entry --
+2026-10-29 14:33:25.454   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Diagnostics.HealthChecks.dll
+2026-10-29 14:33:25.455   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.455   Installing the file.
+2026-10-29 14:33:25.460   Successfully installed the file.
+2026-10-29 14:33:25.460   -- File entry --
+2026-10-29 14:33:25.460   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.dll
+2026-10-29 14:33:25.461   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-10-29 14:33:25.461   Installing the file.
+2026-10-29 14:33:25.468   Successfully installed the file.
+2026-10-29 14:33:25.468   -- File entry --
+2026-10-29 14:33:25.468   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.HostFiltering.dll
+2026-10-29 14:33:25.468   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.468   Installing the file.
+2026-10-29 14:33:25.472   Successfully installed the file.
+2026-10-29 14:33:25.472   -- File entry --
+2026-10-29 14:33:25.472   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Hosting.Abstractions.dll
+2026-10-29 14:33:25.472   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.472   Installing the file.
+2026-10-29 14:33:25.476   Successfully installed the file.
+2026-10-29 14:33:25.476   -- File entry --
+2026-10-29 14:33:25.476   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Hosting.dll
+2026-10-29 14:33:25.476   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.476   Installing the file.
+2026-10-29 14:33:25.492   Successfully installed the file.
+2026-10-29 14:33:25.492   -- File entry --
+2026-10-29 14:33:25.492   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll
+2026-10-29 14:33:25.492   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.492   Installing the file.
+2026-10-29 14:33:25.493   Successfully installed the file.
+2026-10-29 14:33:25.493   -- File entry --
+2026-10-29 14:33:25.493   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Html.Abstractions.dll
+2026-10-29 14:33:25.493   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.493   Installing the file.
+2026-10-29 14:33:25.496   Successfully installed the file.
+2026-10-29 14:33:25.496   -- File entry --
+2026-10-29 14:33:25.496   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.Abstractions.dll
+2026-10-29 14:33:25.497   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.497   Installing the file.
+2026-10-29 14:33:25.506   Successfully installed the file.
+2026-10-29 14:33:25.506   -- File entry --
+2026-10-29 14:33:25.506   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.Connections.Common.dll
+2026-10-29 14:33:25.506   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.506   Installing the file.
+2026-10-29 14:33:25.508   Successfully installed the file.
+2026-10-29 14:33:25.509   -- File entry --
+2026-10-29 14:33:25.509   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.Connections.dll
+2026-10-29 14:33:25.509   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.509   Installing the file.
+2026-10-29 14:33:25.519   Successfully installed the file.
+2026-10-29 14:33:25.519   -- File entry --
+2026-10-29 14:33:25.519   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.dll
+2026-10-29 14:33:25.521   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-10-29 14:33:25.521   Installing the file.
+2026-10-29 14:33:25.529   Successfully installed the file.
+2026-10-29 14:33:25.529   -- File entry --
+2026-10-29 14:33:25.529   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.Extensions.dll
+2026-10-29 14:33:25.530   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.530   Installing the file.
+2026-10-29 14:33:25.547   Successfully installed the file.
+2026-10-29 14:33:25.547   -- File entry --
+2026-10-29 14:33:25.547   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.Features.dll
+2026-10-29 14:33:25.547   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.547   Installing the file.
+2026-10-29 14:33:25.550   Successfully installed the file.
+2026-10-29 14:33:25.552   -- File entry --
+2026-10-29 14:33:25.552   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Http.Results.dll
+2026-10-29 14:33:25.552   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.552   Installing the file.
+2026-10-29 14:33:25.559   Successfully installed the file.
+2026-10-29 14:33:25.559   -- File entry --
+2026-10-29 14:33:25.559   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.HttpLogging.dll
+2026-10-29 14:33:25.559   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.559   Installing the file.
+2026-10-29 14:33:25.565   Successfully installed the file.
+2026-10-29 14:33:25.565   -- File entry --
+2026-10-29 14:33:25.565   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.HttpOverrides.dll
+2026-10-29 14:33:25.566   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.566   Installing the file.
+2026-10-29 14:33:25.569   Successfully installed the file.
+2026-10-29 14:33:25.569   -- File entry --
+2026-10-29 14:33:25.569   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.HttpsPolicy.dll
+2026-10-29 14:33:25.569   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.569   Installing the file.
+2026-10-29 14:33:25.571   Successfully installed the file.
+2026-10-29 14:33:25.571   -- File entry --
+2026-10-29 14:33:25.571   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Identity.dll
+2026-10-29 14:33:25.571   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-10-29 14:33:25.571   Installing the file.
+2026-10-29 14:33:25.585   Successfully installed the file.
+2026-10-29 14:33:25.585   -- File entry --
+2026-10-29 14:33:25.585   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Localization.dll
+2026-10-29 14:33:25.585   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.585   Installing the file.
+2026-10-29 14:33:25.588   Successfully installed the file.
+2026-10-29 14:33:25.589   -- File entry --
+2026-10-29 14:33:25.589   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Localization.Routing.dll
+2026-10-29 14:33:25.589   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.589   Installing the file.
+2026-10-29 14:33:25.590   Successfully installed the file.
+2026-10-29 14:33:25.591   -- File entry --
+2026-10-29 14:33:25.591   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Metadata.dll
+2026-10-29 14:33:25.591   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.591   Installing the file.
+2026-10-29 14:33:25.594   Successfully installed the file.
+2026-10-29 14:33:25.594   -- File entry --
+2026-10-29 14:33:25.594   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Abstractions.dll
+2026-10-29 14:33:25.594   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.594   Installing the file.
+2026-10-29 14:33:25.604   Successfully installed the file.
+2026-10-29 14:33:25.604   -- File entry --
+2026-10-29 14:33:25.604   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.ApiExplorer.dll
+2026-10-29 14:33:25.604   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.604   Installing the file.
+2026-10-29 14:33:25.609   Successfully installed the file.
+2026-10-29 14:33:25.609   -- File entry --
+2026-10-29 14:33:25.609   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Core.dll
+2026-10-29 14:33:25.609   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.609   Installing the file.
+2026-10-29 14:33:25.657   Successfully installed the file.
+2026-10-29 14:33:25.657   -- File entry --
+2026-10-29 14:33:25.657   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Cors.dll
+2026-10-29 14:33:25.657   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-10-29 14:33:25.657   Installing the file.
+2026-10-29 14:33:25.661   Successfully installed the file.
+2026-10-29 14:33:25.661   -- File entry --
+2026-10-29 14:33:25.661   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.DataAnnotations.dll
+2026-10-29 14:33:25.661   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.661   Installing the file.
+2026-10-29 14:33:25.666   Successfully installed the file.
+2026-10-29 14:33:25.667   -- File entry --
+2026-10-29 14:33:25.667   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.dll
+2026-10-29 14:33:25.667   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.667   Installing the file.
+2026-10-29 14:33:25.669   Successfully installed the file.
+2026-10-29 14:33:25.670   -- File entry --
+2026-10-29 14:33:25.670   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Formatters.Json.dll
+2026-10-29 14:33:25.670   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.670   Installing the file.
+2026-10-29 14:33:25.672   Successfully installed the file.
+2026-10-29 14:33:25.673   -- File entry --
+2026-10-29 14:33:25.673   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Formatters.Xml.dll
+2026-10-29 14:33:25.673   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.673   Installing the file.
+2026-10-29 14:33:25.678   Successfully installed the file.
+2026-10-29 14:33:25.678   -- File entry --
+2026-10-29 14:33:25.678   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Localization.dll
+2026-10-29 14:33:25.678   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.678   Installing the file.
+2026-10-29 14:33:25.681   Successfully installed the file.
+2026-10-29 14:33:25.681   -- File entry --
+2026-10-29 14:33:25.681   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.Razor.dll
+2026-10-29 14:33:25.681   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.681   Installing the file.
+2026-10-29 14:33:25.690   Successfully installed the file.
+2026-10-29 14:33:25.690   -- File entry --
+2026-10-29 14:33:25.690   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.RazorPages.dll
+2026-10-29 14:33:25.690   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.690   Installing the file.
+2026-10-29 14:33:25.704   Successfully installed the file.
+2026-10-29 14:33:25.704   -- File entry --
+2026-10-29 14:33:25.704   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.TagHelpers.dll
+2026-10-29 14:33:25.705   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-10-29 14:33:25.705   Installing the file.
+2026-10-29 14:33:25.713   Successfully installed the file.
+2026-10-29 14:33:25.715   -- File entry --
+2026-10-29 14:33:25.715   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Mvc.ViewFeatures.dll
+2026-10-29 14:33:25.715   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.715   Installing the file.
+2026-10-29 14:33:25.738   Successfully installed the file.
+2026-10-29 14:33:25.738   -- File entry --
+2026-10-29 14:33:25.738   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.OutputCaching.dll
+2026-10-29 14:33:25.738   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.738   Installing the file.
+2026-10-29 14:33:25.746   Successfully installed the file.
+2026-10-29 14:33:25.746   -- File entry --
+2026-10-29 14:33:25.746   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.RateLimiting.dll
+2026-10-29 14:33:25.746   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.747   Installing the file.
+2026-10-29 14:33:25.750   Successfully installed the file.
+2026-10-29 14:33:25.750   -- File entry --
+2026-10-29 14:33:25.750   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Razor.dll
+2026-10-29 14:33:25.750   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.750   Installing the file.
+2026-10-29 14:33:25.754   Successfully installed the file.
+2026-10-29 14:33:25.754   -- File entry --
+2026-10-29 14:33:25.754   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Razor.Runtime.dll
+2026-10-29 14:33:25.754   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.754   Installing the file.
+2026-10-29 14:33:25.756   Successfully installed the file.
+2026-10-29 14:33:25.756   -- File entry --
+2026-10-29 14:33:25.756   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.RequestDecompression.dll
+2026-10-29 14:33:25.756   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.756   Installing the file.
+2026-10-29 14:33:25.759   Successfully installed the file.
+2026-10-29 14:33:25.759   -- File entry --
+2026-10-29 14:33:25.759   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll
+2026-10-29 14:33:25.759   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.759   Installing the file.
+2026-10-29 14:33:25.762   Successfully installed the file.
+2026-10-29 14:33:25.762   -- File entry --
+2026-10-29 14:33:25.762   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.ResponseCaching.dll
+2026-10-29 14:33:25.762   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.762   Installing the file.
+2026-10-29 14:33:25.766   Successfully installed the file.
+2026-10-29 14:33:25.766   -- File entry --
+2026-10-29 14:33:25.766   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.ResponseCompression.dll
+2026-10-29 14:33:25.766   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-10-29 14:33:25.766   Installing the file.
+2026-10-29 14:33:25.770   Successfully installed the file.
+2026-10-29 14:33:25.770   -- File entry --
+2026-10-29 14:33:25.770   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Rewrite.dll
+2026-10-29 14:33:25.770   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-10-29 14:33:25.770   Installing the file.
+2026-10-29 14:33:25.777   Successfully installed the file.
+2026-10-29 14:33:25.777   -- File entry --
+2026-10-29 14:33:25.777   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Routing.Abstractions.dll
+2026-10-29 14:33:25.777   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-10-29 14:33:25.777   Installing the file.
+2026-10-29 14:33:25.779   Successfully installed the file.
+2026-10-29 14:33:25.779   -- File entry --
+2026-10-29 14:33:25.779   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Routing.dll
+2026-10-29 14:33:25.779   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-10-29 14:33:25.779   Installing the file.
+2026-10-29 14:33:25.802   Successfully installed the file.
+2026-10-29 14:33:25.802   -- File entry --
+2026-10-29 14:33:25.802   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.HttpSys.dll
+2026-10-29 14:33:25.802   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-10-29 14:33:25.802   Installing the file.
+2026-10-29 14:33:25.822   Successfully installed the file.
+2026-10-29 14:33:25.822   -- File entry --
+2026-10-29 14:33:25.822   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.IIS.dll
+2026-10-29 14:33:25.822   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-10-29 14:33:25.822   Installing the file.
+2026-10-29 14:33:25.838   Successfully installed the file.
+2026-10-29 14:33:25.838   -- File entry --
+2026-10-29 14:33:25.838   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.IISIntegration.dll
+2026-10-29 14:33:25.838   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-10-29 14:33:25.838   Installing the file.
+2026-10-29 14:33:25.841   Successfully installed the file.
+2026-10-29 14:33:25.841   -- File entry --
+2026-10-29 14:33:25.841   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.Kestrel.Core.dll
+2026-10-29 14:33:25.841   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.841   Installing the file.
+2026-10-29 14:33:25.906   Successfully installed the file.
+2026-10-29 14:33:25.906   -- File entry --
+2026-10-29 14:33:25.907   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.Kestrel.dll
+2026-10-29 14:33:25.908   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.908   Installing the file.
+2026-10-29 14:33:25.911   Successfully installed the file.
+2026-10-29 14:33:25.911   -- File entry --
+2026-10-29 14:33:25.911   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes.dll
+2026-10-29 14:33:25.911   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.911   Installing the file.
+2026-10-29 14:33:25.933   Successfully installed the file.
+2026-10-29 14:33:25.933   -- File entry --
+2026-10-29 14:33:25.933   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.Kestrel.Transport.Quic.dll
+2026-10-29 14:33:25.933   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.933   Installing the file.
+2026-10-29 14:33:25.940   Successfully installed the file.
+2026-10-29 14:33:25.940   -- File entry --
+2026-10-29 14:33:25.940   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.dll
+2026-10-29 14:33:25.941   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.941   Installing the file.
+2026-10-29 14:33:25.944   Successfully installed the file.
+2026-10-29 14:33:25.944   -- File entry --
+2026-10-29 14:33:25.944   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.Session.dll
+2026-10-29 14:33:25.945   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.945   Installing the file.
+2026-10-29 14:33:25.948   Successfully installed the file.
+2026-10-29 14:33:25.948   -- File entry --
+2026-10-29 14:33:25.948   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.SignalR.Common.dll
+2026-10-29 14:33:25.948   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-10-29 14:33:25.948   Installing the file.
+2026-10-29 14:33:25.953   Successfully installed the file.
+2026-10-29 14:33:25.953   -- File entry --
+2026-10-29 14:33:25.953   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.SignalR.Core.dll
+2026-10-29 14:33:25.953   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:25.953   Installing the file.
+2026-10-29 14:33:25.966   Successfully installed the file.
+2026-10-29 14:33:25.966   -- File entry --
+2026-10-29 14:33:25.966   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.SignalR.dll
+2026-10-29 14:33:25.966   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:25.966   Installing the file.
+2026-10-29 14:33:25.971   Successfully installed the file.
+2026-10-29 14:33:25.971   -- File entry --
+2026-10-29 14:33:25.971   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+2026-10-29 14:33:25.971   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:25.971   Installing the file.
+2026-10-29 14:33:25.973   Successfully installed the file.
+2026-10-29 14:33:25.974   -- File entry --
+2026-10-29 14:33:25.974   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.StaticFiles.dll
+2026-10-29 14:33:25.974   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:25.974   Installing the file.
+2026-10-29 14:33:25.978   Successfully installed the file.
+2026-10-29 14:33:25.978   -- File entry --
+2026-10-29 14:33:25.978   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.WebSockets.dll
+2026-10-29 14:33:25.978   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:25.978   Installing the file.
+2026-10-29 14:33:25.982   Successfully installed the file.
+2026-10-29 14:33:25.982   -- File entry --
+2026-10-29 14:33:25.982   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.AspNetCore.WebUtilities.dll
+2026-10-29 14:33:25.982   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:25.982   Installing the file.
+2026-10-29 14:33:25.990   Successfully installed the file.
+2026-10-29 14:33:25.990   -- File entry --
+2026-10-29 14:33:25.990   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.CSharp.dll
+2026-10-29 14:33:25.990   Time stamp of our file: 2026-08-21 04:23:32.000
+2026-10-29 14:33:25.990   Installing the file.
+2026-10-29 14:33:26.019   Successfully installed the file.
+2026-10-29 14:33:26.019   -- File entry --
+2026-10-29 14:33:26.019   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Data.Sqlite.dll
+2026-10-29 14:33:26.019   Time stamp of our file: 2024-09-18 06:49:16.000
+2026-10-29 14:33:26.019   Installing the file.
+2026-10-29 14:33:26.024   Successfully installed the file.
+2026-10-29 14:33:26.024   -- File entry --
+2026-10-29 14:33:26.024   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.DiaSymReader.Native.amd64.dll
+2026-10-29 14:33:26.024   Time stamp of our file: 2026-08-05 21:09:02.000
+2026-10-29 14:33:26.024   Installing the file.
+2026-10-29 14:33:26.079   Successfully installed the file.
+2026-10-29 14:33:26.079   -- File entry --
+2026-10-29 14:33:26.079   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Caching.Abstractions.dll
+2026-10-29 14:33:26.079   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-10-29 14:33:26.079   Installing the file.
+2026-10-29 14:33:26.082   Successfully installed the file.
+2026-10-29 14:33:26.082   -- File entry --
+2026-10-29 14:33:26.082   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Caching.Memory.dll
+2026-10-29 14:33:26.083   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-10-29 14:33:26.083   Installing the file.
+2026-10-29 14:33:26.087   Successfully installed the file.
+2026-10-29 14:33:26.087   -- File entry --
+2026-10-29 14:33:26.087   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.Abstractions.dll
+2026-10-29 14:33:26.087   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-10-29 14:33:26.087   Installing the file.
+2026-10-29 14:33:26.088   Successfully installed the file.
+2026-10-29 14:33:26.089   -- File entry --
+2026-10-29 14:33:26.089   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.Binder.dll
+2026-10-29 14:33:26.089   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-10-29 14:33:26.089   Installing the file.
+2026-10-29 14:33:26.091   Successfully installed the file.
+2026-10-29 14:33:26.091   -- File entry --
+2026-10-29 14:33:26.091   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.CommandLine.dll
+2026-10-29 14:33:26.091   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-10-29 14:33:26.091   Installing the file.
+2026-10-29 14:33:26.095   Successfully installed the file.
+2026-10-29 14:33:26.095   -- File entry --
+2026-10-29 14:33:26.095   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.dll
+2026-10-29 14:33:26.095   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-10-29 14:33:26.095   Installing the file.
+2026-10-29 14:33:26.101   Successfully installed the file.
+2026-10-29 14:33:26.101   -- File entry --
+2026-10-29 14:33:26.101   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+2026-10-29 14:33:26.101   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.101   Installing the file.
+2026-10-29 14:33:26.103   Successfully installed the file.
+2026-10-29 14:33:26.103   -- File entry --
+2026-10-29 14:33:26.103   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.FileExtensions.dll
+2026-10-29 14:33:26.103   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.103   Installing the file.
+2026-10-29 14:33:26.106   Successfully installed the file.
+2026-10-29 14:33:26.106   -- File entry --
+2026-10-29 14:33:26.106   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.Ini.dll
+2026-10-29 14:33:26.107   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.107   Installing the file.
+2026-10-29 14:33:26.110   Successfully installed the file.
+2026-10-29 14:33:26.110   -- File entry --
+2026-10-29 14:33:26.110   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.Json.dll
+2026-10-29 14:33:26.110   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.110   Installing the file.
+2026-10-29 14:33:26.114   Successfully installed the file.
+2026-10-29 14:33:26.114   -- File entry --
+2026-10-29 14:33:26.114   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.KeyPerFile.dll
+2026-10-29 14:33:26.114   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:26.114   Installing the file.
+2026-10-29 14:33:26.130   Successfully installed the file.
+2026-10-29 14:33:26.130   -- File entry --
+2026-10-29 14:33:26.130   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.UserSecrets.dll
+2026-10-29 14:33:26.130   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.130   Installing the file.
+2026-10-29 14:33:26.132   Successfully installed the file.
+2026-10-29 14:33:26.133   -- File entry --
+2026-10-29 14:33:26.133   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Configuration.Xml.dll
+2026-10-29 14:33:26.133   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.133   Installing the file.
+2026-10-29 14:33:26.136   Successfully installed the file.
+2026-10-29 14:33:26.136   -- File entry --
+2026-10-29 14:33:26.136   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+2026-10-29 14:33:26.136   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.136   Installing the file.
+2026-10-29 14:33:26.142   Successfully installed the file.
+2026-10-29 14:33:26.142   -- File entry --
+2026-10-29 14:33:26.142   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.DependencyInjection.dll
+2026-10-29 14:33:26.142   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.142   Installing the file.
+2026-10-29 14:33:26.148   Successfully installed the file.
+2026-10-29 14:33:26.150   -- File entry --
+2026-10-29 14:33:26.150   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.DependencyModel.dll
+2026-10-29 14:33:26.150   Time stamp of our file: 2024-09-17 06:09:50.000
+2026-10-29 14:33:26.150   Installing the file.
+2026-10-29 14:33:26.153   Successfully installed the file.
+2026-10-29 14:33:26.153   -- File entry --
+2026-10-29 14:33:26.153   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Diagnostics.Abstractions.dll
+2026-10-29 14:33:26.153   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.153   Installing the file.
+2026-10-29 14:33:26.155   Successfully installed the file.
+2026-10-29 14:33:26.155   -- File entry --
+2026-10-29 14:33:26.155   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Diagnostics.dll
+2026-10-29 14:33:26.156   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-10-29 14:33:26.156   Installing the file.
+2026-10-29 14:33:26.172   Successfully installed the file.
+2026-10-29 14:33:26.172   -- File entry --
+2026-10-29 14:33:26.172   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll
+2026-10-29 14:33:26.172   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:26.172   Installing the file.
+2026-10-29 14:33:26.179   Successfully installed the file.
+2026-10-29 14:33:26.179   -- File entry --
+2026-10-29 14:33:26.179   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Diagnostics.HealthChecks.dll
+2026-10-29 14:33:26.179   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:26.180   Installing the file.
+2026-10-29 14:33:26.183   Successfully installed the file.
+2026-10-29 14:33:26.183   -- File entry --
+2026-10-29 14:33:26.183   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Features.dll
+2026-10-29 14:33:26.183   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-10-29 14:33:26.183   Installing the file.
+2026-10-29 14:33:26.186   Successfully installed the file.
+2026-10-29 14:33:26.186   -- File entry --
+2026-10-29 14:33:26.187   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.FileProviders.Abstractions.dll
+2026-10-29 14:33:26.187   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.187   Installing the file.
+2026-10-29 14:33:26.191   Successfully installed the file.
+2026-10-29 14:33:26.191   -- File entry --
+2026-10-29 14:33:26.191   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.FileProviders.Composite.dll
+2026-10-29 14:33:26.191   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.191   Installing the file.
+2026-10-29 14:33:26.213   Successfully installed the file.
+2026-10-29 14:33:26.213   -- File entry --
+2026-10-29 14:33:26.213   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.FileProviders.Embedded.dll
+2026-10-29 14:33:26.216   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.216   Installing the file.
+2026-10-29 14:33:26.239   Successfully installed the file.
+2026-10-29 14:33:26.240   -- File entry --
+2026-10-29 14:33:26.240   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.FileProviders.Physical.dll
+2026-10-29 14:33:26.240   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.240   Installing the file.
+2026-10-29 14:33:26.246   Successfully installed the file.
+2026-10-29 14:33:26.246   -- File entry --
+2026-10-29 14:33:26.246   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.FileSystemGlobbing.dll
+2026-10-29 14:33:26.248   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.248   Installing the file.
+2026-10-29 14:33:26.254   Successfully installed the file.
+2026-10-29 14:33:26.255   -- File entry --
+2026-10-29 14:33:26.255   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Hosting.Abstractions.dll
+2026-10-29 14:33:26.255   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.255   Installing the file.
+2026-10-29 14:33:26.257   Successfully installed the file.
+2026-10-29 14:33:26.258   -- File entry --
+2026-10-29 14:33:26.258   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Hosting.dll
+2026-10-29 14:33:26.258   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.258   Installing the file.
+2026-10-29 14:33:26.264   Successfully installed the file.
+2026-10-29 14:33:26.264   -- File entry --
+2026-10-29 14:33:26.264   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Http.dll
+2026-10-29 14:33:26.264   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.264   Installing the file.
+2026-10-29 14:33:26.270   Successfully installed the file.
+2026-10-29 14:33:26.270   -- File entry --
+2026-10-29 14:33:26.270   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Identity.Core.dll
+2026-10-29 14:33:26.270   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.270   Installing the file.
+2026-10-29 14:33:26.281   Successfully installed the file.
+2026-10-29 14:33:26.281   -- File entry --
+2026-10-29 14:33:26.281   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Identity.Stores.dll
+2026-10-29 14:33:26.281   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.281   Installing the file.
+2026-10-29 14:33:26.284   Successfully installed the file.
+2026-10-29 14:33:26.284   -- File entry --
+2026-10-29 14:33:26.284   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Localization.Abstractions.dll
+2026-10-29 14:33:26.284   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.284   Installing the file.
+2026-10-29 14:33:26.286   Successfully installed the file.
+2026-10-29 14:33:26.286   -- File entry --
+2026-10-29 14:33:26.286   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Localization.dll
+2026-10-29 14:33:26.286   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.286   Installing the file.
+2026-10-29 14:33:26.289   Successfully installed the file.
+2026-10-29 14:33:26.289   -- File entry --
+2026-10-29 14:33:26.289   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.Abstractions.dll
+2026-10-29 14:33:26.290   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.290   Installing the file.
+2026-10-29 14:33:26.294   Successfully installed the file.
+2026-10-29 14:33:26.294   -- File entry --
+2026-10-29 14:33:26.294   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.Configuration.dll
+2026-10-29 14:33:26.294   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.294   Installing the file.
+2026-10-29 14:33:26.297   Successfully installed the file.
+2026-10-29 14:33:26.297   -- File entry --
+2026-10-29 14:33:26.297   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.Console.dll
+2026-10-29 14:33:26.298   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.298   Installing the file.
+2026-10-29 14:33:26.302   Successfully installed the file.
+2026-10-29 14:33:26.302   -- File entry --
+2026-10-29 14:33:26.302   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.Debug.dll
+2026-10-29 14:33:26.302   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.302   Installing the file.
+2026-10-29 14:33:26.304   Successfully installed the file.
+2026-10-29 14:33:26.304   -- File entry --
+2026-10-29 14:33:26.304   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.dll
+2026-10-29 14:33:26.304   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-10-29 14:33:26.304   Installing the file.
+2026-10-29 14:33:26.308   Successfully installed the file.
+2026-10-29 14:33:26.309   -- File entry --
+2026-10-29 14:33:26.309   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.EventLog.dll
+2026-10-29 14:33:26.309   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.309   Installing the file.
+2026-10-29 14:33:26.313   Successfully installed the file.
+2026-10-29 14:33:26.313   -- File entry --
+2026-10-29 14:33:26.313   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.EventSource.dll
+2026-10-29 14:33:26.313   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.313   Installing the file.
+2026-10-29 14:33:26.315   Successfully installed the file.
+2026-10-29 14:33:26.315   -- File entry --
+2026-10-29 14:33:26.315   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Logging.TraceSource.dll
+2026-10-29 14:33:26.315   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.315   Installing the file.
+2026-10-29 14:33:26.318   Successfully installed the file.
+2026-10-29 14:33:26.318   -- File entry --
+2026-10-29 14:33:26.318   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.ObjectPool.dll
+2026-10-29 14:33:26.318   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.318   Installing the file.
+2026-10-29 14:33:26.320   Successfully installed the file.
+2026-10-29 14:33:26.321   -- File entry --
+2026-10-29 14:33:26.321   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+2026-10-29 14:33:26.321   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.321   Installing the file.
+2026-10-29 14:33:26.323   Successfully installed the file.
+2026-10-29 14:33:26.323   -- File entry --
+2026-10-29 14:33:26.323   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Options.DataAnnotations.dll
+2026-10-29 14:33:26.324   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.324   Installing the file.
+2026-10-29 14:33:26.326   Successfully installed the file.
+2026-10-29 14:33:26.326   -- File entry --
+2026-10-29 14:33:26.326   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Options.dll
+2026-10-29 14:33:26.326   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.326   Installing the file.
+2026-10-29 14:33:26.331   Successfully installed the file.
+2026-10-29 14:33:26.331   -- File entry --
+2026-10-29 14:33:26.331   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.Primitives.dll
+2026-10-29 14:33:26.331   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-10-29 14:33:26.331   Installing the file.
+2026-10-29 14:33:26.334   Successfully installed the file.
+2026-10-29 14:33:26.334   -- File entry --
+2026-10-29 14:33:26.334   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Extensions.WebEncoders.dll
+2026-10-29 14:33:26.335   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.335   Installing the file.
+2026-10-29 14:33:26.338   Successfully installed the file.
+2026-10-29 14:33:26.338   -- File entry --
+2026-10-29 14:33:26.338   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.IdentityModel.Abstractions.dll
+2026-10-29 14:33:26.338   Time stamp of our file: 2024-11-15 11:30:10.000
+2026-10-29 14:33:26.338   Installing the file.
+2026-10-29 14:33:26.344   Successfully installed the file.
+2026-10-29 14:33:26.344   -- File entry --
+2026-10-29 14:33:26.344   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.IdentityModel.JsonWebTokens.dll
+2026-10-29 14:33:26.357   Time stamp of our file: 2024-11-15 11:30:20.000
+2026-10-29 14:33:26.357   Installing the file.
+2026-10-29 14:33:26.362   Successfully installed the file.
+2026-10-29 14:33:26.362   -- File entry --
+2026-10-29 14:33:26.362   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.IdentityModel.Logging.dll
+2026-10-29 14:33:26.362   Time stamp of our file: 2024-11-15 11:30:12.000
+2026-10-29 14:33:26.362   Installing the file.
+2026-10-29 14:33:26.364   Successfully installed the file.
+2026-10-29 14:33:26.364   -- File entry --
+2026-10-29 14:33:26.364   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.IdentityModel.Protocols.dll
+2026-10-29 14:33:26.364   Time stamp of our file: 2023-11-21 08:17:02.000
+2026-10-29 14:33:26.364   Installing the file.
+2026-10-29 14:33:26.368   Successfully installed the file.
+2026-10-29 14:33:26.368   -- File entry --
+2026-10-29 14:33:26.368   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+2026-10-29 14:33:26.368   Time stamp of our file: 2023-11-21 08:30:36.000
+2026-10-29 14:33:26.368   Installing the file.
+2026-10-29 14:33:26.372   Successfully installed the file.
+2026-10-29 14:33:26.372   -- File entry --
+2026-10-29 14:33:26.372   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.IdentityModel.Tokens.dll
+2026-10-29 14:33:26.372   Time stamp of our file: 2024-11-15 11:30:20.000
+2026-10-29 14:33:26.372   Installing the file.
+2026-10-29 14:33:26.379   Successfully installed the file.
+2026-10-29 14:33:26.379   -- File entry --
+2026-10-29 14:33:26.379   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.JSInterop.dll
+2026-10-29 14:33:26.380   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.380   Installing the file.
+2026-10-29 14:33:26.385   Successfully installed the file.
+2026-10-29 14:33:26.385   -- File entry --
+2026-10-29 14:33:26.385   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Net.Http.Headers.dll
+2026-10-29 14:33:26.386   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-10-29 14:33:26.386   Installing the file.
+2026-10-29 14:33:26.392   Successfully installed the file.
+2026-10-29 14:33:26.392   -- File entry --
+2026-10-29 14:33:26.392   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.VisualBasic.Core.dll
+2026-10-29 14:33:26.392   Time stamp of our file: 2026-08-21 04:23:36.000
+2026-10-29 14:33:26.392   Installing the file.
+2026-10-29 14:33:26.427   Successfully installed the file.
+2026-10-29 14:33:26.427   -- File entry --
+2026-10-29 14:33:26.427   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.VisualBasic.dll
+2026-10-29 14:33:26.427   Time stamp of our file: 2026-08-21 04:17:32.000
+2026-10-29 14:33:26.427   Installing the file.
+2026-10-29 14:33:26.428   Successfully installed the file.
+2026-10-29 14:33:26.428   -- File entry --
+2026-10-29 14:33:26.428   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Win32.Primitives.dll
+2026-10-29 14:33:26.428   Time stamp of our file: 2026-08-21 04:16:28.000
+2026-10-29 14:33:26.428   Installing the file.
+2026-10-29 14:33:26.430   Successfully installed the file.
+2026-10-29 14:33:26.430   -- File entry --
+2026-10-29 14:33:26.430   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Win32.Registry.dll
+2026-10-29 14:33:26.430   Time stamp of our file: 2026-08-21 04:23:38.000
+2026-10-29 14:33:26.430   Installing the file.
+2026-10-29 14:33:26.435   Successfully installed the file.
+2026-10-29 14:33:26.435   -- File entry --
+2026-10-29 14:33:26.435   Dest filename: C:\tmp\seruni-exe-baru\Microsoft.Win32.SystemEvents.dll
+2026-10-29 14:33:26.435   Time stamp of our file: 2023-10-31 21:59:50.000
+2026-10-29 14:33:26.435   Installing the file.
+2026-10-29 14:33:26.437   Successfully installed the file.
+2026-10-29 14:33:26.438   -- File entry --
+2026-10-29 14:33:26.438   Dest filename: C:\tmp\seruni-exe-baru\mscordaccore.dll
+2026-10-29 14:33:26.438   Time stamp of our file: 2026-08-21 04:06:14.000
+2026-10-29 14:33:26.438   Installing the file.
+2026-10-29 14:33:26.484   Successfully installed the file.
+2026-10-29 14:33:26.484   -- File entry --
+2026-10-29 14:33:26.484   Dest filename: C:\tmp\seruni-exe-baru\mscordaccore_amd64_amd64_8.0.3126.42015.dll
+2026-10-29 14:33:26.484   Time stamp of our file: 2026-08-21 04:06:14.000
+2026-10-29 14:33:26.485   Installing the file.
+2026-10-29 14:33:26.497   Successfully installed the file.
+2026-10-29 14:33:26.497   -- File entry --
+2026-10-29 14:33:26.497   Dest filename: C:\tmp\seruni-exe-baru\mscordbi.dll
+2026-10-29 14:33:26.497   Time stamp of our file: 2026-08-21 04:06:04.000
+2026-10-29 14:33:26.497   Installing the file.
+2026-10-29 14:33:26.523   Successfully installed the file.
+2026-10-29 14:33:26.523   -- File entry --
+2026-10-29 14:33:26.523   Dest filename: C:\tmp\seruni-exe-baru\mscorlib.dll
+2026-10-29 14:33:26.523   Time stamp of our file: 2026-08-21 04:18:30.000
+2026-10-29 14:33:26.523   Installing the file.
+2026-10-29 14:33:26.525   Successfully installed the file.
+2026-10-29 14:33:26.525   -- File entry --
+2026-10-29 14:33:26.525   Dest filename: C:\tmp\seruni-exe-baru\mscorrc.dll
+2026-10-29 14:33:26.525   Time stamp of our file: 2026-08-21 04:03:32.000
+2026-10-29 14:33:26.525   Installing the file.
+2026-10-29 14:33:26.530   Successfully installed the file.
+2026-10-29 14:33:26.530   -- File entry --
+2026-10-29 14:33:26.530   Dest filename: C:\tmp\seruni-exe-baru\msquic.dll
+2026-10-29 14:33:26.530   Time stamp of our file: 2026-08-12 04:41:52.000
+2026-10-29 14:33:26.530   Installing the file.
+2026-10-29 14:33:26.546   Successfully installed the file.
+2026-10-29 14:33:26.546   -- File entry --
+2026-10-29 14:33:26.546   Dest filename: C:\tmp\seruni-exe-baru\netstandard.dll
+2026-10-29 14:33:26.546   Time stamp of our file: 2026-08-21 04:18:30.000
+2026-10-29 14:33:26.546   Installing the file.
+2026-10-29 14:33:26.549   Successfully installed the file.
+2026-10-29 14:33:26.549   -- File entry --
+2026-10-29 14:33:26.549   Dest filename: C:\tmp\seruni-exe-baru\QuestPDF.dll
+2026-10-29 14:33:26.549   Time stamp of our file: 2024-10-24 18:54:52.000
+2026-10-29 14:33:26.549   Installing the file.
+2026-10-29 14:33:26.559   Successfully installed the file.
+2026-10-29 14:33:26.559   -- File entry --
+2026-10-29 14:33:26.559   Dest filename: C:\tmp\seruni-exe-baru\QuestPdfSkia.dll
+2026-10-29 14:33:26.559   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:26.559   Installing the file.
+2026-10-29 14:33:26.718   Successfully installed the file.
+2026-10-29 14:33:26.718   -- File entry --
+2026-10-29 14:33:26.718   Dest filename: C:\tmp\seruni-exe-baru\Serilog.AspNetCore.dll
+2026-10-29 14:33:26.718   Time stamp of our file: 2024-10-11 12:58:26.000
+2026-10-29 14:33:26.718   Installing the file.
+2026-10-29 14:33:26.720   Successfully installed the file.
+2026-10-29 14:33:26.720   -- File entry --
+2026-10-29 14:33:26.720   Dest filename: C:\tmp\seruni-exe-baru\Serilog.dll
+2026-10-29 14:33:26.720   Time stamp of our file: 2024-06-01 13:19:40.000
+2026-10-29 14:33:26.720   Installing the file.
+2026-10-29 14:33:26.726   Successfully installed the file.
+2026-10-29 14:33:26.726   -- File entry --
+2026-10-29 14:33:26.726   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Extensions.Hosting.dll
+2026-10-29 14:33:26.727   Time stamp of our file: 2023-11-15 09:04:28.000
+2026-10-29 14:33:26.727   Installing the file.
+2026-10-29 14:33:26.729   Successfully installed the file.
+2026-10-29 14:33:26.730   -- File entry --
+2026-10-29 14:33:26.730   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Extensions.Logging.dll
+2026-10-29 14:33:26.731   Time stamp of our file: 2023-11-15 05:47:46.000
+2026-10-29 14:33:26.731   Installing the file.
+2026-10-29 14:33:26.733   Successfully installed the file.
+2026-10-29 14:33:26.733   -- File entry --
+2026-10-29 14:33:26.733   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Formatting.Compact.dll
+2026-10-29 14:33:26.735   Time stamp of our file: 2023-11-09 13:54:56.000
+2026-10-29 14:33:26.735   Installing the file.
+2026-10-29 14:33:26.738   Successfully installed the file.
+2026-10-29 14:33:26.738   -- File entry --
+2026-10-29 14:33:26.738   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Settings.Configuration.dll
+2026-10-29 14:33:26.738   Time stamp of our file: 2024-10-10 07:05:30.000
+2026-10-29 14:33:26.738   Installing the file.
+2026-10-29 14:33:26.745   Successfully installed the file.
+2026-10-29 14:33:26.745   -- File entry --
+2026-10-29 14:33:26.745   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Sinks.Console.dll
+2026-10-29 14:33:26.745   Time stamp of our file: 2023-11-09 13:50:30.000
+2026-10-29 14:33:26.745   Installing the file.
+2026-10-29 14:33:26.752   Successfully installed the file.
+2026-10-29 14:33:26.753   -- File entry --
+2026-10-29 14:33:26.753   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Sinks.Debug.dll
+2026-10-29 14:33:26.755   Time stamp of our file: 2021-02-14 14:47:26.000
+2026-10-29 14:33:26.755   Installing the file.
+2026-10-29 14:33:26.760   Successfully installed the file.
+2026-10-29 14:33:26.760   -- File entry --
+2026-10-29 14:33:26.761   Dest filename: C:\tmp\seruni-exe-baru\Serilog.Sinks.File.dll
+2026-10-29 14:33:26.761   Time stamp of our file: 2024-06-23 05:44:08.000
+2026-10-29 14:33:26.761   Installing the file.
+2026-10-29 14:33:26.769   Successfully installed the file.
+2026-10-29 14:33:26.770   -- File entry --
+2026-10-29 14:33:26.770   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Application.dll
+2026-10-29 14:33:26.770   Time stamp of our file: 2026-10-29 14:30:08.000
+2026-10-29 14:33:26.770   Installing the file.
+2026-10-29 14:33:26.784   Successfully installed the file.
+2026-10-29 14:33:26.784   -- File entry --
+2026-10-29 14:33:26.784   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Domain.dll
+2026-10-29 14:33:26.785   Time stamp of our file: 2026-10-29 14:30:06.000
+2026-10-29 14:33:26.785   Installing the file.
+2026-10-29 14:33:26.795   Successfully installed the file.
+2026-10-29 14:33:26.795   -- File entry --
+2026-10-29 14:33:26.796   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.exe
+2026-10-29 14:33:26.796   Time stamp of our file: 2026-10-29 14:30:20.000
+2026-10-29 14:33:26.796   Installing the file.
+2026-10-29 14:33:26.804   Successfully installed the file.
+2026-10-29 14:33:26.806   -- File entry --
+2026-10-29 14:33:26.806   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Host.deps.json
+2026-10-29 14:33:26.807   Time stamp of our file: 2026-10-29 14:30:18.000
+2026-10-29 14:33:26.808   Installing the file.
+2026-10-29 14:33:26.812   Successfully installed the file.
+2026-10-29 14:33:26.812   -- File entry --
+2026-10-29 14:33:26.812   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Host.dll
+2026-10-29 14:33:26.814   Time stamp of our file: 2026-10-29 14:30:14.000
+2026-10-29 14:33:26.814   Installing the file.
+2026-10-29 14:33:26.825   Successfully installed the file.
+2026-10-29 14:33:26.825   -- File entry --
+2026-10-29 14:33:26.825   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Host.exe
+2026-10-29 14:33:26.826   Time stamp of our file: 2026-10-29 14:30:14.000
+2026-10-29 14:33:26.826   Installing the file.
+2026-10-29 14:33:26.832   Successfully installed the file.
+2026-10-29 14:33:26.832   -- File entry --
+2026-10-29 14:33:26.832   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Host.runtimeconfig.json
+2026-10-29 14:33:26.833   Time stamp of our file: 2026-10-29 14:30:18.000
+2026-10-29 14:33:26.833   Installing the file.
+2026-10-29 14:33:26.837   Successfully installed the file.
+2026-10-29 14:33:26.838   -- File entry --
+2026-10-29 14:33:26.838   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Host.staticwebassets.endpoints.json
+2026-10-29 14:33:26.838   Time stamp of our file: 2026-10-24 21:57:34.000
+2026-10-29 14:33:26.838   Installing the file.
+2026-10-29 14:33:26.841   Successfully installed the file.
+2026-10-29 14:33:26.841   -- File entry --
+2026-10-29 14:33:26.841   Dest filename: C:\tmp\seruni-exe-baru\Seruni22Bakery.Infrastructure.Sqlite.dll
+2026-10-29 14:33:26.841   Time stamp of our file: 2026-10-29 14:30:08.000
+2026-10-29 14:33:26.841   Installing the file.
+2026-10-29 14:33:26.856   Successfully installed the file.
+2026-10-29 14:33:26.856   -- File entry --
+2026-10-29 14:33:26.856   Dest filename: C:\tmp\seruni-exe-baru\SixLabors.Fonts.dll
+2026-10-29 14:33:26.857   Time stamp of our file: 2023-08-11 19:04:44.000
+2026-10-29 14:33:26.857   Installing the file.
+2026-10-29 14:33:26.885   Successfully installed the file.
+2026-10-29 14:33:26.885   -- File entry --
+2026-10-29 14:33:26.885   Dest filename: C:\tmp\seruni-exe-baru\SQLitePCLRaw.batteries_v2.dll
+2026-10-29 14:33:26.886   Time stamp of our file: 2023-08-24 01:41:24.000
+2026-10-29 14:33:26.886   Installing the file.
+2026-10-29 14:33:26.890   Successfully installed the file.
+2026-10-29 14:33:26.890   -- File entry --
+2026-10-29 14:33:26.890   Dest filename: C:\tmp\seruni-exe-baru\SQLitePCLRaw.core.dll
+2026-10-29 14:33:26.890   Time stamp of our file: 2023-08-24 01:38:38.000
+2026-10-29 14:33:26.890   Installing the file.
+2026-10-29 14:33:26.897   Successfully installed the file.
+2026-10-29 14:33:26.898   -- File entry --
+2026-10-29 14:33:26.898   Dest filename: C:\tmp\seruni-exe-baru\SQLitePCLRaw.provider.e_sqlite3.dll
+2026-10-29 14:33:26.898   Time stamp of our file: 2023-08-24 01:38:52.000
+2026-10-29 14:33:26.898   Installing the file.
+2026-10-29 14:33:26.901   Successfully installed the file.
+2026-10-29 14:33:26.903   -- File entry --
+2026-10-29 14:33:26.903   Dest filename: C:\tmp\seruni-exe-baru\System.AppContext.dll
+2026-10-29 14:33:26.903   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:26.903   Installing the file.
+2026-10-29 14:33:26.907   Successfully installed the file.
+2026-10-29 14:33:26.907   -- File entry --
+2026-10-29 14:33:26.907   Dest filename: C:\tmp\seruni-exe-baru\System.Buffers.dll
+2026-10-29 14:33:26.908   Time stamp of our file: 2026-08-21 04:17:08.000
+2026-10-29 14:33:26.908   Installing the file.
+2026-10-29 14:33:26.910   Successfully installed the file.
+2026-10-29 14:33:26.911   -- File entry --
+2026-10-29 14:33:26.911   Dest filename: C:\tmp\seruni-exe-baru\System.Collections.Concurrent.dll
+2026-10-29 14:33:26.911   Time stamp of our file: 2026-08-21 04:23:42.000
+2026-10-29 14:33:26.911   Installing the file.
+2026-10-29 14:33:26.926   Successfully installed the file.
+2026-10-29 14:33:26.926   -- File entry --
+2026-10-29 14:33:26.926   Dest filename: C:\tmp\seruni-exe-baru\System.Collections.dll
+2026-10-29 14:33:26.926   Time stamp of our file: 2026-08-21 04:23:44.000
+2026-10-29 14:33:26.926   Installing the file.
+2026-10-29 14:33:26.935   Successfully installed the file.
+2026-10-29 14:33:26.936   -- File entry --
+2026-10-29 14:33:26.936   Dest filename: C:\tmp\seruni-exe-baru\System.Collections.Immutable.dll
+2026-10-29 14:33:26.936   Time stamp of our file: 2026-08-21 04:23:48.000
+2026-10-29 14:33:26.936   Installing the file.
+2026-10-29 14:33:26.967   Successfully installed the file.
+2026-10-29 14:33:26.967   -- File entry --
+2026-10-29 14:33:26.967   Dest filename: C:\tmp\seruni-exe-baru\System.Collections.NonGeneric.dll
+2026-10-29 14:33:26.969   Time stamp of our file: 2026-08-21 04:23:50.000
+2026-10-29 14:33:26.969   Installing the file.
+2026-10-29 14:33:26.976   Successfully installed the file.
+2026-10-29 14:33:26.976   -- File entry --
+2026-10-29 14:33:26.976   Dest filename: C:\tmp\seruni-exe-baru\System.Collections.Specialized.dll
+2026-10-29 14:33:26.977   Time stamp of our file: 2026-08-21 04:23:54.000
+2026-10-29 14:33:26.977   Installing the file.
+2026-10-29 14:33:26.984   Successfully installed the file.
+2026-10-29 14:33:26.984   -- File entry --
+2026-10-29 14:33:26.984   Dest filename: C:\tmp\seruni-exe-baru\System.ComponentModel.Annotations.dll
+2026-10-29 14:33:26.986   Time stamp of our file: 2026-08-21 04:23:56.000
+2026-10-29 14:33:26.986   Installing the file.
+2026-10-29 14:33:26.994   Successfully installed the file.
+2026-10-29 14:33:26.994   -- File entry --
+2026-10-29 14:33:26.994   Dest filename: C:\tmp\seruni-exe-baru\System.ComponentModel.DataAnnotations.dll
+2026-10-29 14:33:26.995   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-10-29 14:33:26.995   Installing the file.
+2026-10-29 14:33:26.998   Successfully installed the file.
+2026-10-29 14:33:26.998   -- File entry --
+2026-10-29 14:33:26.998   Dest filename: C:\tmp\seruni-exe-baru\System.ComponentModel.dll
+2026-10-29 14:33:27.001   Time stamp of our file: 2026-08-21 04:24:00.000
+2026-10-29 14:33:27.001   Installing the file.
+2026-10-29 14:33:27.004   Successfully installed the file.
+2026-10-29 14:33:27.004   -- File entry --
+2026-10-29 14:33:27.004   Dest filename: C:\tmp\seruni-exe-baru\System.ComponentModel.EventBasedAsync.dll
+2026-10-29 14:33:27.005   Time stamp of our file: 2026-08-21 04:24:02.000
+2026-10-29 14:33:27.005   Installing the file.
+2026-10-29 14:33:27.008   Successfully installed the file.
+2026-10-29 14:33:27.009   -- File entry --
+2026-10-29 14:33:27.009   Dest filename: C:\tmp\seruni-exe-baru\System.ComponentModel.Primitives.dll
+2026-10-29 14:33:27.009   Time stamp of our file: 2026-08-21 04:24:04.000
+2026-10-29 14:33:27.009   Installing the file.
+2026-10-29 14:33:27.013   Successfully installed the file.
+2026-10-29 14:33:27.013   -- File entry --
+2026-10-29 14:33:27.013   Dest filename: C:\tmp\seruni-exe-baru\System.ComponentModel.TypeConverter.dll
+2026-10-29 14:33:27.013   Time stamp of our file: 2026-08-21 04:24:08.000
+2026-10-29 14:33:27.013   Installing the file.
+2026-10-29 14:33:27.037   Successfully installed the file.
+2026-10-29 14:33:27.037   -- File entry --
+2026-10-29 14:33:27.037   Dest filename: C:\tmp\seruni-exe-baru\System.Configuration.dll
+2026-10-29 14:33:27.037   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-10-29 14:33:27.037   Installing the file.
+2026-10-29 14:33:27.039   Successfully installed the file.
+2026-10-29 14:33:27.039   -- File entry --
+2026-10-29 14:33:27.039   Dest filename: C:\tmp\seruni-exe-baru\System.Console.dll
+2026-10-29 14:33:27.039   Time stamp of our file: 2026-08-21 04:24:10.000
+2026-10-29 14:33:27.039   Installing the file.
+2026-10-29 14:33:27.045   Successfully installed the file.
+2026-10-29 14:33:27.045   -- File entry --
+2026-10-29 14:33:27.045   Dest filename: C:\tmp\seruni-exe-baru\System.Core.dll
+2026-10-29 14:33:27.046   Time stamp of our file: 2026-08-21 04:18:28.000
+2026-10-29 14:33:27.046   Installing the file.
+2026-10-29 14:33:27.048   Successfully installed the file.
+2026-10-29 14:33:27.048   -- File entry --
+2026-10-29 14:33:27.048   Dest filename: C:\tmp\seruni-exe-baru\System.Data.Common.dll
+2026-10-29 14:33:27.048   Time stamp of our file: 2026-08-21 04:24:14.000
+2026-10-29 14:33:27.048   Installing the file.
+2026-10-29 14:33:27.129   Successfully installed the file.
+2026-10-29 14:33:27.129   -- File entry --
+2026-10-29 14:33:27.129   Dest filename: C:\tmp\seruni-exe-baru\System.Data.DataSetExtensions.dll
+2026-10-29 14:33:27.129   Time stamp of our file: 2026-08-21 04:18:16.000
+2026-10-29 14:33:27.129   Installing the file.
+2026-10-29 14:33:27.131   Successfully installed the file.
+2026-10-29 14:33:27.131   -- File entry --
+2026-10-29 14:33:27.131   Dest filename: C:\tmp\seruni-exe-baru\System.Data.dll
+2026-10-29 14:33:27.131   Time stamp of our file: 2026-08-21 04:18:22.000
+2026-10-29 14:33:27.131   Installing the file.
+2026-10-29 14:33:27.133   Successfully installed the file.
+2026-10-29 14:33:27.133   -- File entry --
+2026-10-29 14:33:27.133   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.Contracts.dll
+2026-10-29 14:33:27.134   Time stamp of our file: 2026-08-21 04:16:28.000
+2026-10-29 14:33:27.134   Installing the file.
+2026-10-29 14:33:27.136   Successfully installed the file.
+2026-10-29 14:33:27.136   -- File entry --
+2026-10-29 14:33:27.136   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.Debug.dll
+2026-10-29 14:33:27.137   Time stamp of our file: 2026-08-21 04:17:10.000
+2026-10-29 14:33:27.137   Installing the file.
+2026-10-29 14:33:27.140   Successfully installed the file.
+2026-10-29 14:33:27.140   -- File entry --
+2026-10-29 14:33:27.141   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.DiagnosticSource.dll
+2026-10-29 14:33:27.141   Time stamp of our file: 2026-08-21 04:24:18.000
+2026-10-29 14:33:27.141   Installing the file.
+2026-10-29 14:33:27.153   Successfully installed the file.
+2026-10-29 14:33:27.153   -- File entry --
+2026-10-29 14:33:27.153   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.EventLog.dll
+2026-10-29 14:33:27.154   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:27.154   Installing the file.
+2026-10-29 14:33:27.165   Successfully installed the file.
+2026-10-29 14:33:27.165   -- File entry --
+2026-10-29 14:33:27.166   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.EventLog.Messages.dll
+2026-10-29 14:33:27.166   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:27.166   Installing the file.
+2026-10-29 14:33:27.173   Successfully installed the file.
+2026-10-29 14:33:27.173   -- File entry --
+2026-10-29 14:33:27.173   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.FileVersionInfo.dll
+2026-10-29 14:33:27.173   Time stamp of our file: 2026-08-21 04:24:20.000
+2026-10-29 14:33:27.173   Installing the file.
+2026-10-29 14:33:27.175   Successfully installed the file.
+2026-10-29 14:33:27.175   -- File entry --
+2026-10-29 14:33:27.175   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.Process.dll
+2026-10-29 14:33:27.176   Time stamp of our file: 2026-08-21 04:24:24.000
+2026-10-29 14:33:27.176   Installing the file.
+2026-10-29 14:33:27.185   Successfully installed the file.
+2026-10-29 14:33:27.185   -- File entry --
+2026-10-29 14:33:27.185   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.StackTrace.dll
+2026-10-29 14:33:27.185   Time stamp of our file: 2026-08-21 04:24:26.000
+2026-10-29 14:33:27.185   Installing the file.
+2026-10-29 14:33:27.187   Successfully installed the file.
+2026-10-29 14:33:27.187   -- File entry --
+2026-10-29 14:33:27.187   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.TextWriterTraceListener.dll
+2026-10-29 14:33:27.188   Time stamp of our file: 2026-08-21 04:24:30.000
+2026-10-29 14:33:27.188   Installing the file.
+2026-10-29 14:33:27.191   Successfully installed the file.
+2026-10-29 14:33:27.191   -- File entry --
+2026-10-29 14:33:27.191   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.Tools.dll
+2026-10-29 14:33:27.191   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:27.191   Installing the file.
+2026-10-29 14:33:27.193   Successfully installed the file.
+2026-10-29 14:33:27.193   -- File entry --
+2026-10-29 14:33:27.193   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.TraceSource.dll
+2026-10-29 14:33:27.193   Time stamp of our file: 2026-08-21 04:24:32.000
+2026-10-29 14:33:27.193   Installing the file.
+2026-10-29 14:33:27.198   Successfully installed the file.
+2026-10-29 14:33:27.198   -- File entry --
+2026-10-29 14:33:27.198   Dest filename: C:\tmp\seruni-exe-baru\System.Diagnostics.Tracing.dll
+2026-10-29 14:33:27.198   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-10-29 14:33:27.198   Installing the file.
+2026-10-29 14:33:27.200   Successfully installed the file.
+2026-10-29 14:33:27.200   -- File entry --
+2026-10-29 14:33:27.200   Dest filename: C:\tmp\seruni-exe-baru\System.dll
+2026-10-29 14:33:27.201   Time stamp of our file: 2026-08-21 04:18:30.000
+2026-10-29 14:33:27.201   Installing the file.
+2026-10-29 14:33:27.204   Successfully installed the file.
+2026-10-29 14:33:27.204   -- File entry --
+2026-10-29 14:33:27.204   Dest filename: C:\tmp\seruni-exe-baru\System.Drawing.Common.dll
+2026-10-29 14:33:27.204   Time stamp of our file: 2024-09-18 23:22:44.000
+2026-10-29 14:33:27.204   Installing the file.
+2026-10-29 14:33:27.217   Successfully installed the file.
+2026-10-29 14:33:27.217   -- File entry --
+2026-10-29 14:33:27.218   Dest filename: C:\tmp\seruni-exe-baru\System.Drawing.dll
+2026-10-29 14:33:27.218   Time stamp of our file: 2026-08-21 04:18:18.000
+2026-10-29 14:33:27.218   Installing the file.
+2026-10-29 14:33:27.219   Successfully installed the file.
+2026-10-29 14:33:27.219   -- File entry --
+2026-10-29 14:33:27.219   Dest filename: C:\tmp\seruni-exe-baru\System.Drawing.Primitives.dll
+2026-10-29 14:33:27.219   Time stamp of our file: 2026-08-21 04:24:36.000
+2026-10-29 14:33:27.219   Installing the file.
+2026-10-29 14:33:27.224   Successfully installed the file.
+2026-10-29 14:33:27.224   -- File entry --
+2026-10-29 14:33:27.224   Dest filename: C:\tmp\seruni-exe-baru\System.Dynamic.Runtime.dll
+2026-10-29 14:33:27.224   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-10-29 14:33:27.224   Installing the file.
+2026-10-29 14:33:27.225   Successfully installed the file.
+2026-10-29 14:33:27.225   -- File entry --
+2026-10-29 14:33:27.225   Dest filename: C:\tmp\seruni-exe-baru\System.Formats.Asn1.dll
+2026-10-29 14:33:27.225   Time stamp of our file: 2026-08-21 04:24:38.000
+2026-10-29 14:33:27.225   Installing the file.
+2026-10-29 14:33:27.233   Successfully installed the file.
+2026-10-29 14:33:27.233   -- File entry --
+2026-10-29 14:33:27.233   Dest filename: C:\tmp\seruni-exe-baru\System.Formats.Tar.dll
+2026-10-29 14:33:27.233   Time stamp of our file: 2026-08-21 04:24:42.000
+2026-10-29 14:33:27.233   Installing the file.
+2026-10-29 14:33:27.241   Successfully installed the file.
+2026-10-29 14:33:27.241   -- File entry --
+2026-10-29 14:33:27.241   Dest filename: C:\tmp\seruni-exe-baru\System.Globalization.Calendars.dll
+2026-10-29 14:33:27.241   Time stamp of our file: 2026-08-21 04:17:10.000
+2026-10-29 14:33:27.241   Installing the file.
+2026-10-29 14:33:27.242   Successfully installed the file.
+2026-10-29 14:33:27.242   -- File entry --
+2026-10-29 14:33:27.242   Dest filename: C:\tmp\seruni-exe-baru\System.Globalization.dll
+2026-10-29 14:33:27.243   Time stamp of our file: 2026-08-21 04:16:44.000
+2026-10-29 14:33:27.243   Installing the file.
+2026-10-29 14:33:27.243   Successfully installed the file.
+2026-10-29 14:33:27.243   -- File entry --
+2026-10-29 14:33:27.243   Dest filename: C:\tmp\seruni-exe-baru\System.Globalization.Extensions.dll
+2026-10-29 14:33:27.243   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-10-29 14:33:27.245   Installing the file.
+2026-10-29 14:33:27.246   Successfully installed the file.
+2026-10-29 14:33:27.246   -- File entry --
+2026-10-29 14:33:27.246   Dest filename: C:\tmp\seruni-exe-baru\System.IdentityModel.Tokens.Jwt.dll
+2026-10-29 14:33:27.246   Time stamp of our file: 2024-11-15 11:30:20.000
+2026-10-29 14:33:27.246   Installing the file.
+2026-10-29 14:33:27.250   Successfully installed the file.
+2026-10-29 14:33:27.250   -- File entry --
+2026-10-29 14:33:27.250   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Compression.Brotli.dll
+2026-10-29 14:33:27.250   Time stamp of our file: 2026-08-21 04:24:44.000
+2026-10-29 14:33:27.250   Installing the file.
+2026-10-29 14:33:27.253   Successfully installed the file.
+2026-10-29 14:33:27.253   -- File entry --
+2026-10-29 14:33:27.253   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Compression.dll
+2026-10-29 14:33:27.254   Time stamp of our file: 2026-08-21 04:24:48.000
+2026-10-29 14:33:27.254   Installing the file.
+2026-10-29 14:33:27.261   Successfully installed the file.
+2026-10-29 14:33:27.261   -- File entry --
+2026-10-29 14:33:27.261   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Compression.FileSystem.dll
+2026-10-29 14:33:27.261   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:27.261   Installing the file.
+2026-10-29 14:33:27.263   Successfully installed the file.
+2026-10-29 14:33:27.263   -- File entry --
+2026-10-29 14:33:27.263   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Compression.Native.dll
+2026-10-29 14:33:27.263   Time stamp of our file: 2026-08-21 04:14:02.000
+2026-10-29 14:33:27.263   Installing the file.
+2026-10-29 14:33:27.284   Successfully installed the file.
+2026-10-29 14:33:27.284   -- File entry --
+2026-10-29 14:33:27.284   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Compression.ZipFile.dll
+2026-10-29 14:33:27.285   Time stamp of our file: 2026-08-21 04:24:50.000
+2026-10-29 14:33:27.285   Installing the file.
+2026-10-29 14:33:27.288   Successfully installed the file.
+2026-10-29 14:33:27.288   -- File entry --
+2026-10-29 14:33:27.288   Dest filename: C:\tmp\seruni-exe-baru\System.IO.dll
+2026-10-29 14:33:27.288   Time stamp of our file: 2026-08-21 04:17:08.000
+2026-10-29 14:33:27.288   Installing the file.
+2026-10-29 14:33:27.289   Successfully installed the file.
+2026-10-29 14:33:27.289   -- File entry --
+2026-10-29 14:33:27.289   Dest filename: C:\tmp\seruni-exe-baru\System.IO.FileSystem.AccessControl.dll
+2026-10-29 14:33:27.289   Time stamp of our file: 2026-08-21 04:24:54.000
+2026-10-29 14:33:27.289   Installing the file.
+2026-10-29 14:33:27.293   Successfully installed the file.
+2026-10-29 14:33:27.293   -- File entry --
+2026-10-29 14:33:27.293   Dest filename: C:\tmp\seruni-exe-baru\System.IO.FileSystem.dll
+2026-10-29 14:33:27.293   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-10-29 14:33:27.293   Installing the file.
+2026-10-29 14:33:27.296   Successfully installed the file.
+2026-10-29 14:33:27.296   -- File entry --
+2026-10-29 14:33:27.296   Dest filename: C:\tmp\seruni-exe-baru\System.IO.FileSystem.DriveInfo.dll
+2026-10-29 14:33:27.297   Time stamp of our file: 2026-08-21 04:24:56.000
+2026-10-29 14:33:27.297   Installing the file.
+2026-10-29 14:33:27.298   Successfully installed the file.
+2026-10-29 14:33:27.298   -- File entry --
+2026-10-29 14:33:27.298   Dest filename: C:\tmp\seruni-exe-baru\System.IO.FileSystem.Primitives.dll
+2026-10-29 14:33:27.298   Time stamp of our file: 2026-08-21 04:17:10.000
+2026-10-29 14:33:27.298   Installing the file.
+2026-10-29 14:33:27.300   Successfully installed the file.
+2026-10-29 14:33:27.300   -- File entry --
+2026-10-29 14:33:27.300   Dest filename: C:\tmp\seruni-exe-baru\System.IO.FileSystem.Watcher.dll
+2026-10-29 14:33:27.300   Time stamp of our file: 2026-08-21 04:25:00.000
+2026-10-29 14:33:27.300   Installing the file.
+2026-10-29 14:33:27.303   Successfully installed the file.
+2026-10-29 14:33:27.303   -- File entry --
+2026-10-29 14:33:27.303   Dest filename: C:\tmp\seruni-exe-baru\System.IO.IsolatedStorage.dll
+2026-10-29 14:33:27.304   Time stamp of our file: 2026-08-21 04:25:02.000
+2026-10-29 14:33:27.304   Installing the file.
+2026-10-29 14:33:27.307   Successfully installed the file.
+2026-10-29 14:33:27.308   -- File entry --
+2026-10-29 14:33:27.308   Dest filename: C:\tmp\seruni-exe-baru\System.IO.MemoryMappedFiles.dll
+2026-10-29 14:33:27.308   Time stamp of our file: 2026-08-21 04:25:06.000
+2026-10-29 14:33:27.308   Installing the file.
+2026-10-29 14:33:27.310   Successfully installed the file.
+2026-10-29 14:33:27.310   -- File entry --
+2026-10-29 14:33:27.311   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Packaging.dll
+2026-10-29 14:33:27.311   Time stamp of our file: 2021-10-23 06:49:46.000
+2026-10-29 14:33:27.311   Installing the file.
+2026-10-29 14:33:27.314   Successfully installed the file.
+2026-10-29 14:33:27.315   -- File entry --
+2026-10-29 14:33:27.315   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Pipelines.dll
+2026-10-29 14:33:27.315   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:27.315   Installing the file.
+2026-10-29 14:33:27.321   Successfully installed the file.
+2026-10-29 14:33:27.321   -- File entry --
+2026-10-29 14:33:27.321   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Pipes.AccessControl.dll
+2026-10-29 14:33:27.321   Time stamp of our file: 2026-08-21 04:15:32.000
+2026-10-29 14:33:27.321   Installing the file.
+2026-10-29 14:33:27.322   Successfully installed the file.
+2026-10-29 14:33:27.323   -- File entry --
+2026-10-29 14:33:27.323   Dest filename: C:\tmp\seruni-exe-baru\System.IO.Pipes.dll
+2026-10-29 14:33:27.323   Time stamp of our file: 2026-08-21 04:25:08.000
+2026-10-29 14:33:27.323   Installing the file.
+2026-10-29 14:33:27.327   Successfully installed the file.
+2026-10-29 14:33:27.327   -- File entry --
+2026-10-29 14:33:27.327   Dest filename: C:\tmp\seruni-exe-baru\System.IO.UnmanagedMemoryStream.dll
+2026-10-29 14:33:27.327   Time stamp of our file: 2026-08-21 04:18:18.000
+2026-10-29 14:33:27.327   Installing the file.
+2026-10-29 14:33:27.328   Successfully installed the file.
+2026-10-29 14:33:27.328   -- File entry --
+2026-10-29 14:33:27.328   Dest filename: C:\tmp\seruni-exe-baru\System.Linq.dll
+2026-10-29 14:33:27.329   Time stamp of our file: 2026-08-21 04:25:12.000
+2026-10-29 14:33:27.329   Installing the file.
+2026-10-29 14:33:27.343   Successfully installed the file.
+2026-10-29 14:33:27.343   -- File entry --
+2026-10-29 14:33:27.343   Dest filename: C:\tmp\seruni-exe-baru\System.Linq.Expressions.dll
+2026-10-29 14:33:27.343   Time stamp of our file: 2026-08-21 04:25:16.000
+2026-10-29 14:33:27.343   Installing the file.
+2026-10-29 14:33:27.416   Successfully installed the file.
+2026-10-29 14:33:27.416   -- File entry --
+2026-10-29 14:33:27.416   Dest filename: C:\tmp\seruni-exe-baru\System.Linq.Parallel.dll
+2026-10-29 14:33:27.416   Time stamp of our file: 2026-08-21 04:25:20.000
+2026-10-29 14:33:27.416   Installing the file.
+2026-10-29 14:33:27.437   Successfully installed the file.
+2026-10-29 14:33:27.437   -- File entry --
+2026-10-29 14:33:27.437   Dest filename: C:\tmp\seruni-exe-baru\System.Linq.Queryable.dll
+2026-10-29 14:33:27.443   Time stamp of our file: 2026-08-21 04:25:24.000
+2026-10-29 14:33:27.443   Installing the file.
+2026-10-29 14:33:27.447   Successfully installed the file.
+2026-10-29 14:33:27.447   -- File entry --
+2026-10-29 14:33:27.447   Dest filename: C:\tmp\seruni-exe-baru\System.Memory.dll
+2026-10-29 14:33:27.447   Time stamp of our file: 2026-08-21 04:25:26.000
+2026-10-29 14:33:27.447   Installing the file.
+2026-10-29 14:33:27.451   Successfully installed the file.
+2026-10-29 14:33:27.452   -- File entry --
+2026-10-29 14:33:27.452   Dest filename: C:\tmp\seruni-exe-baru\System.Net.dll
+2026-10-29 14:33:27.453   Time stamp of our file: 2026-08-21 04:18:08.000
+2026-10-29 14:33:27.453   Installing the file.
+2026-10-29 14:33:27.454   Successfully installed the file.
+2026-10-29 14:33:27.454   -- File entry --
+2026-10-29 14:33:27.454   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Http.dll
+2026-10-29 14:33:27.455   Time stamp of our file: 2026-08-21 04:25:30.000
+2026-10-29 14:33:27.455   Installing the file.
+2026-10-29 14:33:27.507   Successfully installed the file.
+2026-10-29 14:33:27.507   -- File entry --
+2026-10-29 14:33:27.507   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Http.Json.dll
+2026-10-29 14:33:27.508   Time stamp of our file: 2026-08-21 04:25:34.000
+2026-10-29 14:33:27.508   Installing the file.
+2026-10-29 14:33:27.513   Successfully installed the file.
+2026-10-29 14:33:27.513   -- File entry --
+2026-10-29 14:33:27.513   Dest filename: C:\tmp\seruni-exe-baru\System.Net.HttpListener.dll
+2026-10-29 14:33:27.513   Time stamp of our file: 2026-08-21 04:25:36.000
+2026-10-29 14:33:27.513   Installing the file.
+2026-10-29 14:33:27.529   Successfully installed the file.
+2026-10-29 14:33:27.529   -- File entry --
+2026-10-29 14:33:27.530   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Mail.dll
+2026-10-29 14:33:27.530   Time stamp of our file: 2026-08-21 04:25:40.000
+2026-10-29 14:33:27.530   Installing the file.
+2026-10-29 14:33:27.546   Successfully installed the file.
+2026-10-29 14:33:27.546   -- File entry --
+2026-10-29 14:33:27.546   Dest filename: C:\tmp\seruni-exe-baru\System.Net.NameResolution.dll
+2026-10-29 14:33:27.546   Time stamp of our file: 2026-08-21 04:25:42.000
+2026-10-29 14:33:27.546   Installing the file.
+2026-10-29 14:33:27.549   Successfully installed the file.
+2026-10-29 14:33:27.549   -- File entry --
+2026-10-29 14:33:27.549   Dest filename: C:\tmp\seruni-exe-baru\System.Net.NetworkInformation.dll
+2026-10-29 14:33:27.549   Time stamp of our file: 2026-08-21 04:25:46.000
+2026-10-29 14:33:27.549   Installing the file.
+2026-10-29 14:33:27.555   Successfully installed the file.
+2026-10-29 14:33:27.555   -- File entry --
+2026-10-29 14:33:27.555   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Ping.dll
+2026-10-29 14:33:27.555   Time stamp of our file: 2026-08-21 04:25:48.000
+2026-10-29 14:33:27.555   Installing the file.
+2026-10-29 14:33:27.558   Successfully installed the file.
+2026-10-29 14:33:27.558   -- File entry --
+2026-10-29 14:33:27.558   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Primitives.dll
+2026-10-29 14:33:27.558   Time stamp of our file: 2026-08-21 04:25:52.000
+2026-10-29 14:33:27.558   Installing the file.
+2026-10-29 14:33:27.565   Successfully installed the file.
+2026-10-29 14:33:27.565   -- File entry --
+2026-10-29 14:33:27.565   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Quic.dll
+2026-10-29 14:33:27.566   Time stamp of our file: 2026-08-21 04:25:54.000
+2026-10-29 14:33:27.566   Installing the file.
+2026-10-29 14:33:27.575   Successfully installed the file.
+2026-10-29 14:33:27.575   -- File entry --
+2026-10-29 14:33:27.575   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Requests.dll
+2026-10-29 14:33:27.579   Time stamp of our file: 2026-08-21 04:25:58.000
+2026-10-29 14:33:27.579   Installing the file.
+2026-10-29 14:33:27.590   Successfully installed the file.
+2026-10-29 14:33:27.590   -- File entry --
+2026-10-29 14:33:27.590   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Security.dll
+2026-10-29 14:33:27.590   Time stamp of our file: 2026-08-21 04:26:00.000
+2026-10-29 14:33:27.590   Installing the file.
+2026-10-29 14:33:27.610   Successfully installed the file.
+2026-10-29 14:33:27.611   -- File entry --
+2026-10-29 14:33:27.611   Dest filename: C:\tmp\seruni-exe-baru\System.Net.ServicePoint.dll
+2026-10-29 14:33:27.612   Time stamp of our file: 2026-08-21 04:26:04.000
+2026-10-29 14:33:27.612   Installing the file.
+2026-10-29 14:33:27.615   Successfully installed the file.
+2026-10-29 14:33:27.616   -- File entry --
+2026-10-29 14:33:27.616   Dest filename: C:\tmp\seruni-exe-baru\System.Net.Sockets.dll
+2026-10-29 14:33:27.616   Time stamp of our file: 2026-08-21 04:26:06.000
+2026-10-29 14:33:27.616   Installing the file.
+2026-10-29 14:33:27.636   Successfully installed the file.
+2026-10-29 14:33:27.636   -- File entry --
+2026-10-29 14:33:27.636   Dest filename: C:\tmp\seruni-exe-baru\System.Net.WebClient.dll
+2026-10-29 14:33:27.636   Time stamp of our file: 2026-08-21 04:26:10.000
+2026-10-29 14:33:27.636   Installing the file.
+2026-10-29 14:33:27.643   Successfully installed the file.
+2026-10-29 14:33:27.643   -- File entry --
+2026-10-29 14:33:27.643   Dest filename: C:\tmp\seruni-exe-baru\System.Net.WebHeaderCollection.dll
+2026-10-29 14:33:27.643   Time stamp of our file: 2026-08-21 04:26:12.000
+2026-10-29 14:33:27.643   Installing the file.
+2026-10-29 14:33:27.647   Successfully installed the file.
+2026-10-29 14:33:27.647   -- File entry --
+2026-10-29 14:33:27.647   Dest filename: C:\tmp\seruni-exe-baru\System.Net.WebProxy.dll
+2026-10-29 14:33:27.647   Time stamp of our file: 2026-08-21 04:26:14.000
+2026-10-29 14:33:27.647   Installing the file.
+2026-10-29 14:33:27.649   Successfully installed the file.
+2026-10-29 14:33:27.650   -- File entry --
+2026-10-29 14:33:27.650   Dest filename: C:\tmp\seruni-exe-baru\System.Net.WebSockets.Client.dll
+2026-10-29 14:33:27.650   Time stamp of our file: 2026-08-21 04:26:18.000
+2026-10-29 14:33:27.650   Installing the file.
+2026-10-29 14:33:27.655   Successfully installed the file.
+2026-10-29 14:33:27.655   -- File entry --
+2026-10-29 14:33:27.655   Dest filename: C:\tmp\seruni-exe-baru\System.Net.WebSockets.dll
+2026-10-29 14:33:27.656   Time stamp of our file: 2026-08-21 04:26:20.000
+2026-10-29 14:33:27.656   Installing the file.
+2026-10-29 14:33:27.663   Successfully installed the file.
+2026-10-29 14:33:27.663   -- File entry --
+2026-10-29 14:33:27.663   Dest filename: C:\tmp\seruni-exe-baru\System.Numerics.dll
+2026-10-29 14:33:27.664   Time stamp of our file: 2026-08-21 04:17:42.000
+2026-10-29 14:33:27.664   Installing the file.
+2026-10-29 14:33:27.666   Successfully installed the file.
+2026-10-29 14:33:27.666   -- File entry --
+2026-10-29 14:33:27.666   Dest filename: C:\tmp\seruni-exe-baru\System.Numerics.Vectors.dll
+2026-10-29 14:33:27.666   Time stamp of our file: 2026-08-21 04:17:40.000
+2026-10-29 14:33:27.667   Installing the file.
+2026-10-29 14:33:27.670   Successfully installed the file.
+2026-10-29 14:33:27.670   -- File entry --
+2026-10-29 14:33:27.670   Dest filename: C:\tmp\seruni-exe-baru\System.ObjectModel.dll
+2026-10-29 14:33:27.671   Time stamp of our file: 2026-08-21 04:26:24.000
+2026-10-29 14:33:27.671   Installing the file.
+2026-10-29 14:33:27.674   Successfully installed the file.
+2026-10-29 14:33:27.675   -- File entry --
+2026-10-29 14:33:27.675   Dest filename: C:\tmp\seruni-exe-baru\System.Private.CoreLib.dll
+2026-10-29 14:33:27.675   Time stamp of our file: 2026-08-21 04:10:50.000
+2026-10-29 14:33:27.675   Installing the file.
+2026-10-29 14:33:27.979   Successfully installed the file.
+2026-10-29 14:33:27.979   -- File entry --
+2026-10-29 14:33:27.979   Dest filename: C:\tmp\seruni-exe-baru\System.Private.DataContractSerialization.dll
+2026-10-29 14:33:27.979   Time stamp of our file: 2026-08-21 04:26:28.000
+2026-10-29 14:33:27.979   Installing the file.
+2026-10-29 14:33:28.034   Successfully installed the file.
+2026-10-29 14:33:28.034   -- File entry --
+2026-10-29 14:33:28.034   Dest filename: C:\tmp\seruni-exe-baru\System.Private.Uri.dll
+2026-10-29 14:33:28.034   Time stamp of our file: 2026-08-21 04:26:30.000
+2026-10-29 14:33:28.034   Installing the file.
+2026-10-29 14:33:28.042   Successfully installed the file.
+2026-10-29 14:33:28.043   -- File entry --
+2026-10-29 14:33:28.043   Dest filename: C:\tmp\seruni-exe-baru\System.Private.Xml.dll
+2026-10-29 14:33:28.043   Time stamp of our file: 2026-08-21 04:26:36.000
+2026-10-29 14:33:28.043   Installing the file.
+2026-10-29 14:33:28.241   Successfully installed the file.
+2026-10-29 14:33:28.241   -- File entry --
+2026-10-29 14:33:28.241   Dest filename: C:\tmp\seruni-exe-baru\System.Private.Xml.Linq.dll
+2026-10-29 14:33:28.241   Time stamp of our file: 2026-08-21 04:26:38.000
+2026-10-29 14:33:28.241   Installing the file.
+2026-10-29 14:33:28.253   Successfully installed the file.
+2026-10-29 14:33:28.253   -- File entry --
+2026-10-29 14:33:28.253   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.DispatchProxy.dll
+2026-10-29 14:33:28.253   Time stamp of our file: 2026-08-21 04:26:42.000
+2026-10-29 14:33:28.253   Installing the file.
+2026-10-29 14:33:28.256   Successfully installed the file.
+2026-10-29 14:33:28.256   -- File entry --
+2026-10-29 14:33:28.256   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.dll
+2026-10-29 14:33:28.257   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:28.257   Installing the file.
+2026-10-29 14:33:28.258   Successfully installed the file.
+2026-10-29 14:33:28.258   -- File entry --
+2026-10-29 14:33:28.258   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.Emit.dll
+2026-10-29 14:33:28.258   Time stamp of our file: 2026-08-21 04:26:44.000
+2026-10-29 14:33:28.258   Installing the file.
+2026-10-29 14:33:28.263   Successfully installed the file.
+2026-10-29 14:33:28.263   -- File entry --
+2026-10-29 14:33:28.263   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.Emit.ILGeneration.dll
+2026-10-29 14:33:28.263   Time stamp of our file: 2026-08-21 04:17:30.000
+2026-10-29 14:33:28.263   Installing the file.
+2026-10-29 14:33:28.265   Successfully installed the file.
+2026-10-29 14:33:28.265   -- File entry --
+2026-10-29 14:33:28.265   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.Emit.Lightweight.dll
+2026-10-29 14:33:28.265   Time stamp of our file: 2026-08-21 04:17:34.000
+2026-10-29 14:33:28.265   Installing the file.
+2026-10-29 14:33:28.266   Successfully installed the file.
+2026-10-29 14:33:28.266   -- File entry --
+2026-10-29 14:33:28.266   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.Extensions.dll
+2026-10-29 14:33:28.266   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-10-29 14:33:28.266   Installing the file.
+2026-10-29 14:33:28.268   Successfully installed the file.
+2026-10-29 14:33:28.268   -- File entry --
+2026-10-29 14:33:28.268   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.Metadata.dll
+2026-10-29 14:33:28.268   Time stamp of our file: 2026-08-21 04:26:48.000
+2026-10-29 14:33:28.268   Installing the file.
+2026-10-29 14:33:28.294   Successfully installed the file.
+2026-10-29 14:33:28.294   -- File entry --
+2026-10-29 14:33:28.295   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.Primitives.dll
+2026-10-29 14:33:28.295   Time stamp of our file: 2026-08-21 04:17:32.000
+2026-10-29 14:33:28.295   Installing the file.
+2026-10-29 14:33:28.297   Successfully installed the file.
+2026-10-29 14:33:28.297   -- File entry --
+2026-10-29 14:33:28.297   Dest filename: C:\tmp\seruni-exe-baru\System.Reflection.TypeExtensions.dll
+2026-10-29 14:33:28.298   Time stamp of our file: 2026-08-21 04:26:50.000
+2026-10-29 14:33:28.298   Installing the file.
+2026-10-29 14:33:28.299   Successfully installed the file.
+2026-10-29 14:33:28.300   -- File entry --
+2026-10-29 14:33:28.300   Dest filename: C:\tmp\seruni-exe-baru\System.Resources.Reader.dll
+2026-10-29 14:33:28.300   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-10-29 14:33:28.300   Installing the file.
+2026-10-29 14:33:28.301   Successfully installed the file.
+2026-10-29 14:33:28.301   -- File entry --
+2026-10-29 14:33:28.301   Dest filename: C:\tmp\seruni-exe-baru\System.Resources.ResourceManager.dll
+2026-10-29 14:33:28.301   Time stamp of our file: 2026-08-21 04:17:08.000
+2026-10-29 14:33:28.301   Installing the file.
+2026-10-29 14:33:28.303   Successfully installed the file.
+2026-10-29 14:33:28.303   -- File entry --
+2026-10-29 14:33:28.303   Dest filename: C:\tmp\seruni-exe-baru\System.Resources.Writer.dll
+2026-10-29 14:33:28.303   Time stamp of our file: 2026-08-21 04:26:54.000
+2026-10-29 14:33:28.303   Installing the file.
+2026-10-29 14:33:28.306   Successfully installed the file.
+2026-10-29 14:33:28.306   -- File entry --
+2026-10-29 14:33:28.306   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.CompilerServices.Unsafe.dll
+2026-10-29 14:33:28.306   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:28.306   Installing the file.
+2026-10-29 14:33:28.307   Successfully installed the file.
+2026-10-29 14:33:28.307   -- File entry --
+2026-10-29 14:33:28.307   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.CompilerServices.VisualC.dll
+2026-10-29 14:33:28.308   Time stamp of our file: 2026-08-21 04:26:56.000
+2026-10-29 14:33:28.308   Installing the file.
+2026-10-29 14:33:28.309   Successfully installed the file.
+2026-10-29 14:33:28.309   -- File entry --
+2026-10-29 14:33:28.309   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.dll
+2026-10-29 14:33:28.309   Time stamp of our file: 2026-08-21 04:16:36.000
+2026-10-29 14:33:28.309   Installing the file.
+2026-10-29 14:33:28.311   Successfully installed the file.
+2026-10-29 14:33:28.311   -- File entry --
+2026-10-29 14:33:28.311   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Extensions.dll
+2026-10-29 14:33:28.311   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:28.311   Installing the file.
+2026-10-29 14:33:28.313   Successfully installed the file.
+2026-10-29 14:33:28.313   -- File entry --
+2026-10-29 14:33:28.313   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Handles.dll
+2026-10-29 14:33:28.314   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:28.314   Installing the file.
+2026-10-29 14:33:28.315   Successfully installed the file.
+2026-10-29 14:33:28.315   -- File entry --
+2026-10-29 14:33:28.315   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.InteropServices.dll
+2026-10-29 14:33:28.315   Time stamp of our file: 2026-08-21 04:27:00.000
+2026-10-29 14:33:28.315   Installing the file.
+2026-10-29 14:33:28.318   Successfully installed the file.
+2026-10-29 14:33:28.318   -- File entry --
+2026-10-29 14:33:28.318   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.InteropServices.JavaScript.dll
+2026-10-29 14:33:28.318   Time stamp of our file: 2026-08-21 04:27:02.000
+2026-10-29 14:33:28.318   Installing the file.
+2026-10-29 14:33:28.320   Successfully installed the file.
+2026-10-29 14:33:28.322   -- File entry --
+2026-10-29 14:33:28.322   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.InteropServices.RuntimeInformation.dll
+2026-10-29 14:33:28.322   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:28.322   Installing the file.
+2026-10-29 14:33:28.323   Successfully installed the file.
+2026-10-29 14:33:28.323   -- File entry --
+2026-10-29 14:33:28.323   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Intrinsics.dll
+2026-10-29 14:33:28.323   Time stamp of our file: 2026-08-21 04:17:48.000
+2026-10-29 14:33:28.323   Installing the file.
+2026-10-29 14:33:28.324   Successfully installed the file.
+2026-10-29 14:33:28.324   -- File entry --
+2026-10-29 14:33:28.324   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Loader.dll
+2026-10-29 14:33:28.325   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-10-29 14:33:28.325   Installing the file.
+2026-10-29 14:33:28.326   Successfully installed the file.
+2026-10-29 14:33:28.326   -- File entry --
+2026-10-29 14:33:28.326   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Numerics.dll
+2026-10-29 14:33:28.326   Time stamp of our file: 2026-08-21 04:27:06.000
+2026-10-29 14:33:28.326   Installing the file.
+2026-10-29 14:33:28.337   Successfully installed the file.
+2026-10-29 14:33:28.337   -- File entry --
+2026-10-29 14:33:28.337   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Serialization.dll
+2026-10-29 14:33:28.337   Time stamp of our file: 2026-08-21 04:17:54.000
+2026-10-29 14:33:28.337   Installing the file.
+2026-10-29 14:33:28.338   Successfully installed the file.
+2026-10-29 14:33:28.338   -- File entry --
+2026-10-29 14:33:28.338   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Serialization.Formatters.dll
+2026-10-29 14:33:28.339   Time stamp of our file: 2026-08-21 04:27:08.000
+2026-10-29 14:33:28.339   Installing the file.
+2026-10-29 14:33:28.347   Successfully installed the file.
+2026-10-29 14:33:28.347   -- File entry --
+2026-10-29 14:33:28.347   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Serialization.Json.dll
+2026-10-29 14:33:28.347   Time stamp of our file: 2026-08-21 04:17:18.000
+2026-10-29 14:33:28.347   Installing the file.
+2026-10-29 14:33:28.349   Successfully installed the file.
+2026-10-29 14:33:28.349   -- File entry --
+2026-10-29 14:33:28.349   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Serialization.Primitives.dll
+2026-10-29 14:33:28.349   Time stamp of our file: 2026-08-21 04:27:12.000
+2026-10-29 14:33:28.349   Installing the file.
+2026-10-29 14:33:28.350   Successfully installed the file.
+2026-10-29 14:33:28.350   -- File entry --
+2026-10-29 14:33:28.350   Dest filename: C:\tmp\seruni-exe-baru\System.Runtime.Serialization.Xml.dll
+2026-10-29 14:33:28.350   Time stamp of our file: 2026-08-21 04:16:30.000
+2026-10-29 14:33:28.350   Installing the file.
+2026-10-29 14:33:28.353   Successfully installed the file.
+2026-10-29 14:33:28.353   -- File entry --
+2026-10-29 14:33:28.353   Dest filename: C:\tmp\seruni-exe-baru\System.Security.AccessControl.dll
+2026-10-29 14:33:28.353   Time stamp of our file: 2026-08-21 04:27:14.000
+2026-10-29 14:33:28.353   Installing the file.
+2026-10-29 14:33:28.360   Successfully installed the file.
+2026-10-29 14:33:28.360   -- File entry --
+2026-10-29 14:33:28.360   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Claims.dll
+2026-10-29 14:33:28.360   Time stamp of our file: 2026-08-21 04:27:18.000
+2026-10-29 14:33:28.360   Installing the file.
+2026-10-29 14:33:28.364   Successfully installed the file.
+2026-10-29 14:33:28.364   -- File entry --
+2026-10-29 14:33:28.364   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Algorithms.dll
+2026-10-29 14:33:28.365   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-10-29 14:33:28.365   Installing the file.
+2026-10-29 14:33:28.366   Successfully installed the file.
+2026-10-29 14:33:28.366   -- File entry --
+2026-10-29 14:33:28.366   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Cng.dll
+2026-10-29 14:33:28.367   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-10-29 14:33:28.367   Installing the file.
+2026-10-29 14:33:28.367   Successfully installed the file.
+2026-10-29 14:33:28.368   -- File entry --
+2026-10-29 14:33:28.368   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Csp.dll
+2026-10-29 14:33:28.368   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-10-29 14:33:28.368   Installing the file.
+2026-10-29 14:33:28.370   Successfully installed the file.
+2026-10-29 14:33:28.370   -- File entry --
+2026-10-29 14:33:28.370   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.dll
+2026-10-29 14:33:28.370   Time stamp of our file: 2026-08-21 04:27:20.000
+2026-10-29 14:33:28.370   Installing the file.
+2026-10-29 14:33:28.419   Successfully installed the file.
+2026-10-29 14:33:28.419   -- File entry --
+2026-10-29 14:33:28.419   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Encoding.dll
+2026-10-29 14:33:28.420   Time stamp of our file: 2026-08-21 04:17:30.000
+2026-10-29 14:33:28.420   Installing the file.
+2026-10-29 14:33:28.420   Successfully installed the file.
+2026-10-29 14:33:28.420   -- File entry --
+2026-10-29 14:33:28.420   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.OpenSsl.dll
+2026-10-29 14:33:28.422   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-10-29 14:33:28.422   Installing the file.
+2026-10-29 14:33:28.423   Successfully installed the file.
+2026-10-29 14:33:28.423   -- File entry --
+2026-10-29 14:33:28.423   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Pkcs.dll
+2026-10-29 14:33:28.424   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:28.424   Installing the file.
+2026-10-29 14:33:28.442   Successfully installed the file.
+2026-10-29 14:33:28.442   -- File entry --
+2026-10-29 14:33:28.442   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Primitives.dll
+2026-10-29 14:33:28.442   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-10-29 14:33:28.442   Installing the file.
+2026-10-29 14:33:28.445   Successfully installed the file.
+2026-10-29 14:33:28.445   -- File entry --
+2026-10-29 14:33:28.445   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.X509Certificates.dll
+2026-10-29 14:33:28.445   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-10-29 14:33:28.445   Installing the file.
+2026-10-29 14:33:28.446   Successfully installed the file.
+2026-10-29 14:33:28.446   -- File entry --
+2026-10-29 14:33:28.446   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Cryptography.Xml.dll
+2026-10-29 14:33:28.447   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:28.447   Installing the file.
+2026-10-29 14:33:28.460   Successfully installed the file.
+2026-10-29 14:33:28.460   -- File entry --
+2026-10-29 14:33:28.460   Dest filename: C:\tmp\seruni-exe-baru\System.Security.dll
+2026-10-29 14:33:28.460   Time stamp of our file: 2026-08-21 04:18:12.000
+2026-10-29 14:33:28.460   Installing the file.
+2026-10-29 14:33:28.461   Successfully installed the file.
+2026-10-29 14:33:28.461   -- File entry --
+2026-10-29 14:33:28.461   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Principal.dll
+2026-10-29 14:33:28.461   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:28.461   Installing the file.
+2026-10-29 14:33:28.464   Successfully installed the file.
+2026-10-29 14:33:28.464   -- File entry --
+2026-10-29 14:33:28.464   Dest filename: C:\tmp\seruni-exe-baru\System.Security.Principal.Windows.dll
+2026-10-29 14:33:28.464   Time stamp of our file: 2026-08-21 04:27:24.000
+2026-10-29 14:33:28.464   Installing the file.
+2026-10-29 14:33:28.470   Successfully installed the file.
+2026-10-29 14:33:28.470   -- File entry --
+2026-10-29 14:33:28.470   Dest filename: C:\tmp\seruni-exe-baru\System.Security.SecureString.dll
+2026-10-29 14:33:28.470   Time stamp of our file: 2026-08-21 04:18:18.000
+2026-10-29 14:33:28.470   Installing the file.
+2026-10-29 14:33:28.473   Successfully installed the file.
+2026-10-29 14:33:28.473   -- File entry --
+2026-10-29 14:33:28.473   Dest filename: C:\tmp\seruni-exe-baru\System.ServiceModel.Web.dll
+2026-10-29 14:33:28.474   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-10-29 14:33:28.474   Installing the file.
+2026-10-29 14:33:28.476   Successfully installed the file.
+2026-10-29 14:33:28.476   -- File entry --
+2026-10-29 14:33:28.476   Dest filename: C:\tmp\seruni-exe-baru\System.ServiceProcess.dll
+2026-10-29 14:33:28.477   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-10-29 14:33:28.477   Installing the file.
+2026-10-29 14:33:28.479   Successfully installed the file.
+2026-10-29 14:33:28.479   -- File entry --
+2026-10-29 14:33:28.479   Dest filename: C:\tmp\seruni-exe-baru\System.Text.Encoding.CodePages.dll
+2026-10-29 14:33:28.479   Time stamp of our file: 2026-08-21 04:27:28.000
+2026-10-29 14:33:28.479   Installing the file.
+2026-10-29 14:33:28.501   Successfully installed the file.
+2026-10-29 14:33:28.501   -- File entry --
+2026-10-29 14:33:28.501   Dest filename: C:\tmp\seruni-exe-baru\System.Text.Encoding.dll
+2026-10-29 14:33:28.501   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:28.501   Installing the file.
+2026-10-29 14:33:28.503   Successfully installed the file.
+2026-10-29 14:33:28.503   -- File entry --
+2026-10-29 14:33:28.503   Dest filename: C:\tmp\seruni-exe-baru\System.Text.Encoding.Extensions.dll
+2026-10-29 14:33:28.503   Time stamp of our file: 2026-08-21 04:17:46.000
+2026-10-29 14:33:28.503   Installing the file.
+2026-10-29 14:33:28.506   Successfully installed the file.
+2026-10-29 14:33:28.506   -- File entry --
+2026-10-29 14:33:28.506   Dest filename: C:\tmp\seruni-exe-baru\System.Text.Encodings.Web.dll
+2026-10-29 14:33:28.506   Time stamp of our file: 2026-08-21 04:27:30.000
+2026-10-29 14:33:28.506   Installing the file.
+2026-10-29 14:33:28.511   Successfully installed the file.
+2026-10-29 14:33:28.511   -- File entry --
+2026-10-29 14:33:28.511   Dest filename: C:\tmp\seruni-exe-baru\System.Text.Json.dll
+2026-10-29 14:33:28.512   Time stamp of our file: 2026-08-21 04:27:34.000
+2026-10-29 14:33:28.512   Installing the file.
+2026-10-29 14:33:28.553   Successfully installed the file.
+2026-10-29 14:33:28.553   -- File entry --
+2026-10-29 14:33:28.553   Dest filename: C:\tmp\seruni-exe-baru\System.Text.RegularExpressions.dll
+2026-10-29 14:33:28.553   Time stamp of our file: 2026-08-21 04:27:36.000
+2026-10-29 14:33:28.553   Installing the file.
+2026-10-29 14:33:28.583   Successfully installed the file.
+2026-10-29 14:33:28.583   -- File entry --
+2026-10-29 14:33:28.583   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Channels.dll
+2026-10-29 14:33:28.583   Time stamp of our file: 2026-08-21 04:27:40.000
+2026-10-29 14:33:28.583   Installing the file.
+2026-10-29 14:33:28.587   Successfully installed the file.
+2026-10-29 14:33:28.587   -- File entry --
+2026-10-29 14:33:28.587   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.dll
+2026-10-29 14:33:28.588   Time stamp of our file: 2026-08-21 04:27:42.000
+2026-10-29 14:33:28.588   Installing the file.
+2026-10-29 14:33:28.591   Successfully installed the file.
+2026-10-29 14:33:28.591   -- File entry --
+2026-10-29 14:33:28.591   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Overlapped.dll
+2026-10-29 14:33:28.591   Time stamp of our file: 2026-08-21 04:16:32.000
+2026-10-29 14:33:28.591   Installing the file.
+2026-10-29 14:33:28.593   Successfully installed the file.
+2026-10-29 14:33:28.593   -- File entry --
+2026-10-29 14:33:28.593   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.RateLimiting.dll
+2026-10-29 14:33:28.594   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-10-29 14:33:28.594   Installing the file.
+2026-10-29 14:33:28.600   Successfully installed the file.
+2026-10-29 14:33:28.600   -- File entry --
+2026-10-29 14:33:28.600   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Tasks.Dataflow.dll
+2026-10-29 14:33:28.600   Time stamp of our file: 2026-08-21 04:27:46.000
+2026-10-29 14:33:28.600   Installing the file.
+2026-10-29 14:33:28.616   Successfully installed the file.
+2026-10-29 14:33:28.616   -- File entry --
+2026-10-29 14:33:28.616   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Tasks.dll
+2026-10-29 14:33:28.617   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:28.617   Installing the file.
+2026-10-29 14:33:28.619   Successfully installed the file.
+2026-10-29 14:33:28.619   -- File entry --
+2026-10-29 14:33:28.619   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Tasks.Extensions.dll
+2026-10-29 14:33:28.619   Time stamp of our file: 2026-08-21 04:16:44.000
+2026-10-29 14:33:28.619   Installing the file.
+2026-10-29 14:33:28.622   Successfully installed the file.
+2026-10-29 14:33:28.622   -- File entry --
+2026-10-29 14:33:28.622   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Tasks.Parallel.dll
+2026-10-29 14:33:28.623   Time stamp of our file: 2026-08-21 04:27:48.000
+2026-10-29 14:33:28.623   Installing the file.
+2026-10-29 14:33:28.629   Successfully installed the file.
+2026-10-29 14:33:28.629   -- File entry --
+2026-10-29 14:33:28.630   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Thread.dll
+2026-10-29 14:33:28.630   Time stamp of our file: 2026-08-21 04:17:46.000
+2026-10-29 14:33:28.630   Installing the file.
+2026-10-29 14:33:28.632   Successfully installed the file.
+2026-10-29 14:33:28.633   -- File entry --
+2026-10-29 14:33:28.633   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.ThreadPool.dll
+2026-10-29 14:33:28.633   Time stamp of our file: 2026-08-21 04:16:28.000
+2026-10-29 14:33:28.633   Installing the file.
+2026-10-29 14:33:28.634   Successfully installed the file.
+2026-10-29 14:33:28.634   -- File entry --
+2026-10-29 14:33:28.635   Dest filename: C:\tmp\seruni-exe-baru\System.Threading.Timer.dll
+2026-10-29 14:33:28.635   Time stamp of our file: 2026-08-21 04:16:44.000
+2026-10-29 14:33:28.635   Installing the file.
+2026-10-29 14:33:28.637   Successfully installed the file.
+2026-10-29 14:33:28.637   -- File entry --
+2026-10-29 14:33:28.637   Dest filename: C:\tmp\seruni-exe-baru\System.Transactions.dll
+2026-10-29 14:33:28.637   Time stamp of our file: 2026-08-21 04:17:32.000
+2026-10-29 14:33:28.637   Installing the file.
+2026-10-29 14:33:28.639   Successfully installed the file.
+2026-10-29 14:33:28.639   -- File entry --
+2026-10-29 14:33:28.639   Dest filename: C:\tmp\seruni-exe-baru\System.Transactions.Local.dll
+2026-10-29 14:33:28.639   Time stamp of our file: 2026-08-21 04:27:52.000
+2026-10-29 14:33:28.639   Installing the file.
+2026-10-29 14:33:28.657   Successfully installed the file.
+2026-10-29 14:33:28.657   -- File entry --
+2026-10-29 14:33:28.657   Dest filename: C:\tmp\seruni-exe-baru\System.ValueTuple.dll
+2026-10-29 14:33:28.659   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-10-29 14:33:28.659   Installing the file.
+2026-10-29 14:33:28.661   Successfully installed the file.
+2026-10-29 14:33:28.661   -- File entry --
+2026-10-29 14:33:28.661   Dest filename: C:\tmp\seruni-exe-baru\System.Web.dll
+2026-10-29 14:33:28.662   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:28.662   Installing the file.
+2026-10-29 14:33:28.663   Successfully installed the file.
+2026-10-29 14:33:28.663   -- File entry --
+2026-10-29 14:33:28.663   Dest filename: C:\tmp\seruni-exe-baru\System.Web.HttpUtility.dll
+2026-10-29 14:33:28.663   Time stamp of our file: 2026-08-21 04:27:54.000
+2026-10-29 14:33:28.663   Installing the file.
+2026-10-29 14:33:28.670   Successfully installed the file.
+2026-10-29 14:33:28.670   -- File entry --
+2026-10-29 14:33:28.670   Dest filename: C:\tmp\seruni-exe-baru\System.Windows.dll
+2026-10-29 14:33:28.670   Time stamp of our file: 2026-08-21 04:17:18.000
+2026-10-29 14:33:28.670   Installing the file.
+2026-10-29 14:33:28.672   Successfully installed the file.
+2026-10-29 14:33:28.672   -- File entry --
+2026-10-29 14:33:28.672   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.dll
+2026-10-29 14:33:28.673   Time stamp of our file: 2026-08-21 04:18:12.000
+2026-10-29 14:33:28.673   Installing the file.
+2026-10-29 14:33:28.674   Successfully installed the file.
+2026-10-29 14:33:28.674   -- File entry --
+2026-10-29 14:33:28.674   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.Linq.dll
+2026-10-29 14:33:28.674   Time stamp of our file: 2026-08-21 04:18:20.000
+2026-10-29 14:33:28.674   Installing the file.
+2026-10-29 14:33:28.676   Successfully installed the file.
+2026-10-29 14:33:28.676   -- File entry --
+2026-10-29 14:33:28.676   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.ReaderWriter.dll
+2026-10-29 14:33:28.676   Time stamp of our file: 2026-08-21 04:17:56.000
+2026-10-29 14:33:28.676   Installing the file.
+2026-10-29 14:33:28.680   Successfully installed the file.
+2026-10-29 14:33:28.680   -- File entry --
+2026-10-29 14:33:28.680   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.Serialization.dll
+2026-10-29 14:33:28.685   Time stamp of our file: 2026-08-21 04:18:02.000
+2026-10-29 14:33:28.685   Installing the file.
+2026-10-29 14:33:28.686   Successfully installed the file.
+2026-10-29 14:33:28.686   -- File entry --
+2026-10-29 14:33:28.686   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.XDocument.dll
+2026-10-29 14:33:28.686   Time stamp of our file: 2026-08-21 04:18:20.000
+2026-10-29 14:33:28.686   Installing the file.
+2026-10-29 14:33:28.687   Successfully installed the file.
+2026-10-29 14:33:28.687   -- File entry --
+2026-10-29 14:33:28.688   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.XmlDocument.dll
+2026-10-29 14:33:28.688   Time stamp of our file: 2026-08-21 04:18:02.000
+2026-10-29 14:33:28.688   Installing the file.
+2026-10-29 14:33:28.689   Successfully installed the file.
+2026-10-29 14:33:28.689   -- File entry --
+2026-10-29 14:33:28.689   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.XmlSerializer.dll
+2026-10-29 14:33:28.690   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-10-29 14:33:28.690   Installing the file.
+2026-10-29 14:33:28.692   Successfully installed the file.
+2026-10-29 14:33:28.692   -- File entry --
+2026-10-29 14:33:28.692   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.XPath.dll
+2026-10-29 14:33:28.693   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-10-29 14:33:28.693   Installing the file.
+2026-10-29 14:33:28.695   Successfully installed the file.
+2026-10-29 14:33:28.695   -- File entry --
+2026-10-29 14:33:28.695   Dest filename: C:\tmp\seruni-exe-baru\System.Xml.XPath.XDocument.dll
+2026-10-29 14:33:28.695   Time stamp of our file: 2026-08-21 04:27:58.000
+2026-10-29 14:33:28.695   Installing the file.
+2026-10-29 14:33:28.701   Successfully installed the file.
+2026-10-29 14:33:28.701   -- File entry --
+2026-10-29 14:33:28.701   Dest filename: C:\tmp\seruni-exe-baru\web.config
+2026-10-29 14:33:28.701   Time stamp of our file: 2026-10-29 14:30:18.000
+2026-10-29 14:33:28.703   Installing the file.
+2026-10-29 14:33:28.704   Successfully installed the file.
+2026-10-29 14:33:28.704   -- File entry --
+2026-10-29 14:33:28.704   Dest filename: C:\tmp\seruni-exe-baru\WindowsBase.dll
+2026-10-29 14:33:28.704   Time stamp of our file: 2026-08-21 04:18:12.000
+2026-10-29 14:33:28.704   Installing the file.
+2026-10-29 14:33:28.706   Successfully installed the file.
+2026-10-29 14:33:28.706   -- File entry --
+2026-10-29 14:33:28.706   Dest filename: C:\tmp\seruni-exe-baru\XLParser.dll
+2026-10-29 14:33:28.706   Time stamp of our file: 2022-05-20 15:49:02.000
+2026-10-29 14:33:28.706   Installing the file.
+2026-10-29 14:33:28.710   Successfully installed the file.
+2026-10-29 14:33:28.710   -- File entry --
+2026-10-29 14:33:28.710   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Black.ttf
+2026-10-29 14:33:28.711   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.711   Installing the file.
+2026-10-29 14:33:28.711   Creating directory: C:\tmp\seruni-exe-baru\LatoFont
+2026-10-29 14:33:28.729   Successfully installed the file.
+2026-10-29 14:33:28.729   -- File entry --
+2026-10-29 14:33:28.729   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-BlackItalic.ttf
+2026-10-29 14:33:28.730   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.730   Installing the file.
+2026-10-29 14:33:28.753   Successfully installed the file.
+2026-10-29 14:33:28.753   -- File entry --
+2026-10-29 14:33:28.753   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Bold.ttf
+2026-10-29 14:33:28.753   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.753   Installing the file.
+2026-10-29 14:33:28.770   Successfully installed the file.
+2026-10-29 14:33:28.770   -- File entry --
+2026-10-29 14:33:28.770   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-BoldItalic.ttf
+2026-10-29 14:33:28.770   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.770   Installing the file.
+2026-10-29 14:33:28.783   Successfully installed the file.
+2026-10-29 14:33:28.783   -- File entry --
+2026-10-29 14:33:28.783   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-ExtraBold.ttf
+2026-10-29 14:33:28.783   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.783   Installing the file.
+2026-10-29 14:33:28.798   Successfully installed the file.
+2026-10-29 14:33:28.798   -- File entry --
+2026-10-29 14:33:28.798   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-ExtraBoldItalic.ttf
+2026-10-29 14:33:28.798   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.798   Installing the file.
+2026-10-29 14:33:28.822   Successfully installed the file.
+2026-10-29 14:33:28.822   -- File entry --
+2026-10-29 14:33:28.822   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-ExtraLight.ttf
+2026-10-29 14:33:28.823   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.823   Installing the file.
+2026-10-29 14:33:28.846   Successfully installed the file.
+2026-10-29 14:33:28.846   -- File entry --
+2026-10-29 14:33:28.846   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-ExtraLightItalic.ttf
+2026-10-29 14:33:28.846   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.846   Installing the file.
+2026-10-29 14:33:28.859   Successfully installed the file.
+2026-10-29 14:33:28.859   -- File entry --
+2026-10-29 14:33:28.859   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Italic.ttf
+2026-10-29 14:33:28.859   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.859   Installing the file.
+2026-10-29 14:33:28.877   Successfully installed the file.
+2026-10-29 14:33:28.877   -- File entry --
+2026-10-29 14:33:28.877   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Light.ttf
+2026-10-29 14:33:28.877   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.877   Installing the file.
+2026-10-29 14:33:28.890   Successfully installed the file.
+2026-10-29 14:33:28.890   -- File entry --
+2026-10-29 14:33:28.890   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-LightItalic.ttf
+2026-10-29 14:33:28.890   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.890   Installing the file.
+2026-10-29 14:33:28.903   Successfully installed the file.
+2026-10-29 14:33:28.903   -- File entry --
+2026-10-29 14:33:28.903   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Medium.ttf
+2026-10-29 14:33:28.903   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.903   Installing the file.
+2026-10-29 14:33:28.919   Successfully installed the file.
+2026-10-29 14:33:28.919   -- File entry --
+2026-10-29 14:33:28.919   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-MediumItalic.ttf
+2026-10-29 14:33:28.919   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.919   Installing the file.
+2026-10-29 14:33:28.933   Successfully installed the file.
+2026-10-29 14:33:28.934   -- File entry --
+2026-10-29 14:33:28.934   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Regular.ttf
+2026-10-29 14:33:28.934   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.934   Installing the file.
+2026-10-29 14:33:28.946   Successfully installed the file.
+2026-10-29 14:33:28.946   -- File entry --
+2026-10-29 14:33:28.946   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-SemiBold.ttf
+2026-10-29 14:33:28.946   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.946   Installing the file.
+2026-10-29 14:33:28.960   Successfully installed the file.
+2026-10-29 14:33:28.961   -- File entry --
+2026-10-29 14:33:28.961   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-SemiBoldItalic.ttf
+2026-10-29 14:33:28.961   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.961   Installing the file.
+2026-10-29 14:33:28.973   Successfully installed the file.
+2026-10-29 14:33:28.973   -- File entry --
+2026-10-29 14:33:28.973   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-Thin.ttf
+2026-10-29 14:33:28.973   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.973   Installing the file.
+2026-10-29 14:33:28.987   Successfully installed the file.
+2026-10-29 14:33:28.987   -- File entry --
+2026-10-29 14:33:28.987   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\Lato-ThinItalic.ttf
+2026-10-29 14:33:28.987   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:28.987   Installing the file.
+2026-10-29 14:33:29.014   Successfully installed the file.
+2026-10-29 14:33:29.014   -- File entry --
+2026-10-29 14:33:29.014   Dest filename: C:\tmp\seruni-exe-baru\LatoFont\OFL.txt
+2026-10-29 14:33:29.014   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-10-29 14:33:29.014   Installing the file.
+2026-10-29 14:33:29.026   Successfully installed the file.
+2026-10-29 14:33:29.026   -- File entry --
+2026-10-29 14:33:29.026   Dest filename: C:\tmp\seruni-exe-baru\wwwroot\favicon.svg
+2026-10-29 14:33:29.026   Time stamp of our file: 2026-10-20 20:06:48.000
+2026-10-29 14:33:29.026   Installing the file.
+2026-10-29 14:33:29.026   Creating directory: C:\tmp\seruni-exe-baru\wwwroot
+2026-10-29 14:33:29.027   Successfully installed the file.
+2026-10-29 14:33:29.027   -- File entry --
+2026-10-29 14:33:29.027   Dest filename: C:\tmp\seruni-exe-baru\wwwroot\icons.svg
+2026-10-29 14:33:29.029   Time stamp of our file: 2026-10-20 20:06:48.000
+2026-10-29 14:33:29.029   Installing the file.
+2026-10-29 14:33:29.031   Successfully installed the file.
+2026-10-29 14:33:29.031   -- File entry --
+2026-10-29 14:33:29.031   Dest filename: C:\tmp\seruni-exe-baru\wwwroot\index.html
+2026-10-29 14:33:29.031   Time stamp of our file: 2026-10-29 14:30:00.000
+2026-10-29 14:33:29.031   Installing the file.
+2026-10-29 14:33:29.035   Successfully installed the file.
+2026-10-29 14:33:29.035   -- File entry --
+2026-10-29 14:33:29.035   Dest filename: C:\tmp\seruni-exe-baru\wwwroot\assets\index-Bz7F3T1f.css
+2026-10-29 14:33:29.035   Time stamp of our file: 2026-10-29 14:30:00.000
+2026-10-29 14:33:29.035   Installing the file.
+2026-10-29 14:33:29.035   Creating directory: C:\tmp\seruni-exe-baru\wwwroot\assets
+2026-10-29 14:33:29.038   Successfully installed the file.
+2026-10-29 14:33:29.038   -- File entry --
+2026-10-29 14:33:29.038   Dest filename: C:\tmp\seruni-exe-baru\wwwroot\assets\index-CKgTNzb_.js
+2026-10-29 14:33:29.038   Time stamp of our file: 2026-10-29 14:30:00.000
+2026-10-29 14:33:29.038   Installing the file.
+2026-10-29 14:33:29.048   Successfully installed the file.
+2026-10-29 14:33:29.048   -- File entry --
+2026-10-29 14:33:29.048   Dest filename: C:\tmp\seruni-exe-baru\app.ico
+2026-10-29 14:33:29.049   Time stamp of our file: 2026-10-24 23:39:56.000
+2026-10-29 14:33:29.049   Installing the file.
+2026-10-29 14:33:29.058   Successfully installed the file.
+2026-10-29 14:33:29.060   -- Icon entry --
+2026-10-29 14:33:29.060   Dest filename: C:\tmp\seruni-exe-baru\Uninstall Seruni 22 Bakery.lnk
+2026-10-29 14:33:29.061   Creating the icon.
+2026-10-29 14:33:29.482   Successfully created the icon.
+2026-10-29 14:33:29.505   Saving uninstall information.
+2026-10-29 14:33:29.505   Deleting uninstall key left over from previous non administrative install.
+2026-10-29 14:33:29.514   Creating new uninstall key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1
+2026-10-29 14:33:29.515   Writing uninstall key values.
+2026-10-29 14:33:29.518   Detected previous administrative 32-bit install? No
+2026-10-29 14:33:29.519   Detected previous administrative 64-bit install? No
+2026-10-29 14:33:29.527   Installation process succeeded.
+2026-10-29 14:33:29.564   Need to restart Windows? No
+2026-10-29 14:33:29.567   Deinitializing Setup.
+2026-10-29 14:33:29.575   Log closed.

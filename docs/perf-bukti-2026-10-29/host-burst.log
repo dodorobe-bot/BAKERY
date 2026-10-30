@@ -1,0 +1,541 @@
+[14:17:23 INF] Seruni 22 Bakery service starting on 
+[14:17:23 INF] User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[14:17:24 INF] Now listening on: http://127.0.0.1:5290
+[14:17:24 INF] Application started. Press Ctrl+C to shut down.
+[14:17:24 INF] Hosting environment: Production
+[14:17:24 INF] Content root path: D:\bakery-desktop\src\Host.Service\bin\Release\net8.0
+[14:17:29 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5290/api/auth/login - application/json 46
+[14:17:29 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'LoginResponse' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[14:17:30 WRN] [Lambat] POST /api/auth/login 200 508 ms (id -)
+[14:17:30 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5290/api/auth/login - 200 null application/json; charset=utf-8 631.3595ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 36.6224ms
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 46.4934ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 54.9454ms
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 61.7063ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 4.3179ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 6.0794ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 11.2301ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 16.2835ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 1.1518ms
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 1.8012ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 5.7457ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 11.2969ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 1.3621ms
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 1.5008ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 5.8655ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 8.279ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 0.6967ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 1.4171ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 4.4646ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 7.9392ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 5.7777ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 3.8145ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 10.7675ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 14.0086ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 1.2359ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 1.7433ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 6.9673ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 8.1938ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/inventory/locations'
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/suppliers'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/suppliers - 200 null application/json; charset=utf-8 1.364ms
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/inventory/locations - 200 null application/json; charset=utf-8 1.0724ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/ingredients'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/ingredients - 200 null application/json; charset=utf-8 5.479ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?limit=300 - 200 null application/json; charset=utf-8 7.6683ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 13.4751ms
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 20.2939ms
+[14:17:30 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 22.335ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 23.1171ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 3.3251ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 4.1423ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 8.4713ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 9.1707ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 8.7886ms
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 9.1421ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 13.3733ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 17.011ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 4.4637ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 5.654ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 7.9118ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 11.5675ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 3.5499ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 3.9092ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 7.7887ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 10.0026ms
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:30 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 3.0958ms
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 3.2304ms
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'List`1' as Json.
+[14:17:30 INF] Setting HTTP status code 200.
+[14:17:30 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 6.8089ms
+[14:17:30 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:30 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 7.3241ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 6.2978ms
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 7.1049ms
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 12.1639ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 11.963ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal/summary'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances - 200 null application/json; charset=utf-8 4.1073ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal/balances'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/balances?asOf=2026-10-29 - 200 null application/json; charset=utf-8 7.2139ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'JournalRangeSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal/summary'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal/summary?from=2026-10-01&to=2026-10-29 - 200 null application/json; charset=utf-8 11.3524ms
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/journal'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/journal?from=2026-10-01&to=2026-10-29&limit=300 - 200 null application/json; charset=utf-8 12.847ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 9.4945ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 23.0812ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 35.2538ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 3.28ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 8.2474ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 14.9532ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 4.4893ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 6.923ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 9.945ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 3.6831ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 5.2002ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 6.6495ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 4.6236ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 11.5495ms
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 13.7804ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 4.4511ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 8.2699ms
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 8.8637ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 4.0187ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 5.8183ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 7.4172ms
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/orders - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - null null
+[14:17:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - null null
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/orders'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/orders - 200 null application/json; charset=utf-8 2.7755ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'List`1' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/purchases'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/purchases?status=open&limit=300 - 200 null application/json; charset=utf-8 8.3425ms
+[14:17:31 INF] Setting HTTP status code 200.
+[14:17:31 INF] Writing value of type 'DashboardSummary' as Json.
+[14:17:31 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[14:17:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5290/api/dashboard - 200 null application/json; charset=utf-8 8.879ms

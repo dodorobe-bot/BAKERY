@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Seruni22Bakery.Infrastructure.Sqlite</RootNamespace>
+    <AssemblyName>Seruni22Bakery.Infrastructure.Sqlite</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\*.sql" />
+    <!-- Skrip penurunan versi: ikut tertanam supaya bisa dibaca dan diuji, tapi namanya tidak
+         diawali angka versi sehingga DatabaseMigrator tidak pernah menjalankannya otomatis. -->
+    <EmbeddedResource Include="Migrations\Rollback\*.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BakeryDesktop.Infrastructure.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\BakeryDesktop.Domain.csproj" />
+    <ProjectReference Include="..\Application\BakeryDesktop.Application.csproj" />
+  </ItemGroup>
+</Project>

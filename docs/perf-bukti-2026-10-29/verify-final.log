@@ -1,0 +1,274 @@
+==> Build D:\bakery-desktop\BakeryDesktop.slnx (Release)
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  BakeryDesktop.Domain -> D:\bakery-desktop\src\Domain\bin\Release\net8.0\Seruni22Bakery.Domain.dll
+  BakeryDesktop.Application -> D:\bakery-desktop\src\Application\bin\Release\net8.0\Seruni22Bakery.Application.dll
+  BakeryDesktop.Infrastructure.Sqlite -> D:\bakery-desktop\src\Infrastructure.Sqlite\bin\Release\net8.0\Seruni22Bakery.Infrastructure.Sqlite.dll
+  BakeryDesktop.Host.Service -> D:\bakery-desktop\src\Host.Service\bin\Release\net8.0\Seruni22Bakery.Host.dll
+  BakeryDesktop.Migration.Tool -> D:\bakery-desktop\src\Migration.Tool\bin\Release\net8.0\BakeryDesktop.Migration.Tool.dll
+  BakeryDesktop.Application.Tests -> D:\bakery-desktop\tests\Application.Tests\bin\Release\net8.0\BakeryDesktop.Application.Tests.dll
+  BakeryDesktop.Domain.Tests -> D:\bakery-desktop\tests\Domain.Tests\bin\Release\net8.0\BakeryDesktop.Domain.Tests.dll
+  BakeryDesktop.Infrastructure.Tests -> D:\bakery-desktop\tests\Infrastructure.Tests\bin\Release\net8.0\BakeryDesktop.Infrastructure.Tests.dll
+  BakeryDesktop.UI.Tests -> D:\bakery-desktop\tests\UI.Tests\bin\Release\net8.0\BakeryDesktop.UI.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.18
+[PASS] build solusi exit 0
+==> dotnet test
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  BakeryDesktop.Domain -> D:\bakery-desktop\src\Domain\bin\Release\net8.0\Seruni22Bakery.Domain.dll
+  BakeryDesktop.Application -> D:\bakery-desktop\src\Application\bin\Release\net8.0\Seruni22Bakery.Application.dll
+  BakeryDesktop.Application.Tests -> D:\bakery-desktop\tests\Application.Tests\bin\Release\net8.0\BakeryDesktop.Application.Tests.dll
+Test run for D:\bakery-desktop\tests\Application.Tests\bin\Release\net8.0\BakeryDesktop.Application.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    46, Skipped:     0, Total:    46, Duration: 2 s - BakeryDesktop.Application.Tests.dll (net8.0)
+  BakeryDesktop.Domain.Tests -> D:\bakery-desktop\tests\Domain.Tests\bin\Release\net8.0\BakeryDesktop.Domain.Tests.dll
+Test run for D:\bakery-desktop\tests\Domain.Tests\bin\Release\net8.0\BakeryDesktop.Domain.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    57, Skipped:     0, Total:    57, Duration: 1 s - BakeryDesktop.Domain.Tests.dll (net8.0)
+  BakeryDesktop.Infrastructure.Sqlite -> D:\bakery-desktop\src\Infrastructure.Sqlite\bin\Release\net8.0\Seruni22Bakery.Infrastructure.Sqlite.dll
+  BakeryDesktop.Infrastructure.Tests -> D:\bakery-desktop\tests\Infrastructure.Tests\bin\Release\net8.0\BakeryDesktop.Infrastructure.Tests.dll
+Test run for D:\bakery-desktop\tests\Infrastructure.Tests\bin\Release\net8.0\BakeryDesktop.Infrastructure.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   114, Skipped:     0, Total:   114, Duration: 7 s - BakeryDesktop.Infrastructure.Tests.dll (net8.0)
+  BakeryDesktop.Host.Service -> D:\bakery-desktop\src\Host.Service\bin\Release\net8.0\Seruni22Bakery.Host.dll
+  BakeryDesktop.UI.Tests -> D:\bakery-desktop\tests\UI.Tests\bin\Release\net8.0\BakeryDesktop.UI.Tests.dll
+Test run for D:\bakery-desktop\tests\UI.Tests\bin\Release\net8.0\BakeryDesktop.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    81, Skipped:     0, Total:    81, Duration: 1 m 31 s - BakeryDesktop.UI.Tests.dll (net8.0)
+[PASS] dotnet test (unit + integrasi + UI) exit 0
+[PASS] skrip Inno tersedia D:\bakery-desktop\build\installer\inno\setup.iss
+[PASS] Icons/Run tanpa wscript shortcut dan [Run] harus langsung ke program, bukan perantara skrip
+[PASS] Icons/Run tanpa berkas .vbs VBScript tidak boleh menjadi peluncur
+[PASS] Icons/Run menunjuk Seruni22Bakery.exe peluncur native wajib dirujuk
+[PASS] define MyAppExeName = Seruni22Bakery.exe nama peluncur di header skrip Inno
+[PASS] sumber peluncur native tersedia D:\bakery-desktop\build\installer\launcher\Seruni22BakeryLauncher.cs
+[PASS] build-installer memakai csc untuk peluncur peluncur dikompilasi, bukan disalin sebagai .vbs
+[PASS] paket WiX tanpa wscript/.vbs shortcut MSI juga harus menunjuk peluncur native
+==> Basis data sementara: C:\Users\Administrator\AppData\Local\Temp\seruni-verify-b6da59d0 (data usaha tidak disentuh)
+==> verify-batch2.mjs pada http://127.0.0.1:60997 (db sementara C:\Users\Administrator\AppData\Local\Temp\seruni-verify-b6da59d0\uji-batch2.db)
+[PASS] host uji untuk verify-batch2.mjs siap di http://127.0.0.1:60997
+OK   | login admin | user 1 0
+OK   | gerbang sandi menolak endpoint data sebelum ganti sandi | http=403 Kata sandi akun ini masih bawaan. Ganti kata sandi lebih dulu melalui menu ganti sandi.
+OK   | ganti sandi bawaan lewat API | 
+OK   | sandi baru membuka endpoint data | mustChangePassword=false
+OK   | lokasi tersediaan | kitchen=2 warehouse=1 display=3
+OK   | bahan + produk uji dibuat | ingredient=1 product=1
+OK   | stok awal dapur diisi | 
+OK   | pesanan bernilai 0 ditolak | Nilai pesanan harus lebih besar dari nol.
+OK   | uang muka melebihi nilai pesanan ditolak | Uang muka melebihi nilai pesanan.
+OK   | nominal menembus atap ditolak | Nilai pesanan melebihi batas 10,000,000,000 rupiah.
+OK   | pesanan + DP tersimpan | order=1 {"id":1}
+OK   | jurnal DP ikut tertulis dalam transaksi yang sama | entri 0 -> 1
+OK   | entri DP menautkan SourceDocumentId pesanan | SalesOrder#1 :: DP Pesanan: Bu Sari
+OK   | SPK target 0 ditolak | Target jumlah produksi harus lebih besar dari nol.
+OK   | SPK biaya tenaga kerja negatif ditolak | Biaya tenaga kerja tidak boleh negatif.
+OK   | SPK dibuat | spk=1
+OK   | alasan scrap tak dikenal ditolak dengan pesan terbaca | Alasan scrap tidak dikenal: Rusak panggang. Pilihan: Gosong, Adonan_Gagal, Salah_Resep, Mesin_Error, Lainnya.
+OK   | scrap ditolak tidak menulis jurnal | entri 1 -> 1
+OK   | scrap lebih kecil dari produk rusak ditolak | Jumlah scrap lebih kecil dari produk rusak yang dilaporkan.
+OK   | penyelesaian SPK mencatat jurnal | http=200 {"message":"Work order completed successfully"} :: 1-004 D0/K12000000 1-006 D9600000/K0 5-004 D2400000/K0 5-003 D100000/K0 5-002 D50000/K0 1-001 D0/K150000
+OK   | hasil produksi menambah stok produk jadi di etalase | stok produk 0 -> 4
+OK   | jurnal SPK seimbang dan memecah biaya bahan dengan benar | debit=12150000 kredit=12150000 fg=9600000 scrap=2400000 dapur=12000000
+OK   | SPK selesai ulang ditolak oleh penjaga status | SPK berstatus Completed tidak dapat diselesaikan ulang.
+OK   | SPK selesai ulang tidak menambah jurnal | entri 2 -> 2
+OK   | pembayaran melebihi sisa bayar ditolak | Pembayaran Rp 5.000 melebihi sisa bayar Rp 1.500.
+OK   | pembayaran nol ditolak | Pembayaran harus lebih besar dari nol.
+OK   | pembayaran sebagian diterima | 
+OK   | satu entri jurnal per pembayaran parsial | entri 3
+OK   | pembayaran menautkan JournalEntryId | payment.journalEntryId=3
+OK   | pelunasan mengubah status jadi Paid | status=3
+OK   | pengakuan pendapatan tercatat saat lunas | total entri 5
+OK   | pelunasan memotong stok produk jadi sebanyak jumlah pesanan | stok produk 4 -> 3 untuk 1 unit
+OK   | pembayaran ganda setelah lunas ditolak | Pesanan sudah lunas.
+OK   | idempotensi: pembayaran kunci sama tidak menulis ulang | entri tetap 5
+OK   | total debit = total kredit di seluruh jurnal | debit=12550000 kredit=12550000 entri=5
+OK   | pemrosesan pesanan memotong stok produk jadi di etalase | stok produk 3 -> 2
+OK   | pembatalan mengembalikan stok produk jadi | stok produk 2 -> 3 (awal 3)
+OK   | pembatalan menulis entri pembalik | 1 pembalik, entri asli berstatus Reversed=0
+OK   | pembatalan ganda ditolak | Pesanan sudah dibatalkan.
+OK   | pembatalan ganda tidak menambah jurnal | entri 6
+OK   | stok tidak cukup ditolak dengan pesan jelas | Stok produk Kue Keju Uji di Etalase Toko & Kasir tidak cukup: tersedia 0, dibutuhkan 1.
+OK   | status pesanan tidak berubah saat stok ditolak | status=0, stockDeducted=false
+OK   | transaksi gagal tidak meninggalkan mutasi stok | mutasi 3 -> 3
+OK   | transaksi gagal tidak meninggalkan jurnal | entri 6 -> 6
+OK   | biaya negatif ditolak | Nominal biaya harus lebih besar dari nol.
+OK   | biaya tanpa keterangan ditolak | Keterangan biaya wajib diisi.
+OK   | biaya sah tercatat dan menjurnal | akun 1-001+5-001
+OK   | kategori HPP memakai akun 5-001 | akun=1-001+5-001
+OK   | PO dibuat | po=1 {"id":1}
+OK   | baris PO berjumlah 0 ditolak | Jumlah pesan harus lebih besar dari nol.
+OK   | baris PO tanpa satuan ditolak | Satuan bahan wajib diisi (kg, pcs, liter).
+OK   | penerimaan melebihi sisa terima ditolak | Jumlah 999 kg melebihi sisa terima 2.5 kg untuk Tepung Terigu Uji.
+OK   | penerimaan ditolak tidak mengubah stok | stok 50 -> 50
+OK   | penerimaan ditolak tidak meninggalkan jurnal | entri 7
+OK   | baris PO diisi bahan lain ditolak | Baris PO untuk Tepung Terigu Uji diisi bahan lain (Id 2).
+OK   | penerimaan barang sah diterima | 
+OK   | stok gudang bertambah sesuai jumlah terima | 50 -> 52.5
+OK   | status PO jadi Received | status=3
+OK   | jurnal Dr Persediaan / Cr Utang tercatat | 1-003:3000123/0 2-002:0/3000123
+OK   | nilai penerimaan membulatkan pecahan satuan (2,5 x 1200049 = 3000123) | debit=3000123 (pembulatan ke bawah memberi 3000122)
+OK   | saldo akhir jurnal tetap seimbang | debit=15645123 kredit=15645123 entri=8
+OK   | saldo akun sesuai arus kas dan dokumen yang tercatat | kas=-25000 (harus -25000) utang=3000123 pendapatan=200000
+
+TOTAL 62 pemeriksaan, 0 gagal
+
+[PASS] verifikasi verify-batch2.mjs pemeriksaan 62, gagal 0
+==> verify-batch3.mjs pada http://127.0.0.1:61010 (db sementara C:\Users\Administrator\AppData\Local\Temp\seruni-verify-b6da59d0\uji-batch3.db)
+[PASS] host uji untuk verify-batch3.mjs siap di http://127.0.0.1:61010
+OK   | login sandi bawaan menandai ganti sandi wajib | role=0
+OK   | token bawaan ditolak 403 untuk endpoint data | http=403 Kata sandi akun ini masih bawaan. Ganti kata sandi lebih dulu melalui menu ganti sandi.
+OK   | buku besar juga tertutup untuk token bawaan | http=403
+OK   | jalur ekspor tertutup untuk token bawaan | http=403
+OK   | /health tetap terbuka (probe tanpa data) | http=200
+OK   | sandi pengganti di bawah 8 karakter ditolak | Kata sandi minimal 8 karakter.
+OK   | sandi pengganti tanpa angka ditolak | Kata sandi harus memuat huruf dan angka.
+OK   | sandi lama salah ditolak | http=400 Password lama salah.
+OK   | ganti sandi lewat saat gerbang aktif | http=200 
+OK   | sandi bawaan tidak lagi bisa masuk | http=401 Username atau password salah.
+OK   | setelah ganti sandi, token tidak lagi berstatus wajib ganti | mustChangePassword=false
+OK   | endpoint data terbuka setelah sandi diganti | http=200
+OK   | akun uji owner_b3 masuk sebagai Owner | claim=Owner
+OK   | akun uji admin_b3 masuk sebagai Admin | claim=Admin
+OK   | akun uji dapur_b3 masuk sebagai Dapur | claim=Dapur
+OK   | akun uji pegawai_b3 masuk sebagai Pegawai | claim=Pegawai
+OK   | tanpa token seluruh API ditolak 401 | http=401
+OK   | GET /api/users tidak membocorkan PasswordHash | http=200 body=[{"id":1,"legacyId":null,"username":"admin","role":0,"isActive":true,"mustChangePassword":false,"createdAt":"2026-10-29T07:22:09","lastLoginAt":"2026-10-29T14:2
+OK   | data dasar untuk uji peran siap | bahan=1 produk=1 supplier=1
+OK   | Pegawai membuat pesanan (sales) | http=201 (harus boleh) 
+OK   | Pegawai tidak bisa menawar harga pesanan | http=400 Total pesanan harus Rp 5.000 (Roti Uji B3 A- 1). Perubahan harga hanya bisa dilakukan Admin lewat katalog produk.
+OK   | Dapur membuat pesanan (sales) ditolak | http=403 (harus 403) 
+OK   | Pegawai membatalkan pesanan (sales-cancel) ditolak | http=403 (harus 403) 
+OK   | percobaan batal oleh Pegawai tidak mengubah status | status=undefined
+OK   | Admin membatalkan pesanan (sales-cancel) boleh | http=200 (harus boleh) 
+OK   | Pegawai membaca jurnal (finance-read) ditolak | http=403 (harus 403) 
+OK   | Dapur membaca saldo akun (finance-read) ditolak | http=403 (harus 403) 
+OK   | Dapur mencatat biaya (finance-write) ditolak | http=403 (harus 403) 
+OK   | Admin mencatat biaya (finance-write) boleh | http=200 (harus boleh) 
+OK   | Dapur membuat SPK (production-write) boleh | http=201 (harus boleh) 
+OK   | Pegawai membuat SPK (production-write) ditolak | http=403 (harus 403) 
+OK   | Dapur membatalkan SPK (production-cancel) ditolak | http=403 (harus 403) 
+OK   | Owner membatalkan SPK (production-cancel) boleh | http=200 (harus boleh) 
+OK   | Dapur mengoreksi stok (inventory-write) boleh | http=200 (harus boleh) 
+OK   | Pegawai memindahkan stok (inventory-write) ditolak | http=403 (harus 403) 
+OK   | Dapur membuat PO (purchases-write) boleh | http=200 (harus boleh) 
+OK   | Pegawai membuat PO (purchases-write) ditolak | http=403 (harus 403) 
+OK   | Dapur membatalkan PO (purchases-cancel) ditolak | http=403 (harus 403) 
+OK   | Pegawai membuat bahan (master-data-write) ditolak | http=403 (harus 403) 
+OK   | Admin membuat bahan (master-data-write) boleh | http=201 (harus boleh) 
+OK   | Admin membaca daftar pengguna (administration) ditolak | http=403 (harus 403) 
+OK   | Admin mengubah pengaturan (administration) ditolak | http=403 (harus 403) 
+OK   | Owner mengubah pengaturan (administration) boleh | http=200 (harus boleh) 
+OK   | nomor pesanan berbentuk ORD-tanggal-urut | ORD-20261029-0003 ORD-20261029-0004 ORD-20261029-0005 ORD-20261029-0006 ORD-20261029-0007
+OK   | nomor pesanan unik dan menaik | ORD-20261029-0003 ORD-20261029-0004 ORD-20261029-0005 ORD-20261029-0006 ORD-20261029-0007
+OK   | 12 pesanan paralel tanpa galat server | 201,201,201,201,201,201,201,201,201,201,201,201
+OK   | nomor dari penulisan paralel tetap unik | ORD-20261029-0008 ORD-20261029-0015 ORD-20261029-0019 ORD-20261029-0009 ORD-20261029-0018 ORD-20261029-0016 ORD-20261029-0014 ORD-20261029-0013 ORD-20261029-0017 ORD-20261029-0010 ORD-20261029-0011 ORD-20261029-0012
+OK   | urutan nomor rapat (tanpa lompatan akibat tabrakan) | 8..19 (jumlah 12)
+OK   | nomor SPK memakai awalan SPK dan unik | SPK-20261029-0002 SPK-20261029-0003 SPK-20261029-0004
+OK   | nomor PO memakai awalan PO dan unik | PO-20261029-0002 PO-20261029-0003
+OK   | penghitung hari ini = jumlah dokumen tersimpan | Order=19/19 SPK=4/4 PO=3/3
+OK   | Origin asing tidak mendapat Access-Control-Allow-Origin | http=200 acao=(kosong)
+OK   | Origin loopback bawaan tetap diizinkan | acao=http://localhost:5173
+OK   | preflight asing ditolak tanpa izin | http=204 acao=(kosong)
+
+TOTAL 54 pemeriksaan, 0 gagal
+
+[PASS] verifikasi verify-batch3.mjs pemeriksaan 54, gagal 0
+==> verify-batch6.mjs pada http://127.0.0.1:50561 (db sementara C:\Users\Administrator\AppData\Local\Temp\seruni-verify-b6da59d0\uji-batch6.db)
+[PASS] host uji untuk verify-batch6.mjs siap di http://127.0.0.1:50561
+OK   | login mengirim daftar kapabilitas | kapabilitas=["administration","finance-read","finance-write","inventory-read","inventory-write","master-data-write","production-cancel","production-write","purchases-cancel","purchases-write","sales","sales-cancel","sales-export","sales-return"]
+OK   | pemilik memegang administration & finance-read | role=0
+OK   | GET /api tasks menjawab struktur | http=200 jumlah=0
+OK   | GET analytics punya campo pendapatan & laba | http=200
+OK   | self-check mengembalikan daftar pemeriksaan | http=200 n=9
+OK   | PUT settings diterapkan | http=200 diterapkan=1
+OK   | jejak audit mencatat perubahan pengaturan + nilai baru | http=200 baris=1
+OK   | POST /api/users membuat pegawai (201) | http=201 {"id":2,"username":"kasir-uji","peran":"Pegawai"}
+OK   | daftar user TIDAK mengirim hash sandi | http=200 n=2
+OK   | Owner terakhir tidak bisa menonaktifkan dirinya | http=400 Owner terakhir tidak boleh dinonaktifkan; angkat Owner lain lebih dulu.
+OK   | pegawai TIDAK memegang administration | kapabilitas=["sales"]
+OK   | audit ditolak 403 untuk pegawai | http=403
+OK   | analytics ditolak 403 untuk pegawai | http=403
+OK   | daftar pegawai ditolak 403 untuk pegawai | http=403
+OK   | periksa-diri ditolak 403 untuk pegawai | http=403
+OK   | pegawai tetap boleh membuka kotak tugas | http=200
+OK   | bahan uji tercipta | http=201 {"id":1}
+OK   | lot tercatat | http=201 {"id":1}
+OK   | lot muncul di daftar batch & kedaluwarsa | http=200 n=1
+OK   | lot dengan kedaluwarsa lampau ditolak | http=400
+OK   | AuditLogs benar-benar berisi baris | baris=10
+
+TOTAL 21 pemeriksaan, 0 gagal
+
+[PASS] verifikasi verify-batch6.mjs pemeriksaan 21, gagal 0
+==> verify-bug09.mjs pada http://127.0.0.1:50578 (db sementara C:\Users\Administrator\AppData\Local\Temp\seruni-verify-b6da59d0\uji-bug09.db)
+[PASS] host uji untuk verify-bug09.mjs siap di http://127.0.0.1:50578
+OK   | POST /api/ingredients tanpa token ditolak 401 | http=401
+OK   | PUT /api/ingredients/1 tanpa token ditolak 401 | http=401
+OK   | DELETE /api/ingredients/1 tanpa token ditolak 401 | http=401
+OK   | pemilik bisa masuk | 
+OK   | akun Pegawai & Dapur terbentuk |  
+OK   | pemilik menambah bahan (201) | http=201 {"id":1}
+OK   | Pegawai menambah bahan ditolak 403 | http=403
+OK   | Pegawai mengubah bahan ditolak 403 | http=403
+OK   | Pegawai menonaktifkan bahan ditolak 403 | http=403
+OK   | Dapur menambah bahan ditolak 403 | http=403
+OK   | nama kosong ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Nama bahan baku wajib diisi.
+OK   | satuan kosong ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Satuan bahan baku wajib diisi (mis. kg, liter, pcs).
+OK   | harga negatif ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Harga per satuan tidak boleh negatif.
+OK   | stok negatif ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Stok tidak boleh negatif.
+OK   | minimum stok negatif ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Batas minimum stok tidak boleh negatif.
+OK   | satuan terlalu panjang ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Satuan bahan baku terlalu panjang (maksimal 20 karakter).
+OK   | nama terlalu panjang ditolak 400 (bukan 500) | http=400 kode=VALIDATION_FAILED pesan=Nama bahan baku terlalu panjang (maksimal 120 karakter).
+OK   | nama kembar (beda huruf/spasi) ditolak 409 | http=409 kode=DUPLICATE_KEY
+OK   | penolakan tidak menambah baris kedua | jumlah=1
+OK   | ubah harga tanpa currentStock diterima | http=200 
+OK   | stok tetap 9 setelah ubah harga | stok=9 harga=1400000
+OK   | harga tersimpan dalam unit minor | harga=1400000
+OK   | batas minimum tersimpan | min=3
+OK   | ubah Id tak dikenal menjawab 404 | http=404
+OK   | ubah bahan tercatat di jejak audit | http=200 n=2
+OK   | jejak audit memuat harga lama & baru | lama={"nama":"Tepung Uji B9 yxat6","hargaPerUnitMinor":1200000,"satuan":"kg","minStok":0.0} baru={"nama":"Tepung Uji B9 yxat6","hargaPerUnitMinor":1400000,"satuan":"kg","minStok":3}
+OK   | nama berisi HTML/SQL tersimpan sebagai teks biasa | http=201 {"id":2}
+OK   | isi tersimpan persis apa adanya (parameter, bukan rangkaian SQL) | ditemukan=true
+OK   | tabel Ingredients masih utuh setelah nama berisi SQL | baris=2
+
+TOTAL 29 pemeriksaan, 0 gagal
+
+[PASS] verifikasi verify-bug09.mjs pemeriksaan 29, gagal 0
+Berkas sementara C:\Users\Administrator\AppData\Local\Temp\seruni-verify-b6da59d0 dibersihkan.
+
+================ HASIL PAGER ================
+
+Nama                                       Status Detail                                                              
+----                                       ------ ------                                                              
+build solusi                               PASS   exit 0                                                              
+dotnet test (unit + integrasi + UI)        PASS   exit 0                                                              
+skrip Inno tersedia                        PASS   D:\bakery-desktop\build\installer\inno\setup.iss                    
+Icons/Run tanpa wscript                    PASS   shortcut dan [Run] harus langsung ke program, bukan perantara skrip 
+Icons/Run tanpa berkas .vbs                PASS   VBScript tidak boleh menjadi peluncur                               
+Icons/Run menunjuk Seruni22Bakery.exe      PASS   peluncur native wajib dirujuk                                       
+define MyAppExeName = Seruni22Bakery.exe   PASS   nama peluncur di header skrip Inno                                  
+sumber peluncur native tersedia            PASS   D:\bakery-desktop\build\installer\launcher\Seruni22BakeryLauncher.cs
+build-installer memakai csc untuk peluncur PASS   peluncur dikompilasi, bukan disalin sebagai .vbs                    
+paket WiX tanpa wscript/.vbs               PASS   shortcut MSI juga harus menunjuk peluncur native                    
+host uji untuk verify-batch2.mjs           PASS   siap di http://127.0.0.1:60997                                      
+verifikasi verify-batch2.mjs               PASS   pemeriksaan 62, gagal 0                                             
+host uji untuk verify-batch3.mjs           PASS   siap di http://127.0.0.1:61010                                      
+verifikasi verify-batch3.mjs               PASS   pemeriksaan 54, gagal 0                                             
+host uji untuk verify-batch6.mjs           PASS   siap di http://127.0.0.1:50561                                      
+verifikasi verify-batch6.mjs               PASS   pemeriksaan 21, gagal 0                                             
+host uji untuk verify-bug09.mjs            PASS   siap di http://127.0.0.1:50578                                      
+verifikasi verify-bug09.mjs                PASS   pemeriksaan 29, gagal 0                                             
+
+
+
+PAGER LULUS: 18 langkah lulus (build solusi; dotnet test (unit + integrasi + UI); skrip Inno tersedia; Icons/Run tanpa wscript; Icons/Run tanpa berkas .vbs; Icons/Run menunjuk Seruni22Bakery.exe; define MyAppExeName = Seruni22Bakery.exe; sumber peluncur native tersedia; build-installer memakai csc untuk peluncur; paket WiX tanpa wscript/.vbs; host uji untuk verify-batch2.mjs; verifikasi verify-batch2.mjs; host uji untuk verify-batch3.mjs; verifikasi verify-batch3.mjs; host uji untuk verify-batch6.mjs; verifikasi verify-batch6.mjs; host uji untuk verify-bug09.mjs; verifikasi verify-bug09.mjs).

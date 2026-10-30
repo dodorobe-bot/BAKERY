@@ -1,0 +1,2 @@
+adb779c1d6c4ceb1c424ae3700b6f435e6223ae372104827d3ef4b9a943cd36b *Seruni22Bakery_Setup_v1.2.7.exe
+5c4c31f87ecb96e23b5630238ba59d72c9f115904cd98a8ac13d6953fe20dfbb *Seruni22Bakery_v1.2.7_x64.msi

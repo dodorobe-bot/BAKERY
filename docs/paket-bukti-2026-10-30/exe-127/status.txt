@@ -1,0 +1,46 @@
+﻿
+03:19:32 | EXE 1.2.7 utuh | PASS | 42641033 bita, SHA256 adb779c1d6c4ceb1c424ae3700b6f435e6223ae372104827d3ef4b9a943cd36b
+03:19:33 | tidak ada proses Seruni sebelum uji | PASS | 0 proses
+03:19:33 | ARP sebelum uji: satu entri MSI 1.2.7 | PASS | Seruni 22 Bakery 1.2.7
+03:19:33 | basis data nyata sebelum uji | INFO | 491520 bita, mtime 2026-10-30 16:52:56.461, wal tidak ada, shm tidak ada
+03:19:33 | pintasan MSI sebelum uji benar | PASS | Start Menu ProgramData menunjuk instalasi MSI
+03:19:33 | belum ada instalasi per-pengguna EXE | PASS | tidak ada grup Start Menu, pintasan Desktop, atau folder uji
+03:19:38 | pasang senyap EXE 1.2.7 | PASS | exit 0
+03:19:38 | jumlah berkas terpasang EXE | PASS | 397 berkas, 140325368 bita
+03:19:38 | versi peluncur EXE 1.2.7 | PASS | 1.2.7
+03:19:38 | versi host EXE 1.2.7.0 | PASS | 1.2.7.0
+03:19:38 | Host.dll sama dengan paket | PASS | 4773A367836B117A8106E45A2D345B7D15D61FDF774768183C97CD28F07C8B49
+03:19:38 | index.html sama dengan paket | PASS | F4A2FC04CA04E10FD665704C11B63E1BB57677A8AC3B4570DB411DFDB694BD2E
+03:19:38 | bundel 1.2.7 ada, bundel 1.2.6 tidak ikut | PASS | js 582985 bita; sisa bundel lama 0
+03:19:38 | tanpa berkas pengembangan/rahasia | PASS | tidak ada appsettings.Development.json, PDB, basis data, atau kunci
+03:19:38 | pintasan Start Menu per-pengguna EXE | PASS | target C:\tmp\seruni-exe-127\Seruni22Bakery.exe
+03:19:38 | pintasan Desktop per-pengguna EXE | PASS | target C:\tmp\seruni-exe-127\Seruni22Bakery.exe
+03:19:38 | pintasan MSI tidak tersentuh saat pasang | PASS | Start Menu ProgramData + Public Desktop tetap menunjuk MSI
+03:19:38 | ARP per-pengguna EXE muncul | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.7 [{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1]
+03:19:38 | ARP MSI tetap satu entri | PASS | Seruni 22 Bakery 1.2.7
+03:19:41 | host EXE menjawab /health | PASS | percobaan 1
+03:19:41 | health melaporkan 1.2.7 | PASS | version=1.2.7
+03:19:41 | SPA memuat bundel 1.2.7 | PASS | status 200
+03:19:41 | aset JS 1.2.7 dilayani | PASS | status 200, 582985 bita
+03:19:42 | login admin bawaan berhasil | PASS | token diterima
+03:19:42 | akun bawaan wajib ganti sandi | PASS | mustChangePassword=True
+03:19:42 | sandi bawaan bisa diganti | PASS | http 200
+03:19:43 | login dengan sandi baru berhasil | PASS | token diterima
+03:19:43 | wajib-ganti-sandi padam | PASS | mustChangePassword=False
+03:19:43 | periksa-diri basis data scratch: 0 gagal | PASS | 9 pemeriksaan, 0 gagal; terpasang 17, skema terbaru yang ikut terkemas 17. semua migrasi sudah dijalankan.
+03:19:43 | basis data scratch dimigrasi 1..17 | PASS | 17 migrasi
+03:19:43 | merek toko terbaca anonim | PASS | name=Seruni 22 Bakery, 3 kunci
+03:19:43 | basis data scratch terbentuk | PASS | uji.db 4096 bita
+03:19:43 | host EXE dihentikan | INFO | Stop-Process
+03:19:46 | tidak ada proses Seruni sebelum copot | PASS | 0 proses
+03:19:47 | copot senyap EXE 1.2.7 | PASS | exit 0
+03:19:50 | folder instalasi EXE hilang | PASS | folder program terhapus
+03:19:50 | data uji di luar folder program tetap ada | PASS | uji.db dan uji.key masih ada
+03:19:50 | pintasan per-pengguna EXE hilang | PASS | grup Start Menu dan pintasan Desktop per-pengguna terhapus
+03:19:50 | pintasan MSI tetap utuh setelah copot | PASS | Start Menu ProgramData + Public Desktop tetap menunjuk MSI
+03:19:50 | ARP per-pengguna EXE hilang | PASS | kunci HKCU bersih
+03:19:50 | ARP MSI tetap satu entri 1.2.7 | PASS | Seruni 22 Bakery 1.2.7
+03:19:50 | basis data nyata tidak berubah | PASS | 491520 bita, mtime 2026-10-30 16:52:56.461, wal tidak ada, shm tidak ada
+03:19:50 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+03:19:50 | instalasi MSI tetap utuh | PASS | 393 berkas, host 1.2.7.0
+03:19:50 | rekap | PASS | lulus=42 gagal=0

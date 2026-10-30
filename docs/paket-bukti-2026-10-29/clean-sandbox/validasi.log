@@ -1,0 +1,56 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261029154209
+Username: 722E9416-661A-4\WDAGUtilityAccount
+RunAs User: 722E9416-661A-4\WDAGUtilityAccount
+Configuration Name: 
+Machine: 722E9416-661A-4 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\share\validasi.ps1
+Process ID: 6004
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+15:42:11 | lingkungan | INFO | Microsoft Windows 11 Enterprise build 26100; pengguna 722E9416-661A-4\WDAGUtilityAccount; elevated=True
+15:42:11 | mesin bersih: tanpa runtime .NET bersama | PASS | C:\Program Files\dotnet tidak ada (publish self-contained)
+15:42:12 | mesin bersih: belum ada instalasi Seruni | PASS | tidak ada folder program dan tidak ada entri ARP
+15:42:14 | salinan MSI utuh | PASS | 50357095 byte, SHA256 2972B145E3FD77DF2500B654D9AF290421D03CE52E1FBB1416333C8CA7F23114
+15:44:47 | pasang senyap msiexec /qn | PASS | exit 0
+15:44:48 | folder instalasi | PASS | C:\Program Files\Seruni 22 Bakery
+15:44:51 | jumlah berkas terpasang | PASS | 393 berkas
+15:44:51 | berkas inti ada | PASS | peluncur, host, dan DLL infrastruktur ada
+15:44:51 | runtime mandiri ikut | PASS | hostfxr.dll + coreclr.dll ada
+15:44:51 | tanpa berkas pengembangan | PASS | tidak ada appsettings.Development.json, PDB, basis data, atau kunci
+15:44:51 | bundel baru terpasang | PASS | index-CKgTNzb_.js 573778 bita, SHA256 665BB9BDC24621DA8EF3610F305C792812CFBC120C064923069B34A6B1FD4423
+15:44:52 | index.html sama dengan paket | PASS | SHA256 5364F0B36969D616E0D5FC2302698D5A7C602F01EDD5355FA9CCEFE40F302042
+15:44:52 | versi peluncur 1.2.4 | PASS | 1.2.4
+15:44:52 | versi host 1.2.4 | PASS | 1.2.4.0
+15:44:56 | tanda tangan dilaporkan apa adanya | PASS | NotSigned (sesuai paket yang belum ditandatangani)
+15:44:56 | entri ARP 1.2.4 | PASS | DisplayName='Seruni 22 Bakery' DisplayVersion='1.2.4'
+15:44:57 | pintasan Start Menu | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+15:44:57 | pintasan Desktop publik | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+15:45:08 | host menjawab /health | PASS | percobaan 2
+15:45:09 | health melaporkan 1.2.4 | PASS | version=1.2.4
+15:45:09 | SPA dimuat | PASS | status 200, 466 bita
+15:45:10 | aset JS bundel baru dilayani | PASS | status 200, 573778 bita
+15:45:12 | basis data baru dimigrasi 1..17 | PASS | 17 migrasi diterapkan
+15:45:12 | basis data scratch terbentuk | PASS | uji.db 4096 bita
+15:45:12 | host dihentikan | INFO | Stop-Process
+15:45:27 | copot senyap msiexec /qn | PASS | exit 0
+15:45:30 | folder instalasi hilang | PASS | folder program terhapus
+15:45:30 | pintasan Start Menu hilang | PASS | terhapus
+15:45:30 | pintasan Desktop publik hilang | PASS | terhapus
+15:45:30 | entri ARP hilang | PASS | ARP bersih
+15:45:30 | data di luar folder program tetap utuh | PASS | uji.db dan uji.key masih ada setelah copot
+15:45:31 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+15:45:31 | rekap | PASS | lulus=30 gagal=0
+**********************
+Windows PowerShell transcript end
+End time: 20261029154531
+**********************

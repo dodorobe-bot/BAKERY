@@ -1,0 +1,68 @@
+﻿
+03:17:29 | EXE 1.2.7 utuh | PASS | 42641033 bita, SHA256 adb779c1d6c4ceb1c424ae3700b6f435e6223ae372104827d3ef4b9a943cd36b
+03:17:30 | tidak ada proses Seruni berjalan sebelum uji | PASS | 0 proses: 
+03:17:30 | ARP sebelum uji: tepat satu entri MSI 1.2.7 | PASS | Seruni 22 Bakery 1.2.7 [{A0AEA895-FC09-4312-8E24-8C9E0FEABDC8}]
+03:17:30 | pintasan sebelum uji | INFO | C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery.lnk -> C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+03:17:30 | pintasan sebelum uji | INFO | C:\Users\Public\Desktop\Seruni 22 Bakery.lnk -> C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+03:17:30 | pintasan sebelum uji | INFO | C:\Users\Administrator\Desktop\Seruni 22 Bakery.lnk TIDAK ADA
+03:17:30 | pintasan sebelum uji | INFO | C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery\Seruni 22 Bakery.lnk TIDAK ADA
+03:17:30 | pintasan sebelum uji | INFO | C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery\Uninstall Seruni 22 Bakery.lnk TIDAK ADA
+03:17:30 | jalur sebelum uji | INFO | C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery tidak ada
+03:17:30 | jalur sebelum uji | INFO | C:\Users\Administrator\AppData\Local\Programs\Seruni22Bakery tidak ada
+03:17:30 | jalur sebelum uji | INFO | C:\tmp\seruni-exe-127 tidak ada
+03:17:30 | basis data nyata sebelum uji | INFO | 491520 bita, mtime 2026-10-30 16:52:56.461, -wal tidak ada, -shm tidak ada
+03:17:30 | instalasi MSI sebelum uji | INFO | 1.2.7.0; 393 berkas
+03:17:31 | ruang disk C: | INFO | 49.3
+03:17:56 | pasang senyap EXE 1.2.7 | PASS | exit 0
+03:17:56 | folder instalasi uji | PASS | C:\tmp\seruni-exe-127
+03:17:56 | jumlah berkas terpasang EXE | PASS | 397 berkas, 140325368 bita
+03:17:56 | versi peluncur EXE | PASS | 1.2.7
+03:17:56 | versi host EXE | PASS | 1.2.7.0
+03:17:56 | Host.dll 1.2.7 sama dengan paket | PASS | 4773A367836B117A8106E45A2D345B7D15D61FDF774768183C97CD28F07C8B49
+03:17:56 | index.html 1.2.7 sama dengan paket | PASS | F4A2FC04CA04E10FD665704C11B63E1BB57677A8AC3B4570DB411DFDB694BD2E
+03:17:56 | bundel 1.2.7 terpasang, bundel 1.2.6 tidak ada | True | js 582985 bita; sisa bundel lama: 0
+03:17:56 | tanpa berkas pengembangan/rahasia | PASS | tidak ada appsettings.Development.json, PDB, basis data, atau kunci
+03:17:56 | pintasan Start Menu per-pengguna EXE | True | target C:\tmp\seruni-exe-127\Seruni22Bakery.exe; uninstall shortcut ada
+03:17:56 | pintasan Desktop per-pengguna EXE | True | target C:\tmp\seruni-exe-127\Seruni22Bakery.exe
+03:17:56 | ARP: entri EXE per-pengguna muncul | True | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.7 [{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1]
+03:17:57 | ARP: entri MSI tetap satu | True | Seruni 22 Bakery 1.2.7
+03:17:57 | pintasan MSI tidak tersentuh | True | Start Menu C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe; Public Desktop C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+03:18:16 | host EXE hasil pasang menjawab /health | PASS | percobaan 1
+03:18:16 | health melaporkan 1.2.7 | PASS | version=1.2.7
+03:18:16 | SPA memuat bundel 1.2.7 | PASS | status 200, 466 bita
+03:18:16 | aset JS 1.2.7 dilayani | PASS | status 200, 582985 bita
+03:18:17 | login admin bawaan berhasil | PASS | token diterima
+03:18:17 | akun bawaan wajib ganti sandi | PASS | mustChangePassword=True
+03:18:17 | /api/brand anonim tepat 3 kunci | PASS | 3 kunci: name,tagline,logo
+03:18:17 | periksa-diri basis data scratch: 0 gagal | FAIL | 0 pemeriksaan, -1 gagal
+03:18:17 | basis data scratch dimigrasi 1..17 | PASS | 17 migrasi
+03:18:17 | basis data scratch terbentuk | PASS | uji.db 4096 bita
+03:18:17 | pintasan Start Menu per-pengguna EXE | PASS | target C:\tmp\seruni-exe-127\Seruni22Bakery.exe; uninstall shortcut ada
+03:18:17 | pintasan Desktop per-pengguna EXE | PASS | target C:\tmp\seruni-exe-127\Seruni22Bakery.exe
+03:18:17 | ARP: entri EXE per-pengguna muncul | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.7
+03:18:17 | ARP: entri MSI tetap satu | PASS | Seruni 22 Bakery 1.2.7
+03:18:17 | pintasan MSI tidak tersentuh | PASS | Start Menu C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe; Public Desktop C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+03:18:17 | host EXE dihentikan | INFO | Stop-Process
+03:18:34 | catatan urutan uji | INFO | periksa-diri sebelumnya ditolak karena gerbang wajib-ganti-sandi; diulang setelah ganti sandi
+03:18:36 | host EXE menyala lagi pada basis data yang sama | PASS | percobaan 1
+03:18:37 | login admin lama masih dipakai | PASS | token diterima
+03:18:38 | login dengan sandi baru berhasil | PASS | token diterima
+03:18:38 | wajib-ganti-sandi padam setelah diganti | PASS | mustChangePassword=False
+03:18:38 | periksa-diri basis data scratch: 0 gagal | PASS | 9 pemeriksaan, 0 gagal; skema: terpasang 17, skema terbaru yang ikut terkemas 17. semua migrasi sudah dijalankan.
+03:18:38 | merek toko terbaca dari host EXE | PASS | name=Seruni 22 Bakery
+03:18:38 | host EXE dihentikan | INFO | Stop-Process
+03:18:41 | tidak ada proses Seruni sebelum copot | PASS | 0 proses
+03:18:55 | uninstaller EXE ada | PASS | C:\tmp\seruni-exe-127\unins000.exe
+03:18:57 | copot senyap EXE 1.2.7 | PASS | exit 0
+03:19:00 | folder instalasi EXE hilang | PASS | folder program terhapus
+03:19:00 | data uji di luar folder program tetap ada | PASS | uji.db dan uji.key masih ada
+03:19:00 | pintasan per-pengguna EXE hilang | PASS | Start Menu grup + Desktop per-pengguna bersih
+03:19:00 | grup Start Menu per-pengguna hilang | PASS | grup terhapus
+03:19:00 | pintasan MSI tetap utuh | PASS | Start Menu C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe; Public Desktop C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+03:19:00 | ARP per-pengguna EXE hilang | PASS | kunci HKCU bersih
+03:19:01 | ARP MSI tetap satu entri 1.2.7 | PASS | Seruni 22 Bakery 1.2.7
+03:19:01 | basis data nyata tidak berubah | PASS | 491520|2026-10-30 16:52:56.461
+03:19:01 | tanpa -wal/-shm baru pada basis data nyata | PASS | tidak ada
+03:19:01 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+03:19:01 | instalasi MSI tetap utuh | PASS | 393 berkas, host 1.2.7.0
+03:19:01 | rekap | FAIL | gagal=1

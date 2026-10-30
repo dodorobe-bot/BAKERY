@@ -1,0 +1,94 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261030175427
+Username: F59D39C0-650F-4\WDAGUtilityAccount
+RunAs User: F59D39C0-650F-4\WDAGUtilityAccount
+Configuration Name: 
+Machine: F59D39C0-650F-4 (Microsoft Windows NT 10.0.26100.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\share\uji-upgrade.ps1
+Process ID: 5912
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+17:54:28 | lingkungan | INFO | Microsoft Windows 11 Enterprise build 26100; pengguna F59D39C0-650F-4\WDAGUtilityAccount; elevated=True; RAM 1535 MB
+17:54:28 | mesin bersih: tanpa runtime .NET bersama | PASS | C:\Program Files\dotnet tidak ada (publish self-contained)
+17:54:28 | mesin bersih: belum ada instalasi Seruni | PASS | tidak ada folder program dan tidak ada entri ARP
+17:54:30 | salinan MSI 1.2.6 utuh | PASS | 50357095 byte, SHA256 461D1C771A5BA58B0DC944FC9EB3E9768B8640ABD437FC72CA52D65744E353C1
+17:54:30 | salinan MSI 1.2.7 utuh | PASS | 50373479 byte, SHA256 5C4C31F87ECB96E23B5630238BA59D72C9F115904CD98A8AC13D6953FE20DFBB
+17:56:58 | pasang senyap MSI 1.2.6 | PASS | exit 0
+17:56:59 | jumlah berkas terpasang 1.2.6 | PASS | 393 berkas
+17:56:59 | runtime mandiri ikut | PASS | hostfxr.dll + coreclr.dll ada
+17:56:59 | tanpa berkas pengembangan/rahasia | PASS | tidak ada appsettings.Development.json, PDB, basis data, atau kunci
+17:57:00 | versi peluncur 1.2.6 | PASS | 1.2.6
+17:57:00 | versi host 1.2.6 | PASS | 1.2.6.0
+17:57:00 | Host.dll 1.2.6 sama dengan paket | PASS | C9A5B020386536E2092BF2F7DFA9E0E0E7C611FFF3B8519F158887A83B90020E
+17:57:00 | index.html 1.2.6 sama dengan paket | PASS | 298108B0BAE6BA8BC550A3F3ADCD41FF65E210BF86C22F4931EF38B46EE946F8
+17:57:00 | bundel 1.2.6 terpasang | PASS | index-BPNiweyi.js + index-Bz7F3T1f.css ada
+17:57:01 | entri ARP 1.2.6 (ProductCode 1.2.6) | PASS | Seruni 22 Bakery 1.2.6
+17:57:02 | tepat satu entri Seruni sebelum peningkatan | PASS | Seruni 22 Bakery 1.2.6 [{EDCBBD96-732D-4854-A31B-0A36E6C43E77}]
+17:57:06 | pintasan 1.2.6: Start Menu + Desktop publik | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+17:57:09 | tanda tangan dilaporkan apa adanya | PASS | NotSigned (sesuai paket yang belum ditandatangani)
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+17:57:19 | host 1.2.6 menjawab /health | PASS | health 200
+17:57:20 | health melaporkan 1.2.6 | PASS | version=1.2.6
+17:57:20 | SPA 1.2.6 memuat bundel 1.2.6 | PASS | status 200
+17:57:21 | login bawaan admin berhasil di 1.2.6 | PASS | token diterima
+17:57:21 | akun bawaan wajib ganti sandi | PASS | mustChangePassword=True
+17:57:22 | sandi diganti lalu login sandi baru | PASS | login dengan sandi baru berhasil
+17:57:22 | produk uji dibuat di 1.2.6 | PASS | id=1
+PS>TerminatingError(Invoke-RestMethod): "The remote server returned an error: (401) Unauthorized."
+17:57:23 | api | INFO | GET http://127.0.0.1:5301/api/brand gagal (http 401): The remote server returned an error: (401) Unauthorized.
+17:57:23 | merek disetel di 1.2.6 | FAIL | name=
+17:57:23 | host dihentikan | INFO | Stop-Process
+17:57:26 | basis data pra-peningkatan terbentuk | PASS | uji.db 4096 bita
+17:57:26 | basis data pra-peningkatan | INFO | 4096 bita, SHA256 31B0F6669E49303BEA772658C76CD8557D01840C6B7B51F2EED54C4C0A44D4FF
+17:59:53 | peningkatan senyap MSI 1.2.7 | PASS | exit 0
+17:59:54 | produk 1.2.6 terdeteksi sebagai sasaran peningkatan | PASS | WIX_UPGRADE_DETECTED memuat {EDCBBD96-732D-4854-A31B-0A36E6C43E77}
+17:59:54 | log MSI menyatakan sukses | PASS | status 0
+17:59:54 | RemoveExistingProducts dijalankan | PASS | aksi pembongkaran produk lama ada di log
+17:59:54 | entri ARP 1.2.7 (ProductCode 1.2.7) | PASS | Seruni 22 Bakery 1.2.7
+17:59:54 | entri ARP 1.2.6 hilang | PASS | kunci 1.2.6 tidak ada lagi
+17:59:54 | tepat satu entri Seruni sesudah peningkatan | PASS | Seruni 22 Bakery 1.2.7 [{A0AEA895-FC09-4312-8E24-8C9E0FEABDC8}]
+17:59:54 | jumlah berkas terpasang 1.2.7 | PASS | 393 berkas
+18:00:02 | seluruh berkas terpasang identik dengan paket | PASS | 393 berkas diperiksa, 0 beda hash/ukuran, 0 selisih nama
+18:00:02 | versi peluncur 1.2.7 | PASS | 1.2.7
+18:00:02 | versi host 1.2.7 | PASS | 1.2.7.0
+18:00:02 | Host.dll 1.2.7 sama dengan paket | PASS | 4773A367836B117A8106E45A2D345B7D15D61FDF774768183C97CD28F07C8B49
+18:00:02 | index.html 1.2.7 sama dengan paket | PASS | F4A2FC04CA04E10FD665704C11B63E1BB57677A8AC3B4570DB411DFDB694BD2E
+18:00:02 | bundel 1.2.7 ada dan bundel 1.2.6 tersapu | PASS | index-DppHnhYj.js + index-BNYyu2En.css ada; berkas bundel 1.2.6 tidak tersisa
+18:00:02 | pintasan tetap menunjuk instalasi | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+18:00:02 | basis data tidak disentuh proses pasang | PASS | SHA256 31B0F6669E49303BEA772658C76CD8557D01840C6B7B51F2EED54C4C0A44D4FF
+18:00:06 | host hasil peningkatan menjawab /health | PASS | health 200
+18:00:06 | health melaporkan 1.2.7 | PASS | version=1.2.7
+18:00:06 | SPA 1.2.7 memuat bundel 1.2.7 | PASS | status 200
+18:00:07 | aset JS 1.2.7 dilayani | PASS | status 200, 582985 bita
+18:00:07 | sandi dari 1.2.6 masih berlaku di 1.2.7 | PASS | login dengan sandi hasil ganti di 1.2.6 berhasil
+18:00:07 | status wajib-ganti-sandi tidak kembali menyala | PASS | mustChangePassword=False
+18:00:08 | produk dari 1.2.6 masih ada di 1.2.7 | FAIL | produk tidak ditemukan/nilainya berubah
+18:00:08 | merek dari 1.2.6 masih tersimpan | PASS | name=Toko Uji Sandbox
+18:00:08 | endpoint /api/brand 1.2.7 anonim tepat 3 kunci | PASS | 3 kunci
+18:00:08 | periksa-diri basis data: 0 gagal | PASS | 9 pemeriksaan, 0 gagal
+18:00:08 | skema basis data 17 pada basis data 1.2.6 | PASS | terpasang 17, skema terbaru yang ikut terkemas 17. semua migrasi sudah dijalankan.
+18:00:08 | merek bisa diganti di 1.2.7 hasil peningkatan | PASS | name=Toko Uji Sandbox 127
+18:00:08 | logo bisa dipasang di 1.2.7 hasil peningkatan | PASS | logo 118 karakter, sama dengan yang dikirim
+18:00:08 | logo bisa dihapus lagi | PASS | logo kembali kosong
+18:00:08 | host dihentikan | INFO | Stop-Process
+18:00:11 | basis data pasca-peningkatan | INFO | 4096 bita
+18:00:11 | basis data masih ada setelah dipakai 1.2.7 | PASS | uji.db 4096 bita
+18:00:21 | copot senyap MSI 1.2.7 | PASS | exit 0
+18:00:24 | folder instalasi hilang | PASS | folder program terhapus
+18:00:24 | pintasan hilang | PASS | Start Menu dan Desktop publik terhapus
+18:00:24 | tidak ada entri ARP tersisa | PASS | daftar program bersih
+18:00:24 | data di luar folder program tetap utuh | PASS | uji.db dan uji.key masih ada setelah copot
+18:00:25 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+18:00:25 | rekap | FAIL | lulus=61 gagal=2
+**********************
+Windows PowerShell transcript end
+End time: 20261030180025
+**********************

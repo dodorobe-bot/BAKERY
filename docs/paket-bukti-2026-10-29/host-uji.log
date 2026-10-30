@@ -1,0 +1,66 @@
+[14:37:09 INF] Jwt:Secret dibuat otomatis untuk instalasi ini dan disimpan di C:/tmp/msi-baru/uji.key
+[14:37:09 INF] Migrasi 1 diterapkan.
+[Migration] Applied version 1
+[14:37:09 INF] Migrasi 2 diterapkan.
+[Migration] Applied version 2
+[14:37:09 INF] Migrasi 3 diterapkan.
+[Migration] Applied version 3
+[14:37:09 INF] Migrasi 4 diterapkan.
+[Migration] Applied version 4
+[14:37:09 INF] Migrasi 5 diterapkan.
+[Migration] Applied version 5
+[14:37:09 INF] Migrasi 6 diterapkan.
+[Migration] Applied version 6
+[14:37:09 INF] Migrasi 7 diterapkan.
+[Migration] Applied version 7
+[14:37:09 INF] Migrasi 8 diterapkan.
+[Migration] Applied version 8
+[14:37:09 INF] Migrasi 9 diterapkan.
+[Migration] Applied version 9
+[14:37:09 INF] Migrasi 10 diterapkan.
+[Migration] Applied version 10
+[14:37:09 INF] Migrasi 11 diterapkan.
+[Migration] Applied version 11
+[14:37:09 INF] Migrasi 12 diterapkan.
+[Migration] Applied version 12
+[14:37:09 INF] Migrasi 13 diterapkan.
+[Migration] Applied version 13
+[14:37:09 INF] Migrasi 14 diterapkan.
+[Migration] Applied version 14
+[14:37:09 INF] Migrasi 15 diterapkan.
+[Migration] Applied version 15
+[14:37:09 INF] Migrasi 16 diterapkan.
+[Migration] Applied version 16
+[14:37:09 INF] Migrasi 17 diterapkan.
+[Migration] Applied version 17
+[14:37:09 INF] Seruni 22 Bakery service starting on 
+[14:37:09 INF] User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[14:37:09 INF] Now listening on: http://127.0.0.1:5291
+[14:37:09 INF] Application started. Press Ctrl+C to shut down.
+[14:37:09 INF] Hosting environment: Production
+[14:37:09 INF] Content root path: C:\tmp\msi-baru\PFiles64\Seruni 22 Bakery
+[14:37:14 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5291/health - null null
+[14:37:14 INF] Executing endpoint 'HTTP: GET /health'
+[14:37:14 INF] Setting HTTP status code 200.
+[14:37:14 INF] Writing value of type '<>f__AnonymousType11`3' as Json.
+[14:37:14 INF] Executed endpoint 'HTTP: GET /health'
+[14:37:14 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5291/health - 200 null application/json; charset=utf-8 190.2086ms
+[14:37:14 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5291/health - null null
+[14:37:14 INF] Executing endpoint 'HTTP: GET /health'
+[14:37:14 INF] Setting HTTP status code 200.
+[14:37:14 INF] Writing value of type '<>f__AnonymousType11`3' as Json.
+[14:37:14 INF] Executed endpoint 'HTTP: GET /health'
+[14:37:14 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5291/health - 200 null application/json; charset=utf-8 2.4108ms
+[14:37:14 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5291/ - null null
+[14:37:14 INF] Executing endpoint 'Fallback {*path:nonfile}'
+[14:37:14 INF] Sending file. Request path: '/index.html'. Physical path: 'C:\tmp\msi-baru\PFiles64\Seruni 22 Bakery\wwwroot\index.html'
+[14:37:14 INF] Executed endpoint 'Fallback {*path:nonfile}'
+[14:37:14 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5291/index.html - 200 466 text/html 12.0855ms
+[14:37:14 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5291/assets/index-CKgTNzb_.js - null null
+[14:37:14 INF] Sending file. Request path: '/assets/index-CKgTNzb_.js'. Physical path: 'C:\tmp\msi-baru\PFiles64\Seruni 22 Bakery\wwwroot\assets\index-CKgTNzb_.js'
+[14:37:14 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5291/assets/index-CKgTNzb_.js - 200 573778 text/javascript 40.1685ms
+[14:37:21 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5291/ - null null
+[14:37:21 INF] Executing endpoint 'Fallback {*path:nonfile}'
+[14:37:21 INF] Sending file. Request path: '/index.html'. Physical path: 'C:\tmp\msi-baru\PFiles64\Seruni 22 Bakery\wwwroot\index.html'
+[14:37:21 INF] Executed endpoint 'Fallback {*path:nonfile}'
+[14:37:21 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5291/index.html - 200 466 text/html 3.4158ms

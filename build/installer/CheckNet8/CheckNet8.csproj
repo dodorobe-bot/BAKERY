@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Custom action untuk gerbang MSI: memeriksa ASP.NET Core 8 di disk.
+       Skema WiX RegistrySearch tidak mendukung wildcard, sedangkan folder shared framework
+       memakai versi lengkap (8.0.32, 8.0.33, ...), jadi pemeriksaan dilakukan di CA. -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>CheckNet8</AssemblyName>
+    <RootNamespace>CheckNet8</RootNamespace>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64</Platforms>
+    <!-- MakeSfxCA memilih stub berdasarkan $(Platform); tanpa ini stub x86 dipakai
+         dan CLR menolak memuat assembly x64 (BadImageFormatException). -->
+    <Platform>x64</Platform>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Dtf.CustomAction" Version="5.0.2" />
+    <PackageReference Include="WixToolset.Dtf.WindowsInstaller" Version="5.0.2" />
+  </ItemGroup>
+
+  <!-- Ikut dipaketkan ke dalam .CA.dll oleh MakeSfxCA; tanpa ini stub SFXCA gagal memuat CLR 4. -->
+  <ItemGroup>
+    <Content Include="CustomAction.config" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Salin hasil paket CA ke folder WiX supaya Package.wxs bisa merujuk jalur tetap. -->
+  <Target Name="SalinCaKeWix" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetDir)$(AssemblyName).CA.dll"
+          DestinationFolder="$(MSBuildProjectDirectory)\..\wix"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

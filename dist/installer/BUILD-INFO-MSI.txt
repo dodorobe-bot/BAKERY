@@ -1,0 +1,146 @@
+Versi          : 1.2.7 (skema basis data 17)
+MSI            : D:\bakery-desktop\dist\installer\Seruni22Bakery_v1.2.7_x64.msi
+Ukuran         : 50373479 byte
+SHA-256        : 5c4c31f87ecb96e23b5630238ba59d72c9f115904cd98a8ac13d6953fe20dfbb
+Tanda tangan   : NotSigned (belum ada sertifikat code signing)
+                 Pembelian sertifikat ditunda sampai paket didistribusikan ke
+                 pihak lain (keputusan 2026-10-29). Jalur tanda tangan siap:
+                 scripts\sign-paket.ps1 -Thumbprint <40 hex> (atau -PfxPath <berkas>).
+                 Setelah ditandatangani, SHA-256 di berkas ini dan SHA256SUMS.txt
+                 ikut berubah; jalankan ulang uji sandbox.
+Dibuat         : 2026-10-30 17:31 +07:00
+
+Sumber definisi : build\installer\wix\Package.wxs
+  - WiX Toolset 5.0.2 (dotnet tool), -ext WixToolset.UI.wixext
+  - Version dari define ProductVersion (1.2.7), bukan angka tetap
+  - Payload: dist\publish-single (self-contained win-x64) + frontend\dist di wwwroot
+  - 393 berkas, 135.755.088 bita tak terkompresi di dalam kabinet
+
+Perubahan 1.2.7 : merek toko (nama, slogan, logo) menjadi pengaturan yang bisa
+  diganti kapan saja dari layar Pengaturan, bukan teks tetap di kode. Kunci
+  AppSettings brand_name/brand_tagline dipakai ulang; logo disimpan di kunci
+  baru brand_logo (data URL). Tidak ada migrasi baru: skema tetap 17.
+
+Perintah build:
+  powershell -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.7
+  powershell -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.7
+  (dijalankan dari D:\bakery-desktop; build-installer mengisi dist\publish-single,
+  build-msi hanya membungkus folder itu. Keduanya memeriksa versi vs csproj host,
+  mengunci -arch x64, lalu mencetak ukuran/SHA-256/status tanda tangan.)
+
+Identitas paket (dibaca dari tabel Property MSI, 2026-10-30)
+  ProductName    : Seruni 22 Bakery
+  ProductVersion : 1.2.7
+  Manufacturer   : Seruni 22
+  UpgradeCode    : B975F792-6F80-4D56-8A64-D274A044DCF1 (dipertahankan antar versi)
+  ProductCode    : {A0AEA895-FC09-4312-8E24-8C9E0FEABDC8}
+                   (dibuat otomatis WiX per build; ProductCode 1.2.6
+                   {EDCBBD96-732D-4854-A31B-0A36E6C43E77} TIDAK berlaku untuk
+                   paket ini. Copot/pindai harus memakai ProductCode di atas
+                   atau nama "Seruni 22 Bakery")
+  Scope          : perMachine (ALLUSERS=1, memasang ke Program Files, butuh hak administrator)
+  UI             : WixUI_Minimal
+
+Bukti uji paket ini (mesin ini, 2026-10-30 17:27-17:40)
+  - Ekstraksi administratif (msiexec /a) ke C:\tmp\msi-127: 393 berkas aplikasi.
+  - SHA-256 seluruh 393 berkas dibandingkan dengan dist\publish-single:
+    0 berbeda, 0 berkas yang hanya ada di satu sisi. Hash berkas kunci:
+      Seruni22Bakery.Host.dll  4773a367836b117a8106e45a2d345b7d15d61fdf774768183c97cd28f07c8b49
+      Seruni22Bakery.exe       777f2fcc55d5e5bdcb14c00daf73662d1f41f91dea5b0dc77bdb11ce71d281b0
+      wwwroot\index.html       f4a2fc04ca04e10fd665704c11b63e1bb57677a8ac3b4570db411dfdb694bd2e
+  - Versi berkas dari payload: host 1.2.7.0 (ProductVersion 1.2.7), peluncur 1.2.7.
+  - Bundel frontend di payload: index-DppHnhYj.js (582.985 bita,
+    414fbdb288e93856a658f568b7f381ffb3813b50928fe4cd110f299758cefd3e) dan
+    index-BNYyu2En.css (56.532 bita,
+    a411f23933e73bb45e9c66d3b4bec8e5c95356dd415385eb398550b4559123be).
+    Hanya dua aset ini yang ada; bundel lama 1.2.6 tidak ikut.
+  - Uji perilaku langsung pada binari payload (bukan salinan build): host dari
+    hasil ekstraksi dijalankan dengan basis data sementara dan kunci JWT sementara,
+    lalu empat skrip verifikasi API dijalankan lewat HTTP:
+      verify-batch2  62 pemeriksaan, 0 gagal
+      verify-batch3  54 pemeriksaan, 0 gagal
+      verify-batch6  21 pemeriksaan, 0 gagal
+      verify-bug09   29 pemeriksaan, 0 gagal
+    Jumlah 166 pemeriksaan, 0 gagal; /health menjawab version 1.2.7.
+  - Uji merek pada binari payload (14 pemeriksaan, 0 gagal): /api/brand anonim
+    mengembalikan tepat tiga kunci; nama "Toko Roti Bu Ratna" dan slogan
+    "Roti Segar Sejak 1998" tersimpan lalu terbaca tanpa sesi; nama 58 karakter
+    ditolak 400 tanpa menyimpan sebagian; logo GIF ditolak 400; logo PNG 1x1
+    tersimpan sama persis lalu bisa dihapus; jejak audit memuat 3 baris
+    "ubah pengaturan" tanpa base64 logo.
+  - Basis data nyata tidak tersentuh: seruni22bakery.db tetap 491.520 bita,
+    waktu ubah 2026-10-30 16:52:56.461 sebelum dan sesudah seluruh uji.
+  - Peningkatan MSI 1.2.6 -> 1.2.7 di mesin ini DIJALANKAN (2026-10-30 17:45),
+    setelah aplikasi 1.2.6 milik pemilik ditutup atas izin pemilik:
+      msiexec /i Seruni22Bakery_v1.2.7_x64.msi /qn /norestart /l*v C:\tmp\msi-upgrade-127.log
+    Kode keluar 0; log "Installation success or error status: 0";
+    WIX_UPGRADE_DETECTED = {EDCBBD96-732D-4854-A31B-0A36E6C43E77} (ProductCode
+    1.2.6) lalu RemoveExistingProducts berjalan; ProductRegister dengan
+    UpgradeCode B975F792-... VersionString 1.2.7.
+      Daftar program sesudah: "Seruni 22 Bakery" 1.2.7 {A0AEA895-...} -- satu
+      entri, 1.2.6 tidak tersisa.
+      Berkas terpasang: 393/393 identik SHA-256 dengan dist\publish-single
+      (0 berbeda); 135.755.088 bita; host 1.2.7.0, peluncur 1.2.7;
+      index.html f4a2fc04...; bundel 1.2.6 (index-BPNiweyi.js/index-Bz7F3T1f.css)
+      tidak tersisa.
+      Pintasan Start Menu (ProgramData) dan Desktop (Public) tetap ada dan
+      menunjuk C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe.
+      Basis data pemilik %LOCALAPPDATA%\Seruni22Bakery\seruni22bakery.db tetap
+      491.520 bita, mtime 2026-10-30 16:52:56.461 (tanpa -wal/-shm); 0 proses
+      aplikasi sebelum maupun sesudah.
+    Aplikasi 1.2.7 hasil peningkatan TIDAK dibuka (data pemilik); yang diperiksa
+    hanya berkas terpasang, versi, daftar program, dan metadata basis data.
+    Potret sebelum/sesudah: C:\tmp\upgrade-127.out
+  - Isi EXE diverifikasi dari log kompilasi Inno: 394 entri "Compressing" =
+    393 berkas publish + app.ico, termasuk index-DppHnhYj.js dan index-BNYyu2En.css.
+
+Rincian lengkap: docs\verifikasi-paket-1.2.7-2026-10-30.md
+
+Uji peningkatan 1.2.6 -> 1.2.7 di Windows Sandbox (2026-10-30 18:13-18:20)
+  Windows 11 Enterprise build 26100, tanpa jaringan, RAM VM 1536 MB, pengguna
+  WDAGUtilityAccount (elevated). Satu sesi: pasang 1.2.6 -> isi data lewat API
+  (ganti sandi, produk id=1, merek "Toko Uji Sandbox") -> peningkatan ke 1.2.7
+  -> periksa -> copot 1.2.7. Hasil 65 pemeriksaan, 0 gagal.
+    - Peningkatan: exit 0, WIX_UPGRADE_DETECTED = {EDCBBD96-...},
+      RemoveExistingProducts jalan, "Installation success or error status: 0".
+    - 393/393 berkas terpasang identik SHA-256/ukuran dengan hash-publish.txt;
+      bundel 1.2.6 tidak tersisa; pintasan tetap menunjuk instalasi.
+    - Sidik basis data (db + -wal + -shm) identik sebelum dan sesudah peningkatan.
+    - Data 1.2.6 utuh di 1.2.7: sandi hasil ganti berlaku, produk id=1
+      "Roti Uji Peningkatan" 15000, merek "Toko Uji Sandbox", /api/brand 3 kunci,
+      periksa-diri 9/9, skema tetap 17, nama/logo bisa diganti lagi.
+    - Copot 1.2.7: exit 0; folder, pintasan, dan ARP hilang; uji.db + uji.key
+      di luar folder program tetap ada; tanpa proses yatim.
+  Bukti: docs\paket-bukti-2026-10-30\upgrade-sandbox\
+  (status.txt, validasi.log, msi-126-install.log, msi-127-upgrade.log,
+  msi-127-uninstall.log, host-126.log, host-127.log, uji-upgrade.ps1, uji.wsb).
+
+Uji pasang/copot EXE 1.2.7 di mesin pemilik (2026-10-31 03:17-03:20)
+  Mesin sudah berisi MSI 1.2.7. EXE dipasang per-pengguna dengan
+  /DIR=C:\tmp\seruni-exe-127 supaya instalasi MSI tidak tersentuh. Hasil 42
+  pemeriksaan, 0 gagal; ditambah siklus pembanding payload yang lulus penuh.
+    - Pasang senyap exit 0 ("Installation process succeeded."); pasang senyap
+      tidak menjalankan entri [Run] sehingga peluncur tidak terbuka.
+    - 397 berkas = 393 payload + app.ico + unins000.exe + unins000.dat +
+      "Uninstall Seruni 22 Bakery.lnk"; 393/393 payload identik SHA-256/ukuran
+      dengan dist\publish-single; peluncur 1.2.7, host 1.2.7.0, Host.dll
+      4773a367..., index.html f4a2fc04..., index-DppHnhYj.js 582.985 bita;
+      tanpa PDB/appsettings.Development.json/basis data/kunci JWT.
+    - Pintasan per-pengguna (Start Menu grup + Desktop) menunjuk folder uji;
+      ARP memuat entri {5D9D507C-...}_is1 di samping entri MSI 1.2.7.
+    - Host dari folder hasil pasang (basis data scratch 127.0.0.1:5312):
+      /health 1.2.7, SPA + aset 200, ganti sandi, periksa-diri 9/9, skema 17,
+      /api/brand anonim 3 kunci, 17 migrasi.
+    - Copot senyap exit 0; log menjalankan taskkill /f /im
+      Seruni22Bakery.Host.exe lalu /im Seruni22Bakery.exe; folder, pintasan
+      per-pengguna, dan ARP per-pengguna hilang; uji.db + uji.key tetap ada.
+    - Sesudah copot: instalasi MSI 393 berkas utuh beserta pintasannya, ARP
+      kembali satu entri MSI, basis data pemilik tetap 491.520 bita mtime
+      2026-10-30 16:52:56.461 tanpa -wal/-shm, 0 proses aplikasi.
+    Peluncur TIDAK dibuka (di mesin ini peluncur membaca basis data pemilik).
+  Bukti: docs\paket-bukti-2026-10-30\exe-127\
+  (status.txt, status-hash.txt, exe-install.log, exe-uninstall.log,
+  host-exe.log, tiga potret ARP JSON, uji-penuh.ps1, uji-hash.ps1).
+
+BELUM diuji: code signing, copot MSI 1.2.7 di mesin pemilik, membuka peluncur
+1.2.7 di mesin pemilik, dan driver perangkat kasir.

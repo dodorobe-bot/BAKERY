@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?define PublishDir = "D:\bakery-desktop\dist\publish-single" ?>
+<?ifndef ProductVersion ?>
+  <?define ProductVersion = "1.2.7" ?>
+<?endif ?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Seruni 22 Bakery"
+           Manufacturer="Seruni 22"
+           Version="$(var.ProductVersion)"
+           UpgradeCode="B975F792-6F80-4D56-8A64-D274A044DCF1"
+           Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="Versi yang lebih baru dari Seruni 22 Bakery sudah terpasang." />
+    <MediaTemplate EmbedCab="yes" />
+    <ui:WixUI Id="WixUI_Minimal" />
+    <!-- Tanpa gerbang "pasang .NET 8 dulu": publish dilakukan self-contained (hostfxr.dll dan
+         coreclr.dll ikut di paket), jadi runtime bersama tidak dibutuhkan. Gerbang lama
+         memeriksa folder Microsoft.AspNetCore.App 8.x dan menolak pemasangan di mesin bersih
+         yang sebenarnya tidak membutuhkannya. -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="Seruni 22 Bakery" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="AppMenuShortcut" Guid="7C88062F-06E5-4713-B4C2-9E114D3C5233">
+        <Shortcut Id="AppStartMenuLink"
+                  Name="Seruni 22 Bakery"
+                  Description="Sistem Toko Seruni 22 Bakery"
+                  Target="[INSTALLFOLDER]Seruni22Bakery.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Seruni22Bakery" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="AppDesktopShortcut" Guid="8E77610A-3C99-4A73-A331-597A8BD59EE6">
+        <Shortcut Id="AppDesktopLink"
+                  Name="Seruni 22 Bakery"
+                  Description="Sistem Toko Seruni 22 Bakery"
+                  Target="[INSTALLFOLDER]Seruni22Bakery.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Seruni22Bakery" Name="desktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+    <!-- Seluruh isi folder publish ikut dipaketkan. Daftar berkas manual sebelumnya hanya memuat
+         exe dan wwwroot, sehingga DLL pendukung tidak terpasang dan aplikasi hasil MSI tidak bisa
+         dijalankan. Harvester ini mengikuti hasil publish apa pun yang sedang ada. -->
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(PublishDir)\**" />
+    </ComponentGroup>
+    <Feature Id="MainFeature" Title="Seruni 22 Bakery" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="AppMenuShortcut" />
+      <ComponentRef Id="AppDesktopShortcut" />
+    </Feature>
+  </Package>
+</Wix>
