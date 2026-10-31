@@ -230,9 +230,12 @@ Yang **belum** dibuktikan dan tidak boleh diklaim:
 
 ## Riwayat versi singkat
 
+Rincian lengkap ada di [CHANGELOG.md](CHANGELOG.md).
+
 | Versi | Perubahan inti |
 |---|---|
 | 1.2.9 | Perbaikan 31 temuan audit: jurnal HPP/persediaan, validasi SPK, status pesanan atomik, RBAC dan kebocoran data, pagar versi/kanal installer |
+| 1.2.8 | Tidak dirilis; perubahan peluncur ikut termuat di 1.2.9 |
 | 1.2.7 | Nama toko, slogan, dan logo dapat diganti kapan saja |
 | 1.2.6 | Kemasan audit final; sembilan cacat pra-pilot tertutup di 1.2.5 |
 | 1.2.5 | Perbaikan BUG-02 s.d. BUG-11 (retur, transfer stok, zona waktu, label keuangan, dll.) |
