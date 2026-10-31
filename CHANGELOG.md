@@ -10,6 +10,7 @@ Status: **NOT READY** sampai uji pasang/peningkatan 1.2.9 → 1.2.10 dijalankan 
 bersih atau oleh pemilik. Yang sudah dibuktikan untuk paket ini hanya: build, seluruh tes
 otomatis, gerbang verifikasi API, dan isi paket. Paket **NotSigned** (tidak ada sertifikat).
 Skema basis data: **18** — tidak ada migrasi baru, perubahan hanya perilaku pembacaan/penomoran.
+Tag: `v1.2.10` — menandai sumber paket di atas, bukan persetujuan rilis.
 
 Artefak:
 
