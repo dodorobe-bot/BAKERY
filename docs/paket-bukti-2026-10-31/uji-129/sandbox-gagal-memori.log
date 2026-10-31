@@ -1,0 +1,19 @@
+﻿
+
+TimeCreated  : 10/31/2026 11:41:43 AM
+ProviderName : Microsoft-Windows-Resource-Exhaustion-Detector
+Id           : 2004
+Message      : Windows successfully diagnosed a low virtual memory condition. The following programs consumed the most 
+               virtual memory: vmmemWindowsSandbox (4612) consumed 1200701440 bytes, firefox.exe (9060) consumed 
+               922062848 bytes, and vmmemCmZygote (6216) consumed 839168000 bytes.
+
+TimeCreated  : 10/31/2026 10:48:43 AM
+ProviderName : Microsoft-Windows-Resource-Exhaustion-Detector
+Id           : 2004
+Message      : Windows successfully diagnosed a low virtual memory condition. The following programs consumed the most 
+               virtual memory: firefox.exe (9060) consumed 940011520 bytes, vmmemCmZygote (6216) consumed 839168000 
+               bytes, and firefox.exe (11324) consumed 794882048 bytes.
+
+
+
+

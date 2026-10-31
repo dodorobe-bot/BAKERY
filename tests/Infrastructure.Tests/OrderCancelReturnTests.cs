@@ -39,10 +39,10 @@ public class OrderCancelReturnTests
         _journals = new JournalRepository(_factory);
         _accounting = new AccountingService(_journals, new AccountRepository(_factory));
         _orderService = new OrderService(
-            _orders, new CustomerRepository(_factory), _stock, _journals,
+            _orders, _stock, _journals,
             new DocumentSequenceRepository(_factory), _accounting, _returns);
         _returnService = new SalesReturnService(
-            _orders, _returns, new ProductTemplateRepository(_factory), _stock,
+            _orders, _returns, _stock,
             new DocumentSequenceRepository(_factory), _accounting);
     }
 
@@ -83,7 +83,7 @@ public class OrderCancelReturnTests
         };
         const long materialCost = 200_000;
         var journal = await _accounting.BuildProductionCompletionAsync(
-            id, wo.OrderNumber, materialCost, 0, wo.LaborCost, wo.OverheadCost, Pengguna);
+            id, wo.OrderNumber, materialCost, 0, wo.LaborCost, wo.OverheadCost, goodUnits, Pengguna);
         long hpp = ProductionCostRules.CostPerGoodUnit(materialCost, wo.LaborCost, wo.OverheadCost, 0, goodUnits);
         await _production.CompleteWorkOrderAsync(id, goodUnits, 0, materials, [], journal, hpp);
         return id;

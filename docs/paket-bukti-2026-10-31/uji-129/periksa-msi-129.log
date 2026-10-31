@@ -1,0 +1,19 @@
+﻿
+[PASS] MSI 1.2.9 utuh | 50391554 bita, SHA256 4cf092ce05cfb0301d2740cc136322135dc9f506a482c807bea020782052d635
+[PASS] ekstraksi administratif msiexec /a | exit 0
+[PASS] jumlah berkas diekstrak = publish | 393 vs 393
+[PASS] hash seluruh payload identik | 393 berkas, beda 0, hanya di satu sisi 0
+[PASS] versi host payload 1.2.9.0 | 1.2.9.0
+[PASS] versi peluncur payload 1.2.9 | 1.2.9
+[PASS] Host.dll = eee0641f... | eee0641f2816436741e98c00f378b284e96e77766b378d7884d09b3fc1c828db
+[PASS] index.html = 975b00e8... | 975b00e806d2d76aad41badec6a11059147c1f2690a0b401380ec2870bc6789c
+[PASS] bundel frontend 1.2.9 saja | index-BksMbgv0.js, index-CoYZy02P.css
+[PASS] tanpa PDB/basis data/kunci/dev-config | bersih
+[PASS] ProductVersion 1.2.9 | ProductName=Seruni 22 Bakery, ProductVersion=1.2.9, ProductCode={7609C8A3-2349-4606-A02D-652FE121FB78}
+[PASS] UpgradeCode tetap B975F792-... | {B975F792-6F80-4D56-8A64-D274A044DCF1}
+[PASS] Registry HKLM Channel=msi + Version=1.2.9 + InstallDir | Channel=msi:True Version=1.2.9:True InstallDir:True, 5 baris
+[PASS] LaunchCondition: kanal EXE (baru+lama) dan tolak turun versi | 2 kondisi: NOT WIX_DOWNGRADE_DETECTED ;; NOT (EXECHANNEL = "exe") AND NOT EXEINSTALLED
+    syarat: NOT WIX_DOWNGRADE_DETECTED
+    syarat: NOT (EXECHANNEL = "exe") AND NOT EXEINSTALLED
+[PASS] tabel File memuat 393 berkas | 393 baris
+[PASS] rekap | lulus=15 gagal=0

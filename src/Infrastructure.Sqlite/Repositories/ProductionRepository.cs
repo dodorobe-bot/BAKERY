@@ -143,6 +143,40 @@ public class ProductionRepository : IProductionRepository
         return list;
     }
 
+    public async Task<IReadOnlyList<CompletedWorkOrderCost>> GetCompletedCostLinesAsync()
+    {
+        using var conn = _factory.CreateConnection();
+        await conn.OpenAsync();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+            SELECT wo.Id, wo.ProductTemplateId, wo.CompletedDate,
+                   wo.ActualGoodQty, wo.ActualFailedQty,
+                   COALESCE((SELECT SUM(s.Quantity) FROM WorkOrderScraps s
+                              WHERE s.WorkOrderId = wo.Id AND s.ActionTaken <> 'Rework'), 0),
+                   wo.TotalMaterialCost, wo.LaborCost, wo.OverheadCost
+            FROM WorkOrders wo
+            WHERE wo.Status = 'Completed'
+            ORDER BY wo.Id;";
+
+        var list = new List<CompletedWorkOrderCost>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            list.Add(new CompletedWorkOrderCost(
+                reader.GetInt32(0),
+                reader.GetInt32(1),
+                reader.IsDBNull(2) ? null : DateTime.Parse(reader.GetString(2)),
+                reader.GetInt32(3),
+                reader.GetInt32(4),
+                reader.GetInt32(5),
+                reader.GetInt64(6),
+                reader.GetInt64(7),
+                reader.GetInt64(8)));
+        }
+        return list;
+    }
+
     public async Task<IReadOnlyList<WorkOrder>> GetOpenAsync(int limit)
     {
         using var conn = _factory.CreateConnection();
@@ -339,6 +373,14 @@ public class ProductionRepository : IProductionRepository
         long costPerGoodUnitMinorUnits)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
+            var bahanMasuk = actualMaterials?.ToList() ?? new List<WorkOrderMaterial>();
+            var daftarScrap = scraps?.ToList() ?? new List<WorkOrderScrap>();
+
+            if (actualGood < 0 || actualFailed < 0)
+                throw new InvalidOperationException("Jumlah produk jadi dan rusak tidak boleh negatif.");
+            if (actualGood + actualFailed <= 0)
+                throw new InvalidOperationException("Penyelesaian SPK harus melaporkan hasil produksi lebih dari nol.");
+
             // 1. SPK hanya boleh diselesaikan sekali: menyelesaikan ulang membukukan biaya dua kali.
             var stateCmd = conn.CreateCommand();
             stateCmd.Transaction = tx;
@@ -351,9 +393,48 @@ public class ProductionRepository : IProductionRepository
             if (status is "Completed" or "Cancelled")
                 throw new InvalidOperationException($"SPK berstatus {status} tidak dapat diselesaikan ulang.");
 
-            // 2. Status, hasil, dan total biaya bahan aktual satu paket dengan jurnalnya
-            long totalMaterialCost = actualMaterials.Sum(m =>
-                (long)Math.Round(m.ActualQty * m.UnitCost, 0, MidpointRounding.AwayFromZero));
+            // 2. Rencana bahan yang tersimpan adalah satu-satunya sumber set bahan dan harganya.
+            // Harga dari pemanggil diabaikan: nilai stok dan HPP tidak boleh bisa ditekan lewat
+            // payload, dan setiap baris rencana wajib dilaporkan tepat satu kali.
+            var rencana = new Dictionary<int, (decimal StandardQty, long UnitCost)>();
+            using (var planCmd = conn.CreateCommand())
+            {
+                planCmd.Transaction = tx;
+                planCmd.CommandText =
+                    "SELECT IngredientId, StandardQty, UnitCost FROM WorkOrderMaterials WHERE WorkOrderId = @id;";
+                planCmd.Parameters.AddWithValue("@id", id);
+                using var planReader = await planCmd.ExecuteReaderAsync();
+                while (await planReader.ReadAsync())
+                {
+                    var ingredientId = planReader.GetInt32(0);
+                    if (!rencana.TryAdd(ingredientId,
+                            (planReader.GetDecimal(1), planReader.GetInt64(2))))
+                        throw new InvalidOperationException(
+                            $"Rencana SPK memuat bahan #{ingredientId} lebih dari satu baris; perbaiki resep lebih dulu.");
+                }
+            }
+
+            var dilaporkan = new HashSet<int>();
+            var rincian = new List<(int IngredientId, decimal Quantity, long UnitCost)>();
+            foreach (var m in bahanMasuk)
+            {
+                if (m.ActualQty < 0)
+                    throw new InvalidOperationException("Jumlah bahan terpakai tidak boleh negatif.");
+                if (!rencana.TryGetValue(m.IngredientId, out var planned))
+                    throw new InvalidOperationException(
+                        $"Bahan #{m.IngredientId} tidak ada dalam rencana SPK ini.");
+                if (!dilaporkan.Add(m.IngredientId))
+                    throw new InvalidOperationException(
+                        $"Bahan #{m.IngredientId} dilaporkan lebih dari sekali.");
+                rincian.Add((m.IngredientId, m.ActualQty, planned.UnitCost));
+            }
+            foreach (var ingredientId in rencana.Keys)
+                if (!dilaporkan.Contains(ingredientId))
+                    throw new InvalidOperationException($"Bahan rencana #{ingredientId} belum dilaporkan.");
+
+            // 3. Status, hasil, dan total biaya bahan aktual satu paket dengan jurnalnya
+            long totalMaterialCost = rincian.Sum(r =>
+                (long)Math.Round(r.Quantity * r.UnitCost, 0, MidpointRounding.AwayFromZero));
             var woCmd = conn.CreateCommand();
             woCmd.Transaction = tx;
             woCmd.CommandText = @"
@@ -363,14 +444,15 @@ public class ProductionRepository : IProductionRepository
                     Status = 'Completed',
                     TotalMaterialCost = @matCost,
                     CompletedDate = datetime('now')
-                WHERE Id = @id;";
+                WHERE Id = @id AND Status NOT IN ('Completed','Cancelled');";
             woCmd.Parameters.AddWithValue("@good", actualGood);
             woCmd.Parameters.AddWithValue("@failed", actualFailed);
             woCmd.Parameters.AddWithValue("@matCost", totalMaterialCost);
             woCmd.Parameters.AddWithValue("@id", id);
-            await woCmd.ExecuteNonQueryAsync();
+            if (await woCmd.ExecuteNonQueryAsync() != 1)
+                throw new InvalidOperationException("SPK sudah diselesaikan atau dibatalkan oleh proses lain.");
 
-            // 3. Pemakaian bahan aktual + pengurangan stok dapur
+            // 4. Pemakaian bahan aktual + pengurangan stok dapur
             var woHeader = conn.CreateCommand();
             woHeader.Transaction = tx;
             woHeader.CommandText = "SELECT CreatedByUserId, ProductTemplateId FROM WorkOrders WHERE Id = @id;";
@@ -386,26 +468,28 @@ public class ProductionRepository : IProductionRepository
                 }
 
             int kitchenLocationId = await StockLedger.ResolveLocationIdByTypeAsync(conn, tx, "Kitchen");
-            foreach (var m in actualMaterials)
+            foreach (var (ingredientId, quantity, unitCost) in rincian)
             {
                 var mCmd = conn.CreateCommand();
                 mCmd.Transaction = tx;
                 mCmd.CommandText = @"
                     UPDATE WorkOrderMaterials SET ActualQty = @actQty, UnitCost = @unitCost
                     WHERE WorkOrderId = @woId AND IngredientId = @ingId;";
-                mCmd.Parameters.AddWithValue("@actQty", m.ActualQty);
-                mCmd.Parameters.AddWithValue("@unitCost", m.UnitCost);
+                mCmd.Parameters.AddWithValue("@actQty", quantity);
+                mCmd.Parameters.AddWithValue("@unitCost", unitCost);
                 mCmd.Parameters.AddWithValue("@woId", id);
-                mCmd.Parameters.AddWithValue("@ingId", m.IngredientId);
-                await mCmd.ExecuteNonQueryAsync();
+                mCmd.Parameters.AddWithValue("@ingId", ingredientId);
+                if (await mCmd.ExecuteNonQueryAsync() != 1)
+                    throw new InvalidOperationException(
+                        $"Baris bahan #{ingredientId} tidak ditemukan; penyelesaian dibatalkan.");
 
                 await StockLedger.ApplyAsync(
-                    conn, tx, kitchenLocationId, m.IngredientId, -m.ActualQty,
+                    conn, tx, kitchenLocationId, ingredientId, -quantity,
                     MovementType.Deduction, "WorkOrder", id, woCreatedBy, null);
             }
 
-            // 4. Produk rusak
-            foreach (var s in scraps)
+            // 5. Produk rusak
+            foreach (var s in daftarScrap)
             {
                 var sCmd = conn.CreateCommand();
                 sCmd.Transaction = tx;
@@ -421,7 +505,7 @@ public class ProductionRepository : IProductionRepository
                 await sCmd.ExecuteNonQueryAsync();
             }
 
-            // 5. Hasil baik masuk stok produk jadi di etalase, bukan mengurangi bahan saat dijual
+            // 6. Hasil baik masuk stok produk jadi di etalase, bukan mengurangi bahan saat dijual
             if (actualGood > 0)
             {
                 int displayLocationId = await StockLedger.ResolveLocationIdByTypeAsync(conn, tx, "Display");
@@ -431,7 +515,7 @@ public class ProductionRepository : IProductionRepository
                     $"Hasil produksi SPK", costPerGoodUnitMinorUnits);
             }
 
-            // 6. Jurnal produksi — gagal jurnal berarti seluruh penyelesaian batal
+            // 7. Jurnal produksi — gagal jurnal berarti seluruh penyelesaian batal
             if (journal is not null)
                 await JournalWriter.WriteAsync(conn, tx, journal);
         });

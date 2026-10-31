@@ -20,6 +20,26 @@ const idPermintaan = () =>
     ? crypto.randomUUID()
     : `${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`);
 
+// Tanpa batas waktu, satu permintaan yang macet membuat layar berputar selamanya dan tombol
+// nondaktif — pengguna tidak tahu apakah datanya tersimpan. Batas normal cukup longgar untuk
+// query terberat pada data besar; cadangan dan unduhan ekspor diberi batas jauh lebih lama
+// karena memang menyalin seluruh basis data atau membuat berkas besar.
+const BATAS_NORMAL_MS = 15000;
+const BATAS_LAMA_MS = 120000;
+
+// Sinyal milik pemanggil (mis. batal saat layar ditinggal) diteruskan ke pengendali lokal,
+// sehingga fetch ikut berhenti tanpa memutus kaitan pengendali dengan pewaktu batas.
+const sambungSinyal = (sinyalLuar, pengendali) => {
+  if (!sinyalLuar) return () => {};
+  if (sinyalLuar.aborted) {
+    pengendali.abort(sinyalLuar.reason);
+    return () => {};
+  }
+  const teruskan = () => pengendali.abort(sinyalLuar.reason);
+  sinyalLuar.addEventListener('abort', teruskan, { once: true });
+  return () => sinyalLuar.removeEventListener('abort', teruskan);
+};
+
 // Server mengirim "app;dur=12.3" pada header Server-Timing; angkanya dipisah supaya lama
 // permintaan di server bisa dibedakan dari lama di peramban.
 const durasiServer = (nilai) => {
@@ -81,8 +101,10 @@ export const api = {
       }
     }
     if (kunci) headers['Idempotency-Key'] = kunci;
-    // Kunci tidak boleh ikut masuk ke RequestInit fetch.
-    const { idempotensi: _kunciLokal, ...sisaOptions } = options;
+    // Kunci tidak boleh ikut masuk ke RequestInit fetch. Sinyal pemanggil juga dipegang di sini,
+    // bukan diteruskan apa adanya, supaya batas waktu bisa dipasang per percobaan.
+    const { idempotensi: _kunciLokal, signal: sinyalPemanggil, timeoutMs, ...sisaOptions } = options;
+    const batasMs = Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : BATAS_NORMAL_MS;
 
     // Satu id untuk satu permintaan: nilainya muncul di log server bila lambat, sehingga satu
     // permintaan bisa ditelusuri dari peramban ke server tanpa menebak urutannya.
@@ -116,24 +138,54 @@ export const api = {
     const batasPercobaan = metode === 'GET' || metode === 'HEAD' ? 3 : 1;
     let res = null;
     let galatJaringan = null;
+    let lewatBatas = false;
     for (let percobaan = 1; percobaan <= batasPercobaan; percobaan += 1) {
+      // Satu pengendali dan satu pewaktu per percobaan: percobaan ulang mendapat jatah waktu
+      // penuh, bukan sisa waktu percobaan sebelumnya.
+      const pengendali = new AbortController();
+      const lepasSinyal = sambungSinyal(sinyalPemanggil, pengendali);
+      const pewaktu = setTimeout(() => {
+        lewatBatas = true;
+        pengendali.abort();
+      }, batasMs);
       try {
         res = await fetch(`${API_BASE}${endpoint}`, {
           ...sisaOptions,
           body,
-          headers
+          headers,
+          signal: pengendali.signal
         });
         galatJaringan = null;
         break;
       } catch (err) {
         galatJaringan = err;
+        // Batas waktu bukan gangguan sekejap: mengulang hanya menambah lama menunggu, dan untuk
+        // perintah yang mengubah data pengulangan itu berbahaya. Batal dari pemanggil juga tidak
+        // boleh diulang.
+        if (lewatBatas || sinyalPemanggil?.aborted) break;
         if (percobaan < batasPercobaan) {
           await new Promise((selesai) => setTimeout(selesai, 200 * percobaan));
         }
+      } finally {
+        clearTimeout(pewaktu);
+        lepasSinyal();
       }
     }
     if (!res) {
       catat(0);
+      const detik = Math.round(batasMs / 1000);
+      if (sinyalPemanggil?.aborted) {
+        const batal = new Error('Permintaan dibatalkan.');
+        batal.name = 'AbortError';
+        throw batal;
+      }
+      if (lewatBatas) {
+        console.error(`Permintaan ${endpoint} melewati batas ${detik} detik.`);
+        throw new Error(
+          `Server tidak menjawab dalam ${detik} detik. Aplikasi mungkin sedang sibuk; coba lagi, ` +
+          'dan bila berulang tutup lalu buka kembali aplikasi.'
+        );
+      }
       console.error(`Permintaan ${endpoint} gagal di jaringan:`, galatJaringan);
       throw new Error('Server lokal tidak menjawab. Pastikan aplikasi masih berjalan, lalu coba lagi.');
     }
@@ -189,7 +241,14 @@ export const api = {
   logout: () => api.request('/api/auth/logout', { method: 'POST' }),
 
   getDashboard: () => api.request('/api/dashboard'),
-  getOrders: () => api.request('/api/orders'),
+  // Daftar pesanan berhalaman: halaman pertama saja yang dimuat, jumlah seluruh baris datang
+  // lewat header untuk tombol "Muat lagi". Tanpa ini layar kehilangan pesanan ke-101 dan
+  // seterusnya tanpa memberi tahu pengguna.
+  getOrders: (opsi = {}) =>
+    api.request(denganParam('/api/orders', { limit: opsi.limit, offset: opsi.offset }), {
+      withTotal: true,
+      signal: opsi.signal
+    }),
   getOrder: (id) => api.request(`/api/orders/${id}`),
   createOrder: (payload) =>
     api.request('/api/orders', {
@@ -209,7 +268,7 @@ export const api = {
     }),
   getCustomers: (opsi = {}) =>
     api.request(denganParam('/api/customers', { search: opsi.search, limit: opsi.limit, offset: opsi.offset }),
-      { withTotal: true }),
+      { withTotal: true, signal: opsi.signal }),
   getIngredients: () => api.request('/api/ingredients'),
   createIngredient: (payload) =>
     api.request('/api/ingredients', {
@@ -261,9 +320,15 @@ export const api = {
   // Cadangan & penyimpanan. Pemulihan tidak lewat layar ini: basis data sedang dibuka host,
   // jadi pemulihan dilakukan saat aplikasi tertutup (Seruni22Bakery.exe --restore).
   getBackups: () => api.request('/api/backup'),
-  createBackup: () => api.request('/api/backup', { method: 'POST' }),
+  // Membuat cadangan menyalin seluruh basis data; pada data besar ini bisa lewat dari batas
+  // normal, jadi diberi batas panjang yang sama dengan unduhan.
+  createBackup: () => api.request('/api/backup', { method: 'POST', timeoutMs: BATAS_LAMA_MS }),
   copyBackup: (tujuan) =>
-    api.request('/api/backup/copy', { method: 'POST', body: JSON.stringify({ tujuan }) }),
+    api.request('/api/backup/copy', {
+      method: 'POST',
+      body: JSON.stringify({ tujuan }),
+      timeoutMs: BATAS_LAMA_MS
+    }),
   getStorage: () => api.request('/api/system/storage'),
 
   // Perangkat kasir: printer Windows dan antrean cetak.
@@ -400,22 +465,40 @@ export const api = {
   downloadFile: async (endpoint, filename) => {
     const token = api.getToken();
     // URL relatif: aplikasi disajikan dari origin yang sama, jadi alamat port tidak boleh ditulis tetap.
-    // Unduhan tidak mengubah data, jadi gangguan jaringan sekejap boleh dicoba ulang.
+    // Unduhan tidak mengubah data, jadi gangguan jaringan sekejap boleh dicoba ulang. Batas
+    // waktunya panjang karena ekspor besar memang lama, tetapi tetap ada supaya layar tidak
+    // menunggu tanpa akhir ketika server berhenti menjawab.
     let res = null;
     let galatJaringan = null;
+    let lewatBatas = false;
     for (let percobaan = 1; percobaan <= 3; percobaan += 1) {
+      const pengendali = new AbortController();
+      const pewaktu = setTimeout(() => {
+        lewatBatas = true;
+        pengendali.abort();
+      }, BATAS_LAMA_MS);
       try {
         res = await fetch(`${API_BASE}${endpoint}`, {
-          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+          signal: pengendali.signal
         });
         galatJaringan = null;
         break;
       } catch (err) {
         galatJaringan = err;
+        if (lewatBatas) break;
         if (percobaan < 3) await new Promise((selesai) => setTimeout(selesai, 200 * percobaan));
+      } finally {
+        clearTimeout(pewaktu);
       }
     }
     if (!res) {
+      if (lewatBatas) {
+        throw new Error(
+          `Server tidak menjawab dalam ${Math.round(BATAS_LAMA_MS / 1000)} detik. ` +
+          'Coba lagi; bila berulang, tutup lalu buka kembali aplikasi.'
+        );
+      }
       console.error(`Unduhan ${endpoint} gagal di jaringan:`, galatJaringan);
       throw new Error('Server lokal tidak menjawab. Pastikan aplikasi masih berjalan, lalu coba lagi.');
     }

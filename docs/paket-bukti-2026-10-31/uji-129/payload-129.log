@@ -1,0 +1,26 @@
+[PASS] host payload ada | D:\bakery-desktop\dist\publish-single\Seruni22Bakery.Host.exe
+[PASS] peluncur payload 1.2.9 | 1.2.9
+[PASS] host payload untuk verify-batch2.mjs siap | http://127.0.0.1:56784
+[PASS] verifikasi payload verify-batch2.mjs | exit 0, pemeriksaan 63, gagal 0
+[PASS] health verify-batch2.mjs melaporkan 1.2.9 | version=1.2.9
+[PASS] migrasi verify-batch2.mjs 18 langkah | 18 migrasi
+[PASS] host payload untuk verify-batch3.mjs siap | http://127.0.0.1:56798
+[PASS] verifikasi payload verify-batch3.mjs | exit 0, pemeriksaan 56, gagal 0
+[PASS] health verify-batch3.mjs melaporkan 1.2.9 | version=1.2.9
+[PASS] migrasi verify-batch3.mjs 18 langkah | 18 migrasi
+[PASS] host payload untuk verify-batch6.mjs siap | http://127.0.0.1:56829
+[PASS] verifikasi payload verify-batch6.mjs | exit 0, pemeriksaan 21, gagal 0
+[PASS] health verify-batch6.mjs melaporkan 1.2.9 | version=1.2.9
+[PASS] migrasi verify-batch6.mjs 18 langkah | 18 migrasi
+[PASS] host payload untuk verify-bug09.mjs siap | http://127.0.0.1:56851
+[PASS] verifikasi payload verify-bug09.mjs | exit 0, pemeriksaan 29, gagal 0
+[PASS] health verify-bug09.mjs melaporkan 1.2.9 | version=1.2.9
+[PASS] migrasi verify-bug09.mjs 18 langkah | 18 migrasi
+[PASS] host payload untuk periksa-diri siap | http://127.0.0.1:56879
+[PASS] login bawaan payload | token diterima
+[PASS] ganti sandi bawaan | http 200
+[PASS] periksa-diri payload 9/9 | 9 pemeriksaan, 0 gagal; terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+[PASS] skema basis data baru 18 | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+[PASS] merek anonim 4 kunci | kunci=logo,name,outlet,tagline
+[PASS] tanpa proses yatim | 0 proses
+[PASS] rekap | lulus=25 gagal=0

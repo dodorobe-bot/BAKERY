@@ -2,8 +2,8 @@
 
 Aplikasi desktop untuk toko dan pabrik roti: penjualan, produksi, pembelian, stok, jurnal keuangan, dan laporan — berjalan **sepenuhnya offline** di satu komputer toko.
 
-- Versi saat ini: **1.2.7**, skema basis data **17**
-- Status rilis: **READY FOR LIMITED PILOT** (belum production), paket **NotSigned**
+- Versi saat ini: **1.2.9**, skema basis data **18**
+- Status rilis: **READY FOR LIMITED PILOT** untuk 1.2.9 (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima), paket **NotSigned**
 - Platform: Windows 10/11 x64
 
 ## Arsitektur
@@ -105,15 +105,15 @@ Skrip verifikasi perilaku lain ada di `tests/Verify/*.mjs` (dijalankan terhadap 
 EXE (Inno Setup) — tes, frontend produksi, publish self-contained, peluncur, lalu Inno:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.7
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.9
 ```
 
-Hasil: `dist\publish-single\` dan `dist\installer\Seruni22Bakery_Setup_v1.2.7.exe`, disertai `SHA256SUMS.txt` dan `BUILD-INFO-MSI.txt`.
+Hasil: `dist\publish-single\` dan `dist\installer\Seruni22Bakery_Setup_v1.2.9.exe`, disertai `SHA256SUMS.txt` dan `BUILD-INFO.txt`.
 
 MSI (WiX, per-machine) — hanya membungkus folder publish yang sudah ada:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.7
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.9
 ```
 
 Tanda tangan Authenticode (butuh sertifikat; saat ini belum dipakai):
@@ -123,6 +123,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\sign-paket.ps1 -Thum
 ```
 
 Artefak installer, folder publish, `node_modules`, basis data, dan kunci tidak masuk repositori (lihat `.gitignore`). Integritas paket dibuktikan lewat SHA-256 di `dist\installer\SHA256SUMS.txt` dan dokumen verifikasi.
+
+## Peningkatan versi
+
+- **Satu kanal per komputer.** Installer EXE (per-pengguna) dan MSI (per-mesin) memakai port 5000 dan folder data yang sama. Keduanya menolak dipasang selama kanal lain terdeteksi; copot dulu yang terpasang sebelum berpindah kanal.
+- **Upgrade di tempat.** Jalankan installer versi baru dari kanal yang sama di atas versi lama. Kedua kanal menolak menimpa versi yang lebih baru (turun versi tidak didukung, karena skema basis data yang sudah dimigrasi belum tentu terbaca kode lama).
+- **Cadangkan lebih dulu:** **Pengaturan → Cadangan & penyimpanan → Buat cadangan sekarang**, atau `Seruni22Bakery.exe --backup` saat aplikasi tertutup.
+- Data pengguna (basis data, kunci, cadangan, log) berada di luar folder instalasi dan tidak disentuh oleh upgrade maupun uninstall.
+- Peluncur memeriksa `/health` sebelum membuka aplikasi. Bila yang menjawab di port 5000 adalah server dari versi atau folder instalasi lain, peluncur berhenti dengan pesan jelas alih-alih menampilkan data dari instalasi yang salah.
+- Versi aplikasi yang berjalan tampil di **Pengaturan**; versi skema terpasang dan versi skema terkemas tampil di **Periksa basis data**.
 
 ## Data pengguna, cadangan, dan pemulihan
 
@@ -136,16 +145,17 @@ Artefak installer, folder publish, `node_modules`, basis data, dan kunci tidak m
 
 - Cadangan otomatis berjalan sekali sehari selama aplikasi dipakai, dan setiap cadangan langsung diperiksa (integritas SQLite, foreign key, versi skema) lalu dicatat di manifes `.json` berisi SHA-256.
 - Cadangan manual: **Pengaturan → Cadangan & penyimpanan → Buat cadangan sekarang**.
-- Cadangan/pemulihan dari baris perintah dijalankan lewat host, bukan peluncur, dan aplikasi harus tertutup:
+- Cadangan/pemulihan dari baris perintah dijalankan saat aplikasi tertutup, lewat peluncur (hasil tampil di kotak pesan) atau langsung ke host (cocok untuk skrip):
 
 ```
+Seruni22Bakery.exe --backup
+Seruni22Bakery.exe --restore "C:\path\cadangan.db"
+
 "%ProgramFiles%\Seruni 22 Bakery\Seruni22Bakery.Host.exe" --backup
 "%ProgramFiles%\Seruni 22 Bakery\Seruni22Bakery.Host.exe" --restore "C:\path\cadangan.db"
 ```
 
-`--restore` menolak berjalan bila masih ada proses `Seruni22Bakery.Host` lain (kode keluar 3). Kedua perintah menerima `--Database:Path=...` untuk menunjuk basis data lain.
-
-> **Batasan 1.2.7:** peluncur `Seruni22Bakery.exe` hanya mengenali `--tanpa-browser` dan **tidak meneruskan** `--backup`/`--restore` ke host, jadi perintah pemulihan harus memakai `Seruni22Bakery.Host.exe` seperti di atas. Ini belum diperbaiki di 1.2.7.
+Peluncur meneruskan argumen itu apa adanya ke host, menunggu selesai, lalu keluar dengan kode keluar host (`0` berhasil, `1` gagal dengan basis data dikembalikan, `2` argumen salah/berkas tidak ada, `3` aplikasi masih berjalan). Kedua jalur menerima `--Database:Path=...` untuk menunjuk basis data lain. Peluncur adalah program tanpa konsol, jadi skrip sebaiknya memakai `Seruni22Bakery.Host.exe`.
 
 Installer tidak memuat basis data maupun kunci, dan uninstall tidak menghapus folder data pengguna.
 
@@ -156,28 +166,59 @@ Installer tidak memuat basis data maupun kunci, dan uninstall tidak menghapus fo
 - Gerbang wajib-ganti-sandi ditegakkan server sebelum endpoint lain bisa dipakai.
 - Otorisasi per peran (RBAC) dan cakupan kasir diperiksa di server, bukan hanya disembunyikan di menu.
 - Aksi sensitif meninggalkan jejak audit; foto/logo disimpan sebagai penanda, bukan isi biner.
-- Endpoint publik hanya `/health` dan `/api/brand` (tiga kunci merek).
+- Endpoint publik hanya `/health` dan `/api/brand` (nama toko, slogan, logo, dan nama outlet).
 
 ## Status rilis dan batasan yang diketahui
 
-Bukti terakhir (2026-10-29 s.d. 2026-10-31):
+Status 1.2.9: **READY FOR LIMITED PILOT**, bukan READY FOR PRODUCTION. Perbaikan kode,
+tes otomatis, dan isi paket sudah lulus. Uji pasang/peningkatan/copot 1.2.9 dilaporkan
+lulus oleh pemilik secara tertulis (`lulus=65 gagal=0 total=65`) setelah menjalankan kit
+di mesin ≥8 GB; berkas bukti mentah (`status.txt`, `runner.log`, folder `bukti\`) belum
+sampai ke mesin ini, dan pemilik menerima atestasi tertulis sebagai dasar keputusan.
+Naik ke READY FOR PRODUCTION masih menuntut berkas bukti yang dapat diperiksa, paket
+bertanda tangan, dan uji perangkat kasir fisik.
 
-- 351 tes otomatis hijau; binari yang benar-benar dikemas lulus 180 pemeriksaan perilaku.
-- Peningkatan MSI 1.2.6 → 1.2.7 lulus di mesin pemilik (basis data utuh) dan di Windows Sandbox bersih 65/65, termasuk copot tanpa kehilangan data.
-- Pasang/copot EXE 1.2.7 lulus 42 pemeriksaan di mesin pemilik tanpa mengganggu instalasi MSI.
+Bukti terakhir (2026-10-31):
+
+- 392 tes otomatis hijau (Domain 83, Application 51, Infrastructure 142, UI 116).
+- Biner yang benar-benar dikemas lulus 169 pemeriksaan perilaku dan 25 pemeriksaan
+  payload pada basis data sementara: `/health` 1.2.9, 18 migrasi, periksa-diri 9/9,
+  skema 18, `/api/brand` empat kunci.
+- Isi MSI 1.2.9 utuh: 393/393 berkas identik SHA-256/ukuran dengan `dist\publish-single`;
+  tabel `LaunchCondition` memuat pagar turun versi dan pagar kanal EXE.
+- Installer EXE 1.2.9 di mesin ini menolak berjalan karena mendeteksi MSI 1.2.7:
+  kode keluar 1, tidak ada berkas terpasang, alasan tercatat di log Inno.
+- Uji pasang/peningkatan/copot 1.2.9: atestasi pemilik `lulus=65 gagal=0 total=65`
+  (13 bagian, termasuk MSI 1.2.7 → 1.2.9 dengan data lama, penolakan silang EXE/MSI,
+  penolakan turun versi, dan copot yang menyisakan data pengguna). Berkas bukti mentah
+  tidak diterima di mesin ini; lihat `docs\verifikasi-paket-1.2.9-2026-10-31.md`.
+- Uji pasang/peningkatan 1.2.9 di Windows Sandbox **pada mesin ini** gagal dijalankan:
+  tamu 1.536 MB tidak selesai boot karena mesin ini hanya 3.746 MB RAM (System event
+  ID 2004, `vmmemWindowsSandbox` 1.200 MB). Kegagalan ini soal memori host, bukan paket.
+- Kit uji siap salin untuk mesin ≥8 GB sudah dirakit:
+  `scripts\siapkan-kit-uji-129.ps1` menghasilkan `C:\tmp\kit-uji-129` (9 berkas,
+  177,5 MB). Preflight `run-sandbox.ps1 -Periksa` di mesin ini lulus 8 checksum dan
+  mendeteksi prasyarat; tanpa `-Periksa` peluncur menolak jalan (RAM 3.746 MB, keluar
+  3, tidak membuat `uji-jalan.wsb`).
+- Bukti pasang/copot 1.2.7 (mesin pemilik dan sandbox) tetap berlaku untuk 1.2.7 saja,
+  bukan untuk 1.2.9.
 
 Yang **belum** dibuktikan dan tidak boleh diklaim:
 
+- Berkas bukti mentah uji 1.2.9 (status.txt, runner.log, folder bukti) belum diterima;
+  hasil uji 1.2.9 bersandar pada atestasi tertulis pemilik.
 - Paket **belum ditandatangani** (`NotSigned`); sertifikat code signing belum dibeli.
 - Perangkat kasir fisik — printer thermal 80 mm, pemindai barcode USB, laci uang — belum diuji.
-- Jendela peluncur belum pernah dibuka di mesin berisi data nyata; uji perilaku memakai host yang dijalankan langsung pada basis data uji.
-- Copot MSI 1.2.7 di mesin pemilik belum dijalankan (copot MSI sudah lulus di sandbox).
+- Jendela peluncur belum pernah dibuka di mesin berisi data nyata; uji perilaku memakai
+  host yang dijalankan langsung pada basis data uji.
+- Copot MSI 1.2.7 di mesin pemilik belum dijalankan (copot MSI 1.2.7 sudah lulus di sandbox).
+- Installer EXE 1.2.7/1.2.8 tidak memiliki pagar versi, jadi installer lama itu sendiri
+  masih bisa menurunkan instalasi; paket 1.2.9 sendiri menolak menurunkan versi.
 - Kompatibilitas belum diuji di semua versi Windows.
-
-Karena itu verdict tetap **READY FOR LIMITED PILOT**, bukan **READY FOR PRODUCTION**.
 
 ## Dokumentasi
 
+- [Verifikasi paket 1.2.9](docs/verifikasi-paket-1.2.9-2026-10-31.md) — isi paket, uji payload, pagar installer, dan uji pasang yang belum terbukti
 - [Verifikasi paket 1.2.7](docs/verifikasi-paket-1.2.7-2026-10-30.md) — isi paket, uji payload, peningkatan MSI, pasang/copot EXE
 - [Laporan GO/NO-GO](docs/laporan-go-no-go-2026-10-29.md) — keputusan kesiapan dan syarat pilot
 - [Cadangan & pemulihan bencana](docs/pemulihan-bencana.md) — panduan pemilik dan teknisi
@@ -185,12 +226,13 @@ Karena itu verdict tetap **READY FOR LIMITED PILOT**, bukan **READY FOR PRODUCTI
 - [Performa navigasi](docs/performa-navigasi-2026-10-29.md)
 - [Notifikasi internal & MCP](docs/internal-notifications-and-mcp.md)
 - [Registri kasus uji](docs/test-case-registry-2026-10-28.md)
-- Bukti mentah uji paket: `docs/paket-bukti-2026-10-29/`, `docs/paket-bukti-2026-10-30/`
+- Bukti mentah uji paket: `docs/paket-bukti-2026-10-29/`, `docs/paket-bukti-2026-10-30/`, `docs/paket-bukti-2026-10-31/`
 
 ## Riwayat versi singkat
 
 | Versi | Perubahan inti |
 |---|---|
+| 1.2.9 | Perbaikan 31 temuan audit: jurnal HPP/persediaan, validasi SPK, status pesanan atomik, RBAC dan kebocoran data, pagar versi/kanal installer |
 | 1.2.7 | Nama toko, slogan, dan logo dapat diganti kapan saja |
 | 1.2.6 | Kemasan audit final; sembilan cacat pra-pilot tertutup di 1.2.5 |
 | 1.2.5 | Perbaikan BUG-02 s.d. BUG-11 (retur, transfer stok, zona waktu, label keuangan, dll.) |

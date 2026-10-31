@@ -31,9 +31,11 @@ public class AuthService
         if (user is null || !user.IsActive)
             return Result<LoginResponse>.Fail(ErrorCodes.InvalidCredentials, "Username atau password salah.");
 
+        // Akun terkunci dijawab dengan pesan yang sama persis seperti sandi salah: kalau
+        // pesannya berbeda, penebak bisa memetakan akun mana yang benar-benar ada hanya dari
+        // perubahan jawaban pada percobaan kelima.
         if (user.IsLocked())
-            return Result<LoginResponse>.Fail(ErrorCodes.AccountLocked,
-                $"Akun terkunci hingga {user.LockedUntil:HH:mm}. Coba lagi nanti.");
+            return Result<LoginResponse>.Fail(ErrorCodes.InvalidCredentials, "Username atau password salah.");
 
         // Masa kunci yang sudah lewat harus menghapus hitungan gagal. Tanpa ini satu salah sandi
         // setiap 15 menit langsung mengunci akun lagi: pemilik tidak pernah bisa masuk.

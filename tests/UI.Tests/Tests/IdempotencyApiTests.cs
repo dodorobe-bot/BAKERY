@@ -138,7 +138,7 @@ public sealed class IdempotencyApiTests : IClassFixture<PlaywrightFixture>
 
         var respons = await http.GetAsync("/api/tyo-masukan-salah");
         respons.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        respons.Content.Headers.ContentType.MediaType.Should().Be("application/json",
+        respons.Content.Headers.ContentType!.MediaType.Should().Be("application/json",
             "fallback SPA pernah menjawab 200 + HTML, sehingga layar hanya terlihat kosong dan bugnya hilang tanpa jejak");
 
         var teks = await respons.Content.ReadAsStringAsync();

@@ -103,6 +103,7 @@ export default function App() {
   // Jumlah seluruh baris di server; daftar di layar hanya sebagian halaman pertama.
   const [customerTotal, setCustomerTotal] = useState(null);
   const [purchaseTotal, setPurchaseTotal] = useState(null);
+  const [orderTotal, setOrderTotal] = useState(null);
 
   // Change Password Modal State
   const [changePwModal, setChangePwModal] = useState(false);
@@ -142,13 +143,8 @@ export default function App() {
     document.title = brand.name;
   }, [brand.name]);
 
-  // Identitas toko dibaca sekali setelah masuk, bukan setiap pindah menu: bilah atas dan merek
-  // memakai data nyata (AppSettings), sementara layar Pengaturan memuat ulang sendiri saat dibuka
-  // maupun setelah disimpan.
-  useEffect(() => {
-    if (!user || user.mustChangePassword) return;
-    api.getSettings().then((s) => setSettings(s || {})).catch(() => {});
-  }, [user]);
+  // Pengaturan lengkap sengaja tidak dimuat di latar belakang: hanya Owner yang boleh membaca
+  // /api/settings. Identitas toko di kepala layar sudah datang dari merek publik (/api/brand).
 
   const setData = {
     dashboardData: setDashboardData,
@@ -177,6 +173,7 @@ export default function App() {
     suppliers: setSuppliers,
     customerTotal: setCustomerTotal,
     purchaseTotal: setPurchaseTotal,
+    orderTotal: setOrderTotal,
   };
 
   // Stok setiap lokasi diminta per lokasi: satu sumber kebenaran, tanpa menebak ID dapur/gudang.
@@ -201,10 +198,11 @@ export default function App() {
       case 'receivables': {
         // Daftar pelanggan berhalaman: layar hanya perlu sebagian, sisanya lewat pencarian.
         const [o, c, p] = await Promise.all([
-          api.getOrders(), api.getCustomers({ limit: 50 }), api.getProducts(),
+          api.getOrders({ limit: 100 }), api.getCustomers({ limit: 50 }), api.getProducts(),
         ]);
         return {
-          orders: o || [], customers: c?.items ?? [], customerTotal: c?.total ?? null, products: p || [],
+          orders: o?.items ?? [], orderTotal: o?.total ?? null,
+          customers: c?.items ?? [], customerTotal: c?.total ?? null, products: p || [],
         };
       }
 
@@ -230,8 +228,8 @@ export default function App() {
         return { costSummary: await api.getCostSummary() };
 
       case 'sales_returns': {
-        const [o, r] = await Promise.all([api.getOrders(), api.getReturns()]);
-        return { orders: o || [], returns: r || [] };
+        const [o, r] = await Promise.all([api.getOrders({ limit: 100 }), api.getReturns()]);
+        return { orders: o?.items ?? [], orderTotal: o?.total ?? null, returns: r || [] };
       }
 
       case 'general_ledger':
@@ -241,12 +239,12 @@ export default function App() {
         // Jurnal per rentang dimuat oleh FinanceView; di sini saldo akun, pesanan, pembelian
         // terbuka (yang benar-benar menjadi utang), dan ringkasan dasbor.
         const [bal, o, po, d] = await Promise.all([
-          api.getJournalBalances(), api.getOrders(), api.getPurchases({ status: 'open', limit: 300 }),
-          api.getDashboard(),
+          api.getJournalBalances(), api.getOrders({ limit: 100 }),
+          api.getPurchases({ status: 'open', limit: 300 }), api.getDashboard(),
         ]);
         return {
-          balances: bal || [], orders: o || [], purchases: po?.items ?? [],
-          purchaseTotal: po?.total ?? null, dashboardData: d,
+          balances: bal || [], orders: o?.items ?? [], orderTotal: o?.total ?? null,
+          purchases: po?.items ?? [], purchaseTotal: po?.total ?? null, dashboardData: d,
         };
       }
 
@@ -417,6 +415,7 @@ export default function App() {
     setActiveTab('dashboard');
     setDashboardData(null);
     setOrders([]);
+    setOrderTotal(null);
     setCustomers([]);
     setProducts([]);
     setWorkOrders([]);
@@ -751,6 +750,7 @@ export default function App() {
         return (
           <SalesView
             orders={orders}
+            orderTotal={orderTotal}
             customers={customers}
             customerTotal={customerTotal}
             products={products}
@@ -839,8 +839,11 @@ export default function App() {
             onCancelPurchase={handleCancelPurchase}
             onCreateSupplier={handleCreateSupplier}
             onUpdateSupplier={handleUpdateSupplier}
-            canWritePurchase={bolehAksi(user, 'purchases-write')}
+            canWritePurchase={bolehAksi(user, 'purchases-create')}
+            canReceivePurchase={bolehAksi(user, 'purchases-receive')}
             canCancelPurchase={bolehAksi(user, 'purchases-cancel')}
+            canExportPurchase={bolehAksi(user, 'finance-read')}
+            canManageSuppliers={bolehAksi(user, 'master-data-write')}
             initialTab={activeTab === 'suppliers' ? 'suppliers' : 'po'}
             onTabChange={(tab) => setActiveTab(tab === 'suppliers' ? 'suppliers' : 'purchases')}
           />
@@ -1192,7 +1195,7 @@ export default function App() {
             <span className="text-xs font-semibold text-slate-400">Lokasi Kerja:</span>
             <div className="px-3 py-1 bg-slate-900 border border-slate-800 rounded-lg text-xs font-bold text-white flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{settings.outlet_name || 'Kantor Sentral & Toko Utama'}</span>
+              <span>{brand.outlet || 'Kantor Sentral & Toko Utama'}</span>
             </div>
           </div>
 

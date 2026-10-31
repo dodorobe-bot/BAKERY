@@ -36,7 +36,6 @@ public class FinishedGoodsFlowTests
         var accounting = new AccountingService(_journals, new AccountRepository(_factory));
         _orderService = new OrderService(
             _orders,
-            new CustomerRepository(_factory),
             _stock,
             _journals,
             new DocumentSequenceRepository(_factory),
@@ -95,7 +94,7 @@ public class FinishedGoodsFlowTests
         long loss = ProductionCostRules.LossCost(materialCost, 1, goodUnits + 1);
         var acct = new AccountingService(_journals, new AccountRepository(_factory));
         var journal = await acct.BuildProductionCompletionAsync(
-            id, wo.OrderNumber, materialCost, loss, wo.LaborCost, wo.OverheadCost, Pengguna);
+            id, wo.OrderNumber, materialCost, loss, wo.LaborCost, wo.OverheadCost, goodUnits, Pengguna);
         long hppPerUnit = ProductionCostRules.CostPerGoodUnit(materialCost, wo.LaborCost, wo.OverheadCost, loss, goodUnits);
 
         await _production.CompleteWorkOrderAsync(id, goodUnits, 1, materials, scraps, journal, hppPerUnit);
@@ -227,12 +226,15 @@ public class FinishedGoodsFlowTests
         var orderId = await BuatPesananAsync("Pelanggan Cicil", product, quantity: 2, total: 300_000, dp: 100_000);
         (await SaldoEtalaseAsync(product)).Should().Be(5m, "belum lunas dan belum diproses, stok belum bergerak");
 
-        (await _orderService.AddPaymentAsync(new AddPaymentRequest(orderId, 200_000, "Cash", Pengguna)))
+        (await _orderService.AddPaymentAsync(new AddPaymentRequest(orderId, 200_000, "Tunai", Pengguna)))
             .Success.Should().BeTrue();
         (await SaldoEtalaseAsync(product)).Should().Be(3m);
 
-        // Naik status ke Ready setelah lunas tidak boleh memotong untuk kedua kalinya.
-        (await _orderService.UpdateStatusAsync(orderId, OrderStatus.Ready, Pengguna)).Success.Should().BeTrue();
+        // Pesanan yang sudah lunas tidak bisa mundur ke Siap Diambil: status lunas adalah status
+        // akhir. Yang dipastikan di sini adalah penolakan itu tidak memotong etalase lagi.
+        var naik = await _orderService.UpdateStatusAsync(orderId, OrderStatus.Ready, Pengguna);
+        naik.Success.Should().BeFalse("status Lunas tidak boleh mundur ke tahap sebelumnya");
+        naik.ErrorMessage.Should().Contain("lunas");
         (await SaldoEtalaseAsync(product)).Should().Be(3m);
         _db.Count("FinishedGoodsMovements", $"MovementType = 'Sale' AND SourceId = {orderId}").Should().Be(1);
     }
@@ -248,6 +250,69 @@ public class FinishedGoodsFlowTests
         hasil.Success.Should().BeFalse();
         hasil.ErrorMessage.Should().Contain("harus lebih dari nol");
         _db.Count("SalesOrders", "CustomerNameSnapshot = 'Pelanggan Nol'").Should().Be(0);
+    }
+
+    [Fact]
+    public async Task RingkasanHpp_CocokDenganBiayaYangDibebankanSaatSpkSelesai()
+    {
+        var product = NewProduct("Roti HPP");
+        var ingredient = await NewIngredientWithKitchenStock("Tepung HPP", 10m);
+        await SelesaikanSpkAsync(product, ingredient, goodUnits: 3);
+
+        var summary = await new CostSummaryService(
+            new ProductTemplateRepository(_factory), _production).GetAsync();
+        var baris = summary.Products.Single(p => p.ProductId == product);
+
+        var nilaiStok = Convert.ToInt64(_db.Scalar(
+            $"SELECT UnitCostMinorUnits FROM FinishedGoodsMovements WHERE ProductTemplateId = {product};"));
+        nilaiStok.Should().Be(70_000);
+        baris.ActualHppMinorUnits.Should().Be(nilaiStok,
+            "HPP di layar harus sama dengan biaya yang benar-benar dibebankan ke stok produk jadi");
+        baris.CompletedWorkOrders.Should().Be(1);
+        baris.GoodUnits.Should().Be(3);
+        baris.ScrapLossMinorUnits.Should().Be(50_000,
+            "1 dari 4 unit dibuang, jadi seperempat bahan Rp200.000 menjadi beban — bukan bagian HPP");
+        summary.ScrapLossMinorUnits.Should().Be(50_000);
+        summary.WeightedActualHppMinorUnits.Should().Be(70_000);
+    }
+
+    [Fact]
+    public async Task RingkasanHpp_MenghitungSeluruhSpkSelesai_TanpaBatasDaftarTerbaru()
+    {
+        var product = NewProduct("Roti Banyak");
+        _db.Exec("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM n WHERE x < 205) " +
+                 "INSERT INTO WorkOrders (OrderNumber, ProductTemplateId, TargetQuantity, Status, " +
+                 "ActualGoodQty, ActualFailedQty, TotalMaterialCost, LaborCost, OverheadCost) " +
+                 $"SELECT 'SPK-BANYAK-' || x, {product}, 1, 'Completed', 1, 0, 0, 10000, 0 FROM n;");
+
+        var summary = await new CostSummaryService(
+            new ProductTemplateRepository(_factory), _production).GetAsync();
+        var baris = summary.Products.Single(p => p.ProductId == product);
+
+        baris.CompletedWorkOrders.Should().Be(205,
+            "ringkasan tidak boleh diam-diam hanya memuat 200 SPK terbaru");
+        baris.GoodUnits.Should().Be(205);
+        baris.ActualHppMinorUnits.Should().Be(10_000);
+        summary.CompletedWorkOrders.Should().Be(205);
+    }
+
+    [Fact]
+    public async Task MetodePembayaranDiLuarTunaiTransfer_DitolakTanpaMencatatPembayaran()
+    {
+        var product = NewProduct("Roti Metode");
+        var orderId = await BuatPesananAsync("Pelanggan Metode", product, quantity: 1, total: 300_000);
+
+        var hasil = await _orderService.AddPaymentAsync(new AddPaymentRequest(orderId, 100_000, "Cash", Pengguna));
+        hasil.Success.Should().BeFalse();
+        hasil.ErrorMessage.Should().Contain("Tunai");
+        _db.Count("SalesPayments", $"SalesOrderId = {orderId}").Should().Be(0);
+
+        // Ejaan berbeda huruf besar-kecil tetap diterima, tetapi disimpan dalam bentuk baku
+        // supaya rekap kas per metode tidak terpecah.
+        (await _orderService.AddPaymentAsync(new AddPaymentRequest(orderId, 100_000, "transfer", Pengguna)))
+            .Success.Should().BeTrue();
+        ((string)_db.Scalar($"SELECT Method FROM SalesPayments WHERE SalesOrderId = {orderId};")!)
+            .Should().Be("Transfer");
     }
 
     private async Task<int> BuatPesananAsync(

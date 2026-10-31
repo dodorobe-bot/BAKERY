@@ -91,7 +91,7 @@ public sealed class BrandSettingsTests : IClassFixture<PlaywrightFixture>
         akar.GetProperty("tagline").GetString().Should().NotBeNullOrWhiteSpace();
 
         var kunci = akar.EnumerateObject().Select(p => p.Name).OrderBy(n => n).ToArray();
-        kunci.Should().Equal(["logo", "name", "tagline"],
+        kunci.Should().Equal(["logo", "name", "outlet", "tagline"],
             "endpoint anonim tidak boleh membocorkan pengaturan lain seperti printer atau biaya");
     }
 

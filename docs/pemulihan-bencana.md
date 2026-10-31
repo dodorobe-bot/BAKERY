@@ -139,10 +139,10 @@ path secara eksplisit bila basis data berada di tempat lain:
 Seruni22Bakery.Host.exe --backup --Database:Path="D:\Data Seruni\seruni22bakery.db"
 ```
 
-**Penting (1.2.7):** pakai `Seruni22Bakery.Host.exe`, bukan peluncur `Seruni22Bakery.exe`.
-Peluncur hanya mengenali `--tanpa-browser` dan tidak meneruskan `--backup`/`--restore`,
-sehingga perintah lewat peluncur akan menyalakan aplikasi seperti biasa tanpa membuat
-cadangan atau memulihkan apa pun.
+**Penting:** pakai `Seruni22Bakery.Host.exe` untuk skrip dan keluaran teks. Mulai 1.2.8
+peluncur `Seruni22Bakery.exe --backup`/`--restore` juga meneruskan perintah ke host dan
+menampilkan hasilnya di kotak pesan, tetapi peluncur tidak punya konsol sehingga Command
+Prompt tidak menunggu prosesnya dan kode keluar tidak terlihat.
 
 ## 8. Retensi: cadangan mana yang dihapus
 

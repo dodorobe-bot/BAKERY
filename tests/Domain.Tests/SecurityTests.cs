@@ -74,7 +74,10 @@ public class RolePoliciesTests
     [InlineData(RolePolicies.SalesExport, UserRole.Admin, true)]
     [InlineData(RolePolicies.SalesExport, UserRole.Pegawai, false)]
     [InlineData(RolePolicies.SalesExport, UserRole.Dapur, false)]
-    [InlineData(RolePolicies.PurchasesWrite, UserRole.Dapur, true)]
+    [InlineData(RolePolicies.PurchasesCreate, UserRole.Dapur, false)]
+    [InlineData(RolePolicies.PurchasesCreate, UserRole.Admin, true)]
+    [InlineData(RolePolicies.PurchasesReceive, UserRole.Dapur, true)]
+    [InlineData(RolePolicies.PurchasesReceive, UserRole.Pegawai, false)]
     [InlineData(RolePolicies.PurchasesCancel, UserRole.Dapur, false)]
     [InlineData(RolePolicies.MasterDataWrite, UserRole.Dapur, false)]
     [InlineData(RolePolicies.MasterDataWrite, UserRole.Pegawai, false)]
@@ -103,7 +106,8 @@ public class RolePoliciesTests
             RolePolicies.Sales, RolePolicies.SalesCancel, RolePolicies.SalesReturn,
             RolePolicies.FinanceRead, RolePolicies.FinanceWrite,
             RolePolicies.ProductionWrite, RolePolicies.ProductionCancel, RolePolicies.InventoryWrite,
-            RolePolicies.InventoryRead, RolePolicies.PurchasesWrite, RolePolicies.PurchasesCancel,
+            RolePolicies.InventoryRead, RolePolicies.PurchasesCreate, RolePolicies.PurchasesReceive,
+            RolePolicies.PurchasesCancel,
             RolePolicies.MasterDataWrite, RolePolicies.SalesExport, RolePolicies.Administration,
         ]);
     }

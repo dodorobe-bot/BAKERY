@@ -22,8 +22,11 @@ public class OrderService
     /// <summary>Atas jumlah satu pesanan; di atas ini hampir pasti salah ketik, bukan pesanan nyata.</summary>
     public const decimal MaxOrderQuantity = 100_000;
 
+    // Metode pembayaran hanya dua jalur kas yang benar-benar ada di toko. Teks bebas membuat
+    // rekap kas per metode tidak pernah cocok dengan uang yang diterima.
+    private static readonly string[] MetodeSah = ["Tunai", "Transfer"];
+
     private readonly ISalesOrderRepository _orders;
-    private readonly ICustomerRepository _customers;
     private readonly ILocationStockRepository _locationStock;
     private readonly IJournalRepository _journals;
     private readonly IDocumentSequenceRepository _documents;
@@ -31,13 +34,12 @@ public class OrderService
     private readonly ISalesReturnRepository _returns;
 
     public OrderService(
-        ISalesOrderRepository orders, ICustomerRepository customers,
+        ISalesOrderRepository orders,
         ILocationStockRepository locationStock,
         IJournalRepository journals, IDocumentSequenceRepository documents,
         AccountingService accounting, ISalesReturnRepository returns)
     {
         _orders = orders;
-        _customers = customers;
         _locationStock = locationStock;
         _journals = journals;
         _documents = documents;
@@ -62,28 +64,12 @@ public class OrderService
             return Result<int>.Fail(ErrorCodes.ValidationFailed,
                 $"Jumlah pesanan melebihi batas {MaxOrderQuantity:N0} unit.");
 
-        // Auto-create or link customer by phone
-        int? customerId = null;
-        Customer? customer = null;
-        if (!string.IsNullOrWhiteSpace(req.Phone))
-        {
-            customer = await _customers.GetByPhoneAsync(req.Phone);
-            if (customer is null)
-            {
-                customer = new Customer { Name = req.CustomerName, Phone = req.Phone };
-                customerId = await _customers.CreateAsync(customer);
-                customer.Id = customerId.Value;
-            }
-            else
-            {
-                customerId = customer.Id;
-            }
-        }
-
+        // Pelanggan ditautkan dan poin loyaltinya ditambahkan di dalam transaksi pesanan
+        // (SalesOrderRepository), sehingga pesanan kembar dengan nomor baru tidak menabrak
+        // keunikan nomor telepon dan poin dari dua pesanan bersamaan tidak hilang.
         var order = new SalesOrder
         {
             OrderNumber = await _documents.NextNumberAsync(DocumentKind.Order, DateTime.UtcNow),
-            CustomerId = customerId,
             ProductTemplateId = req.ProductTemplateId,
             CustomerNameSnapshot = req.CustomerName,
             PhoneSnapshot = req.Phone,
@@ -133,13 +119,6 @@ public class OrderService
             return Result<int>.Fail(ErrorCodes.ValidationFailed, ex.Message);
         }
 
-        // Poin loyalti menyusul setelah pesanan tersimpan: gagal di sini tidak membuang jejak pesanan.
-        if (customer is not null && customer.Id > 0 && req.TotalAmount > 0)
-        {
-            customer.AddLoyaltyPoints(req.TotalAmount);
-            await _customers.UpdateAsync(customer);
-        }
-
         return Result<int>.Ok(orderId);
     }
 
@@ -148,6 +127,13 @@ public class OrderService
         var moneyError = MoneyRules.AmountError(req.Amount, "Pembayaran");
         if (moneyError is not null)
             return Result.Fail(ErrorCodes.ValidationFailed, moneyError);
+
+        var metode = req.Method?.Trim();
+        if (string.IsNullOrEmpty(metode)
+            || !MetodeSah.Contains(metode, StringComparer.OrdinalIgnoreCase))
+            return Result.Fail(ErrorCodes.ValidationFailed,
+                $"Metode pembayaran harus salah satu dari: {string.Join(", ", MetodeSah)}.");
+        metode = MetodeSah.First(m => m.Equals(metode, StringComparison.OrdinalIgnoreCase));
 
         // Idempotency check
         if (req.IdempotencyKey is not null)
@@ -185,7 +171,7 @@ public class OrderService
             SalesOrderId = req.OrderId,
             Amount = req.Amount,
             PaymentDate = BusinessTime.Now(),
-            Method = req.Method,
+            Method = metode,
             Notes = req.Notes,
             CreatedAt = DateTime.UtcNow,
             CreatedByUserId = req.CreatedByUserId,
@@ -227,6 +213,17 @@ public class OrderService
         if (order.Status == newStatus)
             return Result.Ok();
 
+        // Lunas adalah status akhir: pendapatan sudah diakui dan stok sudah keluar, jadi status
+        // tidak boleh mundur ke Pending/Processing/Ready tanpa pembalik jurnal. Jalur yang sah
+        // untuk membatalkan uang yang sudah masuk adalah retur atau pembatalan pesanan.
+        if (order.Status == OrderStatus.Paid && newStatus != OrderStatus.Cancelled)
+            return Result.Fail(ErrorCodes.InvalidOrderStatus,
+                "Pesanan sudah lunas; status tidak bisa mundur. Gunakan retur atau pembatalan pesanan.");
+        if (newStatus == OrderStatus.Paid && !order.IsFullyPaid())
+            return Result.Fail(ErrorCodes.ValidationFailed,
+                $"Pesanan ini masih kurang {Money.Format(order.RemainingAmount())}. "
+                + "Pelunasan dicatat lewat pembayaran, bukan dengan mengubah status langsung.");
+
         // Pembatalan mengembalikan seluruh jumlah pesanan dan membalik jurnal penjualan penuh.
         // Kalau sebagian sudah diretur, stok yang diretur sudah kembali dan uangnya sudah
         // dikembalikan; mengembalikan seluruh jumlah lagi membuat stok hantu dan jurnal retur
@@ -244,6 +241,13 @@ public class OrderService
         var changes = new List<StockChange>();
         var fgChanges = new List<FinishedGoodsChange>();
 
+        // Nilai lama diserahkan ke repository untuk dibandingkan di dalam transaksi. Bila
+        // pesanan berubah di antara pembacaan ini dan penulisan, perubahan ditolak, bukan
+        // menimpa keputusan orang lain (stok bisa terpotong dua kali).
+        var expectedStatus = order.Status;
+        var expectedStockDeducted = order.StockDeducted;
+        var expectedTotalPaid = order.TotalPaid();
+
         var shouldDeductStock = newStatus is OrderStatus.Processing or OrderStatus.Ready or OrderStatus.Paid
                                 && !order.StockDeducted && order.ProductTemplateId.HasValue;
 
@@ -256,6 +260,11 @@ public class OrderService
             // jadi menjual hasil produksi hanya menggeser saldo etalase.
             int displayId = await _locationStock.GetLocationIdByTypeAsync("Display");
             decimal jumlah = order.Quantity;
+            // Pembatalan mengembalikan nilai persediaan sebesar HPP saat barang keluar, sehingga
+            // saldo Persediaan Produk Jadi kembali ke angka sebelum penjualan.
+            long hpp = shouldRestoreStock
+                ? await _locationStock.GetFinishedGoodsSaleUnitCostAsync(orderId)
+                : 0;
             fgChanges.Add(new FinishedGoodsChange(
                 displayId, order.ProductTemplateId!.Value,
                 shouldDeductStock ? -jumlah : jumlah,
@@ -263,7 +272,8 @@ public class OrderService
                 "SalesOrder", orderId, userId,
                 shouldDeductStock
                     ? $"Penjualan {order.OrderNumber} ({jumlah} unit)"
-                    : $"Pengembalian stok pesanan dibatalkan {order.OrderNumber} ({jumlah} unit)"));
+                    : $"Pengembalian stok pesanan dibatalkan {order.OrderNumber} ({jumlah} unit)",
+                hpp));
             order.StockDeducted = shouldDeductStock;
         }
 
@@ -284,7 +294,9 @@ public class OrderService
 
         try
         {
-            await _orders.SaveStatusChangeWithJournalAsync(order, changes, fgChanges, journals);
+            await _orders.SaveStatusChangeWithJournalAsync(
+                order, expectedStatus, expectedStockDeducted, expectedTotalPaid,
+                changes, fgChanges, journals);
         }
         catch (InvalidOperationException ex)
         {

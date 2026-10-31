@@ -41,7 +41,7 @@ public class CustomerRepository : ICustomerRepository
         return list;
     }
 
-    public async Task<IReadOnlyList<Customer>> GetPageAsync(string? search, int limit, int offset)
+    public async Task<IReadOnlyList<Customer>> GetPageAsync(string? search, int limit, int offset, int? onlyForUserId = null)
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
@@ -49,9 +49,13 @@ public class CustomerRepository : ICustomerRepository
         cmd.CommandText = @"
             SELECT * FROM Customers
             WHERE IsActive = 1 AND (@cari IS NULL OR Name LIKE @pola OR Phone LIKE @pola)
+              AND (@uid IS NULL OR EXISTS (
+                    SELECT 1 FROM SalesOrders o
+                    WHERE o.CustomerId = Customers.Id AND o.CreatedByUserId = @uid))
             ORDER BY Name, Id
             LIMIT @limit OFFSET @offset;";
         TambahPencarian(cmd, search);
+        cmd.Parameters.AddWithValue("@uid", onlyForUserId ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@limit", limit);
         cmd.Parameters.AddWithValue("@offset", offset);
         using var r = await cmd.ExecuteReaderAsync();
@@ -60,14 +64,18 @@ public class CustomerRepository : ICustomerRepository
         return list;
     }
 
-    public async Task<int> CountActiveAsync(string? search)
+    public async Task<int> CountActiveAsync(string? search, int? onlyForUserId = null)
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = @"
             SELECT COUNT(*) FROM Customers
-            WHERE IsActive = 1 AND (@cari IS NULL OR Name LIKE @pola OR Phone LIKE @pola);";
+            WHERE IsActive = 1 AND (@cari IS NULL OR Name LIKE @pola OR Phone LIKE @pola)
+              AND (@uid IS NULL OR EXISTS (
+                    SELECT 1 FROM SalesOrders o
+                    WHERE o.CustomerId = Customers.Id AND o.CreatedByUserId = @uid));";
         TambahPencarian(cmd, search);
+        cmd.Parameters.AddWithValue("@uid", onlyForUserId ?? (object)DBNull.Value);
         return Convert.ToInt32(await cmd.ExecuteScalarAsync());
     }
 

@@ -167,7 +167,16 @@ public sealed class DatabaseBackupService
         hasil.Add(new IntegrityCheck("PRAGMA foreign_key_check", pelanggaran == 0,
             pelanggaran == 0 ? "tidak ada baris yang menunjuk induk yang hilang" : $"{pelanggaran} baris melanggar"));
 
-        var versi = ReadSchemaVersion(backupPath);
+        int versi;
+        try { versi = ReadSchemaVersion(backupPath); }
+        catch (Exception ex) when (ex is InvalidOperationException or SqliteException)
+        {
+            // Cadangan yang versinya tidak terbaca tidak boleh tampil "sehat" hanya karena
+            // halamannya lolos integrity_check.
+            hasil.Add(new IntegrityCheck("skema bisa dipulihkan aplikasi ini", false, ex.Message));
+            BersihkanSidecarCadangan(backupPath);
+            return hasil;
+        }
         var didukung = DatabaseMigrator.LatestEmbeddedVersion();
         hasil.Add(new IntegrityCheck("skema bisa dipulihkan aplikasi ini", versi <= didukung,
             $"cadangan {versi}, aplikasi ini mengenal sampai {didukung}"));
@@ -380,15 +389,26 @@ public sealed class DatabaseBackupService
             Pooling = false
         }.ToString());
         conn.Open();
+
+        // Hanya "tabel belum ada" yang berarti skema 0. Kegagalan membaca lain dilempar:
+        // pemulihan yang menganggap berkas rusak sebagai skema 0 akan menerimanya, lalu
+        // menjalankan seluruh migrasi di atasnya.
+        using (var cek = conn.CreateCommand())
+        {
+            cek.CommandText = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'SchemaVersion';";
+            if (cek.ExecuteScalar() is null) return 0;
+        }
+
         try
         {
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT COALESCE(MAX(Version), 0) FROM SchemaVersion;";
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
-        catch (SqliteException)
+        catch (Exception ex) when (ex is SqliteException or FormatException or InvalidCastException or OverflowException)
         {
-            return 0;
+            throw new InvalidOperationException(
+                $"Versi skema tidak bisa dibaca dari {databasePath}; berkas tidak diperlakukan sebagai skema 0.", ex);
         }
     }
 

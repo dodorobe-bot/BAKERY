@@ -1,6 +1,13 @@
 # Laporan GO / NO-GO — Skalabilitas Data, Cadangan, dan Pemulihan Bencana
 
 Tanggal: 2026-10-29
+
+> **Dokumen historis.** Putusan READY FOR LIMITED PILOT di bawah berlaku untuk 1.2.7.
+> Per 2026-10-31 putusan terkini untuk **1.2.9** adalah **READY FOR LIMITED PILOT**
+> (bukan READY FOR PRODUCTION), berdasarkan atestasi tertulis pemilik bahwa uji
+> pasang/peningkatan/copot lulus (`lulus=65 gagal=0 total=65`); berkas bukti mentah
+> belum diterima. Lihat `README.md` dan `docs\verifikasi-paket-1.2.9-2026-10-31.md`.
+
 Aplikasi: Seruni 22 Bakery (React + host .NET 8 + SQLite, offline)
 Skema basis data: **17** (migrasi 017 baru pada pekerjaan ini)
 Versi kemasan terakhir: **1.2.7 (2026-10-30 17:31)** — nama toko, slogan, dan logo

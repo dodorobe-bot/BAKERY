@@ -221,13 +221,20 @@ await ujiPeran('Dapur mengoreksi stok (inventory-write) boleh', tokens.dapur_b3,
 await ujiPeran('Pegawai memindahkan stok (inventory-write) ditolak', tokens.pegawai_b3, 'POST', '/api/inventory/transfer',
   { fromLocationId: kitchen.id, toLocationId: warehouse.id, ingredientId, quantity: 1, notes: null }, false);
 
-// Pembelian: tulis Owner/Admin/Dapur; batal Owner/Admin.
-const poDapur = await ujiPeran('Dapur membuat PO (purchases-write) boleh', tokens.dapur_b3, 'POST', '/api/purchases',
-  { supplierId, expectedDate: '2026-11-11', notes: 'uji peran dapur', lines: [{ ingredientId, orderedQty: 2, unitCostMinorUnits: 1200000, unit: 'kg' }] }, true);
-await ujiPeran('Pegawai membuat PO (purchases-write) ditolak', tokens.pegawai_b3, 'POST', '/api/purchases',
+// Pembelian: membuat PO Owner/Admin, menerima barang Owner/Admin/Dapur, batal Owner/Admin.
+await ujiPeran('Dapur membuat PO (purchases-create) ditolak', tokens.dapur_b3, 'POST', '/api/purchases',
+  { supplierId, expectedDate: '2026-11-11', notes: 'uji peran dapur', lines: [{ ingredientId, orderedQty: 2, unitCostMinorUnits: 1200000, unit: 'kg' }] }, false);
+const poOwner = await ujiPeran('Owner membuat PO (purchases-create) boleh', owner, 'POST', '/api/purchases',
+  { supplierId, expectedDate: '2026-11-11', notes: 'uji peran owner', lines: [{ ingredientId, orderedQty: 2, unitCostMinorUnits: 1200000, unit: 'kg' }] }, true);
+await ujiPeran('Pegawai membuat PO (purchases-create) ditolak', tokens.pegawai_b3, 'POST', '/api/purchases',
   { supplierId, expectedDate: '2026-11-11', notes: null, lines: [{ ingredientId, orderedQty: 2, unitCostMinorUnits: 1200000, unit: 'kg' }] }, false);
 await ujiPeran('Dapur membatalkan PO (purchases-cancel) ditolak', tokens.dapur_b3,
-  'PUT', `/api/purchases/${poDapur.json?.id}/cancel`, undefined, false);
+  'PUT', `/api/purchases/${poOwner.json?.id}/cancel`, undefined, false);
+const detailPo = await reqAs(owner, 'GET', `/api/purchases/${poOwner.json?.id}`);
+const barisPo = detailPo.json?.lines?.[0];
+await ujiPeran('Dapur menerima barang (purchases-receive) boleh', tokens.dapur_b3, 'POST',
+  `/api/purchases/${poOwner.json?.id}/receive`,
+  { notes: 'uji terima dapur', lines: [{ purchaseOrderLineId: barisPo?.id, ingredientId, receivedQty: 1, unitCostMinorUnits: 1200000, locationId: warehouse.id, batchNumber: null, expiryDate: null }] }, true);
 
 // Data induk & administrasi.
 await ujiPeran('Pegawai membuat bahan (master-data-write) ditolak', tokens.pegawai_b3, 'POST', '/api/ingredients',

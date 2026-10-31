@@ -53,6 +53,7 @@ export default function CostView({ summary, loading, onRefresh }) {
           <div className="flex items-center justify-between text-slate-400 text-xs"><span>Biaya SPK selesai</span><TrendingDown className="w-4 h-4 text-emerald-400" /></div>
           <div className="text-2xl font-black text-white mt-2 font-mono">{s ? formatMinor(s.materialCostMinorUnits + s.laborCostMinorUnits + s.overheadCostMinorUnits) : '-'}</div>
           <div className="text-[11px] text-slate-500 mt-1">{s ? `bahan ${formatMinor(s.materialCostMinorUnits)} · tenaga ${formatMinor(s.laborCostMinorUnits)} · overhead ${formatMinor(s.overheadCostMinorUnits)}` : 'Memuat data...'}</div>
+          <div className="text-[11px] text-rose-400/90 mt-0.5">{s ? `bahan rusak (beban) ${formatMinor(s.scrapLossMinorUnits)}` : ''}</div>
         </div>
       </div>
 
@@ -102,7 +103,12 @@ export default function CostView({ summary, loading, onRefresh }) {
                       {r.sellingPriceMinorUnits > 0 ? `${(Number(r.standardMarginPercent) || 0).toFixed(1)}%` : '-'}
                     </td>
                     <td className="py-3 px-4 text-right font-mono">{r.hasActual ? `${r.completedWorkOrders} · ${formatQty(r.goodUnits)} u` : <span className="text-slate-500">belum ada</span>}</td>
-                    <td className="py-3 px-4 text-right font-mono">{r.hasActual ? formatMinor(r.actualHppMinorUnits) : <span className="text-slate-500">-</span>}</td>
+                    <td className="py-3 px-4 text-right font-mono">
+                      {r.hasActual ? formatMinor(r.actualHppMinorUnits) : <span className="text-slate-500">-</span>}
+                      {r.hasActual && r.scrapLossMinorUnits > 0 && (
+                        <div className="text-[10px] text-rose-400/80 mt-0.5">rugi bahan {formatMinor(r.scrapLossMinorUnits)}</div>
+                      )}
+                    </td>
                     <td className={`py-3 px-4 text-right font-mono ${!r.hasActual ? 'text-slate-500' : r.varianceMinorUnits > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                       {r.hasActual
                         ? `${r.varianceMinorUnits > 0 ? '+' : ''}${formatMinor(r.varianceMinorUnits)}${r.variancePercent != null ? ` (${r.variancePercent > 0 ? '+' : ''}${Number(r.variancePercent).toFixed(1)}%)` : ''}`
@@ -117,8 +123,11 @@ export default function CostView({ summary, loading, onRefresh }) {
       </div>
 
       <p className="text-[11px] text-slate-500">
-        HPP aktual dihitung hanya dari SPK berstatus selesai. Produk yang belum pernah diproduksi
-        tetap menampilkan HPP standar resep, bukan angka perkiraan.
+        HPP aktual dihitung dari seluruh SPK berstatus selesai (bukan hanya yang terakhir dimuat),
+        dengan rumus yang sama seperti saat penyelesaian SPK: bahan yang lolos + tenaga kerja +
+        overhead dibagi unit baik. Bahan yang hilang karena produk rusak dicatat sebagai beban
+        terpisah, bukan ikut menaikkan HPP. Produk yang belum pernah diproduksi tetap menampilkan
+        HPP standar resep, bukan angka perkiraan.
       </p>
     </div>
   );

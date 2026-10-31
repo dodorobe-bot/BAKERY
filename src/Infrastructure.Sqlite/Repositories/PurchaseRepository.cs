@@ -392,23 +392,61 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
         }
     }
 
-    public async Task UpdateStatusAsync(int id, PurchaseOrderStatus status)
-    {
-        using var conn = _factory.CreateConnection();
-        await conn.OpenAsync();
-
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "UPDATE PurchaseOrders SET Status = @status WHERE Id = @id;";
-        cmd.Parameters.AddWithValue("@status", status.ToString());
-        cmd.Parameters.AddWithValue("@id", id);
-        await cmd.ExecuteNonQueryAsync();
-    }
-
-    public Task ReceiveWithJournalAsync(
-        GoodsReceipt receipt, IReadOnlyList<StockChange> stockChanges,
-        JournalEntry? journal, PurchaseOrderStatus? newStatus)
+    public Task CancelAsync(int id)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
+            // Satu UPDATE bersyarat memutus balapan "batal vs terima": baris yang sudah menerima
+            // barang (atau PO yang selesai/batal) tidak bisa lagi berubah menjadi Cancelled.
+            var cmd = conn.CreateCommand();
+            cmd.Transaction = tx;
+            cmd.CommandText = @"
+                UPDATE PurchaseOrders SET Status = 'Cancelled'
+                WHERE Id = @id AND Status NOT IN ('Cancelled', 'Received')
+                  AND NOT EXISTS (SELECT 1 FROM PurchaseOrderLines
+                                   WHERE PurchaseOrderId = @id AND ReceivedQty > 0);";
+            cmd.Parameters.AddWithValue("@id", id);
+            if (await cmd.ExecuteNonQueryAsync() == 1) return;
+
+            var state = await ReadPoStateAsync(conn, tx, id);
+            if (state is null) throw new InvalidOperationException("PO tidak ditemukan.");
+            if (state.Status == PurchaseOrderStatus.Cancelled)
+                throw new InvalidOperationException("PO sudah dibatalkan.");
+            if (state.Status == PurchaseOrderStatus.Received)
+                throw new InvalidOperationException("PO sudah diterima penuh, tidak bisa dibatalkan.");
+            throw new InvalidOperationException(
+                "Sebagian barang sudah diterima, pembatalan akan meninggalkan stok dan jurnal yatim. Gunakan retur pembelian.");
+        });
+
+    public Task ReceiveWithJournalAsync(
+        GoodsReceipt receipt, IReadOnlyList<StockChange> stockChanges, JournalEntry? journal)
+        => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
+        {
+            // PO dan barisnya dibaca ulang di dalam transaksi: penerimaan yang disusun dari
+            // salinan lama tidak boleh masuk ke PO yang baru dibatalkan, dan sisa terima harus
+            // dihitung dari jumlah yang benar-benar tersimpan.
+            var po = await ReadPoStateAsync(conn, tx, receipt.PurchaseOrderId)
+                ?? throw new InvalidOperationException("PO tidak ditemukan.");
+            if (po.Status == PurchaseOrderStatus.Cancelled)
+                throw new InvalidOperationException("PO sudah dibatalkan.");
+            if (po.Status == PurchaseOrderStatus.Received)
+                throw new InvalidOperationException("PO sudah diterima penuh.");
+
+            foreach (var line in receipt.Lines)
+            {
+                if (!po.Lines.TryGetValue(line.PurchaseOrderLineId, out var poLine))
+                    throw new InvalidOperationException(
+                        $"Baris PO Id {line.PurchaseOrderLineId} tidak termasuk PO ini.");
+                if (poLine.IngredientId != line.IngredientId)
+                    throw new InvalidOperationException(
+                        $"Baris PO Id {line.PurchaseOrderLineId} diisi bahan lain (Id {line.IngredientId}).");
+
+                var outstanding = poLine.OrderedQty - poLine.ReceivedQty;
+                if (line.ReceivedQty > outstanding)
+                    throw new InvalidOperationException(
+                        $"Jumlah {line.ReceivedQty} melebihi sisa terima {outstanding} untuk baris PO Id {line.PurchaseOrderLineId}.");
+                poLine.ReceivedQty += line.ReceivedQty;
+            }
+
             // 1. Header penerimaan
             var grCmd = conn.CreateCommand();
             grCmd.Transaction = tx;
@@ -464,10 +502,16 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
                 var updateCmd = conn.CreateCommand();
                 updateCmd.Transaction = tx;
                 updateCmd.CommandText = @"
-                    UPDATE PurchaseOrderLines SET ReceivedQty = ReceivedQty + @qty WHERE Id = @lineId;";
+                    UPDATE PurchaseOrderLines SET ReceivedQty = ReceivedQty + @qty
+                    WHERE Id = @lineId AND PurchaseOrderId = @poId AND IngredientId = @ingId
+                      AND ReceivedQty + @qty <= OrderedQty;";
                 updateCmd.Parameters.AddWithValue("@qty", line.ReceivedQty);
                 updateCmd.Parameters.AddWithValue("@lineId", line.PurchaseOrderLineId);
-                await updateCmd.ExecuteNonQueryAsync();
+                updateCmd.Parameters.AddWithValue("@poId", receipt.PurchaseOrderId);
+                updateCmd.Parameters.AddWithValue("@ingId", line.IngredientId);
+                if (await updateCmd.ExecuteNonQueryAsync() != 1)
+                    throw new InvalidOperationException(
+                        "Jumlah diterima sudah berubah di perangkat lain. Muat ulang PO lalu ulangi.");
             }
 
             // 3. Stok fisik + buku mutasi
@@ -482,17 +526,59 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
                 await JournalWriter.WriteAsync(conn, tx, journal);
             }
 
-            // 5. Status PO
-            if (newStatus is { } status)
-            {
-                var statusCmd = conn.CreateCommand();
-                statusCmd.Transaction = tx;
-                statusCmd.CommandText = "UPDATE PurchaseOrders SET Status = @status WHERE Id = @id;";
-                statusCmd.Parameters.AddWithValue("@status", status.ToString());
-                statusCmd.Parameters.AddWithValue("@id", receipt.PurchaseOrderId);
-                await statusCmd.ExecuteNonQueryAsync();
-            }
+            // 5. Status PO dihitung dari jumlah diterima yang baru saja tersimpan, bukan dari
+            //    salinan sebelum transaksi. Dua penerimaan bersamaan karena itu tidak bisa
+            //    meninggalkan PO "sebagian" padahal seluruh barisnya sudah penuh.
+            var fullyReceived = po.Lines.Values.All(l => l.ReceivedQty >= l.OrderedQty);
+            var statusCmd = conn.CreateCommand();
+            statusCmd.Transaction = tx;
+            statusCmd.CommandText = @"
+                UPDATE PurchaseOrders SET Status = @status
+                WHERE Id = @id AND Status NOT IN ('Cancelled', 'Received');";
+            statusCmd.Parameters.AddWithValue("@status",
+                (fullyReceived ? PurchaseOrderStatus.Received : PurchaseOrderStatus.PartialReceived).ToString());
+            statusCmd.Parameters.AddWithValue("@id", receipt.PurchaseOrderId);
+            if (await statusCmd.ExecuteNonQueryAsync() != 1)
+                throw new InvalidOperationException(
+                    "Status PO sudah berubah di perangkat lain. Muat ulang PO lalu ulangi.");
         });
+
+    private sealed class PoLineState
+    {
+        public int IngredientId { get; init; }
+        public decimal OrderedQty { get; init; }
+        public decimal ReceivedQty { get; set; }
+    }
+
+    private sealed record PoState(PurchaseOrderStatus Status, Dictionary<int, PoLineState> Lines);
+
+    private static async Task<PoState?> ReadPoStateAsync(
+        SqliteConnection conn, SqliteTransaction tx, int poId)
+    {
+        var header = conn.CreateCommand();
+        header.Transaction = tx;
+        header.CommandText = "SELECT Status FROM PurchaseOrders WHERE Id = @id;";
+        header.Parameters.AddWithValue("@id", poId);
+        var raw = await header.ExecuteScalarAsync();
+        if (raw is null || raw == DBNull.Value) return null;
+
+        var lines = new Dictionary<int, PoLineState>();
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            SELECT Id, IngredientId, OrderedQty, ReceivedQty
+            FROM PurchaseOrderLines WHERE PurchaseOrderId = @id;";
+        cmd.Parameters.AddWithValue("@id", poId);
+        using var r = await cmd.ExecuteReaderAsync();
+        while (await r.ReadAsync())
+            lines[r.GetInt32(0)] = new PoLineState
+            {
+                IngredientId = r.GetInt32(1),
+                OrderedQty = r.GetDecimal(2),
+                ReceivedQty = r.GetDecimal(3)
+            };
+        return new PoState(Enum.Parse<PurchaseOrderStatus>((string)raw), lines);
+    }
 
     private static PurchaseOrder MapPurchaseOrderHeader(SqliteDataReader reader)
     {

@@ -41,7 +41,10 @@ export default function PurchasesView({
   onCreateSupplier,
   onUpdateSupplier,
   canWritePurchase = true,
+  canReceivePurchase = true,
   canCancelPurchase = true,
+  canExportPurchase = true,
+  canManageSuppliers = true,
   initialTab = 'po',
   onTabChange,
 }) {
@@ -308,24 +311,28 @@ export default function PurchasesView({
                 Buat PO Baru
               </button>
             )}
-            <button
-              onClick={async () => {
-                try { await api.exportPurchases('excel'); } catch (e) { alert('Gagal export: ' + e.message); }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Export Excel
-            </button>
-            <button
-              onClick={async () => {
-                try { await api.exportPurchases('pdf'); } catch (e) { alert('Gagal export: ' + e.message); }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-700 hover:bg-rose-600 text-white rounded-lg text-xs font-medium transition-colors"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Export PDF
-            </button>
+            {canExportPurchase && (
+              <>
+                <button
+                  onClick={async () => {
+                    try { await api.exportPurchases('excel'); } catch (e) { alert('Gagal export: ' + e.message); }
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-medium transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Export Excel
+                </button>
+                <button
+                  onClick={async () => {
+                    try { await api.exportPurchases('pdf'); } catch (e) { alert('Gagal export: ' + e.message); }
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-700 hover:bg-rose-600 text-white rounded-lg text-xs font-medium transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Export PDF
+                </button>
+              </>
+            )}
           </div>
 
           {daftarPo.length === 0 ? (
@@ -388,7 +395,7 @@ export default function PurchasesView({
                         </td>
                         <td className="py-3 px-4">
                           <div className="flex items-center justify-center gap-1.5">
-                            {canReceive && canWritePurchase && (
+                            {canReceive && canReceivePurchase && (
                               <button
                                 onClick={() => openReceiveModal(po)}
                                 className="flex items-center gap-1 px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-semibold transition-colors"
@@ -446,18 +453,22 @@ export default function PurchasesView({
                 Daftar Pemasok ({suppliers.length})
               </h3>
             </div>
-            <button
-              onClick={openAddSupplier}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Tambah Pemasok
-            </button>
+            {canManageSuppliers && (
+              <button
+                onClick={openAddSupplier}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Tambah Pemasok
+              </button>
+            )}
           </div>
 
           {suppliers.length === 0 ? (
             <div className="p-8 text-center text-slate-500 text-sm">
-              Belum ada pemasok. Klik "Tambah Pemasok" untuk menambahkan.
+              {canManageSuppliers
+                ? 'Belum ada pemasok. Klik "Tambah Pemasok" untuk menambahkan.'
+                : 'Belum ada pemasok yang terdaftar.'}
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -479,13 +490,15 @@ export default function PurchasesView({
                       <td className="py-3 px-4 text-slate-400">{s.phone || '-'}</td>
                       <td className="py-3 px-4 text-slate-400">{s.email || '-'}</td>
                       <td className="py-3 px-4 text-center">
-                        <button
-                          onClick={() => openEditSupplier(s)}
-                          className="flex items-center gap-1 px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-[10px] font-semibold transition-colors mx-auto"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                          Edit
-                        </button>
+                        {canManageSuppliers && (
+                          <button
+                            onClick={() => openEditSupplier(s)}
+                            className="flex items-center gap-1 px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-[10px] font-semibold transition-colors mx-auto"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                            Edit
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}

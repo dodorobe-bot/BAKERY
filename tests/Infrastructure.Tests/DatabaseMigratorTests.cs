@@ -136,7 +136,7 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
-        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(17);
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(18);
 
         // Migrasi 016: indeks untuk dashboard, analitik, kotak tugas, dan riwayat stok.
         // Migrasi 017 mengganti dua di antaranya dengan indeks penutup dan menambah indeks
@@ -209,6 +209,18 @@ public class DatabaseMigratorTests
             .Should().Be(1);
         var mutasi = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='FinishedGoodsMovements';")!;
         mutasi.Should().Contain("'Return'");
+
+        // Migrasi 018: akun harga pokok & selisih persediaan, biaya rata-rata produk jadi,
+        // dan indeks penelusuran mutasi produk jadi per dokumen sumber.
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM Accounts WHERE Code IN ('5-005','5-006') AND IsActive = 1;"))
+            .Should().Be(2);
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM pragma_table_info('FinishedGoodsStock') WHERE name='AverageCostMinorUnits';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_finishedgoods_movements_source';"))
+            .Should().Be(1);
     }
 
     [Fact]
@@ -217,6 +229,7 @@ public class DatabaseMigratorTests
         // Simulasi basis data dari versi aplikasi sebelumnya: migrasi berikutnya harus bisa
         // menutup kekurangan tanpa menyentuh baris yang sudah ada.
         using var db = new TempDatabase();
+        MigrationRollback.Run(db, "018_CostOfGoodsAndInventoryJournals.down.sql");
         MigrationRollback.Run(db, "017_CoveringIndexesForLargeData.down.sql");
         MigrationRollback.Run(db, "016_QueryPerformanceIndexes.down.sql");
         MigrationRollback.Run(db, "015_InternalNotifications.down.sql");
@@ -224,13 +237,13 @@ public class DatabaseMigratorTests
         MigrationRollback.Run013Down(db);
         MigrationRollback.Run012Down(db);
         MigrationRollback.Run011Down(db);
-        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17);");
+        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18);");
 
         Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(10);
 
         new DatabaseMigrator(db.ConnectionString).Migrate();
 
-        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(17);
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(18);
         db.Scalar("PRAGMA integrity_check;").Should().Be("ok");
         db.Scalar("PRAGMA foreign_key_check;").Should().BeNull();
     }
@@ -240,6 +253,7 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
+        MigrationRollback.Run(db, "018_CostOfGoodsAndInventoryJournals.down.sql");
         MigrationRollback.Run(db, "017_CoveringIndexesForLargeData.down.sql");
         MigrationRollback.Run(db, "016_QueryPerformanceIndexes.down.sql");
         MigrationRollback.Run(db, "015_InternalNotifications.down.sql");
@@ -283,7 +297,7 @@ public class DatabaseMigratorTests
 
         // Naik lagi ke versi terbaru harus bisa: rollback tidak meninggalkan keadaan yang macet.
         new DatabaseMigrator(db.ConnectionString).Migrate();
-        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(17);
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(18);
     }
 
     [Fact]
@@ -347,6 +361,89 @@ public class DatabaseMigratorTests
         // Penghitung nomor dokumen: kunci (jenis, hari) supaya dua hari berbeda tidak salaman.
         var nomor = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='DocumentSequences';")!;
         nomor.Should().Contain("PRIMARY KEY (Kind, DayKey)");
+    }
+
+    [Fact]
+    public void Migrate_VersiSkemaTidakTerbaca_BerhentiTanpaMengubahBasisData()
+    {
+        var dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"bakery-migrator-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(dir);
+        var path = System.IO.Path.Combine(dir, "rusak.db");
+        var connString = $"Data Source={path};";
+        var cadanganDir = System.IO.Path.Combine(dir, "backups");
+
+        try
+        {
+            // Tabel ada dengan tipe yang salah: bukan "belum ada tabel", jadi bukan skema 0.
+            using (var conn = new SqliteConnection(connString))
+            {
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText =
+                    "CREATE TABLE SchemaVersion (Version TEXT PRIMARY KEY, AppliedAt TEXT NOT NULL);" +
+                    "CREATE TABLE Users (Id INTEGER PRIMARY KEY, Username TEXT);" +
+                    "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES ('rusak', 'x');" +
+                    "INSERT INTO Users (Username) VALUES ('pemilik-lama');";
+                cmd.ExecuteNonQuery();
+            }
+
+            var aksi = () => new DatabaseMigrator(connString, cadanganDir).Migrate();
+
+            aksi.Should().Throw<InvalidOperationException>().WithMessage("*tidak bisa dibaca*");
+            Directory.Exists(cadanganDir).Should().BeFalse(
+                "start harus berhenti sebelum migrasi/cadangan menyentuh data yang versinya tidak jelas");
+
+            using (var cek = new SqliteConnection(connString))
+            {
+                cek.Open();
+                using var baca = cek.CreateCommand();
+                baca.CommandText = "SELECT Username FROM Users;";
+                Convert.ToString(baca.ExecuteScalar()).Should().Be("pemilik-lama");
+            }
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { Directory.Delete(dir, true); } catch { /* berkas sementara */ }
+        }
+    }
+
+    [Fact]
+    public void Migrate_AdaTabelPenggunaTanpaBarisVersi_SalinanPengamanDibuatLebihDulu()
+    {
+        var dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"bakery-migrator-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(dir);
+        var path = System.IO.Path.Combine(dir, "lama.db");
+        var connString = $"Data Source={path};";
+        var cadanganDir = System.IO.Path.Combine(dir, "backups");
+
+        try
+        {
+            using (var conn = new SqliteConnection(connString))
+            {
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText =
+                    "CREATE TABLE SchemaVersion (Version INTEGER PRIMARY KEY, AppliedAt TEXT NOT NULL);" +
+                    "CREATE TABLE Users (Id INTEGER PRIMARY KEY, Username TEXT, PasswordHash TEXT NOT NULL DEFAULT '');" +
+                    "INSERT INTO Users (Username, PasswordHash) VALUES ('pemilik-lama', 'x');";
+                cmd.ExecuteNonQuery();
+            }
+
+            // Migrasi dari nol bisa berhenti di tabel yang sudah ada; yang diuji adalah bahwa
+            // data pengguna tidak disentuh sebelum salinan pengaman benar-benar terbit.
+            try { new DatabaseMigrator(connString, cadanganDir).Migrate(); }
+            catch (Exception) { /* hasil akhir migrasi bukan inti uji ini */ }
+
+            var cadangan = Directory.GetFiles(cadanganDir, "pre-upgrade-v0-to-v18-*.db");
+            cadangan.Should().HaveCount(1, "tabel pengguna tanpa baris versi tetap harus dicadangkan");
+            DatabaseBackupService.ReadSchemaVersion(cadangan[0]).Should().Be(0);
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { Directory.Delete(dir, true); } catch { /* berkas sementara */ }
+        }
     }
 
     [Fact]

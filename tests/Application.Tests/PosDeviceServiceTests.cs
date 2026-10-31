@@ -28,6 +28,12 @@ public class PosDeviceServiceTests
             Nilai[key] = value;
             return Task.CompletedTask;
         }
+
+        public Task SaveManyAsync(IReadOnlyDictionary<string, string> values, int? userId = null)
+        {
+            foreach (var (key, value) in values) Nilai[key] = value;
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class AntreanPalsu : IPrintJobRepository

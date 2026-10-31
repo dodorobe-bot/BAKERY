@@ -44,4 +44,5 @@ public static class ErrorCodes
     public const string PrinterNotConfigured = "PRINTER_NOT_CONFIGURED";
     public const string PrinterNotFound = "PRINTER_NOT_FOUND";
     public const string PrintFailed = "PRINT_FAILED";
+    public const string InternalError = "INTERNAL_ERROR";
 }

@@ -55,8 +55,18 @@ try
         return;
     // ── JWT secret: harus sudah resolved sebelum migrasi & sebelum app.Run() ──
     const string jwtSecretPlaceholder = "CHANGE_THIS_SECRET_IN_PRODUCTION_MIN_32_CHARS_LONG";
+    const int minPanjangRahasiaJwt = 32;   // HS256: 256 bit. Lebih pendek bisa dipecah offline.
     var jwtSecret = builder.Configuration["Jwt:Secret"];
-    if (string.IsNullOrWhiteSpace(jwtSecret) || jwtSecret == jwtSecretPlaceholder)
+    if (!string.IsNullOrWhiteSpace(jwtSecret) && jwtSecret != jwtSecretPlaceholder)
+    {
+        // Kunci pendek yang diisi pemilik tidak diganti diam-diam: pemilik harus tahu token
+        // dari instalasi ini bisa dipecah, jadi start dihentikan dengan alasan yang terbaca.
+        if (Encoding.UTF8.GetByteCount(jwtSecret) < minPanjangRahasiaJwt)
+            throw new InvalidOperationException(
+                $"Jwt:Secret hanya {Encoding.UTF8.GetByteCount(jwtSecret)} byte; minimal {minPanjangRahasiaJwt} byte acak. " +
+                "Kosongkan nilai itu agar aplikasi membuat kunci per-instalasi, atau isi dengan nilai acak yang lebih panjang.");
+    }
+    else
     {
         if (Environment.GetEnvironmentVariable("SERUNI_ALLOW_DEFAULT_JWT") == "1")
         {
@@ -76,7 +86,8 @@ try
                     "Seruni22Bakery", "jwt.key");
             }
             var stored = File.Exists(secretFile) ? File.ReadAllText(secretFile).Trim() : null;
-            if (!string.IsNullOrWhiteSpace(stored) && stored != jwtSecretPlaceholder)
+            if (!string.IsNullOrWhiteSpace(stored) && stored != jwtSecretPlaceholder
+                && Encoding.UTF8.GetByteCount(stored) >= minPanjangRahasiaJwt)
             {
                 jwtSecret = stored;
                 // Kunci dari instalasi lama masih bisa membawa izin warisan folder, jadi
@@ -85,6 +96,11 @@ try
             }
             else
             {
+                // Berkas kunci yang terlalu pendek/rusak diganti baru: token lama tidak berlaku
+                // lagi, tetapi tidak ada data pengguna yang hilang dan tidak ada kunci lemah
+                // yang terus dipakai.
+                if (!string.IsNullOrWhiteSpace(stored))
+                    Log.Warning("Kunci JWT di {Path} terlalu pendek atau tidak sah; kunci baru dibuat.", secretFile);
                 jwtSecret = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(48));
                 Directory.CreateDirectory(Path.GetDirectoryName(secretFile)!);
                 File.WriteAllText(secretFile, jwtSecret);
@@ -251,6 +267,14 @@ try
     {
         foreach (var policy in RolePolicies.Names)
             options.AddPolicy(policy, b => b.RequireRole(RolePolicies.AllowedRoles(policy).Select(r => r.ToString())));
+
+        // Setiap endpoint yang tidak menyatakan kebijakan apa pun tetap wajib login. Tanpa
+        // kebijakan cadangan ini, satu endpoint baru yang lupa memasang RequireAuthorization
+        // otomatis terbuka untuk siapa saja — persis kelas bug yang sulit terlihat di review.
+        // Jalur yang memang publik (login, merek, cek kesehatan) ditandai AllowAnonymous.
+        options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
     });
 
     // Frontend disajikan dari origin yang sama (desktop/) dan vite dev hanya di loopback,
@@ -274,9 +298,57 @@ try
 
     app.UseCors();
 
+    // Satu bentuk galat untuk semua kegagalan tak tertangani: layar menerima kode, pesan, dan
+    // nomor permintaan yang bisa dicari di log, tanpa jejak tumpukan yang membocorkan isi mesin.
+    app.UseExceptionHandler(errorApp => errorApp.Run(async ctx =>
+    {
+        var galat = ctx.Features
+            .Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+        var idPermintaan = ctx.TraceIdentifier;
+        Log.Error(galat, "Permintaan {Metode} {Jalur} gagal (request {RequestId})",
+            ctx.Request.Method, ctx.Request.Path, idPermintaan);
+
+        // Klien yang memutus koneksi bukan kegagalan server; jangan mencoba menulis jawaban.
+        if (ctx.RequestAborted.IsCancellationRequested || ctx.Response.HasStarted) return;
+
+        ctx.Response.Clear();
+        ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        ctx.Response.ContentType = "application/json; charset=utf-8";
+        await ctx.Response.WriteAsJsonAsync(new
+        {
+            errorCode = ErrorCodes.InternalError,
+            errorMessage = "Terjadi kesalahan di server. Sebutkan nomor permintaan ini saat melapor.",
+            requestId = idPermintaan,
+        });
+    }));
+
     // Pengukur waktu dipasang paling luar di antara middleware API: angkanya harus mencakup
     // otorisasi dan endpoint, karena justru itu yang membedakan menu cepat dari menu lambat.
     app.Use(async (ctx, next) => await WaktuPermintaan.TengahkanAsync(ctx, next));
+
+    // ── Static Files (Desktop Frontend SPA) ────────────────────────────────────
+    // Berkas statis tidak punya endpoint, sehingga kebijakan cadangan (wajib login) akan
+    // menolaknya bila middleware ini dipasang sesudah UseAuthorization. Halaman masuk dan
+    // bundelnya harus terbaca sebelum sesi ada, jadi penyajian berkas ditempatkan lebih dulu.
+    var desktopPath = builder.Configuration["Desktop:StaticFilesPath"];
+    if (string.IsNullOrEmpty(desktopPath))
+    {
+        var localWwwroot = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+        if (Directory.Exists(localWwwroot))
+        {
+            desktopPath = localWwwroot;
+        }
+        else
+        {
+            desktopPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "desktop"));
+        }
+    }
+    if (Directory.Exists(desktopPath))
+    {
+        var fileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(desktopPath);
+        app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = fileProvider });
+        app.UseStaticFiles(new StaticFileOptions { FileProvider = fileProvider });
+    }
 
     app.UseAuthentication();
 
@@ -331,41 +403,21 @@ try
     // gerbang kata sandi supaya permintaan yang sudah ditolak 403 tidak ikut memakan kunci.
     app.Use(async (ctx, next) => await Idempotensi.TengahkanAsync(ctx, next));
 
-    // ── Static Files (Desktop Frontend SPA) ────────────────────────────────────
-    var desktopPath = builder.Configuration["Desktop:StaticFilesPath"];
-    if (string.IsNullOrEmpty(desktopPath))
-    {
-        var localWwwroot = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
-        if (Directory.Exists(localWwwroot))
-        {
-            desktopPath = localWwwroot;
-        }
-        else
-        {
-            desktopPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "desktop"));
-        }
-    }
-    if (Directory.Exists(desktopPath))
-    {
-        var fileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(desktopPath);
-        app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = fileProvider });
-        app.UseStaticFiles(new StaticFileOptions { FileProvider = fileProvider });
-    }
-
     // ── API Endpoints ──────────────────────────────────────────────────────────
 
     // Health
     // Versi dibaca dari metadata assembly supaya /health mencerminkan paket yang benar-benar
     // berjalan, bukan angka yang ditulis ulang manual setiap rilis.
     var appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
-    app.MapGet("/health", () => Results.Ok(new { status = "ok", app = "Seruni 22 Bakery", version = appVersion }));
+    app.MapGet("/health", () => Results.Ok(new { status = "ok", app = "Seruni 22 Bakery", version = appVersion }))
+        .AllowAnonymous();
 
     // Auth
     app.MapPost("/api/auth/login", async (LoginRequest req, AuthService auth) =>
     {
         var result = await auth.LoginAsync(req);
         return result.Success ? Results.Ok(result.Data) : Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: 401);
-    });
+    }).AllowAnonymous();
 
     app.MapPost("/api/auth/change-password", async (ChangePasswordDto dto, AuthService auth, HttpContext ctx) =>
     {
@@ -445,13 +497,19 @@ try
     // Kasir hanya melihat pesanan yang ia catat sendiri: daftar seluruh toko memuat nama,
     // nomor telepon, dan nilai pesanan pelanggan lain — bukan isi pekerjaan satu kasir.
     // Pemilik/Admin tetap melihat seluruhnya.
-    app.MapGet("/api/orders", async (ISalesOrderRepository repo, HttpContext ctx) =>
+    // Halaman daftar pesanan: 100 baris pertama secara bawaan, jumlah seluruhnya lewat
+    // X-Total-Count supaya layar tahu ada halaman berikutnya dan bisa memuatnya.
+    app.MapGet("/api/orders", async (ISalesOrderRepository repo, int? limit, int? offset,
+        HttpContext ctx, HttpResponse res) =>
     {
         var roleText = ctx.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
         int? pembatas = Enum.TryParse<UserRole>(roleText, out var role) && role == UserRole.Pegawai
             ? int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value)
             : null;
-        return Results.Ok(await repo.GetAllAsync(100, pembatas));
+        var take = limit is > 0 and <= 500 ? limit.Value : 100;
+        var skip = offset is > 0 ? offset.Value : 0;
+        res.Headers["X-Total-Count"] = (await repo.CountAsync(pembatas)).ToString();
+        return Results.Ok(await repo.GetAllAsync(take, pembatas, skip));
     }).RequireAuthorization("sales");
 
     app.MapGet("/api/orders/{id:int}", async (int id, ISalesOrderRepository repo, HttpContext ctx) =>
@@ -653,13 +711,19 @@ try
     // Halaman daftar pelanggan: layar hanya memuat sebagian, jumlah seluruhnya dikirim lewat
     // X-Total-Count supaya "Muat lagi" tahu kapan berhenti.
     app.MapGet("/api/customers", async (ICustomerRepository repo, string? search, int? limit, int? offset,
-        HttpResponse res) =>
+        HttpContext ctx, HttpResponse res) =>
     {
         var take = limit is > 0 and <= 2000 ? limit.Value : 300;
         var skip = offset is > 0 ? offset.Value : 0;
-        var total = await repo.CountActiveAsync(search);
+        // Kasir hanya perlu pelanggan yang pernah ia layani. Buku pelanggan seluruh toko adalah
+        // data pemilik; tanpa penyaringan ini setiap akun kasir bisa mengunduh semuanya.
+        int? hanyaMilik = null;
+        if (PeranPemanggil(ctx) == UserRole.Pegawai
+            && int.TryParse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var uid))
+            hanyaMilik = uid;
+        var total = await repo.CountActiveAsync(search, hanyaMilik);
         res.Headers["X-Total-Count"] = total.ToString();
-        return Results.Ok(await repo.GetPageAsync(search, take, skip));
+        return Results.Ok(await repo.GetPageAsync(search, take, skip, hanyaMilik));
     }).RequireAuthorization("sales");
 
     // ── Retur penjualan ─────────────────────────────────────────────────────────
@@ -792,13 +856,35 @@ try
     }).RequireAuthorization("master-data-write");
 
     // Products
-    app.MapGet("/api/products", async (IProductTemplateRepository repo) =>
-        Results.Ok(await repo.GetAllActiveAsync())).RequireAuthorization();
+    // Kasir memakai katalog ini untuk mencatat pesanan; resep dan harga bahan bukan urusannya.
+    // Dapur/Owner/Admin tetap menerima baris resep karena layar Resep & HPP membutuhkannya.
+    app.MapGet("/api/products", async (IProductTemplateRepository repo, HttpContext ctx) =>
+    {
+        var produk = await repo.GetAllActiveAsync();
+        var bolehResep = BolehBacaResep(ctx);
+        return Results.Ok(produk.Select(p => bolehResep
+            ? (object)new
+            {
+                p.Id, p.Name, p.Category, p.Barcode,
+                SellingPrice = p.SellingPrice, p.IsActive, p.RecipeLines
+            }
+            : new { p.Id, p.Name, p.Category, p.Barcode, SellingPrice = p.SellingPrice, p.IsActive }));
+    }).RequireAuthorization();
 
-    app.MapGet("/api/products/{id:int}", async (int id, IProductTemplateRepository repo) =>
+    app.MapGet("/api/products/{id:int}", async (int id, IProductTemplateRepository repo, HttpContext ctx) =>
     {
         var product = await repo.GetByIdWithRecipesAsync(id);
         if (product == null) return Results.NotFound();
+        if (!BolehBacaResep(ctx))
+            return Results.Ok(new
+            {
+                product.Id,
+                product.Name,
+                product.Category,
+                product.Barcode,
+                SellingPriceMinorUnits = product.SellingPrice,
+                product.IsActive,
+            });
         return Results.Ok(new
         {
             product.Id,
@@ -954,14 +1040,43 @@ try
         var wo = await repo.GetByIdAsync(id);
         if (wo == null) return Results.NotFound();
 
-        var materials = dto.Materials.Select(m => new Seruni22Bakery.Domain.Entities.WorkOrderMaterial
+        if (dto.ActualGoodQty < 0 || dto.ActualFailedQty < 0)
+            return Results.BadRequest(new { errorMessage = "Jumlah produk jadi dan rusak tidak boleh negatif." });
+        if (dto.ActualGoodQty + dto.ActualFailedQty <= 0)
+            return Results.BadRequest(new { errorMessage = "Penyelesaian SPK harus melaporkan hasil produksi (baik atau rusak) lebih dari nol." });
+
+        // Bahan dan harganya milik rencana SPK di server, bukan payload klien. Klien hanya
+        // boleh melaporkan berapa yang benar-benar terpakai; harga satuan diambil dari baris
+        // rencana yang tersimpan saat SPK dibuat, supaya nilai jurnal dan HPP tidak bisa
+        // ditekan dari luar. Setiap bahan rencana wajib dilaporkan tepat satu kali: bahan
+        // asing atau duplikat akan menggeser stok bahan yang tidak ada hubungannya dengan SPK.
+        var bahanMasuk = dto.Materials ?? new();
+        var bahanRencana = wo.Materials;
+        if (bahanRencana.GroupBy(m => m.IngredientId).Any(g => g.Count() > 1))
+            return Results.BadRequest(new { errorMessage = "Rencana SPK memuat bahan yang sama lebih dari satu baris; perbaiki resep lebih dulu." });
+        if (bahanMasuk.GroupBy(m => m.IngredientId).Any(g => g.Count() > 1))
+            return Results.BadRequest(new { errorMessage = "Satu bahan dilaporkan lebih dari sekali." });
+        var bahanAsing = bahanMasuk
+            .Where(m => bahanRencana.All(r => r.IngredientId != m.IngredientId))
+            .Select(m => m.IngredientId)
+            .ToList();
+        if (bahanAsing.Count > 0)
+            return Results.BadRequest(new { errorMessage = $"Bahan #{string.Join(", #", bahanAsing)} tidak ada dalam rencana SPK ini." });
+        var bahanHilang = bahanRencana
+            .Where(r => bahanMasuk.All(m => m.IngredientId != r.IngredientId))
+            .Select(r => r.IngredientName ?? $"#{r.IngredientId}")
+            .ToList();
+        if (bahanHilang.Count > 0)
+            return Results.BadRequest(new { errorMessage = $"Bahan rencana belum dilaporkan: {string.Join(", ", bahanHilang)}." });
+
+        var materials = bahanRencana.Select(r => new Seruni22Bakery.Domain.Entities.WorkOrderMaterial
         {
-            IngredientId = m.IngredientId,
-            ActualQty = m.ActualQty,
-            UnitCost = m.UnitCost
+            IngredientId = r.IngredientId,
+            ActualQty = bahanMasuk.First(m => m.IngredientId == r.IngredientId).ActualQty,
+            UnitCost = r.UnitCost
         }).ToList();
 
-        var scraps = dto.Scraps.Select(s => new Seruni22Bakery.Domain.Entities.WorkOrderScrap
+        var scraps = (dto.Scraps ?? new()).Select(s => new Seruni22Bakery.Domain.Entities.WorkOrderScrap
         {
             WorkOrderId = id,
             Quantity = s.Quantity,
@@ -974,16 +1089,15 @@ try
         var totalMaterialCost = materials.Sum(m => (long)Math.Round(m.ActualQty * m.UnitCost, 0, MidpointRounding.AwayFromZero));
         var totalUnits = dto.ActualGoodQty + dto.ActualFailedQty;
         // Hanya scrap yang dibuang yang menjadi kerugian; unit rework masih akan diproduksi lagi.
+        // Tanpa satu pun unit baik, seluruh bahan adalah kerugian: tidak ada aset produk jadi
+        // yang bisa didukung stok, jadi tidak boleh ada bagian yang tetap dimodalkan.
         var lossUnits = Seruni22Bakery.Domain.Common.ProductionCostRules.LossUnits(scraps);
-        var scrapLossCost = Seruni22Bakery.Domain.Common.ProductionCostRules.LossCost(
-            totalMaterialCost, lossUnits, totalUnits);
+        var scrapLossCost = dto.ActualGoodQty == 0
+            ? totalMaterialCost
+            : Seruni22Bakery.Domain.Common.ProductionCostRules.LossCost(totalMaterialCost, lossUnits, totalUnits);
 
-        if (dto.ActualGoodQty < 0 || dto.ActualFailedQty < 0)
-            return Results.BadRequest(new { errorMessage = "Jumlah produk jadi dan rusak tidak boleh negatif." });
         if (materials.Any(m => m.ActualQty < 0))
             return Results.BadRequest(new { errorMessage = "Jumlah bahan terpakai tidak boleh negatif." });
-        if (materials.Any(m => MoneyRules.CostError(m.UnitCost, "Harga satuan bahan") is not null))
-            return Results.BadRequest(new { errorMessage = "Harga satuan bahan melebihi batas wajar." });
 
         // Nilai ini dibatasi CHECK constraint di tabel scrap; tanpa pagar di sini, layar
         // hanya menerima teks SQLite mentah sebagai pesan galat.
@@ -1006,7 +1120,7 @@ try
         {
             journal = await acct.BuildProductionCompletionAsync(
                 id, wo.OrderNumber, totalMaterialCost, scrapLossCost,
-                wo.LaborCost, wo.OverheadCost, userId);
+                wo.LaborCost, wo.OverheadCost, dto.ActualGoodQty, userId);
         }
         catch (InvalidOperationException ex)
         {
@@ -1196,7 +1310,7 @@ try
 
     // ── Suppliers ─────────────────────────────────────────────────────────────
     app.MapGet("/api/suppliers", async (ISupplierRepository repo) =>
-        Results.Ok(await repo.GetAllAsync())).RequireAuthorization("purchases-write");
+        Results.Ok(await repo.GetAllAsync())).RequireAuthorization("purchases-receive");
 
     app.MapPost("/api/suppliers", async (CreateSupplierDto dto, ISupplierRepository repo) =>
     {
@@ -1230,13 +1344,13 @@ try
         var total = await repo.CountAsync(status);
         res.Headers["X-Total-Count"] = total.ToString();
         return Results.Ok(await repo.GetPageAsync(status, take, skip));
-    }).RequireAuthorization("purchases-write");
+    }).RequireAuthorization("purchases-receive");
 
     app.MapGet("/api/purchases/{id:int}", async (int id, IPurchaseOrderRepository repo) =>
     {
         var po = await repo.GetByIdAsync(id);
         return po == null ? Results.NotFound() : Results.Ok(po);
-    }).RequireAuthorization("purchases-write");
+    }).RequireAuthorization("purchases-receive");
 
     app.MapPost("/api/purchases", async (CreatePurchaseOrderDto dto, IPurchaseOrderRepository repo, IDocumentSequenceRepository documents, HttpContext ctx) =>
     {
@@ -1285,7 +1399,7 @@ try
         {
             return Results.Json(new { errorMessage = ex.Message }, statusCode: 400);
         }
-    }).RequireAuthorization("purchases-write");
+    }).RequireAuthorization("purchases-create");
 
     app.MapPost("/api/purchases/{id:int}/receive", async (int id, ReceiveGoodsRequestDto dto, PurchaseService svc,
         NotificationService notif, HttpContext ctx) =>
@@ -1329,7 +1443,7 @@ try
                     "Penerimaan barang gagal", result.ErrorMessage ?? "Penerimaan ditolak.",
                     "PurchaseOrder", id), DateTime.UtcNow));
         return Results.Json(new { errorCode = result.ErrorCode, errorMessage = result.ErrorMessage }, statusCode: 400);
-    }).RequireAuthorization("purchases-write");
+    }).RequireAuthorization("purchases-receive");
 
     app.MapPut("/api/purchases/{id:int}/cancel", async (int id, IPurchaseOrderRepository repo) =>
     {
@@ -1347,7 +1461,16 @@ try
             {
                 error = "Sebagian barang sudah diterima, pembatalan akan meninggalkan stok dan jurnal yatim. Gunakan retur pembelian."
             });
-        await repo.UpdateStatusAsync(id, PurchaseOrderStatus.Cancelled);
+        // Penjagaan yang sama diulang di dalam transaksi repository; balapan "batal vs terima"
+        // ditolak di sana, bukan hanya oleh pemeriksaan layar ini.
+        try
+        {
+            await repo.CancelAsync(id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
         return Results.Ok();
     }).RequireAuthorization("purchases-cancel");
 
@@ -1387,8 +1510,23 @@ try
     }).RequireAuthorization("finance-write");
 
     // Users (Owner only)
+    // Dikirim sebagai DTO terbatas: layar hanya butuh identitas dan status akun. Seluruh isi
+    // entitas User tidak pernah keluar lewat JSON, sehingga kolom internal baru tidak otomatis
+    // menjadi data yang bisa dibaca browser.
     app.MapGet("/api/users", async (IUserRepository repo) =>
-        Results.Ok(await repo.GetAllAsync())).RequireAuthorization("administration");
+    {
+        var semua = await repo.GetAllAsync();
+        return Results.Ok(semua.Select(u => new
+        {
+            u.Id,
+            u.Username,
+            Role = u.Role.ToString(),
+            u.IsActive,
+            u.MustChangePassword,
+            u.LastLoginAt,
+            u.LockedUntil,
+        }));
+    }).RequireAuthorization("administration");
 
     // Pegawai baru selalu lahir dengan sandi sementara yang harus diganti sendiri saat login
     // berikutnya: pemilik tidak boleh tahu sandi harian kasirnya, dan sandi bawaan yang sama
@@ -1491,7 +1629,8 @@ try
 
     // Cadangan: daftar, buat sekarang, dan salin ke luar komputer. Pemulihan tidak lewat
     // aplikasi yang sedang berjalan — berkas basis data sedang dibuka oleh host ini, jadi
-    // pemulihan dijalankan saat aplikasi tertutup lewat Seruni22Bakery.exe --restore.
+    // pemulihan dijalankan saat aplikasi tertutup lewat Seruni22Bakery.exe --restore,
+    // yang meneruskan perintah itu ke host sekali pakai.
     app.MapGet("/api/backup", (BackupCoordinator cadangan) => Results.Ok(new
     {
         folder = cadangan.BackupDirectory,
@@ -1545,6 +1684,7 @@ try
         semua.TryGetValue(StoreBrand.NameKey, out var nama);
         semua.TryGetValue(StoreBrand.TaglineKey, out var tagline);
         semua.TryGetValue(StoreBrand.LogoKey, out var logo);
+        semua.TryGetValue("outlet_name", out var outlet);
         var logoSah = !string.IsNullOrWhiteSpace(logo)
                       && StoreBrand.Validate(StoreBrand.LogoKey, logo) is null;
         return Results.Ok(new
@@ -1552,11 +1692,16 @@ try
             name = StoreBrand.Name(nama),
             tagline = StoreBrand.Tagline(tagline),
             logo = logoSah ? logo : null,
+            // Nama outlet tampil di kepala layar untuk semua peran, jadi ikut di sini — bukan
+            // alasan membuka seluruh AppSettings lewat /api/settings.
+            outlet = string.IsNullOrWhiteSpace(outlet) ? null : outlet,
         });
-    });
+    }).AllowAnonymous();
 
+    // Seluruh pengaturan (termasuk kunci printer, biaya, dan nama outlet) hanya untuk Owner.
+    // Peran lain cukup merek toko dari /api/brand.
     app.MapGet("/api/settings", async (ISettingRepository repo) =>
-        Results.Ok(await repo.GetAllAsync())).RequireAuthorization();
+        Results.Ok(await repo.GetAllAsync())).RequireAuthorization("administration");
 
     app.MapPut("/api/settings", async (Dictionary<string, string> settings, ISettingRepository repo, HttpContext ctx) =>
     {
@@ -1575,7 +1720,6 @@ try
         foreach (var (k, v) in settings)
         {
             lama.TryGetValue(k, out var nilaiLama);
-            await repo.SetAsync(k, v, userId);
             if (!string.Equals(nilaiLama, v, StringComparison.Ordinal))
             {
                 // Jejak audit tidak boleh memuat gambar logo utuh: satu unggahan 512 KB akan
@@ -1586,6 +1730,10 @@ try
                     ringkas ? (string.IsNullOrWhiteSpace(v) ? "<logo dihapus>" : "<logo terpasang>") : v));
             }
         }
+
+        // Semua kunci ditulis dalam satu transaksi; jejak audit ditulis setelah commit supaya
+        // tidak ada jejak untuk nilai yang ternyata gagal tersimpan.
+        await repo.SaveManyAsync(settings, userId);
 
         // Kunci 'timezone' menentukan hitungan "hari ini" di seluruh aplikasi, jadi nilai barunya
         // langsung dipasang — dan kalau mesin tidak mengenalinya, pemilik diberi tahu bahwa
@@ -1763,7 +1911,7 @@ try
         var fmt = string.IsNullOrEmpty(format) ? "excel" : format;
         var (data, ct, fn) = await exp.ExportPurchasesAsync(fmt);
         return Results.File(data, ct, fn);
-    }).RequireAuthorization("purchases-write");
+    }).RequireAuthorization("finance-read");
 
     // Fallback SPA di bawahnya menangkap SEMUA URL, termasuk /api yang salah ketik. Tanpa penangkap
     // ini, satu typo nama endpoint membalas HTML aplikasi dengan status 200: layar menampilkan
@@ -1782,7 +1930,10 @@ try
     if (Directory.Exists(desktopPath))
     {
         var fileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(desktopPath);
-        app.MapFallbackToFile("index.html", new StaticFileOptions { FileProvider = fileProvider });
+        // Kerangka aplikasi (HTML + bundel) memang publik; isinya baru terisi setelah login.
+        // Tanpa AllowAnonymous, kebijakan cadangan akan menolak layar masuk itu sendiri.
+        app.MapFallbackToFile("index.html", new StaticFileOptions { FileProvider = fileProvider })
+            .AllowAnonymous();
     }
 
     Log.Information("Seruni 22 Bakery service starting on {Urls}", string.Join(", ", app.Urls));
@@ -1897,6 +2048,18 @@ static async Task<bool> PesananDiLuarCakupanAsync(
     var order = await orders.GetByIdAsync(orderId);
     return order is null || order.CreatedByUserId != userId;
 }
+
+// Peran pemanggil dari klaim yang sudah divalidasi ulang per permintaan. Dipakai endpoint yang
+// bentuk jawabannya berbeda per peran (katalog vs resep, cakupan pelanggan).
+static UserRole? PeranPemanggil(HttpContext ctx)
+{
+    var roleText = ctx.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    return Enum.TryParse<UserRole>(roleText, out var role) ? role : null;
+}
+
+// Resep dan harga bahan adalah rahasia dapur: kasir hanya perlu produk jadi dan harga jualnya.
+static bool BolehBacaResep(HttpContext ctx)
+    => PeranPemanggil(ctx) is { } role && RolePolicies.Allows(RolePolicies.InventoryRead, role);
 
 // Notifikasi internal ditulis setelah transaksi tersimpan. Kalau penulisannya gagal, transaksi
 // tetap sah dan galatnya masuk log — pengguna tidak boleh melihat "gagal" padahal datanya ada.

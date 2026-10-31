@@ -2,6 +2,12 @@
 
 Dibuat 2026-10-28 dari eksekusi nyata, bukan dari daftar niat.
 
+> **Koreksi nama kebijakan (ditambahkan 2026-10-31).** Catatan eksekusi di bawah masih memakai
+> nama lama `purchases-write`. Kebijakan itu kemudian dipecah menjadi `purchases-create`,
+> `purchases-receive`, dan `purchases-cancel`; baris TC-DOM-025, TC-BATCH3-036, dan
+> TC-BATCH3-037 dipertahankan apa adanya sebagai catatan tanggal itu. Matriks yang berlaku
+> sekarang ada di `src/Domain/Common/RolePolicies.cs` dan diuji ulang tiap run.
+
 | Sumber | Jumlah | Status | Bukti |
 |---|---|---|---|
 | Tes otomatis xUnit/Playwright | 265 | PASS semua | `/c/tmp/gate-20261028-final.log` (2026-10-28 23:49–23:53) |

@@ -24,7 +24,11 @@ internal static class WriteTransaction
         DbConnectionFactory factory, Func<SqliteConnection, SqliteTransaction, Task<T>> work)
     {
         using var conn = factory.CreateConnection();
-        using var tx = conn.BeginTransaction();
+        // BEGIN IMMEDIATE mengambil kunci tulis sejak awal. Dengan transaksi deferred, dua
+        // permintaan bisa sama-sama membaca keadaan lama lalu saling menimpa; di sini pembacaan
+        // di dalam transaksi selalu melihat hasil penulis terakhir dan keputusan stok/status
+        // tidak lagi diambil dari data basi.
+        using var tx = conn.BeginTransaction(deferred: false);
         try
         {
             var result = await work(conn, tx);

@@ -828,7 +828,7 @@ function CadanganPenyimpanan() {
         </div>
         <p className="text-[10px] text-slate-500">
           Pemulihan dijalankan saat aplikasi tertutup: Seruni22Bakery.exe --restore "path berkas cadangan".
-          Cadangan otomatis dibuat sekali sehari selama aplikasi dipakai.
+          Hasilnya muncul di kotak pesan. Cadangan otomatis dibuat sekali sehari selama aplikasi dipakai.
         </p>
       </div>
 

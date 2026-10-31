@@ -4,6 +4,9 @@ export const DEFAULT_BRAND = {
   name: 'Seruni 22 Bakery',
   tagline: 'Sistem Manajemen Toko Kue',
   logo: null,
+  // Nama outlet ikut di sini karena kepala layar memakainya untuk semua peran, sedangkan
+  // /api/settings hanya boleh dibuka Owner.
+  outlet: null,
 };
 
 // Inisial cadangan dihitung dari nama, bukan disimpan: penggantian nama langsung ikut terlihat.
@@ -28,6 +31,7 @@ export const brandFromSettings = (settings) => ({
   name: (settings?.brand_name ?? '').trim() || DEFAULT_BRAND.name,
   tagline: (settings?.brand_tagline ?? '').trim() || DEFAULT_BRAND.tagline,
   logo: settings?.brand_logo || null,
+  outlet: (settings?.outlet_name ?? '').trim() || null,
 });
 
 // Logo disimpan di AppSettings sebagai data URL, jadi ukurannya harus kecil: foto dari ponsel

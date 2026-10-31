@@ -7,13 +7,16 @@ namespace Seruni22Bakery.Application.Services;
 public class PurchaseService
 {
     private readonly IPurchaseOrderRepository _purchaseRepo;
+    private readonly ILocationStockRepository _locationStock;
     private readonly AccountingService _accounting;
 
     public PurchaseService(
         IPurchaseOrderRepository purchaseRepo,
+        ILocationStockRepository locationStock,
         AccountingService accounting)
     {
         _purchaseRepo = purchaseRepo;
+        _locationStock = locationStock;
         _accounting = accounting;
     }
 
@@ -34,6 +37,19 @@ public class PurchaseService
         var lineError = ValidateLines(po, dto.Lines);
         if (lineError is not null)
             return Result.Fail(ErrorCodes.ValidationFailed, lineError);
+
+        // Lokasi tujuan menentukan akun persediaan yang didebit: bahan yang langsung masuk dapur
+        // bukan lagi persediaan gudang, dan lokasi yang sudah nonaktif tidak boleh menerima barang.
+        var lokasiAktif = (await _locationStock.GetLocationsAsync()).ToDictionary(l => l.Id);
+        foreach (var line in dto.Lines)
+        {
+            if (!lokasiAktif.TryGetValue(line.LocationId, out var lokasi))
+                return Result.Fail(ErrorCodes.ValidationFailed,
+                    "Lokasi tujuan penerimaan tidak dikenal atau sudah tidak aktif.");
+            if (lokasi.Type is not ("Warehouse" or "Kitchen"))
+                return Result.Fail(ErrorCodes.ValidationFailed,
+                    $"Bahan baku tidak bisa diterima di {lokasi.Name}: pilih gudang atau dapur.");
+        }
 
         var receipt = new GoodsReceipt
         {
@@ -60,18 +76,19 @@ public class PurchaseService
             .ToList();
 
         // Nilai penerimaan dibulatkan per baris, lalu dijumlahkan: membulatkan total
-        // menghasilkan selisih yang tidak cocok dengan harga di struk.
-        long totalAmount = receipt.Lines.Sum(LineValue);
+        // menghasilkan selisih yang tidak cocok dengan harga di struk. Pengelompokan per jenis
+        // lokasi memastikan debit masuk ke akun persediaan tempat barang benar-benar disimpan.
+        var nilaiPerJenis = receipt.Lines
+            .GroupBy(l => lokasiAktif[l.LocationId].Type)
+            .ToDictionary(g => g.Key, g => g.Sum(LineValue));
 
-        var journal = await _accounting.BuildPurchaseReceiptAsync(po.PoNumber, totalAmount, dto.UserId.Value);
-
-        var newStatus = IsFullyReceived(po, dto.Lines)
-            ? PurchaseOrderStatus.Received
-            : PurchaseOrderStatus.PartialReceived;
+        var journal = await _accounting.BuildPurchaseReceiptAsync(po.PoNumber, nilaiPerJenis, dto.UserId.Value);
 
         try
         {
-            await _purchaseRepo.ReceiveWithJournalAsync(receipt, stockChanges, journal, newStatus);
+            // Status PO (sebagian/penuh) ditentukan di dalam transaksi dari jumlah diterima
+            // yang tersimpan, jadi tidak bisa disimpulkan dari salinan PO yang mungkin basi.
+            await _purchaseRepo.ReceiveWithJournalAsync(receipt, stockChanges, journal);
         }
         catch (InvalidOperationException ex)
         {
@@ -120,13 +137,6 @@ public class PurchaseService
     }
 
     private static string DisplayName(PurchaseOrderLine line) => line.IngredientName ?? $"bahan Id {line.IngredientId}";
-
-    private static bool IsFullyReceived(PurchaseOrder po, IReadOnlyList<ReceiveGoodsLineDto> lines)
-        => po.Lines.All(poLine =>
-        {
-            var incoming = lines.Where(l => l.PurchaseOrderLineId == poLine.Id).Sum(l => l.ReceivedQty);
-            return poLine.ReceivedQty + incoming >= poLine.OrderedQty;
-        });
 
     /// <summary>Nilai satu baris penerimaan dalam satuan minor (pembulatan per baris).</summary>
     private static long LineValue(GoodsReceiptLine line)

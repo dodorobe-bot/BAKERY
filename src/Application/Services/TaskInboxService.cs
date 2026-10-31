@@ -54,7 +54,7 @@ public class TaskInboxService
         var bolehJual = RolePolicies.Allows(RolePolicies.Sales, role);
         var bolehProduksi = RolePolicies.Allows(RolePolicies.ProductionWrite, role);
         var bolehPersediaan = RolePolicies.Allows(RolePolicies.InventoryRead, role);
-        var bolehBeli = RolePolicies.Allows(RolePolicies.PurchasesWrite, role);
+        var bolehBeli = RolePolicies.Allows(RolePolicies.PurchasesReceive, role);
 
         var hariIni = BusinessTime.Today();
         var item = new List<ItemTugas>();

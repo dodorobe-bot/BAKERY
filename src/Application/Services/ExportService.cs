@@ -417,7 +417,7 @@ public class ExportService
                 });
                 foreach (var o in orders)
                 {
-                    long total = (o.Lines ?? new List<PurchaseOrderLine>()).Sum(l => (long)l.OrderedQty * l.UnitCostMinorUnits);
+                    long total = PurchaseLineTotal(o.Lines);
                     table.Cell().Element(c => CellStyle(c)).Text(o.PoNumber ?? $"#{o.Id}");
                     table.Cell().Element(c => CellStyle(c)).Text(o.SupplierName ?? "-");
                     table.Cell().Element(c => CellStyle(c)).Text(o.OrderDate.ToString("dd/MM/yy"));
@@ -442,7 +442,7 @@ public class ExportService
         int row = 4;
         foreach (var o in orders)
         {
-            long total = (o.Lines ?? new List<PurchaseOrderLine>()).Sum(l => (long)l.OrderedQty * l.UnitCostMinorUnits);
+            long total = PurchaseLineTotal(o.Lines);
             ws.Cell(row, 1).Value = o.PoNumber ?? $"#{o.Id}";
             ws.Cell(row, 2).Value = o.SupplierName ?? "-";
             ws.Cell(row, 3).Value = o.OrderDate.ToString("dd/MM/yyyy");
@@ -461,6 +461,14 @@ public class ExportService
     // ───────────────────────────────────────────────────────────────────────
     //  Helper untuk QuestPDF styling
     // ───────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Nilai satu PO dalam satuan minor. Jumlah bisa pecahan (mis. 2,5 kg), jadi pembulatan
+    /// dilakukan per baris seperti saat penerimaan — bukan dengan memotong pecahannya lebih dulu.
+    /// </summary>
+    private static long PurchaseLineTotal(IEnumerable<PurchaseOrderLine>? lines)
+        => (lines ?? Enumerable.Empty<PurchaseOrderLine>())
+            .Sum(l => (long)Math.Round(l.OrderedQty * l.UnitCostMinorUnits, 0, MidpointRounding.AwayFromZero));
 
     private static IContainer CellStyle(IContainer container)
     {

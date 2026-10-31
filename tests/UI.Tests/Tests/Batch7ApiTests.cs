@@ -637,4 +637,230 @@ public sealed class Batch7ApiTests : IClassFixture<PlaywrightFixture>
         (await StokEtalaseAsync(owner, produk)).Should().Be(10,
             "hasil produksi tidak boleh tercatat dua kali di stok etalase");
     }
+
+    // ── BUG-004/005: bahan, harga, dan output penyelesaian SPK milik server ───
+
+    private static async Task<int> BuatBahanAsync(HttpClient owner, long hargaMinor)
+    {
+        var nama = $"Bahan Uji {Guid.NewGuid():N}"[..24];
+        using var buat = await owner.PostAsJsonAsync("/api/ingredients", new
+        {
+            name = nama,
+            unit = "kg",
+            pricePerUnit = hargaMinor,
+        });
+        var teks = await buat.Content.ReadAsStringAsync();
+        buat.StatusCode.Should().Be(HttpStatusCode.Created, teks);
+        using var dok = JsonDocument.Parse(teks);
+        return dok.RootElement.GetProperty("id").GetInt32();
+    }
+
+    private static async Task<int> BuatProdukBeresepeAsync(HttpClient owner, params int[] bahanIds)
+    {
+        var nama = $"Produk Resep {Guid.NewGuid():N}"[..26];
+        using var buat = await owner.PostAsJsonAsync("/api/products", new
+        {
+            name = nama,
+            category = "Uji SPK",
+            sellingPriceMinorUnits = 1_000_000,
+            lines = bahanIds.Select(id => new { ingredientId = id, quantity = 1m }).ToArray(),
+        });
+        var teks = await buat.Content.ReadAsStringAsync();
+        buat.StatusCode.Should().Be(HttpStatusCode.OK, teks);
+        using var dok = JsonDocument.Parse(teks);
+        return dok.RootElement.GetProperty("id").GetInt32();
+    }
+
+    private static async Task<int> LokasiAsync(HttpClient owner, string tipe)
+    {
+        using var dok = JsonDocument.Parse(await owner.GetStringAsync("/api/inventory/locations"));
+        return dok.RootElement.EnumerateArray()
+            .First(l => l.GetProperty("type").GetString() == tipe)
+            .GetProperty("id").GetInt32();
+    }
+
+    private static async Task<decimal> StokBahanAsync(
+        HttpClient owner, int locationId, int ingredientId)
+    {
+        using var dok = JsonDocument.Parse(
+            await owner.GetStringAsync($"/api/inventory/locations/{locationId}/stock"));
+        var baris = dok.RootElement.EnumerateArray()
+            .FirstOrDefault(s => s.GetProperty("ingredientId").GetInt32() == ingredientId);
+        return baris.ValueKind == JsonValueKind.Undefined ? 0m : baris.GetProperty("quantity").GetDecimal();
+    }
+
+    private static async Task IsiStokDapurAsync(
+        HttpClient owner, int kitchenId, int ingredientId, decimal quantity)
+    {
+        var hasil = await KirimAsync(owner, "/api/inventory/adjust", new
+        {
+            locationId = kitchenId,
+            ingredientId,
+            newQuantity = quantity,
+            reason = "Uji penyelesaian SPK",
+        });
+        hasil.Kode.Should().Be(HttpStatusCode.OK, hasil.Teks);
+    }
+
+    private static async Task<JsonElement> EntriJurnalSpkAsync(HttpClient owner, int spkId)
+    {
+        using var dok = JsonDocument.Parse(await owner.GetStringAsync("/api/journal?limit=1000"));
+        return dok.RootElement.EnumerateArray()
+            .First(e => e.TryGetProperty("sourceDocumentId", out var sid)
+                        && sid.ValueKind == JsonValueKind.Number
+                        && sid.GetInt32() == spkId
+                        && e.GetProperty("sourceDocumentType").GetString() == "WorkOrder")
+            .Clone();
+    }
+
+    private static long DebitAkun(JsonElement entri, string kode) =>
+        entri.GetProperty("lines").EnumerateArray()
+            .Where(l => l.TryGetProperty("account", out var a)
+                        && a.ValueKind == JsonValueKind.Object
+                        && a.GetProperty("code").GetString() == kode)
+            .Sum(l => l.GetProperty("debitAmount").GetInt64());
+
+    [Fact]
+    public async Task PenyelesaianSpk_MenolakBahanKosongAsingDanDuplikat_TanpaMengubahStok()
+    {
+        var owner = await OwnerAsync();
+        var dapur = await LokasiAsync(owner, "Kitchen");
+        var tepung = await BuatBahanAsync(owner, 10_000);
+        var asing = await BuatBahanAsync(owner, 5_000);
+        await IsiStokDapurAsync(owner, dapur, tepung, 10m);
+        var produk = await BuatProdukBeresepeAsync(owner, tepung);
+        var spk = await BuatSpkAsync(owner, produk, 2);
+
+        var kosong = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 2,
+            actualFailedQty = 0,
+            materials = Array.Empty<object>(),
+            scraps = Array.Empty<object>(),
+        });
+        kosong.Kode.Should().Be(HttpStatusCode.BadRequest, kosong.Teks);
+
+        var bahanAsing = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 2,
+            actualFailedQty = 0,
+            materials = new[] { new { ingredientId = asing, actualQty = 1m, unitCost = 1 } },
+            scraps = Array.Empty<object>(),
+        });
+        bahanAsing.Kode.Should().Be(HttpStatusCode.BadRequest, bahanAsing.Teks);
+
+        var duplikat = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 2,
+            actualFailedQty = 0,
+            materials = new[]
+            {
+                new { ingredientId = tepung, actualQty = 1m, unitCost = 1 },
+                new { ingredientId = tepung, actualQty = 1m, unitCost = 1 },
+            },
+            scraps = Array.Empty<object>(),
+        });
+        duplikat.Kode.Should().Be(HttpStatusCode.BadRequest, duplikat.Teks);
+
+        (await StokBahanAsync(owner, dapur, tepung)).Should().Be(10m,
+            "penyelesaian yang ditolak tidak boleh menggeser stok bahan");
+        (await StokBahanAsync(owner, dapur, asing)).Should().Be(0m,
+            "bahan asing tidak boleh ikut terpakai");
+
+        using var wo = JsonDocument.Parse(await owner.GetStringAsync($"/api/production/orders/{spk}"));
+        wo.RootElement.GetProperty("status").GetInt32().Should().Be(0, "WorkOrderStatus.Planned");
+    }
+
+    [Fact]
+    public async Task PenyelesaianSpk_MenolakBahanRencanaYangTidakDilaporkan()
+    {
+        var owner = await OwnerAsync();
+        var dapur = await LokasiAsync(owner, "Kitchen");
+        var tepung = await BuatBahanAsync(owner, 10_000);
+        var gula = await BuatBahanAsync(owner, 4_000);
+        await IsiStokDapurAsync(owner, dapur, tepung, 5m);
+        await IsiStokDapurAsync(owner, dapur, gula, 5m);
+        var produk = await BuatProdukBeresepeAsync(owner, tepung, gula);
+        var spk = await BuatSpkAsync(owner, produk, 2);
+
+        var kurang = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 2,
+            actualFailedQty = 0,
+            materials = new[] { new { ingredientId = tepung, actualQty = 2m, unitCost = 1 } },
+            scraps = Array.Empty<object>(),
+        });
+        kurang.Kode.Should().Be(HttpStatusCode.BadRequest, kurang.Teks);
+
+        (await StokBahanAsync(owner, dapur, tepung)).Should().Be(5m,
+            "bahan yang sudah dilaporkan tidak boleh terpakai saat permintaan ditolak");
+        (await StokBahanAsync(owner, dapur, gula)).Should().Be(5m);
+    }
+
+    [Fact]
+    public async Task PenyelesaianSpk_MengabaikanHargaSatuanDariKlien()
+    {
+        var owner = await OwnerAsync();
+        var dapur = await LokasiAsync(owner, "Kitchen");
+        var tepung = await BuatBahanAsync(owner, 10_000);
+        await IsiStokDapurAsync(owner, dapur, tepung, 10m);
+        var produk = await BuatProdukBeresepeAsync(owner, tepung);
+        var spk = await BuatSpkAsync(owner, produk, 2);
+
+        var selesai = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 2,
+            actualFailedQty = 0,
+            materials = new[] { new { ingredientId = tepung, actualQty = 2m, unitCost = 1 } },
+            scraps = Array.Empty<object>(),
+        });
+        selesai.Kode.Should().Be(HttpStatusCode.OK, selesai.Teks);
+
+        (await StokBahanAsync(owner, dapur, tepung)).Should().Be(8m);
+        var entri = await EntriJurnalSpkAsync(owner, spk);
+        DebitAkun(entri, "1-006").Should().Be(20_000,
+            "nilai jurnal memakai harga satuan rencana SPK, bukan harga dari payload");
+    }
+
+    [Fact]
+    public async Task PenyelesaianSpk_TanpaOutput_Ditolak_DanTanpaUnitBaikSeluruhBahanJadiKerugian()
+    {
+        var owner = await OwnerAsync();
+        var dapur = await LokasiAsync(owner, "Kitchen");
+        var tepung = await BuatBahanAsync(owner, 10_000);
+        await IsiStokDapurAsync(owner, dapur, tepung, 10m);
+        var produk = await BuatProdukBeresepeAsync(owner, tepung);
+        var spk = await BuatSpkAsync(owner, produk, 2);
+
+        var nol = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 0,
+            actualFailedQty = 0,
+            materials = new[] { new { ingredientId = tepung, actualQty = 2m, unitCost = 1 } },
+            scraps = Array.Empty<object>(),
+        });
+        nol.Kode.Should().Be(HttpStatusCode.BadRequest, nol.Teks);
+        (await StokBahanAsync(owner, dapur, tepung)).Should().Be(10m,
+            "penyelesaian tanpa output tidak boleh mengurangi stok");
+
+        var gagalSemua = await KirimAsync(owner, $"/api/production/orders/{spk}/complete", new
+        {
+            actualGoodQty = 0,
+            actualFailedQty = 2,
+            materials = new[] { new { ingredientId = tepung, actualQty = 2m, unitCost = 1 } },
+            scraps = new[]
+            {
+                new { quantity = 2, reasonCategory = "Gosong", actionTaken = "Scrap_Loss", notes = "Uji" },
+            },
+        });
+        gagalSemua.Kode.Should().Be(HttpStatusCode.OK, gagalSemua.Teks);
+
+        (await StokEtalaseAsync(owner, produk)).Should().Be(0m,
+            "tidak ada unit baik yang boleh masuk etalase");
+        var entri = await EntriJurnalSpkAsync(owner, spk);
+        DebitAkun(entri, "1-006").Should().Be(0,
+            "tanpa unit baik tidak boleh ada aset produk jadi tanpa stok pendukung");
+        DebitAkun(entri, "5-004").Should().Be(20_000,
+            "seluruh biaya bahan harus menjadi beban produk rusak");
+    }
 }

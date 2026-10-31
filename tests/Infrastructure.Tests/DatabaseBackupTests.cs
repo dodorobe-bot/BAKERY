@@ -128,6 +128,98 @@ public class DatabaseBackupTests
     }
 
     [Fact]
+    public void ReadSchemaVersion_TabelBelumAda_BerartiSkemaNol()
+    {
+        var dir = DirektoriSementara();
+        try
+        {
+            var path = Path.Combine(dir, "baru.db");
+            using (var conn = new SqliteConnection($"Data Source={path};"))
+            {
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = "CREATE TABLE Lain (Id INTEGER PRIMARY KEY);";
+                cmd.ExecuteNonQuery();
+            }
+
+            DatabaseBackupService.ReadSchemaVersion(path).Should().Be(0);
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { Directory.Delete(dir, true); } catch { /* berkas sementara */ }
+        }
+    }
+
+    [Fact]
+    public void ReadSchemaVersion_TabelAdaTetapiTidakTerbaca_DilemparBukanNol()
+    {
+        var dir = DirektoriSementara();
+        try
+        {
+            var path = Path.Combine(dir, "rusak.db");
+            using (var conn = new SqliteConnection($"Data Source={path};"))
+            {
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText =
+                    "CREATE TABLE SchemaVersion (Version TEXT PRIMARY KEY, AppliedAt TEXT NOT NULL);" +
+                    "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES ('rusak', 'x');";
+                cmd.ExecuteNonQuery();
+            }
+
+            var aksi = () => DatabaseBackupService.ReadSchemaVersion(path);
+
+            aksi.Should().Throw<InvalidOperationException>().WithMessage("*tidak bisa dibaca*");
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { Directory.Delete(dir, true); } catch { /* berkas sementara */ }
+        }
+    }
+
+    [Fact]
+    public void Restore_MenolakCadanganYangVersinyaTidakTerbaca_TanpaMengubahData()
+    {
+        using var db = new TempDatabase();
+        db.Exec("INSERT INTO AppSettings (Key, Value) VALUES ('uji-versi', 'utuh');");
+        var dir = DirektoriSementara();
+
+        try
+        {
+            var service = new DatabaseBackupService();
+            var cadangan = service.CreateBackup(db.FilePath, dir, "manual");
+
+            using (var conn = new SqliteConnection($"Data Source={cadangan};Pooling=False;"))
+            {
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText =
+                    "DROP TABLE SchemaVersion;" +
+                    "CREATE TABLE SchemaVersion (Version TEXT PRIMARY KEY, AppliedAt TEXT NOT NULL);" +
+                    "INSERT INTO SchemaVersion (Version, AppliedAt) VALUES ('rusak', 'x');";
+                cmd.ExecuteNonQuery();
+            }
+
+            BackupManifestFile.Tulis(cadangan, new BackupManifest(
+                BackupManifest.FormatVersion, Path.GetFileName(cadangan),
+                new FileInfo(cadangan).Length, BackupManifestFile.Sha256(cadangan),
+                DateTime.UtcNow, BackupKind.Manual, "manual", 0, "uji",
+                DatabaseBackupService.IntegrityOk, DatabaseBackupService.ForeignKeysOk, 0, 0, 0));
+
+            var aksi = () => service.Restore(cadangan, db.FilePath, dir);
+
+            aksi.Should().Throw<InvalidOperationException>().WithMessage("*tidak bisa dibaca*");
+            db.Scalar("SELECT Value FROM AppSettings WHERE Key = 'uji-versi';").Should().Be("utuh");
+        }
+        finally
+        {
+            Bersihkan(db, dir);
+        }
+    }
+
+    [Fact]
     public void Migrate_MembuatCadanganPraUpgrade_DanTidakMenghapusData()
     {
         var dir = DirektoriSementara();
@@ -146,10 +238,10 @@ public class DatabaseBackupTests
 
             new DatabaseMigrator(connectionString, cadanganDir).Migrate();
 
-            var cadangan = Directory.GetFiles(cadanganDir, "pre-upgrade-v13-to-v17-*.db");
+            var cadangan = Directory.GetFiles(cadanganDir, "pre-upgrade-v13-to-v18-*.db");
             cadangan.Should().HaveCount(1);
             DatabaseBackupService.CheckIntegrity(cadangan[0]).Should().Be("ok");
-            DatabaseBackupService.ReadSchemaVersion(path).Should().Be(17);
+            DatabaseBackupService.ReadSchemaVersion(path).Should().Be(18);
 
             using var cek = new SqliteConnection(connectionString);
             cek.Open();

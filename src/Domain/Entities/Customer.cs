@@ -14,7 +14,9 @@ public class Customer
 
     public void AddLoyaltyPoints(long orderTotalMinorUnits)
     {
-        // 1 point per Rp 10.000 (10000 * 100 minor units)
-        LoyaltyPoints += (int)(orderTotalMinorUnits / 1_000_000);
+        LoyaltyPoints += LoyaltyPointsFor(orderTotalMinorUnits);
     }
+
+    /// <summary>1 poin per Rp 10.000 (10000 * 100 unit minor).</summary>
+    public static int LoyaltyPointsFor(long orderTotalMinorUnits) => (int)(orderTotalMinorUnits / 1_000_000);
 }

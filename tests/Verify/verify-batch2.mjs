@@ -234,19 +234,27 @@ catat('SPK selesai ulang tidak menambah jurnal',
   `entri ${jurnalSesudahSPK.jumlahEntri} -> ${jurnalSetelahSPKGanda.jumlahEntri}`);
 
 // ── Pembayaran ──────────────────────────────────────────────────────────────
+// Server hanya menerima "Tunai" dan "Transfer" (sama dengan pilihan di layar kasir);
+// laporan pendapatan per metode bergantung pada dua nilai itu.
+const metodeAsing = await api('POST', `/api/orders/${orderId}/payment`, {
+  orderId, amount: 10000, method: 'Cash', idempotencyKey: 'batch2-bayar-metode-asing',
+});
+catat('metode pembayaran di luar Tunai/Transfer ditolak',
+  metodeAsing.status === 400 && /Tunai, Transfer/.test(pesan(metodeAsing)), pesan(metodeAsing));
+
 const lebih = await api('POST', `/api/orders/${orderId}/payment`, {
-  orderId, amount: 500000, method: 'Cash', idempotencyKey: 'batch2-bayar-berlebih',
+  orderId, amount: 500000, method: 'Tunai', idempotencyKey: 'batch2-bayar-berlebih',
 });
 catat('pembayaran melebihi sisa bayar ditolak', lebih.status === 400, pesan(lebih));
 
 const nol = await api('POST', `/api/orders/${orderId}/payment`, {
-  orderId, amount: 0, method: 'Cash', idempotencyKey: 'batch2-bayar-nol',
+  orderId, amount: 0, method: 'Tunai', idempotencyKey: 'batch2-bayar-nol',
 });
 catat('pembayaran nol ditolak', nol.status === 400, pesan(nol));
 
 const sebelumBayar = await totalJurnal();
 const parsial = await api('POST', `/api/orders/${orderId}/payment`, {
-  orderId, amount: 100000, method: 'Cash', idempotencyKey: 'batch2-bayar-parsial',
+  orderId, amount: 100000, method: 'Tunai', idempotencyKey: 'batch2-bayar-parsial',
 });
 const sesudahBayar = await totalJurnal();
 catat('pembayaran sebagian diterima', parsial.status === 200, pesan(parsial));
@@ -259,7 +267,7 @@ catat('pembayaran menautkan JournalEntryId', !!bayarEntri?.journalEntryId,
   `payment.journalEntryId=${bayarEntri?.journalEntryId}`);
 
 const lunas = await api('POST', `/api/orders/${orderId}/payment`, {
-  orderId, amount: 50000, method: 'Cash', idempotencyKey: 'batch2-bayar-lunas',
+  orderId, amount: 50000, method: 'Tunai', idempotencyKey: 'batch2-bayar-lunas',
 });
 const orderLunas = (await api('GET', `/api/orders/${orderId}`)).json;
 const jurnalLunas = await totalJurnal();
@@ -274,12 +282,12 @@ catat('pelunasan memotong stok produk jadi sebanyak jumlah pesanan',
   `stok produk ${stokProdukSesudahProduksi} -> ${stokSetelahLunas} untuk ${orderLunas.quantity ?? 1} unit`);
 
 const sesudahLunas = await api('POST', `/api/orders/${orderId}/payment`, {
-  orderId, amount: 10000, method: 'Cash', idempotencyKey: 'batch2-bayar-sesudah-lunas',
+  orderId, amount: 10000, method: 'Tunai', idempotencyKey: 'batch2-bayar-sesudah-lunas',
 });
 catat('pembayaran ganda setelah lunas ditolak', sesudahLunas.status === 400, pesan(sesudahLunas));
 
 const replay = await api('POST', `/api/orders/${orderId}/payment`, {
-  orderId, amount: 50000, method: 'Cash', idempotencyKey: 'batch2-bayar-lunas',
+  orderId, amount: 50000, method: 'Tunai', idempotencyKey: 'batch2-bayar-lunas',
 });
 const jurnalSetelahReplay = await totalJurnal();
 catat('idempotensi: pembayaran kunci sama tidak menulis ulang',

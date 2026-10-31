@@ -73,16 +73,43 @@ public class SettingRepository : ISettingRepository
     {
         using var conn = _factory.CreateConnection();
         await conn.OpenAsync();
-        var cmd = conn.CreateCommand();
-        cmd.CommandText = @"
-            INSERT INTO AppSettings (Key, Value, UpdatedAt, UpdatedByUserId)
-            VALUES (@k, @v, @ua, @uid)
-            ON CONFLICT(Key) DO UPDATE SET Value=@v, UpdatedAt=@ua, UpdatedByUserId=@uid;";
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = SimpanSql;
+        TambahParameter(cmd, key, value, userId);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task SaveManyAsync(IReadOnlyDictionary<string, string> values, int? userId = null)
+    {
+        if (values.Count == 0) return;
+
+        using var conn = _factory.CreateConnection();
+        await conn.OpenAsync();
+        // Satu transaksi untuk seluruh kunci: layar pengaturan yang gagal di kunci kedua
+        // tidak boleh meninggalkan separuh nilai baru sudah berlaku.
+        using var tx = conn.BeginTransaction();
+        foreach (var (key, value) in values)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.Transaction = tx;
+            cmd.CommandText = SimpanSql;
+            TambahParameter(cmd, key, value, userId);
+            await cmd.ExecuteNonQueryAsync();
+        }
+        await tx.CommitAsync();
+    }
+
+    private const string SimpanSql = @"
+        INSERT INTO AppSettings (Key, Value, UpdatedAt, UpdatedByUserId)
+        VALUES (@k, @v, @ua, @uid)
+        ON CONFLICT(Key) DO UPDATE SET Value=@v, UpdatedAt=@ua, UpdatedByUserId=@uid;";
+
+    private static void TambahParameter(SqliteCommand cmd, string key, string value, int? userId)
+    {
         cmd.Parameters.AddWithValue("@k", key);
         cmd.Parameters.AddWithValue("@v", value);
         cmd.Parameters.AddWithValue("@ua", DateTime.UtcNow.ToString("o"));
         cmd.Parameters.AddWithValue("@uid", userId ?? (object)DBNull.Value);
-        await cmd.ExecuteNonQueryAsync();
     }
 }
 

@@ -47,8 +47,9 @@ public class DatabaseMigrator
 
         // Upgrade hanya menyentuh struktur dan tidak menghapus data pengguna. Salinan penuh
         // dibuat lebih dulu; bila salinan gagal, migrasi dibatalkan daripada berjalan tanpa
-        // jalan pulang.
-        if (currentVersion > 0 && latestVersion > currentVersion)
+        // jalan pulang. Berkas yang sudah berisi tabel pengguna tetapi belum punya baris
+        // SchemaVersion juga harus disalin: migrasi dari nol akan berjalan di atas data nyata.
+        if (latestVersion > currentVersion && (currentVersion > 0 || BasisDataSudahBerisiData(conn)))
             BuatCadanganPraUpgrade(currentVersion, latestVersion);
 
         foreach (var (version, sql) in migrations.Where(m => m.Version > currentVersion))
@@ -92,14 +93,40 @@ public class DatabaseMigrator
 
     private int GetCurrentVersion(SqliteConnection conn)
     {
+        // Tabel yang benar-benar belum ada berarti basis data baru (versi 0). Tabel ada tetapi
+        // isinya tidak bisa dibaca adalah kerusakan: menyamakannya dengan 0 akan membuat
+        // cadangan pra-upgrade dilewati dan seluruh migrasi berjalan di atas data nyata.
+        if (!TabelAda(conn, "SchemaVersion")) return 0;
+
         try
         {
-            var cmd = conn.CreateCommand();
+            using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT COALESCE(MAX(Version), 0) FROM SchemaVersion;";
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
-        catch { return 0; }
+        catch (Exception ex) when (ex is SqliteException or FormatException or InvalidCastException or OverflowException)
+        {
+            throw new InvalidOperationException(
+                "Versi skema tidak bisa dibaca dari tabel SchemaVersion. Aplikasi berhenti agar migrasi " +
+                "tidak menimpa basis data yang sudah berisi data.", ex);
+        }
     }
+
+    private static bool TabelAda(SqliteConnection conn, string nama)
+    {
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = @nama;";
+        cmd.Parameters.AddWithValue("@nama", nama);
+        return cmd.ExecuteScalar() is not null;
+    }
+
+    /// <summary>
+    /// Basis data lama bisa berisi tabel pengguna tanpa satu pun baris SchemaVersion (mis. berkas
+    /// dari versi sebelum pencatatan versi). Berkas seperti itu tetap harus dicadangkan sebelum
+    /// migrasi dijalankan, karena migrasi akan mulai dari versi 1.
+    /// </summary>
+    private static bool BasisDataSudahBerisiData(SqliteConnection conn)
+        => TabelAda(conn, "Users") || TabelAda(conn, "SalesOrders") || TabelAda(conn, "AppSettings");
 
     private void ExecuteCommand(SqliteConnection conn, string sql, SqliteTransaction? tx = null)
     {

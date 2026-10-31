@@ -7,15 +7,19 @@
 
 [CmdletBinding()]
 param(
-    [string]$Version = "1.2.7",
-    [string]$OutputPath = ""
+    [string]$Version = "1.2.9",
+    [string]$OutputPath = "",
+    # Folder hasil publish yang dipaketkan. Nilai ini dulu ditulis mati di Package.wxs
+    # sebagai jalur absolut mesin pengembang, sehingga MSI hanya bisa dibangun di satu
+    # komputer. Sekarang selalu diteruskan dari sini.
+    [string]$PublishDir = ""
 )
 
 $ErrorActionPreference = "Stop"
 $repo = Split-Path -Parent $PSScriptRoot
 Set-Location $repo
 
-$publishDir = Join-Path $repo "dist\publish-single"
+$publishDir = if ($PublishDir) { $PublishDir } else { Join-Path $repo "dist\publish-single" }
 $installerDir = Join-Path $repo "dist\installer"
 $logDir = Join-Path $repo "dist\build-logs"
 $hostProject = Join-Path $repo "src\Host.Service\BakeryDesktop.Host.Service.csproj"
@@ -46,11 +50,11 @@ $log = Join-Path $logDir "msi-build.log"
 Write-Host "== Build MSI $Version (x64) =="
 # Log selalu dibuat, termasuk baris perintahnya: wix yang sukses tidak mencetak
 # apa pun, dan tanpa header ini log bisa tidak terbentuk sama sekali.
-"wix build $wxs -arch x64 -ext WixToolset.UI.wixext -d ProductVersion=$Version -o $OutputPath -pdb $pdbPath" |
+"wix build $wxs -arch x64 -ext WixToolset.UI.wixext -d ProductVersion=$Version -d PublishDir=$publishDir -o $OutputPath -pdb $pdbPath" |
     Set-Content -Path $log -Encoding ASCII
 $sebelum = $ErrorActionPreference
 $ErrorActionPreference = "Continue"
-& $wix build $wxs -arch x64 -ext WixToolset.UI.wixext -d "ProductVersion=$Version" -o $OutputPath -pdb $pdbPath 2>&1 |
+& $wix build $wxs -arch x64 -ext WixToolset.UI.wixext -d "ProductVersion=$Version" -d "PublishDir=$publishDir" -o $OutputPath -pdb $pdbPath 2>&1 |
     Tee-Object -FilePath $log -Append
 $kode = $LASTEXITCODE
 $ErrorActionPreference = $sebelum

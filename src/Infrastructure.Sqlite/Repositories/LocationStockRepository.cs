@@ -153,7 +153,10 @@ public class LocationStockRepository : ILocationStockRepository
         int? userId,
         string? notes)
     {
-        if (quantity <= 0) return;
+        // Nol bukan transfer yang berhasil, melainkan permintaan yang tidak mengubah apa pun:
+        // melaporkannya "berhasil" membuat pengguna mengira barang sudah berpindah.
+        if (quantity <= 0)
+            throw new InvalidOperationException("Jumlah transfer harus lebih besar dari nol.");
         if (fromLocationId == toLocationId)
             throw new InvalidOperationException("Lokasi asal dan tujuan transfer harus berbeda.");
 
@@ -163,10 +166,15 @@ public class LocationStockRepository : ILocationStockRepository
         // perpindahan barang sebagai koreksi manual.
         await WriteAsync(async (conn, tx) =>
         {
+            var nilai = await StockValueAsync(conn, tx, ingredientId, quantity);
             await StockLedger.ApplyAsync(conn, tx, fromLocationId, ingredientId, -quantity, MovementType.Adjustment,
                 "LocationTransfer", fromLocationId, userId, notes);
             await StockLedger.ApplyAsync(conn, tx, toLocationId, ingredientId, quantity, MovementType.Adjustment,
                 "LocationTransfer", fromLocationId, userId, notes);
+            // Kedua kaki bergerak dalam satu transaksi, jadi jurnalnya pun satu entri: nilai
+            // persediaan berpindah antarakun tanpa mengubah total aset.
+            await AccountingPoster.WriteTransferAsync(conn, tx, fromLocationId, toLocationId, ingredientId,
+                quantity, nilai, notes, userId);
         });
     }
 
@@ -186,8 +194,14 @@ public class LocationStockRepository : ILocationStockRepository
             cur.Parameters.AddWithValue("@ingId", ingredientId);
             decimal current = Convert.ToDecimal(await cur.ExecuteScalarAsync());
 
-            await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, newQuantity - current,
+            var delta = newQuantity - current;
+            if (delta == 0) return;
+
+            var nilai = await StockValueAsync(conn, tx, ingredientId, Math.Abs(delta));
+            await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, delta,
                 MovementType.Adjustment, "Adjustment", null, userId, reason);
+            await AccountingPoster.WriteStockAdjustmentAsync(conn, tx, locationId, ingredientId, delta,
+                nilai, reason, userId);
         });
     }
 
@@ -230,6 +244,35 @@ public class LocationStockRepository : ILocationStockRepository
         cmd.CommandText = "SELECT COALESCE(SUM(Quantity), 0) FROM FinishedGoodsStock WHERE ProductTemplateId = @prodId;";
         cmd.Parameters.AddWithValue("@prodId", productTemplateId);
         return Convert.ToDecimal(await cmd.ExecuteScalarAsync());
+    }
+
+    public async Task<long> GetFinishedGoodsSaleUnitCostAsync(int salesOrderId)
+    {
+        using var conn = _factory.CreateConnection();
+        using var cmd = conn.CreateCommand();
+        // Mutasi Sale terakhir adalah biaya yang benar-benar dibebankan saat pesanan ini keluar,
+        // jadi retur mengembalikan nilai yang sama, bukan HPP resep hari ini.
+        cmd.CommandText = @"
+            SELECT COALESCE((
+                SELECT UnitCostMinorUnits FROM FinishedGoodsMovements
+                 WHERE MovementType = 'Sale' AND SourceType = 'SalesOrder' AND SourceId = @id
+                 ORDER BY Id DESC LIMIT 1), 0);";
+        cmd.Parameters.AddWithValue("@id", salesOrderId);
+        return Convert.ToInt64(await cmd.ExecuteScalarAsync() ?? 0L);
+    }
+
+    /// <summary>Nilai persediaan sejumlah kuantitas memakai harga bahan yang berlaku.</summary>
+    private static async Task<long> StockValueAsync(
+        SqliteConnection conn, SqliteTransaction tx, int ingredientId, decimal quantity)
+    {
+        using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = "SELECT PricePerUnit FROM Ingredients WHERE Id = @id;";
+        cmd.Parameters.AddWithValue("@id", ingredientId);
+        var harga = await cmd.ExecuteScalarAsync();
+        if (harga is null or DBNull)
+            throw new InvalidOperationException($"Bahan Id {ingredientId} tidak ditemukan.");
+        return (long)Math.Round(quantity * Convert.ToInt64(harga), 0, MidpointRounding.AwayFromZero);
     }
 
     // Satu koneksi + satu transaksi untuk setiap operasi tulis agar stok dan ledger tidak pernah separuh jalan.

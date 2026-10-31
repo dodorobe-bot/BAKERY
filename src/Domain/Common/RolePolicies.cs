@@ -25,7 +25,10 @@ public static class RolePolicies
     public const string ProductionCancel = "production-cancel";
     public const string InventoryWrite = "inventory-write";
     public const string InventoryRead = "inventory-read";
-    public const string PurchasesWrite = "purchases-write";
+    // Memesan barang ke pemasok mengikat uang toko; menerima barang hanya menutup pesanan
+    // yang sudah ada. Dapur perlu yang kedua, bukan yang pertama.
+    public const string PurchasesCreate = "purchases-create";
+    public const string PurchasesReceive = "purchases-receive";
     public const string PurchasesCancel = "purchases-cancel";
     public const string MasterDataWrite = "master-data-write";
     public const string SalesExport = "sales-export";
@@ -47,7 +50,8 @@ public static class RolePolicies
             // Bahan baku, stok per lokasi, mutasi, dan lot adalah ranah dapur/gudang.
             // Kasir hanya perlu produk jadi dan harga jual, bukan isi gudang.
             [InventoryRead] = [UserRole.Owner, UserRole.Admin, UserRole.Dapur],
-            [PurchasesWrite] = [UserRole.Owner, UserRole.Admin, UserRole.Dapur],
+            [PurchasesCreate] = [UserRole.Owner, UserRole.Admin],
+            [PurchasesReceive] = [UserRole.Owner, UserRole.Admin, UserRole.Dapur],
             [PurchasesCancel] = [UserRole.Owner, UserRole.Admin],
             [MasterDataWrite] = [UserRole.Owner, UserRole.Admin],
             [Administration] = [UserRole.Owner],

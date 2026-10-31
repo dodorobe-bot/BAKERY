@@ -389,6 +389,258 @@ public sealed class RbacApiTests : IClassFixture<PlaywrightFixture>
             "percobaan akses terlarang harus meninggalkan jejak yang bisa dibaca pemilik");
     }
 
+    [Fact]
+    public async Task DaftarPengguna_DikirimSebagaiDtoTanpaHashSandi()
+    {
+        var owner = await OwnerAsync();
+
+        var teks = await owner.GetStringAsync("/api/users");
+        teks.Should().NotContainEquivalentOf("passwordHash",
+            "hash sandi tidak pernah boleh keluar lewat JSON, meskipun ditandai [JsonIgnore]");
+
+        using var dok = JsonDocument.Parse(teks);
+        var pertama = dok.RootElement.EnumerateArray().First();
+        pertama.GetProperty("role").ValueKind.Should().Be(JsonValueKind.String,
+            "layar hak akses membaca nama peran, bukan angka enum");
+        pertama.TryGetProperty("username", out _).Should().BeTrue();
+        pertama.TryGetProperty("isActive", out _).Should().BeTrue();
+        pertama.TryGetProperty("mustChangePassword", out _).Should().BeTrue();
+        pertama.TryGetProperty("lastLoginAt", out _).Should().BeTrue();
+        pertama.TryGetProperty("lockedUntil", out _).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Kasir_MelihatKatalogTanpaResepDanHargaBahan()
+    {
+        var owner = await OwnerAsync();
+        var (_, token) = await BuatPenggunaAsync(owner, "Pegawai");
+        using var kasir = Klien(owner, token);
+
+        var penanda = Guid.NewGuid().ToString("N")[..8];
+        using var bahan = await owner.PostAsJsonAsync("/api/ingredients", new
+        {
+            name = $"Bahan Rahasia {penanda}",
+            unit = "kg",
+            pricePerUnit = 1_200_000,
+            currentStock = 0,
+            minStockAlert = 0,
+            isActive = true,
+        });
+        var teksBahan = await bahan.Content.ReadAsStringAsync();
+        bahan.StatusCode.Should().Be(HttpStatusCode.Created, teksBahan);
+        var bahanId = JsonDocument.Parse(teksBahan).RootElement.GetProperty("id").GetInt32();
+
+        var namaProduk = $"Roti Resep {penanda}";
+        using var produk = await owner.PostAsJsonAsync("/api/products", new
+        {
+            name = namaProduk,
+            category = "Uji RBAC",
+            sellingPriceMinorUnits = 1_500_000,
+            lines = new[] { new { ingredientId = bahanId, quantity = 0.5m } },
+        });
+        produk.IsSuccessStatusCode.Should().BeTrue(await produk.Content.ReadAsStringAsync());
+
+        int produkId;
+        using (var daftar = JsonDocument.Parse(await owner.GetStringAsync("/api/products")))
+        {
+            produkId = daftar.RootElement.EnumerateArray()
+                .First(p => p.GetProperty("name").GetString() == namaProduk)
+                .GetProperty("id").GetInt32();
+        }
+
+        using (var daftarKasir = JsonDocument.Parse(await kasir.GetStringAsync("/api/products")))
+        {
+            var baris = daftarKasir.RootElement.EnumerateArray()
+                .First(p => p.GetProperty("id").GetInt32() == produkId);
+            baris.TryGetProperty("recipeLines", out _).Should().BeFalse(
+                "kasir tidak boleh melihat komposisi resep beserta harga bahan");
+            baris.GetProperty("sellingPrice").GetInt64().Should().Be(1_500_000,
+                "harga jual tetap dibutuhkan kasir untuk mencatat pesanan");
+        }
+
+        using (var detailKasir = JsonDocument.Parse(await kasir.GetStringAsync($"/api/products/{produkId}")))
+        {
+            detailKasir.RootElement.TryGetProperty("recipeLines", out _).Should().BeFalse();
+            detailKasir.RootElement.TryGetProperty("hpp", out _).Should().BeFalse();
+            detailKasir.RootElement.GetProperty("sellingPriceMinorUnits").GetInt64().Should().Be(1_500_000);
+        }
+
+        using var detailOwner = JsonDocument.Parse(await owner.GetStringAsync($"/api/products/{produkId}"));
+        detailOwner.RootElement.GetProperty("recipeLines").GetArrayLength().Should().Be(1,
+            "dapur/pemilik tetap membutuhkan resep untuk perhitungan HPP");
+        detailOwner.RootElement.TryGetProperty("hpp", out _).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Kasir_HanyaMelihatPelangganYangDilayani()
+    {
+        var owner = await OwnerAsync();
+        var (_, token) = await BuatPenggunaAsync(owner, "Pegawai");
+        using var kasir = Klien(owner, token);
+
+        var penanda = Guid.NewGuid().ToString("N")[..8];
+        var namaOwner = $"Pelanggan Pemilik {penanda}";
+        var namaKasir = $"Pelanggan Kasir {penanda}";
+        var harga = 1_000_000L;
+        var produk = await BuatProdukAsync(owner, $"Kue Cakupan {penanda}", harga);
+
+        var buatOwner = await owner.PostAsJsonAsync("/api/orders", new
+        {
+            customerName = namaOwner,
+            phone = $"0811{penanda[..6]}",
+            description = "Uji cakupan pelanggan",
+            pickupDate = "2030-07-07T09:00:00",
+            totalAmount = 200_000L,
+            downPayment = 0,
+        });
+        buatOwner.StatusCode.Should().Be(HttpStatusCode.Created, await buatOwner.Content.ReadAsStringAsync());
+
+        var buatKasir = await kasir.PostAsJsonAsync("/api/orders", new
+        {
+            customerName = namaKasir,
+            phone = $"0822{penanda[..6]}",
+            description = "Uji cakupan pelanggan",
+            pickupDate = "2030-07-07T09:00:00",
+            totalAmount = harga,
+            downPayment = 0,
+            productTemplateId = produk,
+            quantity = 1,
+        });
+        buatKasir.StatusCode.Should().Be(HttpStatusCode.Created, await buatKasir.Content.ReadAsStringAsync());
+
+        using var daftarKasir = JsonDocument.Parse(await kasir.GetStringAsync("/api/customers?limit=2000"));
+        var namaTerlihat = daftarKasir.RootElement.EnumerateArray()
+            .Select(c => c.GetProperty("name").GetString()).ToHashSet();
+        namaTerlihat.Should().Contain(namaKasir);
+        namaTerlihat.Should().NotContain(namaOwner,
+            "buku pelanggan seluruh toko bukan milik akun kasir");
+
+        using var daftarOwner = JsonDocument.Parse(await owner.GetStringAsync("/api/customers?limit=2000"));
+        var namaOwnerTerlihat = daftarOwner.RootElement.EnumerateArray()
+            .Select(c => c.GetProperty("name").GetString()).ToHashSet();
+        namaOwnerTerlihat.Should().Contain(namaOwner).And.Contain(namaKasir,
+            "pemilik tetap melihat seluruh pelanggan toko");
+    }
+
+    [Fact]
+    public async Task Pengaturan_LengkapHanyaUntukOwner_MerekTetapPublik()
+    {
+        var owner = await OwnerAsync();
+        var (_, tokenKasir) = await BuatPenggunaAsync(owner, "Pegawai");
+        var (_, tokenAdmin) = await BuatPenggunaAsync(owner, "Admin");
+        using var kasir = Klien(owner, tokenKasir);
+        using var admin = Klien(owner, tokenAdmin);
+
+        (await owner.GetAsync("/api/settings")).StatusCode.Should().Be(HttpStatusCode.OK);
+        (await kasir.GetAsync("/api/settings")).StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        (await admin.GetAsync("/api/settings")).StatusCode.Should().Be(HttpStatusCode.Forbidden,
+            "pengaturan sistem hanya dibuka Owner, bukan Admin operasional");
+
+        using var publik = new HttpClient { BaseAddress = owner.BaseAddress! };
+        var merek = await publik.GetAsync("/api/brand");
+        merek.StatusCode.Should().Be(HttpStatusCode.OK, "layar masuk membaca merek sebelum ada sesi");
+        using var dok = JsonDocument.Parse(await merek.Content.ReadAsStringAsync());
+        dok.RootElement.TryGetProperty("outlet", out _).Should().BeTrue(
+            "nama outlet di kepala layar dibaca semua peran lewat merek publik");
+    }
+
+    [Fact]
+    public async Task Dapur_MenerimaBarang_TetapiTidakMembuatPesananPembelian()
+    {
+        var owner = await OwnerAsync();
+        var (_, tokenDapur) = await BuatPenggunaAsync(owner, "Dapur");
+        using var dapur = Klien(owner, tokenDapur);
+
+        var penanda = Guid.NewGuid().ToString("N")[..8];
+        using var pemasok = await owner.PostAsJsonAsync("/api/suppliers", new { name = $"Pemasok {penanda}" });
+        pemasok.StatusCode.Should().Be(HttpStatusCode.OK);
+        var pemasokId = JsonDocument.Parse(await pemasok.Content.ReadAsStringAsync())
+            .RootElement.GetProperty("id").GetInt32();
+
+        using var bahan = await owner.PostAsJsonAsync("/api/ingredients", new
+        {
+            name = $"Bahan Beli {penanda}",
+            unit = "kg",
+            pricePerUnit = 1_200_000,
+            currentStock = 0,
+            minStockAlert = 0,
+            isActive = true,
+        });
+        bahan.StatusCode.Should().Be(HttpStatusCode.Created);
+        var bahanId = JsonDocument.Parse(await bahan.Content.ReadAsStringAsync())
+            .RootElement.GetProperty("id").GetInt32();
+
+        var buatDapur = await dapur.PostAsJsonAsync("/api/purchases", new
+        {
+            supplierId = pemasokId,
+            expectedDate = (string?)null,
+            notes = "Dapur tidak boleh memesan sendiri",
+            lines = new[] { new { ingredientId = bahanId, orderedQty = 5m, unitCostMinorUnits = 1_200_000, unit = "kg" } },
+        });
+        buatDapur.StatusCode.Should().Be(HttpStatusCode.Forbidden,
+            "memesan barang mengikat uang toko; itu keputusan Owner/Admin");
+
+        (await dapur.GetAsync("/api/purchases")).StatusCode.Should().Be(HttpStatusCode.OK,
+            "dapur perlu melihat PO yang harus diterima");
+
+        using var buatOwner = await owner.PostAsJsonAsync("/api/purchases", new
+        {
+            supplierId = pemasokId,
+            expectedDate = (string?)null,
+            notes = "PO untuk diterima dapur",
+            lines = new[] { new { ingredientId = bahanId, orderedQty = 5m, unitCostMinorUnits = 1_200_000, unit = "kg" } },
+        });
+        var teksPo = await buatOwner.Content.ReadAsStringAsync();
+        buatOwner.StatusCode.Should().Be(HttpStatusCode.OK, teksPo);
+        var poId = JsonDocument.Parse(teksPo).RootElement.GetProperty("id").GetInt32();
+
+        using var detail = JsonDocument.Parse(await owner.GetStringAsync($"/api/purchases/{poId}"));
+        var baris = detail.RootElement.GetProperty("lines").EnumerateArray().Single();
+        var barisId = baris.GetProperty("id").GetInt32();
+
+        using var lokasi = JsonDocument.Parse(await owner.GetStringAsync("/api/inventory/locations"));
+        var gudangId = lokasi.RootElement.EnumerateArray()
+            .First(l => l.GetProperty("type").GetString() == "Warehouse")
+            .GetProperty("id").GetInt32();
+
+        var terima = await dapur.PostAsJsonAsync($"/api/purchases/{poId}/receive", new
+        {
+            notes = "Penerimaan oleh dapur",
+            lines = new[]
+            {
+                new { purchaseOrderLineId = barisId, ingredientId = bahanId, receivedQty = 2m, unitCostMinorUnits = 1_200_000, locationId = gudangId },
+            },
+        });
+        terima.StatusCode.Should().Be(HttpStatusCode.OK, await terima.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task EndpointTanpaToken_DitolakKecualiJalurPublik()
+    {
+        using var anonim = new HttpClient { BaseAddress = new Uri(_fixture.BaseUrl), Timeout = TimeSpan.FromSeconds(15) };
+
+        string[] butuhLogin =
+        [
+            "/api/dashboard", "/api/orders", "/api/customers", "/api/products",
+            "/api/purchases", "/api/suppliers", "/api/settings", "/api/users",
+            "/api/journal", "/api/audit", "/api/tidak-ada",
+        ];
+        foreach (var rute in butuhLogin)
+        {
+            var resp = await anonim.GetAsync(rute);
+            resp.StatusCode.Should().Be(HttpStatusCode.Unauthorized,
+                $"tanpa token, {rute} harus ditolak sebelum isinya dibaca");
+        }
+
+        (await anonim.GetAsync("/health")).StatusCode.Should().Be(HttpStatusCode.OK);
+        (await anonim.GetAsync("/api/brand")).StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var sandi = await AppLogin.EnsureUsablePasswordAsync(_fixture.BaseUrl);
+        using var masuk = await anonim.PostAsJsonAsync("/api/auth/login",
+            new { username = AppLogin.Username, password = sandi });
+        masuk.StatusCode.Should().Be(HttpStatusCode.OK, "layar masuk adalah jalur publik yang sah");
+    }
+
     private static async Task<string> LoginTokenAsync(HttpClient induk, string username)
     {
         var (token, _) = await LoginAsync(induk, username, AppLogin.TestPassword);

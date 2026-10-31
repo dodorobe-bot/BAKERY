@@ -78,8 +78,8 @@ export const ENTERPRISE_NAV = [
     label: 'RANTAI PASOK & PERSEDIAAN',
     description: 'Pengadaan, mutasi, dan gudang',
     items: [
-      { id: 'purchases', label: 'Pembelian & Penerimaan Barang', icon: Truck, requires: 'purchases-write' },
-      { id: 'suppliers', label: 'Pemasok & Rekanan', icon: Contact, requires: 'purchases-write' },
+      { id: 'purchases', label: 'Pembelian & Penerimaan Barang', icon: Truck, requires: 'purchases-receive' },
+      { id: 'suppliers', label: 'Pemasok & Rekanan', icon: Contact, requires: 'purchases-receive' },
       { id: 'inventory_locations', label: 'Gudang & Lokasi Rak', icon: Warehouse, requires: 'inventory-read' },
       { id: 'kitchen_transfer', label: 'Mutasi Gudang ke Dapur', icon: ArrowLeftRight, requires: 'inventory-read' },
       { id: 'stock_catalog', label: 'Katalog Bahan & Produk Jadi', icon: Boxes, requires: 'inventory-read' },

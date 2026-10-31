@@ -178,13 +178,17 @@ public class AccountingService
     /// </summary>
     public async Task<JournalEntry?> BuildProductionCompletionAsync(
         int workOrderId, string? orderNumber, long totalMaterialCost, long scrapLossCost,
-        long laborCost, long overheadCost, int userId)
+        long laborCost, long overheadCost, int goodUnits, int userId)
     {
         if (totalMaterialCost <= 0 && laborCost <= 0 && overheadCost <= 0) return null;
 
-        // Kerugian tidak mungkin melebihi biaya bahan; kalau input memaksa lebih besar,
-        // journals-nya jadi tidak seimbang dan entri ditolak di jalur tulis.
-        long scrap = Math.Clamp(scrapLossCost, 0, totalMaterialCost);
+        // Tanpa unit baik tidak ada stok yang bisa menopang aset produk jadi, jadi seluruh
+        // bahan harus menjadi beban kerugian. Selain itu kerugian tidak mungkin melebihi
+        // biaya bahan; kalau input memaksa lebih besar, jurnalnya jadi tidak seimbang dan
+        // entri ditolak di jalur tulis.
+        long scrap = goodUnits <= 0
+            ? totalMaterialCost
+            : Math.Clamp(scrapLossCost, 0, totalMaterialCost);
         long finishedGoodsCost = totalMaterialCost - scrap;
 
         var lines = new List<JournalLine>();
@@ -221,14 +225,36 @@ public class AccountingService
         };
     }
 
-    /// <summary>Penerimaan barang: Dr Persediaan Bahan Baku, Cr Utang Usaha. Entri null bila nominal nol.</summary>
+    /// <summary>
+    /// Penerimaan barang: Dr persediaan sesuai lokasi tujuan, Cr Utang Usaha. Bahan yang
+    /// langsung masuk dapur didebit ke persediaan dapur, bukan persediaan gudang. Entri null
+    /// bila seluruh nilai nol.
+    /// </summary>
     public async Task<JournalEntry?> BuildPurchaseReceiptAsync(
-        string poNumber, long totalAmount, int userId)
+        string poNumber, IReadOnlyDictionary<string, long> amountByLocationType, int userId)
     {
+        var debitPerAkun = new Dictionary<string, long>();
+        foreach (var (jenis, nilai) in amountByLocationType)
+        {
+            if (nilai <= 0) continue;
+            var kode = jenis switch
+            {
+                "Warehouse" => PersediaanBahanKode,
+                "Kitchen" => PersediaanDapurKode,
+                _ => throw new InvalidOperationException(
+                    $"Jenis lokasi penerimaan tidak dikenal: {jenis}.")
+            };
+            debitPerAkun[kode] = debitPerAkun.GetValueOrDefault(kode) + nilai;
+        }
+
+        var totalAmount = debitPerAkun.Values.Sum();
         if (totalAmount <= 0) return null;
 
-        var persediaan = await AccountIdAsync(PersediaanBahanKode);
         var utang = await AccountIdAsync(UtangUsahaKode);
+        var lines = new List<JournalLine>();
+        foreach (var (kode, nilai) in debitPerAkun.OrderBy(k => k.Key, StringComparer.Ordinal))
+            lines.Add(new() { AccountId = await AccountIdAsync(kode), DebitAmount = nilai });
+        lines.Add(new() { AccountId = utang, CreditAmount = totalAmount });
 
         return new JournalEntry
         {
@@ -237,11 +263,7 @@ public class AccountingService
             SourceDocumentType = "GoodsReceipt",
             PostedAt = DateTime.UtcNow,
             PostedByUserId = userId,
-            Lines =
-            {
-                new() { AccountId = persediaan, DebitAmount = totalAmount },
-                new() { AccountId = utang, CreditAmount = totalAmount }
-            }
+            Lines = lines
         };
     }
 

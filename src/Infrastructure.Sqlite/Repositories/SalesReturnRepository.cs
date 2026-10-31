@@ -61,6 +61,27 @@ public class SalesReturnRepository : ISalesReturnRepository
         SalesReturn ret, JournalEntry? journal, IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
+            // Status dan sisa retur dibaca ulang di dalam transaksi. Tanpa itu, pesanan yang
+            // dibatalkan bersamaan masih bisa diretur (uang kembali dua kali), dan dua retur
+            // bersamaan bisa mengembalikan lebih dari jumlah yang dijual.
+            var state = await ReadOrderReturnStateAsync(conn, tx, ret.SalesOrderId)
+                ?? throw new InvalidOperationException("Pesanan tidak ditemukan.");
+            if (state.Status == OrderStatus.Cancelled)
+                throw new InvalidOperationException(
+                    "Pesanan sudah dibatalkan; stok dan dananya sudah dikembalikan lewat pembatalan.");
+            if (state.Status != OrderStatus.Paid)
+                throw new InvalidOperationException(
+                    "Retur hanya untuk pesanan yang sudah lunas. Untuk pesanan berjalan, gunakan pembatalan pesanan.");
+
+            var sisaJumlah = state.Quantity - state.ReturnedQuantity;
+            if (ret.Quantity > sisaJumlah)
+                throw new InvalidOperationException(
+                    $"Jumlah retur melebihi sisa yang bisa diretur ({sisaJumlah:0.###} unit). Muat ulang pesanan lalu ulangi.");
+            var sisaNilai = state.TotalAmount - state.ReturnedAmount;
+            if (ret.Amount > sisaNilai)
+                throw new InvalidOperationException(
+                    "Nilai retur melebihi sisa nilai pesanan. Muat ulang pesanan lalu ulangi.");
+
             var cmd = conn.CreateCommand();
             cmd.Transaction = tx;
             cmd.CommandText = @"
@@ -97,10 +118,42 @@ public class SalesReturnRepository : ISalesReturnRepository
             }
 
             foreach (var change in finishedGoodsChanges)
-                await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
+            {
+                var applied = await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
                     change.Delta, change.Type, change.SourceType, change.SourceId ?? id,
-                    change.UserId, change.Notes);
+                    change.UserId, change.Notes, change.UnitCostMinorUnits);
+                // Barang kembali ke rak dengan nilai HPP saat terjual, dan beban pokok penjualan
+                // ikut dikurangi supaya laba retur tidak dihitung dua kali.
+                if (change.Type == FinishedGoodsMovementType.Return)
+                    await AccountingPoster.WriteCostOfGoodsReturnedAsync(conn, tx, id,
+                        applied.ValueMinorUnits, change.UserId);
+            }
 
             return id;
         });
+
+    private sealed record ReturnState(
+        OrderStatus Status, decimal Quantity, long TotalAmount,
+        decimal ReturnedQuantity, long ReturnedAmount);
+
+    private static async Task<ReturnState?> ReadOrderReturnStateAsync(
+        SqliteConnection conn, SqliteTransaction tx, int orderId)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            SELECT o.Status, o.Quantity, o.TotalAmount,
+                   COALESCE((SELECT SUM(r.Quantity) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0),
+                   COALESCE((SELECT SUM(r.Amount) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0)
+            FROM SalesOrders o WHERE o.Id = @id;";
+        cmd.Parameters.AddWithValue("@id", orderId);
+        using var r = await cmd.ExecuteReaderAsync();
+        if (!await r.ReadAsync()) return null;
+        return new ReturnState(
+            Enum.Parse<OrderStatus>(r.GetString(0)),
+            Convert.ToDecimal(r.GetValue(1)),
+            r.GetInt64(2),
+            Convert.ToDecimal(r.GetValue(3)),
+            r.GetInt64(4));
+    }
 }

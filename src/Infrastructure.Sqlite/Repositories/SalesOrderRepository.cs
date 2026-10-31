@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using Seruni22Bakery.Domain.Common;
 using Seruni22Bakery.Domain.Entities;
 using Seruni22Bakery.Domain.Interfaces;
 using Seruni22Bakery.Infrastructure.Sqlite.Database;
@@ -24,19 +25,33 @@ public class SalesOrderRepository : ISalesOrderRepository
         return order;
     }
 
-    public async Task<IReadOnlyList<SalesOrder>> GetAllAsync(int limit = 100, int? createdByUserId = null)
+    public async Task<IReadOnlyList<SalesOrder>> GetAllAsync(int limit = 100, int? createdByUserId = null, int offset = 0)
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = createdByUserId is null
-            ? "SELECT * FROM SalesOrders ORDER BY PickupDate DESC LIMIT @limit;"
-            : "SELECT * FROM SalesOrders WHERE CreatedByUserId = @userId ORDER BY PickupDate DESC LIMIT @limit;";
+            ? "SELECT * FROM SalesOrders ORDER BY PickupDate DESC, Id DESC LIMIT @limit OFFSET @offset;"
+            : "SELECT * FROM SalesOrders WHERE CreatedByUserId = @userId ORDER BY PickupDate DESC, Id DESC LIMIT @limit OFFSET @offset;";
         cmd.Parameters.AddWithValue("@limit", limit);
+        cmd.Parameters.AddWithValue("@offset", Math.Max(0, offset));
         if (createdByUserId is not null)
             cmd.Parameters.AddWithValue("@userId", createdByUserId.Value);
         var list = await ReadOrdersAsync(conn, cmd);
         await AttachPaymentsAsync(conn, list);
         return list;
+    }
+
+    public async Task<int> CountAsync(int? createdByUserId = null)
+    {
+        using var conn = _factory.CreateConnection();
+        await conn.OpenAsync();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = createdByUserId is null
+            ? "SELECT COUNT(*) FROM SalesOrders;"
+            : "SELECT COUNT(*) FROM SalesOrders WHERE CreatedByUserId = @userId;";
+        if (createdByUserId is not null)
+            cmd.Parameters.AddWithValue("@userId", createdByUserId.Value);
+        return Convert.ToInt32(await cmd.ExecuteScalarAsync());
     }
 
     public async Task<IReadOnlyList<SalesOrder>> GetUpcomingAsync(DateTime from)
@@ -217,6 +232,10 @@ public class SalesOrderRepository : ISalesOrderRepository
         IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
+            // Pelanggan dan poin loyalti ikut transaksi pesanan: nomor telepon unik, jadi
+            // pemeriksaan "sudah ada atau belum" di luar transaksi bisa menabrak constraint,
+            // dan poin yang dihitung dari bacaan lama bisa saling menimpa.
+            await LinkCustomerAsync(conn, tx, order);
             var id = await InsertOrderAsync(conn, tx, order);
             // Nomor pesanan baru diketahui di dalam transaksi, jadi tautan dokumen diisi di sini.
             foreach (var entry in journals)
@@ -225,8 +244,15 @@ public class SalesOrderRepository : ISalesOrderRepository
                 await JournalWriter.WriteAsync(conn, tx, entry);
             }
             foreach (var change in finishedGoodsChanges)
-                await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
-                    change.Delta, change.Type, change.SourceType, id, change.UserId, change.Notes);
+            {
+                var applied = await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
+                    change.Delta, change.Type, change.SourceType, id, change.UserId, change.Notes,
+                    change.UnitCostMinorUnits);
+                // Harga pokok hanya diketahui dari stok yang benar-benar keluar, jadi jurnalnya
+                // ditulis di dalam transaksi yang sama, bukan dihitung ulang dari resep.
+                if (change.Type == FinishedGoodsMovementType.Sale)
+                    await AccountingPoster.WriteCostOfGoodsSoldAsync(conn, tx, id, applied.ValueMinorUnits, change.UserId);
+            }
             return id;
         });
 
@@ -235,6 +261,30 @@ public class SalesOrderRepository : ISalesOrderRepository
         IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
+            // Jurnal dan keputusan "lunas" disusun servis dari bacaan di luar transaksi.
+            // Di sini keadaan pesanan dibaca ulang: bila pesanan sudah batal/lunas, sisa bayar
+            // berubah, atau stok sudah terpotong, permintaan ditolak — bukan ditulis dengan
+            // angka lama yang bisa membuat pesanan lunas dua kali.
+            var state = await ReadOrderStateAsync(conn, tx, payment.SalesOrderId)
+                ?? throw new InvalidOperationException("Pesanan tidak ditemukan.");
+            if (state.Status == OrderStatus.Cancelled)
+                throw new InvalidOperationException("Pesanan sudah dibatalkan.");
+            if (state.Remaining <= 0)
+                throw new InvalidOperationException("Pesanan sudah lunas.");
+            if (payment.Amount > state.Remaining)
+                throw new InvalidOperationException(
+                    $"Pembayaran {Money.Format(payment.Amount)} melebihi sisa bayar {Money.Format(state.Remaining)}.");
+
+            var fullyPaid = payment.Amount == state.Remaining;
+            if (fullyPaid != (newOrderStatus == OrderStatus.Paid))
+                throw new InvalidOperationException(
+                    "Saldo pesanan berubah saat pembayaran dicatat. Muat ulang pesanan lalu ulangi pembayaran.");
+
+            var wantsStockDeduction = finishedGoodsChanges.Any(c => c.Type == FinishedGoodsMovementType.Sale);
+            if (wantsStockDeduction && state.StockDeducted)
+                throw new InvalidOperationException(
+                    "Stok pesanan ini sudah dikurangi. Muat ulang pesanan lalu ulangi pembayaran.");
+
             int? firstEntryId = null;
             foreach (var entry in journals)
             {
@@ -245,15 +295,25 @@ public class SalesOrderRepository : ISalesOrderRepository
             payment.JournalEntryId = firstEntryId;
             await InsertPaymentAsync(conn, tx, payment);
 
-            if (newOrderStatus is { } status)
-                await UpdateOrderStatusAsync(conn, tx, payment.SalesOrderId, status);
+            if (newOrderStatus is { } status
+                && !await UpdateOrderStatusAsync(conn, tx, payment.SalesOrderId, status))
+                throw new InvalidOperationException(
+                    "Status pesanan berubah saat pembayaran dicatat. Muat ulang pesanan lalu ulangi.");
 
             foreach (var change in finishedGoodsChanges)
             {
-                await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
-                    change.Delta, change.Type, change.SourceType, change.SourceId, change.UserId, change.Notes);
-                // Penanda sudah-dikurangi disimpan di sini supaya pembatalan nanti mengembalikan
-                // stok tepat satu kali, dan pesanan ini tidak pernah dipotong dua kali.
+                var applied = await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
+                    change.Delta, change.Type, change.SourceType, change.SourceId, change.UserId, change.Notes,
+                    change.UnitCostMinorUnits);
+                if (change.Type == FinishedGoodsMovementType.Sale)
+                    await AccountingPoster.WriteCostOfGoodsSoldAsync(conn, tx, payment.SalesOrderId,
+                        applied.ValueMinorUnits, change.UserId);
+            }
+
+            // Penanda sudah-dikurangi disimpan di sini supaya pembatalan nanti mengembalikan
+            // stok tepat satu kali, dan pesanan ini tidak pernah dipotong dua kali.
+            if (wantsStockDeduction)
+            {
                 using var flag = conn.CreateCommand();
                 flag.Transaction = tx;
                 flag.CommandText = "UPDATE SalesOrders SET StockDeducted = 1 WHERE Id = @id;";
@@ -263,23 +323,132 @@ public class SalesOrderRepository : ISalesOrderRepository
         });
 
     public Task SaveStatusChangeWithJournalAsync(
-        SalesOrder order, IReadOnlyList<StockChange> stockChanges,
+        SalesOrder order, OrderStatus expectedStatus, bool expectedStockDeducted, long expectedTotalPaid,
+        IReadOnlyList<StockChange> stockChanges,
         IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges, IReadOnlyList<JournalEntry> journals)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
+            // Keputusan stok dan jurnal pembalik disusun dari salinan pesanan saat layar dimuat.
+            // Bila pesanan, penanda stok, atau total pembayarannya sudah berubah, perubahan ini
+            // dibatalkan supaya stok tidak terpotong dua kali dan jurnal tidak terbalik ganda.
+            var state = await ReadOrderStateAsync(conn, tx, order.Id)
+                ?? throw new InvalidOperationException("Pesanan tidak ditemukan.");
+            if (state.Status != expectedStatus || state.StockDeducted != expectedStockDeducted)
+                throw new InvalidOperationException(
+                    "Pesanan berubah di perangkat lain sejak layar dimuat. Muat ulang pesanan lalu ulangi.");
+            if (state.TotalPaid != expectedTotalPaid)
+                throw new InvalidOperationException(
+                    "Pembayaran pesanan ini berubah sejak layar dimuat. Muat ulang pesanan lalu ulangi.");
+            if (order.Status == OrderStatus.Cancelled && await HasReturnsAsync(conn, tx, order.Id))
+                throw new InvalidOperationException(
+                    "Pesanan sudah memiliki retur, jadi tidak bisa dibatalkan. Kembalikan sisa unit lewat retur penjualan.");
+
             foreach (var change in stockChanges)
                 await StockLedger.ApplyAsync(conn, tx, change.LocationId, change.IngredientId, change.Delta,
                     change.Type, change.SourceType, change.SourceId, change.UserId, change.Notes);
 
             foreach (var change in finishedGoodsChanges)
-                await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
-                    change.Delta, change.Type, change.SourceType, change.SourceId, change.UserId, change.Notes);
+            {
+                var applied = await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
+                    change.Delta, change.Type, change.SourceType, change.SourceId, change.UserId, change.Notes,
+                    change.UnitCostMinorUnits);
+                if (change.Type == FinishedGoodsMovementType.Sale)
+                    await AccountingPoster.WriteCostOfGoodsSoldAsync(conn, tx, order.Id,
+                        applied.ValueMinorUnits, change.UserId);
+            }
 
-            await UpdateOrderAsync(conn, tx, order);
+            if (!await UpdateOrderAsync(conn, tx, order, expectedStatus, expectedStockDeducted))
+                throw new InvalidOperationException(
+                    "Pesanan berubah di perangkat lain sejak layar dimuat. Muat ulang pesanan lalu ulangi.");
 
             foreach (var entry in journals)
                 await JournalWriter.WriteAsync(conn, tx, entry);
         });
+
+    private sealed record OrderState(
+        OrderStatus Status, bool StockDeducted, long TotalAmount, long DownPayment, long TotalPaid)
+    {
+        public long Remaining => TotalAmount - TotalPaid;
+    }
+
+    private static async Task<OrderState?> ReadOrderStateAsync(
+        SqliteConnection conn, SqliteTransaction tx, int orderId)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            SELECT o.Status, o.StockDeducted, o.TotalAmount, o.DownPayment,
+                   COALESCE((SELECT SUM(p.Amount) FROM SalesPayments p
+                              WHERE p.SalesOrderId = o.Id), 0)
+            FROM SalesOrders o WHERE o.Id = @id;";
+        cmd.Parameters.AddWithValue("@id", orderId);
+        using var r = await cmd.ExecuteReaderAsync();
+        if (!await r.ReadAsync()) return null;
+        var downPayment = r.GetInt64(3);
+        return new OrderState(
+            Enum.Parse<OrderStatus>(r.GetString(0)),
+            r.GetInt32(1) == 1,
+            r.GetInt64(2),
+            downPayment,
+            downPayment + r.GetInt64(4));
+    }
+
+    private static async Task<bool> HasReturnsAsync(
+        SqliteConnection conn, SqliteTransaction tx, int orderId)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = "SELECT EXISTS(SELECT 1 FROM SalesReturns WHERE SalesOrderId = @id);";
+        cmd.Parameters.AddWithValue("@id", orderId);
+        return Convert.ToInt32(await cmd.ExecuteScalarAsync()) == 1;
+    }
+
+    /// <summary>
+    /// Tautkan pesanan ke pelanggan lewat nomor telepon dan tambahkan poinnya. Pencarian dan
+    /// penambahan dilakukan di SQL dalam transaksi, jadi dua pesanan bersamaan dengan nomor
+    /// baru yang sama tidak menabrak UNIQUE dan poinnya tidak ada yang hilang.
+    /// </summary>
+    private static async Task LinkCustomerAsync(
+        SqliteConnection conn, SqliteTransaction tx, SalesOrder order)
+    {
+        if (string.IsNullOrWhiteSpace(order.PhoneSnapshot)) return;
+
+        var find = conn.CreateCommand();
+        find.Transaction = tx;
+        find.CommandText = "SELECT Id FROM Customers WHERE Phone = @phone;";
+        find.Parameters.AddWithValue("@phone", order.PhoneSnapshot);
+        var found = await find.ExecuteScalarAsync();
+
+        int customerId;
+        if (found is not null && found != DBNull.Value)
+        {
+            customerId = Convert.ToInt32(found);
+        }
+        else
+        {
+            var insert = conn.CreateCommand();
+            insert.Transaction = tx;
+            insert.CommandText = @"
+                INSERT INTO Customers (Name, Phone, LoyaltyPoints, IsActive, CreatedAt)
+                VALUES (@name, @phone, 0, 1, @now);
+                SELECT last_insert_rowid();";
+            insert.Parameters.AddWithValue("@name", order.CustomerNameSnapshot);
+            insert.Parameters.AddWithValue("@phone", order.PhoneSnapshot);
+            insert.Parameters.AddWithValue("@now", DateTime.UtcNow.ToString("o"));
+            customerId = Convert.ToInt32(await insert.ExecuteScalarAsync());
+        }
+
+        order.CustomerId = customerId;
+
+        var points = Customer.LoyaltyPointsFor(order.TotalAmount);
+        if (points <= 0) return;
+        var add = conn.CreateCommand();
+        add.Transaction = tx;
+        add.CommandText = "UPDATE Customers SET LoyaltyPoints = LoyaltyPoints + @points WHERE Id = @id;";
+        add.Parameters.AddWithValue("@points", points);
+        add.Parameters.AddWithValue("@id", customerId);
+        await add.ExecuteNonQueryAsync();
+    }
 
     public async Task<SalesPayment?> GetPaymentByIdempotencyKeyAsync(string key)
     {
@@ -321,7 +490,9 @@ public class SalesOrderRepository : ISalesOrderRepository
         return Convert.ToInt32(await cmd.ExecuteScalarAsync());
     }
 
-    private static async Task UpdateOrderAsync(SqliteConnection conn, SqliteTransaction tx, SalesOrder order)
+    private static async Task<bool> UpdateOrderAsync(
+        SqliteConnection conn, SqliteTransaction tx, SalesOrder order,
+        OrderStatus expectedStatus, bool expectedStockDeducted)
     {
         var cmd = conn.CreateCommand();
         cmd.Transaction = tx;
@@ -329,24 +500,29 @@ public class SalesOrderRepository : ISalesOrderRepository
             UPDATE SalesOrders SET
                 Status = @st, StockDeducted = @sd,
                 CancelledAt = @cat, CancelReason = @cr
-            WHERE Id = @id;";
+            WHERE Id = @id AND Status = @oldStatus AND StockDeducted = @oldStockDeducted;";
         cmd.Parameters.AddWithValue("@st", order.Status.ToString());
         cmd.Parameters.AddWithValue("@sd", order.StockDeducted ? 1 : 0);
         cmd.Parameters.AddWithValue("@cat", order.CancelledAt?.ToString("o") ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@cr", order.CancelReason ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@id", order.Id);
-        await cmd.ExecuteNonQueryAsync();
+        cmd.Parameters.AddWithValue("@oldStatus", expectedStatus.ToString());
+        cmd.Parameters.AddWithValue("@oldStockDeducted", expectedStockDeducted ? 1 : 0);
+        return await cmd.ExecuteNonQueryAsync() == 1;
     }
 
-    private static async Task UpdateOrderStatusAsync(
+    private static async Task<bool> UpdateOrderStatusAsync(
         SqliteConnection conn, SqliteTransaction tx, int orderId, OrderStatus status)
     {
         var cmd = conn.CreateCommand();
         cmd.Transaction = tx;
-        cmd.CommandText = "UPDATE SalesOrders SET Status = @st WHERE Id = @id;";
+        // Pesanan yang sudah batal atau lunas tidak boleh ditimpa statusnya oleh pembayaran.
+        cmd.CommandText = @"
+            UPDATE SalesOrders SET Status = @st
+            WHERE Id = @id AND Status NOT IN ('Cancelled', 'Paid');";
         cmd.Parameters.AddWithValue("@st", status.ToString());
         cmd.Parameters.AddWithValue("@id", orderId);
-        await cmd.ExecuteNonQueryAsync();
+        return await cmd.ExecuteNonQueryAsync() == 1;
     }
 
     private static async Task<int> InsertPaymentAsync(

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -31,6 +32,30 @@ internal static class Program
         if (!File.Exists(exe))
         {
             return Gagal("Berkas aplikasi tidak ditemukan: " + exe, senyap);
+        }
+
+        // Kanal EXE dan MSI memasang folder berbeda tetapi memakai port 5000 dan folder data
+        // yang sama. Kalau host dari folder lain sedang berjalan, peluncur ini hanya akan
+        // membuka peramban ke server milik instalasi itu — bukan miliknya sendiri.
+        var hostLain = HostLainBerjalan(direktori);
+        if (hostLain != null)
+        {
+            return Gagal(
+                "Aplikasi Seruni 22 Bakery sedang berjalan dari folder lain:" + Environment.NewLine
+                + hostLain + Environment.NewLine + Environment.NewLine
+                + "Tutup aplikasi itu lebih dulu. Dua instalasi (EXE dan MSI) tidak boleh berjalan bersamaan "
+                + "karena memakai port dan basis data yang sama.", senyap);
+        }
+
+        // Semua argumen selain --tanpa-browser adalah perintah pemeliharaan host
+        // (--backup, --restore <berkas>, --Database:Path=...). Tanpa penerusan ini
+        // perintah pemulihan hanya menyalakan aplikasi dan data tidak dipulihkan.
+        var argumenHost = args
+            .Where(a => !string.Equals(a, "--tanpa-browser", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (argumenHost.Length > 0)
+        {
+            return JalankanPemeliharaan(exe, direktori, argumenHost, senyap);
         }
 
         var dimulaiDiSini = false;
@@ -67,6 +92,21 @@ internal static class Program
             return Gagal("Layanan aplikasi tidak menjawab dalam 30 detik.", senyap);
         }
 
+        // /health membawa versi host. Kalau angkanya berbeda dari versi peluncur ini, server
+        // yang menjawab berasal dari paket lain — kemungkinan besar instalasi kanal lain yang
+        // memegang port 5000. Membukanya berarti pengguna bekerja di atas versi yang salah.
+        var versiHost = VersiDariHealth(HealthBody());
+        var versiPeluncur = VersiPeluncur();
+        if (!string.IsNullOrEmpty(versiHost) && !string.IsNullOrEmpty(versiPeluncur)
+            && !string.Equals(versiHost, versiPeluncur, StringComparison.OrdinalIgnoreCase))
+        {
+            return Gagal(
+                "Server yang menjawab di port 5000 melaporkan versi " + versiHost
+                + ", sedangkan peluncur ini versi " + versiPeluncur + "." + Environment.NewLine + Environment.NewLine
+                + "Kemungkinan besar instalasi Seruni 22 Bakery lain (kanal EXE atau MSI) sedang berjalan. "
+                + "Tutup aplikasi itu, lalu jalankan kembali peluncur ini.", senyap);
+        }
+
         if (!tanpaBrowser)
         {
             try
@@ -79,6 +119,138 @@ internal static class Program
             }
         }
         return 0;
+    }
+
+    // Menjalankan host sekali pakai untuk perintah pemeliharaan, lalu keluar dengan
+    // kode keluar host supaya skrip bisa membedakan berhasil dan gagal. Keluaran host
+    // ditampilkan sebagai kotak pesan karena peluncur adalah WinExe tanpa konsol.
+    private static int JalankanPemeliharaan(string exe, string direktori, string[] argumen, bool senyap)
+    {
+        try
+        {
+            var info = new ProcessStartInfo(exe)
+            {
+                WorkingDirectory = direktori,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                Arguments = RangkaiArgumen(argumen),
+            };
+
+            string keluaran;
+            string galat;
+            int kode;
+            using (var proses = Process.Start(info))
+            {
+                // stderr dibaca asinkron: membaca dua aliran besar bergantian bisa membuat
+                // kedua proses saling menunggu sampai buffer penuh.
+                var pembacaGalat = proses.StandardError.ReadToEndAsync();
+                keluaran = proses.StandardOutput.ReadToEnd().Trim();
+                galat = pembacaGalat.Result.Trim();
+                proses.WaitForExit();
+                kode = proses.ExitCode;
+            }
+
+            if (kode == 0)
+            {
+                var pesanSukses = string.IsNullOrWhiteSpace(keluaran)
+                    ? "Perintah pemeliharaan selesai."
+                    : "Perintah pemeliharaan selesai." + Environment.NewLine + Environment.NewLine + keluaran;
+                Tampilkan(pesanSukses, MessageBoxIcon.Information, senyap, false);
+                return 0;
+            }
+
+            var sebab = !string.IsNullOrWhiteSpace(galat) ? galat : keluaran;
+            if (string.IsNullOrWhiteSpace(sebab)) sebab = "Host tidak memberi keterangan.";
+            return GagalPerintah(kode, sebab, senyap);
+        }
+        catch (Exception ex)
+        {
+            return Gagal("Perintah pemeliharaan tidak dapat dijalankan: " + ex.Message, senyap);
+        }
+    }
+
+    private static string RangkaiArgumen(string[] argumen)
+    {
+        return string.Join(" ", argumen.Select(Kutip));
+    }
+
+    // Aturan kutip CommandLineToArgvW: garis miring terbalik sebelum tanda kutip harus
+    // digandakan, garis miring di akhir argumen juga, supaya path berspasi diterima utuh.
+    private static string Kutip(string argumen)
+    {
+        if (argumen.Length > 0 && argumen.IndexOfAny(new[] { ' ', '\t', '"' }) < 0) return argumen;
+        var hasil = new StringBuilder("\"");
+        var miring = 0;
+        foreach (var c in argumen)
+        {
+            if (c == '\\')
+            {
+                miring++;
+                continue;
+            }
+            if (c == '"')
+            {
+                hasil.Append('\\', miring * 2 + 1).Append('"');
+                miring = 0;
+                continue;
+            }
+            if (miring > 0)
+            {
+                hasil.Append('\\', miring);
+                miring = 0;
+            }
+            hasil.Append(c);
+        }
+        if (miring > 0) hasil.Append('\\', miring * 2);
+        return hasil.Append('"').ToString();
+    }
+
+    private static int GagalPerintah(int kode, string sebab, bool senyap)
+    {
+        string penjelasan;
+        switch (kode)
+        {
+            case 1: penjelasan = "Perintah gagal. Basis data dikembalikan ke keadaan sebelum pemulihan."; break;
+            case 2: penjelasan = "Argumen salah atau berkas cadangan tidak ditemukan."; break;
+            case 3: penjelasan = "Aplikasi masih berjalan. Tutup aplikasi lebih dulu."; break;
+            default: penjelasan = "Perintah gagal."; break;
+        }
+
+        var folderLog = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Seruni22Bakery", "logs");
+        var pesan = "Seruni 22 Bakery — perintah pemeliharaan gagal (kode " + kode + ")." + Environment.NewLine + Environment.NewLine
+            + penjelasan + Environment.NewLine + Environment.NewLine
+            + sebab + Environment.NewLine + Environment.NewLine
+            + "Log diagnostik: " + LogTerbaru(folderLog);
+
+        try
+        {
+            Directory.CreateDirectory(folderLog);
+            File.WriteAllText(
+                Path.Combine(folderLog, "launcher-error.txt"),
+                DateTime.Now.ToString("s") + Environment.NewLine + pesan + Environment.NewLine,
+                Encoding.UTF8);
+        }
+        catch
+        {
+            // Folder log tidak dapat ditulis: pesan tetap ditampilkan ke pengguna.
+        }
+
+        Tampilkan(pesan, MessageBoxIcon.Error, senyap, true);
+        return kode;
+    }
+
+    private static void Tampilkan(string pesan, MessageBoxIcon ikon, bool senyap, bool keGalat)
+    {
+        if (senyap)
+        {
+            if (keGalat) Console.Error.WriteLine(pesan);
+            else Console.Out.WriteLine(pesan);
+            return;
+        }
+        MessageBox.Show(pesan, "Seruni 22 Bakery", MessageBoxButtons.OK, ikon);
     }
 
     private static bool HostBerjalan()
@@ -95,6 +267,12 @@ internal static class Program
 
     private static bool HealthMenjawab()
     {
+        var badan = HealthBody();
+        return badan != null && badan.Contains(AppMarker);
+    }
+
+    private static string HealthBody()
+    {
         try
         {
             var permintaan = (HttpWebRequest)WebRequest.Create(HealthUrl);
@@ -104,13 +282,66 @@ internal static class Program
             using (var jawaban = (HttpWebResponse)permintaan.GetResponse())
             using (var pembaca = new StreamReader(jawaban.GetResponseStream(), Encoding.UTF8))
             {
-                return jawaban.StatusCode == HttpStatusCode.OK && pembaca.ReadToEnd().Contains(AppMarker);
+                return jawaban.StatusCode == HttpStatusCode.OK ? pembaca.ReadToEnd() : null;
             }
         }
         catch
         {
-            return false;
+            return null;
         }
+    }
+
+    // Jalur host lain yang sedang berjalan, atau null bila host yang aktif memang milik
+    // folder ini. Proses milik pengguna lain bisa menolak dibaca; dalam kasus itu peluncur
+    // tidak menyimpulkan apa pun dan pemeriksaan versi /health di bawah tetap menjadi pagar.
+    private static string HostLainBerjalan(string direktori)
+    {
+        try
+        {
+            var exeLokal = Path.GetFullPath(Path.Combine(direktori, "Seruni22Bakery.Host.exe"));
+            foreach (var proses in Process.GetProcessesByName("Seruni22Bakery.Host"))
+            {
+                try
+                {
+                    var jalur = proses.MainModule != null ? proses.MainModule.FileName : null;
+                    if (jalur != null && !string.Equals(Path.GetFullPath(jalur), exeLokal,
+                            StringComparison.OrdinalIgnoreCase))
+                        return jalur;
+                }
+                catch
+                {
+                    // Tidak berhak membaca proses: abaikan, versi /health yang memutuskan.
+                }
+                finally
+                {
+                    proses.Dispose();
+                }
+            }
+        }
+        catch
+        {
+            // Pencarian proses gagal: jangan menghalangi start karena pemeriksaan bantu ini.
+        }
+        return null;
+    }
+
+    private static string VersiPeluncur()
+    {
+        try
+        {
+            return FileVersionInfo.GetVersionInfo(Application.ExecutablePath).ProductVersion;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string VersiDariHealth(string badan)
+    {
+        if (string.IsNullOrEmpty(badan)) return null;
+        var cocok = Regex.Match(badan, "\"version\"\\s*:\\s*\"([^\"]+)\"");
+        return cocok.Success ? cocok.Groups[1].Value : null;
     }
 
     private static int Gagal(string sebab, bool senyap)

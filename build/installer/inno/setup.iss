@@ -9,7 +9,7 @@
 ; =====================================================================
 
 #ifndef MyAppVersion
-  #define MyAppVersion "1.2.7"
+  #define MyAppVersion "1.2.9"
 #endif
 #define MyAppVersionQuad MyAppVersion + ".0"
 
@@ -61,6 +61,15 @@ Name: "default"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
+[Registry]
+; Penanda kanal dan versi untuk pagar lintas-installer. MSI membaca Channel=exe di
+; HKCU dan berhenti; installer ini membaca Channel=msi di HKLM dan berhenti. Keduanya
+; memakai folder data dan port yang sama, jadi dua salinan tidak boleh terpasang.
+; Nilai Version dipakai memasang pagar turun versi (lihat InitializeSetup).
+Root: "HKCU"; Subkey: "Software\Seruni22Bakery"; ValueType: string; ValueName: "Channel"; ValueData: "exe"; Flags: uninsdeletevalue
+Root: "HKCU"; Subkey: "Software\Seruni22Bakery"; ValueType: string; ValueName: "Version"; ValueData: "{#MyAppVersion}"; Flags: uninsdeletevalue
+Root: "HKCU"; Subkey: "Software\Seruni22Bakery"; ValueType: string; ValueName: "InstallDir"; ValueData: "{app}"; Flags: uninsdeletevalue
+
 [Files]
 ; Paket produksi: host .NET self-contained, aset web hasil build, peluncur exe.
 Source: "{#RootDir}dist\publish-single\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -97,3 +106,121 @@ Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Description: "{cm:Launch
 ; data pengguna.
 Filename: "taskkill"; Parameters: "/f /im Seruni22Bakery.Host.exe"; Flags: runhidden; RunOnceId: "KillBakeryHost"
 Filename: "taskkill"; Parameters: "/f /im Seruni22Bakery.exe"; Flags: runhidden; RunOnceId: "KillBakeryLauncher"
+
+[Code]
+// ── Pagar kanal dan turun versi ─────────────────────────────────────────────
+// Dua kanal installer (EXE per-pengguna dan MSI per-mesin) memakai folder data dan port
+// yang sama. Kalau keduanya terpasang, pengguna punya dua salinan yang berebut satu basis
+// data, jadi pemasangan kanal kedua dihentikan dengan pesan yang bisa ditindaklanjuti.
+//
+// Versi lama juga tidak boleh dipasang di atas versi baru: basis data yang sudah dimigrasi
+// oleh versi baru tidak selalu terbaca oleh kode lama.
+function BandingkanVersi(A, B: String): Integer;
+var
+  pa, pb, va, vb: Integer;
+begin
+  Result := 0;
+  while (A <> '') or (B <> '') do
+  begin
+    pa := Pos('.', A);
+    if pa > 0 then
+    begin
+      va := StrToIntDef(Copy(A, 1, pa - 1), 0);
+      A := Copy(A, pa + 1, Length(A));
+    end
+    else
+    begin
+      va := StrToIntDef(A, 0);
+      A := '';
+    end;
+
+    pb := Pos('.', B);
+    if pb > 0 then
+    begin
+      vb := StrToIntDef(Copy(B, 1, pb - 1), 0);
+      B := Copy(B, pb + 1, Length(B));
+    end
+    else
+    begin
+      vb := StrToIntDef(B, 0);
+      B := '';
+    end;
+
+    if va <> vb then
+    begin
+      if va > vb then Result := 1 else Result := -1;
+      Exit;
+    end;
+  end;
+end;
+
+function MsiTerpasang(): Boolean;
+var
+  kanal: String;
+  akar: Integer;
+  daftar: TArrayOfString;
+  i, j: Integer;
+  tampil: String;
+begin
+  Result := False;
+  if RegQueryStringValue(HKLM64, 'Software\Seruni22Bakery', 'Channel', kanal)
+     and (CompareText(kanal, 'msi') = 0) then
+  begin
+    Log('Pagar kanal: penanda HKLM Software\Seruni22Bakery\Channel = msi ditemukan.');
+    Result := True;
+    Exit;
+  end;
+  // MSI 1.2.7 dan lebih lama tidak menulis penanda Channel, jadi penanda saja tidak
+  // cukup: entri "Program dan Fitur" milik MSI tetap ada dan dicari dari namanya.
+  for i := 0 to 1 do
+  begin
+    if i = 0 then akar := HKLM64 else akar := HKLM32;
+    if RegGetSubkeyNames(akar, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall', daftar) then
+    begin
+      for j := 0 to GetArrayLength(daftar) - 1 do
+      begin
+        if RegQueryStringValue(akar,
+             'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\' + daftar[j],
+             'DisplayName', tampil)
+           and (CompareText(tampil, 'Seruni 22 Bakery') = 0) then
+        begin
+          Log('Pagar kanal: entri Program dan Fitur MSI ditemukan di Uninstall\' + daftar[j] + '.');
+          Result := True;
+          Exit;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function InitializeSetup(): Boolean;
+var
+  versiTerpasang: String;
+begin
+  Result := True;
+
+  if MsiTerpasang() then
+  begin
+    // /SUPPRESSMSGBOXES tidak menahan MsgBox buatan skrip; tanpa penjaga ini,
+    // pemasangan senyap akan menunggu klik selamanya. Dalam mode senyap cukup gagal.
+    if not WizardSilent() then
+      MsgBox('Seruni 22 Bakery versi MSI sudah terpasang di komputer ini.' + #13#10 + #13#10 +
+             'Copot dulu lewat "Aplikasi terpasang" (Program dan Fitur), baru pasang versi EXE ini. ' +
+             'Dua kanal instalasi tidak boleh terpasang bersamaan karena memakai basis data dan port yang sama.',
+             mbError, MB_OK);
+    Result := False;
+    Exit;
+  end;
+
+  if RegQueryStringValue(HKCU, 'Software\Seruni22Bakery', 'Version', versiTerpasang)
+     and (BandingkanVersi(versiTerpasang, '{#MyAppVersion}') > 0) then
+  begin
+    Log('Pagar versi: HKCU Version=' + versiTerpasang + ' lebih baru dari paket {#MyAppVersion}.');
+    if not WizardSilent() then
+      MsgBox('Versi ' + versiTerpasang + ' sudah terpasang, sedangkan paket ini versi {#MyAppVersion}.' + #13#10 + #13#10 +
+             'Versi lama tidak bisa dipasang di atas versi baru. Pakai paket versi ' + versiTerpasang + ' atau lebih baru, ' +
+             'atau copot dulu versi yang terpasang (data pengguna tidak ikut terhapus).',
+             mbError, MB_OK);
+    Result := False;
+  end;
+end;

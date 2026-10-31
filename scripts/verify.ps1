@@ -108,6 +108,19 @@ if (Test-Path $skripPaket) {
         'peluncur dikompilasi, bukan disalin sebagai .vbs'
 }
 
+# Pagar penerusan argumen: peluncur wajib meneruskan --backup/--restore/--Database:Path
+# ke host. Tanpa uji ini cacat "peluncur membuang argumen" (1.2.7) hanya ketahuan dari
+# dokumentasi yang salah, bukan dari pagar.
+$ujiPeluncur = Join-Path $root 'build\installer\launcher\test-argumen-peluncur.ps1'
+if (Test-Path $ujiPeluncur) {
+    Write-Host '==> Uji penerusan argumen peluncur'
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ujiPeluncur
+    $kodePeluncur = $LASTEXITCODE
+    Catat 'uji argumen peluncur' ($kodePeluncur -eq 0) "exit $kodePeluncur"
+} else {
+    Catat 'uji argumen peluncur' $false "tidak menemukan $ujiPeluncur"
+}
+
 $wxs = Join-Path $root 'build\installer\wix\Package.wxs'
 if (Test-Path $wxs) {
     $isiWxs = Get-Content $wxs -Raw

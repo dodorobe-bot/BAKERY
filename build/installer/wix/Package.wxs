@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?define PublishDir = "D:\bakery-desktop\dist\publish-single" ?>
+<?ifndef PublishDir ?>
+  <?error PublishDir belum diberikan. Jalankan scripts\build-msi.ps1 yang meneruskan folder publish hasil build-installer.ps1 ?>
+<?endif ?>
 <?ifndef ProductVersion ?>
-  <?define ProductVersion = "1.2.7" ?>
+  <?define ProductVersion = "1.2.9" ?>
 <?endif ?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
@@ -13,6 +15,24 @@
     <MajorUpgrade DowngradeErrorMessage="Versi yang lebih baru dari Seruni 22 Bakery sudah terpasang." />
     <MediaTemplate EmbedCab="yes" />
     <ui:WixUI Id="WixUI_Minimal" />
+    <!-- Pagar kanal: MSI (per-mesin) dan installer EXE (per-pengguna) memakai folder data
+         dan port yang sama. Installer EXE menulis Channel=exe di HKCU pengguna; selama
+         penanda itu ada, MSI berhenti dengan pesan jelas alih-alih menumpuk salinan kedua.
+         EXE 1.2.7 dan lebih lama belum menulis penanda itu, jadi entri Program dan Fitur
+         milik Inno (AppId tetap {5D9D507C-...}_is1) ikut dicari.
+         Batasan yang disadari: penanda HKCU hanya terbaca untuk pengguna yang menjalankan
+         MSI. Bila EXE dipasang oleh pengguna Windows lain, MSI tidak bisa membaca hive-nya. -->
+    <Property Id="EXECHANNEL" Secure="yes">
+      <RegistrySearch Id="ExeChannelMarker" Root="HKCU" Key="Software\Seruni22Bakery"
+                      Name="Channel" Type="raw" />
+    </Property>
+    <Property Id="EXEINSTALLED" Secure="yes">
+      <RegistrySearch Id="ExeUninstallEntry" Root="HKCU"
+                      Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1"
+                      Name="DisplayName" Type="raw" />
+    </Property>
+    <Launch Condition="NOT (EXECHANNEL = &quot;exe&quot;) AND NOT EXEINSTALLED"
+            Message="Instalasi Seruni 22 Bakery versi EXE masih terpasang untuk pengguna ini. Copot dulu lewat &quot;Uninstall Seruni 22 Bakery&quot; sebelum memasang MSI; dua kanal instalasi tidak boleh terpasang bersamaan karena memakai basis data dan port yang sama." />
     <!-- Tanpa gerbang "pasang .NET 8 dulu": publish dilakukan self-contained (hostfxr.dll dan
          coreclr.dll ikut di paket), jadi runtime bersama tidak dibutuhkan. Gerbang lama
          memeriksa folder Microsoft.AspNetCore.App 8.x dan menolak pemasangan di mesin bersih
@@ -46,10 +66,19 @@
     <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
       <Files Include="$(PublishDir)\**" />
     </ComponentGroup>
+    <!-- Penanda kanal di HKLM (terbaca semua pengguna) dan versi terpasang. Installer EXE
+         membaca keduanya sebelum memasang, sehingga dua kanal tidak bisa diam-diam
+         hidup berdampingan. -->
+    <Component Id="ChannelMarker" Guid="3A0F4B1C-6E29-4C47-9D2B-7B5E1C8F2A64" Directory="INSTALLFOLDER">
+      <RegistryValue Root="HKLM" Key="Software\Seruni22Bakery" Name="Channel" Type="string" Value="msi" KeyPath="yes" />
+      <RegistryValue Root="HKLM" Key="Software\Seruni22Bakery" Name="Version" Type="string" Value="$(var.ProductVersion)" />
+      <RegistryValue Root="HKLM" Key="Software\Seruni22Bakery" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" />
+    </Component>
     <Feature Id="MainFeature" Title="Seruni 22 Bakery" Level="1">
       <ComponentGroupRef Id="AppFiles" />
       <ComponentRef Id="AppMenuShortcut" />
       <ComponentRef Id="AppDesktopShortcut" />
+      <ComponentRef Id="ChannelMarker" />
     </Feature>
   </Package>
 </Wix>

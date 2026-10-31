@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { 
   ShoppingBag, 
   Plus, 
@@ -22,7 +22,6 @@ import {
   Store
 } from 'lucide-react';
 import { api } from '../services/api';
-import { useBarisBertahap } from '../utils/bertahap';
 import { orderStatusName } from '../utils/enums';
 import { formatMinor, fromMinor, toMinor, formatDate, formatDateTime } from '../utils/money';
 import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
@@ -78,7 +77,7 @@ const BAGIAN_PENJUALAN = {
 };
 
 export default function SalesView({
-  orders, customers, customerTotal = null, products, user, brand, onRefresh, onCreateOrder, onAddPayment, loading,
+  orders, orderTotal = null, customers, customerTotal = null, products, user, brand, onRefresh, onCreateOrder, onAddPayment, loading,
   view = 'orders', onViewChange,
 }) {
   const [search, setSearch] = useState('');
@@ -106,22 +105,25 @@ export default function SalesView({
       return undefined;
     }
     let batal = false;
+    // Ketikan berikutnya membatalkan permintaan yang masih berjalan, bukan hanya mengabaikan
+    // jawabannya: server tidak perlu menyelesaikan pencarian yang sudah tidak dipakai.
+    const pengendali = new AbortController();
     // Mengetik cepat tidak boleh menembakkan satu permintaan per huruf.
     const jeda = setTimeout(async () => {
       setMemuatPelanggan(true);
       setGalatPelanggan('');
       try {
-        const hasil = await api.getCustomers({ search: kata, limit: 300 });
+        const hasil = await api.getCustomers({ search: kata, limit: 300, signal: pengendali.signal });
         if (batal) return;
         setHasilPelanggan(hasil.items ?? []);
         setTotalHasilPelanggan(hasil.total);
       } catch (err) {
-        if (!batal) setGalatPelanggan(err.message || 'Gagal mencari pelanggan.');
+        if (!batal && err.name !== 'AbortError') setGalatPelanggan(err.message || 'Gagal mencari pelanggan.');
       } finally {
         if (!batal) setMemuatPelanggan(false);
       }
     }, 250);
-    return () => { batal = true; clearTimeout(jeda); };
+    return () => { batal = true; pengendali.abort(); clearTimeout(jeda); };
   }, [cariPelanggan]);
 
   const daftarPelanggan = hasilPelanggan
@@ -146,6 +148,43 @@ export default function SalesView({
       setGalatPelanggan(err.message || 'Gagal memuat halaman berikutnya.');
     } finally {
       setMemuatPelanggan(false);
+    }
+  };
+
+  // Daftar pesanan berhalaman: halaman pertama dari App, sisanya lewat "Muat lagi". Server
+  // membatasi 100 baris per halaman, jadi tanpa tombol ini pesanan ke-101 dan seterusnya tidak
+  // pernah terlihat — dan pengguna tidak tahu ada yang hilang.
+  const [pesananTambahan, setPesananTambahan] = useState([]);
+  const [memuatPesanan, setMemuatPesanan] = useState(false);
+  const [galatPesanan, setGalatPesanan] = useState('');
+  const batalMuatPesanan = useRef(null);
+  useEffect(() => {
+    setPesananTambahan([]);
+    setMemuatPesanan(false);
+    setGalatPesanan('');
+    // Permintaan halaman lama milik daftar sebelumnya tidak boleh menyusup sesudah muat ulang.
+    return () => batalMuatPesanan.current?.abort();
+  }, [orders]);
+  const daftarPesanan = pesananTambahan.length > 0 ? [...orders, ...pesananTambahan] : (orders || []);
+  const totalPesanan = orderTotal ?? daftarPesanan.length;
+
+  const muatPesananLagi = async () => {
+    if (memuatPesanan) return;
+    setMemuatPesanan(true);
+    setGalatPesanan('');
+    const pengendali = new AbortController();
+    batalMuatPesanan.current = pengendali;
+    try {
+      const halaman = await api.getOrders({
+        limit: 100, offset: daftarPesanan.length, signal: pengendali.signal,
+      });
+      const sudahAda = new Set(daftarPesanan.map((o) => o.id));
+      const baru = (halaman.items ?? []).filter((o) => !sudahAda.has(o.id));
+      setPesananTambahan((lama) => [...lama, ...baru]);
+    } catch (err) {
+      if (err.name !== 'AbortError') setGalatPesanan(err.message || 'Gagal memuat halaman berikutnya.');
+    } finally {
+      if (!pengendali.signal.aborted) setMemuatPesanan(false);
     }
   };
 
@@ -219,6 +258,19 @@ export default function SalesView({
   const [payError, setPayError] = useState('');
   const [payKunci, setPayKunci] = useState('');
 
+  // ── Modal: Batalkan Pesanan ──────────────────────────────────────────────────
+  // Pembatalan mengembalikan stok dan membalik jurnal, jadi alasannya wajib diisi dan tombolnya
+  // hanya tampil bagi peran yang memang diizinkan server (Owner/Admin).
+  const [cancelOrder, setCancelOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const {
+    sedangSimpan: cancelSaving,
+    mulai: mulaiSimpanPembatalan,
+    selesai: selesaiSimpanPembatalan
+  } = useKunciSimpan();
+  const [cancelError, setCancelError] = useState('');
+  const [cancelKunci, setCancelKunci] = useState('');
+
   // Keadaan perangkat dibaca dari server: layar tidak menganggap printer ada hanya karena
   // tombolnya ditampilkan. Bila status tidak bisa dibaca, cetak tetap dicoba dan server yang
   // menjawab; tidak ada status perangkat yang dikarang di sini.
@@ -241,7 +293,7 @@ export default function SalesView({
 
   // T7 — filter by search, ditambah penyaring sesuai menu: pre-order hanya yang jadwalnya belum
   // lewat, piutang hanya yang masih bersisa. Pesanan batal tidak dihitung utang dan tidak dijadwalkan.
-  const displayOrders = (orders || []).filter((ord) => {
+  const displayOrders = daftarPesanan.filter((ord) => {
     const status = orderStatusName(ord.status);
     if (status === 'Cancelled' && (section === 'preorders' || section === 'receivables')) return false;
 
@@ -271,8 +323,8 @@ export default function SalesView({
     displayOrders.sort((a, b) => new Date(a.pickupDate) - new Date(b.pickupDate));
   }
 
-  // Tabel pesanan dipotong bertahap; pencarian dan hitungan total tetap memakai seluruh data.
-  const barisPesanan = useBarisBertahap(displayOrders);
+  // Seluruh baris yang sudah dimuat ditampilkan; sisa halaman diambil dari server lewat
+  // "Muat lagi", jadi tidak ada baris yang tersembunyi tanpa cara membukanya.
 
   // ── K1 handlers ──────────────────────────────────────────────────────────────
   const openOrderModal = () => {
@@ -383,8 +435,33 @@ export default function SalesView({
     }
   };
 
-  // ── S8 — Cetak Struk ──────────────────────────────────────────────────────────
-  // Jalur utama: server merender struk dari pesanan yang tersimpan lalu mengirimnya ke printer
+  const openCancelModal = (ord) => {
+    setCancelOrder(ord);
+    setCancelReason('');
+    setCancelError('');
+    // Kunci tetap per pesanan: klik ganda tidak menjalankan pembalikan stok dan jurnal dua kali,
+    // sementara percobaan ulang setelah galat validasi tetap memakai kunci yang sama.
+    setCancelKunci(kunciBaru(`batal-pesanan-${ord.id}`));
+  };
+
+  const handleCancelSubmit = async (e) => {
+    e.preventDefault();
+    const alasan = cancelReason.trim();
+    if (!alasan) { setCancelError('Alasan pembatalan wajib diisi.'); return; }
+    if (!mulaiSimpanPembatalan()) return;
+    setCancelError('');
+    try {
+      await api.updateOrderStatus(cancelOrder.id, 'Cancelled', alasan, cancelKunci);
+      setCancelOrder(null);
+      await onRefresh?.();
+    } catch (err) {
+      setCancelError(err.message || 'Gagal membatalkan pesanan.');
+    } finally {
+      selesaiSimpanPembatalan();
+    }
+  };
+
+  // ── S8 — Cetak Struk ──────────────────────────────────────────────────────────  // Jalur utama: server merender struk dari pesanan yang tersimpan lalu mengirimnya ke printer
   // Windows. Pesanan tidak pernah diubah oleh proses cetak.
   const kirimKePrinter = async (ord, cetakUlang = false) => {
     if (sedangCetak) return;
@@ -636,6 +713,11 @@ export default function SalesView({
           </div>
           <div className="text-xs text-slate-400">
             Total: <strong className="text-white">{displayOrders.length} Pesanan</strong>
+            {totalPesanan > daftarPesanan.length && (
+              <span className="ml-1 text-slate-500">
+                (baru {daftarPesanan.length} dari {totalPesanan} dimuat)
+              </span>
+            )}
           </div>
         </div>
 
@@ -667,7 +749,7 @@ export default function SalesView({
                   </td>
                 </tr>
               )}
-              {barisPesanan.tampil.map((ord) => {
+              {displayOrders.map((ord) => {
                 const badge = getStatusBadge(ord);
                 const remaining = getRemainingAmount(ord);
                 return (
@@ -718,6 +800,15 @@ export default function SalesView({
                           <Receipt className="w-3.5 h-3.5" />
                           <span>{sedangCetak ? 'Mengirim...' : 'Cetak Struk'}</span>
                         </button>
+                        {bolehAksi(user, 'sales-cancel') && badge.label !== 'Dibatalkan' && (
+                          <button
+                            onClick={() => openCancelModal(ord)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 border border-rose-500/30 rounded-lg text-xs font-medium transition-colors"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                            <span>Batalkan</span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -726,14 +817,20 @@ export default function SalesView({
             </tbody>
           </table>
         </div>
-        {barisPesanan.adaLagi && (
-          <div className="px-4 py-3 border-t border-slate-800 text-center">
-            <button
-              onClick={barisPesanan.tampilkanLagi}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
-            >
-              Tampilkan 100 pesanan berikutnya ({barisPesanan.jumlah - barisPesanan.tampil.length} tersisa)
-            </button>
+        {(daftarPesanan.length < totalPesanan || galatPesanan) && (
+          <div className="px-4 py-3 border-t border-slate-800 text-center space-y-1.5">
+            {galatPesanan && <div className="text-[11px] text-rose-400">{galatPesanan}</div>}
+            {daftarPesanan.length < totalPesanan && (
+              <button
+                onClick={muatPesananLagi}
+                disabled={memuatPesanan}
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+              >
+                {memuatPesanan
+                  ? 'Memuat…'
+                  : `Muat lagi (${totalPesanan - daftarPesanan.length} pesanan lagi)`}
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -1019,6 +1116,69 @@ export default function SalesView({
                   className="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-sm shadow-lg shadow-amber-500/20 transition-all"
                 >
                   {orderSaving ? 'Menyimpan...' : 'Simpan Pesanan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal: Batalkan Pesanan ───────────────────────────────────────────── */}
+      {cancelOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-5 border-b border-slate-800 bg-slate-950/50 flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-white">Batalkan Pesanan</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {cancelOrder.orderNumber || `#${cancelOrder.id}`} — {cancelOrder.customerNameSnapshot || cancelOrder.customerName}
+                </p>
+              </div>
+              <button
+                onClick={() => setCancelOrder(null)}
+                aria-label="Tutup"
+                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <form onSubmit={handleCancelSubmit} className="p-5 space-y-4">
+              <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs leading-relaxed">
+                Pembatalan mengembalikan stok produk jadi ke etalase dan membalik jurnal penjualan
+                pesanan ini. Tindakan ini tidak bisa dibatalkan dari layar.
+              </div>
+              {cancelError && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">
+                  {cancelError}
+                </div>
+              )}
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1.5">
+                  Alasan Pembatalan <span className="text-rose-400">*</span>
+                </label>
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  rows={3}
+                  placeholder="Contoh: pelanggan membatalkan pesanan lewat telepon…"
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-rose-500/60 transition-colors resize-none"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setCancelOrder(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm transition-colors"
+                >
+                  Kembali
+                </button>
+                <button
+                  type="submit"
+                  disabled={cancelSaving}
+                  className="px-5 py-2 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-rose-500/20 transition-all disabled:opacity-50"
+                >
+                  {cancelSaving ? 'Membatalkan...' : 'Batalkan Pesanan'}
                 </button>
               </div>
             </form>

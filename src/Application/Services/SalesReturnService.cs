@@ -19,19 +19,17 @@ public class SalesReturnService
 
     private readonly ISalesOrderRepository _orders;
     private readonly ISalesReturnRepository _returns;
-    private readonly IProductTemplateRepository _products;
     private readonly ILocationStockRepository _stock;
     private readonly IDocumentSequenceRepository _documents;
     private readonly AccountingService _accounting;
 
     public SalesReturnService(
         ISalesOrderRepository orders, ISalesReturnRepository returns,
-        IProductTemplateRepository products, ILocationStockRepository stock,
+        ILocationStockRepository stock,
         IDocumentSequenceRepository documents, AccountingService accounting)
     {
         _orders = orders;
         _returns = returns;
-        _products = products;
         _stock = stock;
         _documents = documents;
         _accounting = accounting;
@@ -87,11 +85,10 @@ public class SalesReturnService
             return Result<int>.Fail(ErrorCodes.ValidationFailed,
                 $"Nilai retur harus mengikuti jumlah yang diretur: {req.Quantity:0.###} unit = {Money.Format(nilaiSeharusnya)}, bukan {Money.Format(req.Amount)}.");
 
-        // Stok kembali ke etalase dengan biaya per unit dari resep saat ini. Produk yang sudah
-        // dinonaktifkan tetap boleh diretur; biayanya 0 karena harga resep aktifnya tidak ada.
-        var product = (await _products.GetAllActiveAsync())
-            .FirstOrDefault(p => p.Id == order.ProductTemplateId.Value);
-        var hppPerUnit = product?.CalculateHpp() ?? 0;
+        // Stok kembali ke etalase dengan nilai HPP yang benar-benar dibebankan saat pesanan
+        // terjual, bukan HPP resep hari ini: harga bahan bisa berubah setelah penjualan, dan
+        // memakai harga baru membuat laba retur berbeda dari laba penjualannya.
+        var hppPerUnit = await _stock.GetFinishedGoodsSaleUnitCostAsync(order.Id);
 
         var nomor = await _documents.NextNumberAsync(DocumentKind.Return, DateTime.UtcNow);
         var ret = new SalesReturn
@@ -114,7 +111,7 @@ public class SalesReturnService
         {
             new(displayId, order.ProductTemplateId.Value, req.Quantity,
                 FinishedGoodsMovementType.Return, "SalesReturn", null, req.UserId,
-                $"Retur {nomor} · {order.OrderNumber} ({req.Quantity:0.###} unit)")
+                $"Retur {nomor} · {order.OrderNumber} ({req.Quantity:0.###} unit)", hppPerUnit)
         };
 
         try

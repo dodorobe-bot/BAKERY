@@ -19,8 +19,12 @@ public interface ICustomerRepository
     Task<Customer?> GetByPhoneAsync(string phone);
     Task<IReadOnlyList<Customer>> GetAllActiveAsync();
     /// <summary>Satu halaman pelanggan aktif (urut nama) dengan pencarian nama/telepon.</summary>
-    Task<IReadOnlyList<Customer>> GetPageAsync(string? search, int limit, int offset);
-    Task<int> CountActiveAsync(string? search);
+    /// <param name="onlyForUserId">
+    /// Bila diisi, hanya pelanggan yang punya pesanan dari pengguna itu. Kasir tidak boleh
+    /// membaca seluruh buku pelanggan toko; yang ia butuhkan hanya pelanggan yang pernah ia layani.
+    /// </param>
+    Task<IReadOnlyList<Customer>> GetPageAsync(string? search, int limit, int offset, int? onlyForUserId = null);
+    Task<int> CountActiveAsync(string? search, int? onlyForUserId = null);
     Task<int> CreateAsync(Customer customer);
     Task UpdateAsync(Customer customer);
 }
@@ -51,7 +55,9 @@ public interface ISalesOrderRepository
 {
     Task<SalesOrder?> GetByIdAsync(int id);
     /// <param name="createdByUserId">Bila diisi, hanya pesanan kasir tersebut (cakupan per kasir).</param>
-    Task<IReadOnlyList<SalesOrder>> GetAllAsync(int limit = 100, int? createdByUserId = null);
+    Task<IReadOnlyList<SalesOrder>> GetAllAsync(int limit = 100, int? createdByUserId = null, int offset = 0);
+    /// <summary>Jumlah seluruh pesanan (dengan pembatas kasir yang sama) untuk "Muat lagi".</summary>
+    Task<int> CountAsync(int? createdByUserId = null);
     Task<IReadOnlyList<SalesOrder>> GetUpcomingAsync(DateTime from);
     /// <summary>Pesanan dengan jadwal ambil pada rentang [from, to] tanggal, tanpa batas jumlah.</summary>
     Task<IReadOnlyList<SalesOrder>> GetByPickupDateRangeAsync(DateTime from, DateTime to);
@@ -78,9 +84,14 @@ public interface ISalesOrderRepository
         SalesPayment payment, IReadOnlyList<JournalEntry> journals, OrderStatus? newOrderStatus,
         IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges);
 
-    /// <summary>Status + mutasi stok + jurnal pembalik tercatat bersama pada satu transaksi.</summary>
+    /// <summary>
+    /// Status + mutasi stok + jurnal pembalik tercatat bersama pada satu transaksi. Nilai lama
+    /// (status, penanda stok, total bayar) dibandingkan di dalam transaksi; bila pesanan sudah
+    /// berubah, perubahan ditolak alih-alih menimpa keputusan orang lain.
+    /// </summary>
     Task SaveStatusChangeWithJournalAsync(
-        SalesOrder order, IReadOnlyList<StockChange> stockChanges,
+        SalesOrder order, OrderStatus expectedStatus, bool expectedStockDeducted, long expectedTotalPaid,
+        IReadOnlyList<StockChange> stockChanges,
         IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges, IReadOnlyList<JournalEntry> journals);
 }
 
@@ -133,6 +144,8 @@ public interface ISettingRepository
     Task<string?> GetAsync(string key);
     Task<Dictionary<string, string>> GetAllAsync();
     Task SetAsync(string key, string value, int? userId = null);
+    /// <summary>Menyimpan banyak kunci dalam satu transaksi: gagal satu, tidak ada yang tersimpan.</summary>
+    Task SaveManyAsync(IReadOnlyDictionary<string, string> values, int? userId = null);
 }
 
 /// <summary>Satu baris jejak audit siap tampil: pelaksananya sudah ikut terbaca nama.</summary>
@@ -152,10 +165,24 @@ public interface IAuditLogRepository
     Task<IReadOnlyList<AuditEntryView>> SearchAsync(AuditFilter filter);
 }
 
+/// <summary>
+/// Satu SPK selesai dalam bentuk yang dibutuhkan penilaian HPP: unit, kerugian, dan biaya
+/// komponennya. Kerugian hanya menghitung scrap yang benar-benar dibuang (bukan rework).
+/// </summary>
+public record CompletedWorkOrderCost(
+    int WorkOrderId, int ProductTemplateId, DateTime? CompletedAt,
+    int GoodUnits, int FailedUnits, int LossUnits,
+    long MaterialCostMinorUnits, long LaborCostMinorUnits, long OverheadCostMinorUnits);
+
 public interface IProductionRepository
 {
     Task<WorkOrder?> GetByIdAsync(int id);
     Task<IReadOnlyList<WorkOrder>> GetAllAsync(int limit = 50);
+    /// <summary>
+    /// Seluruh SPK selesai (tanpa batas jumlah) beserta jumlah kerugian, dihitung di SQL —
+    /// ringkasan HPP tidak boleh berubah hanya karena ada SPK baru yang menggeser jendela muat.
+    /// </summary>
+    Task<IReadOnlyList<CompletedWorkOrderCost>> GetCompletedCostLinesAsync();
     /// <summary>SPK yang belum selesai/dibatalkan, tenggat terdekat lebih dulu.</summary>
     Task<IReadOnlyList<WorkOrder>> GetOpenAsync(int limit);
     Task<DeadlineCounts> GetOpenBreakdownAsync(DateTime today);
@@ -203,10 +230,15 @@ public record StockChange(
     int LocationId, int IngredientId, decimal Delta, MovementType Type,
     string? SourceType, int? SourceId, int? UserId, string? Notes);
 
-/// <summary>Satu kaki mutasi produk jadi, pasangannya FinishedGoodsLedger.</summary>
+/// <summary>
+/// Satu kaki mutasi produk jadi, pasangannya FinishedGoodsLedger. UnitCostMinorUnits dipakai
+/// untuk mutasi masuk yang membawa biaya sendiri (retur/pembatalan); nol berarti pakai
+/// biaya rata-rata yang berlaku.
+/// </summary>
 public record FinishedGoodsChange(
     int LocationId, int ProductTemplateId, decimal Delta, FinishedGoodsMovementType Type,
-    string? SourceType, int? SourceId, int? UserId, string? Notes);
+    string? SourceType, int? SourceId, int? UserId, string? Notes,
+    long UnitCostMinorUnits = 0);
 
 /// <summary>Baris buku mutasi siap tampil: nama bahan & lokasi sudah ikut terbaca.</summary>
 public record StockMovementView(
@@ -229,6 +261,8 @@ public interface ILocationStockRepository
     /// <summary>Saldo produk jadi per lokasi. locationId null berarti seluruh lokasi.</summary>
     Task<IReadOnlyList<FinishedGoodsStockItem>> GetFinishedGoodsStockAsync(int? locationId = null);
     Task<decimal> GetFinishedGoodsTotalAsync(int productTemplateId);
+    /// <summary>Biaya per unit yang tercatat saat produk keluar untuk pesanan ini (0 bila tidak ada).</summary>
+    Task<long> GetFinishedGoodsSaleUnitCostAsync(int salesOrderId);
 }
 
 /// <summary>
@@ -277,15 +311,19 @@ public interface IPurchaseOrderRepository
     Task<DeadlineCounts> GetOpenBreakdownAsync(DateTime today);
     Task<PurchaseOrder?> GetByIdAsync(int id); // dengan lines
     Task<int> CreateAsync(PurchaseOrder po);
-    Task UpdateStatusAsync(int id, PurchaseOrderStatus status);
+    /// <summary>
+    /// Batalkan PO yang belum menerima barang. Ditolak bila PO sudah selesai/dibatalkan atau
+    /// sudah pernah menerima sebagian barang, karena stok dan jurnalnya akan menjadi yatim.
+    /// </summary>
+    Task CancelAsync(int id);
 
     /// <summary>
     /// Struk penerimaan +mutasi stok + jurnal + status PO tercatat pada satu transaksi:
-    /// barang tidak pernah masuk gudang tanpa jejak uang, dan sebaliknya.
+    /// barang tidak pernah masuk gudang tanpa jejak uang, dan sebaliknya. Status PO dihitung
+    /// ulang dari jumlah diterima yang tersimpan, bukan dari salinan yang dibaca pemanggil.
     /// </summary>
     Task ReceiveWithJournalAsync(
-        GoodsReceipt receipt, IReadOnlyList<StockChange> stockChanges,
-        JournalEntry? journal, PurchaseOrderStatus? newStatus);
+        GoodsReceipt receipt, IReadOnlyList<StockChange> stockChanges, JournalEntry? journal);
 }
 
 public interface IDocumentSequenceRepository
