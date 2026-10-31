@@ -7,7 +7,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$Version = "1.2.9",
+    [string]$Version = "1.2.10",
     [string]$OutputPath = "",
     # Folder hasil publish yang dipaketkan. Nilai ini dulu ditulis mati di Package.wxs
     # sebagai jalur absolut mesin pengembang, sehingga MSI hanya bisa dibangun di satu

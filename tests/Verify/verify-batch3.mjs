@@ -306,10 +306,16 @@ catat('nomor PO memakai awalan PO dan unik',
   poNomor.join(' '));
 
 const db2 = new DatabaseSync(DB_PATH);
-const sekuens = db2.prepare('SELECT Kind, DayKey, LastValue FROM DocumentSequences ORDER BY Kind').all();
-const pesananHariIni = db2.prepare("SELECT COUNT(*) AS n FROM SalesOrders WHERE OrderNumber LIKE 'ORD-' || strftime('%Y%m%d','now') || '-%'").get().n;
-const spkHariIni = db2.prepare("SELECT COUNT(*) AS n FROM WorkOrders WHERE OrderNumber LIKE 'SPK-' || strftime('%Y%m%d','now') || '-%'").get().n;
-const poHariIni = db2.prepare("SELECT COUNT(*) AS n FROM PurchaseOrders WHERE PoNumber LIKE 'PO-%'").get().n;
+const sekuens = db2.prepare('SELECT Kind, DayKey, LastValue FROM DocumentSequences ORDER BY Kind, DayKey').all();
+// Tanggal dalam nomor dokumen adalah tanggal kalender toko, jadi hari pembanding dibaca dari
+// DocumentSequences itu sendiri. strftime('%Y%m%d','now') memakai UTC dan keliru antara
+// 00:00-06:59 WIB: dokumen hari ini ternomor hari ini tetapi dicari dengan tanggal kemarin.
+const hari = (kind) => (sekuens.filter((s) => s.Kind === kind).pop()?.DayKey ?? '').replaceAll('-', '');
+const jumlahDokumen = (tabel, kolom, prefix, kind) =>
+  db2.prepare(`SELECT COUNT(*) AS n FROM ${tabel} WHERE ${kolom} LIKE ?`).get(`${prefix}-${hari(kind)}-%`).n;
+const pesananHariIni = jumlahDokumen('SalesOrders', 'OrderNumber', 'ORD', 'Order');
+const spkHariIni = jumlahDokumen('WorkOrders', 'OrderNumber', 'SPK', 'WorkOrder');
+const poHariIni = jumlahDokumen('PurchaseOrders', 'PoNumber', 'PO', 'PurchaseOrder');
 db2.close();
 const nilai = Object.fromEntries(sekuens.map((s) => [s.Kind, s.LastValue]));
 catat('penghitung hari ini = jumlah dokumen tersimpan',

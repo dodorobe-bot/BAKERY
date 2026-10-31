@@ -7,7 +7,7 @@
     <AssemblyName>Seruni22Bakery.Host</AssemblyName>
     <!-- Satu sumber versi: FileVersion/AssemblyVersion diturunkan dari $(Version) sehingga
          -p:Version dari pipeline build tidak tertinggal di metadata berkas. -->
-    <Version>1.2.9</Version>
+    <Version>1.2.10</Version>
     <FileVersion>$(Version).0</FileVersion>
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <Company>Seruni 22</Company>

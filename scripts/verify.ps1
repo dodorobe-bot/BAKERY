@@ -129,6 +129,33 @@ if (Test-Path $wxs) {
         'shortcut MSI juga harus menunjuk peluncur native'
 }
 
+# ── 2c. Pagar zona waktu toko ──────────────────────────────────────────────
+# Tanggal bisnis (nomor dokumen, rekap harian, tanggal cetak ekspor) tidak boleh diambil dari
+# jam mesin atau tanggal UTC. Cacat yang dijaga: pesanan 01:00 WIB bernomor/tanggal kemarin.
+$pagarZona = @(
+    @{ Nama = 'ekspor memakai jam toko'; File = 'src\Application\Services\ExportService.cs';
+       Pola = 'DateTime\.Now'; Ket = 'tanggal cetak dan nama berkas ekspor harus BusinessTime.Now()' },
+    @{ Nama = 'rentang ekspor bawaan memakai tanggal toko'; File = 'src\Host.Service\Program.cs';
+       Pola = 'DateTime\.Today'; Ket = 'default rentang ekspor harus BusinessTime.Today()' },
+    @{ Nama = 'penomoran dokumen memakai tanggal toko'; File = 'src\Application\Services\OrderService.cs';
+       Pola = 'NextNumberAsync\([^)]*DateTime\.UtcNow'; Ket = 'nomor pesanan memakai BusinessTime.Now()' },
+    @{ Nama = 'penomoran retur memakai tanggal toko'; File = 'src\Application\Services\SalesReturnService.cs';
+       Pola = 'NextNumberAsync\([^)]*DateTime\.UtcNow'; Ket = 'nomor retur memakai BusinessTime.Now()' },
+    @{ Nama = 'nomor SPK/PO memakai tanggal toko'; File = 'src\Host.Service\Program.cs';
+       Pola = 'NextNumberAsync\([^)]*DateTime\.UtcNow'; Ket = 'nomor SPK dan PO memakai BusinessTime.Now()' },
+    @{ Nama = 'rekap harian memakai tanggal toko'; File = 'src\Infrastructure.Sqlite\Repositories\SalesOrderRepository.cs';
+       Pola = 'substr\(o\.CreatedAt, 1, 10\)'; Ket = 'rekap per hari tidak boleh memotong tanggal UTC' }
+)
+foreach ($p in $pagarZona) {
+    $jalur = Join-Path $root $p.File
+    if (-not (Test-Path $jalur)) {
+        Catat $p.Nama $false "berkas tidak ada: $jalur"
+        continue
+    }
+    $isi = Get-Content $jalur -Raw
+    Catat $p.Nama ($isi -notmatch $p.Pola) $p.Ket
+}
+
 # ── 3. Verifikasi perilaku lewat API pada basis data sementara ──────────────
 $verifikasi = @()
 if (-not $SkipVerify) {

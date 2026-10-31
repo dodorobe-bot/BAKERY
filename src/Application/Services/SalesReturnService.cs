@@ -90,7 +90,7 @@ public class SalesReturnService
         // memakai harga baru membuat laba retur berbeda dari laba penjualannya.
         var hppPerUnit = await _stock.GetFinishedGoodsSaleUnitCostAsync(order.Id);
 
-        var nomor = await _documents.NextNumberAsync(DocumentKind.Return, DateTime.UtcNow);
+        var nomor = await _documents.NextNumberAsync(DocumentKind.Return, BusinessTime.Now());
         var ret = new SalesReturn
         {
             ReturnNumber = nomor,

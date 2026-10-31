@@ -122,7 +122,7 @@ $kasus = @(
 foreach ($k in $kasus) {
     $hasil = Jalankan-Peluncur $peluncurExe $k.Argumen $k.Kode $k.Harap $k.Galat
     $detail = if ($hasil.Lulus) { "kode $($hasil.Kode) diteruskan; argumen utuh" } else { $hasil.Alasan }
-    Catat ("peluncur 1.2.9: " + $k.Nama) $hasil.Lulus $detail
+    Catat ("peluncur kini: " + $k.Nama) $hasil.Lulus $detail
 }
 
 # ── Kontrol negatif: peluncur lama wajib merah ──────────────────────────────

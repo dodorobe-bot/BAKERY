@@ -12,10 +12,10 @@ public class DocumentSequenceRepository : IDocumentSequenceRepository
 
     // Kenaikan urutan dan pembacaan nomornya satu statement: dua panggilan berurutan
     // tidak pernah boleh membaca nilai yang sama.
-    public Task<string> NextNumberAsync(DocumentKind kind, DateTime dayUtc)
+    public Task<string> NextNumberAsync(DocumentKind kind, DateTime hariToko)
         => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
         {
-            var day = dayUtc.Date;
+            var day = hariToko.Date;
             var cmd = conn.CreateCommand();
             cmd.Transaction = tx;
             cmd.CommandText = @"

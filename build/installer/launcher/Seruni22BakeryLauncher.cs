@@ -34,6 +34,20 @@ internal static class Program
             return Gagal("Berkas aplikasi tidak ditemukan: " + exe, senyap);
         }
 
+        // Semua argumen selain --tanpa-browser adalah perintah pemeliharaan host
+        // (--backup, --restore <berkas>, --Database:Path=...). Tanpa penerusan ini
+        // perintah pemulihan hanya menyalakan aplikasi dan data tidak dipulihkan.
+        // Perintah pemeliharaan diserahkan ke host: host memeriksa sendiri instance yang
+        // berjalan (--restore keluar dengan kode 3) dan --backup memang diizinkan saat
+        // aplikasi hidup, jadi pemeriksaan "folder lain" di bawah tidak boleh mendahuluinya.
+        var argumenHost = args
+            .Where(a => !string.Equals(a, "--tanpa-browser", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (argumenHost.Length > 0)
+        {
+            return JalankanPemeliharaan(exe, direktori, argumenHost, senyap);
+        }
+
         // Kanal EXE dan MSI memasang folder berbeda tetapi memakai port 5000 dan folder data
         // yang sama. Kalau host dari folder lain sedang berjalan, peluncur ini hanya akan
         // membuka peramban ke server milik instalasi itu — bukan miliknya sendiri.
@@ -45,17 +59,6 @@ internal static class Program
                 + hostLain + Environment.NewLine + Environment.NewLine
                 + "Tutup aplikasi itu lebih dulu. Dua instalasi (EXE dan MSI) tidak boleh berjalan bersamaan "
                 + "karena memakai port dan basis data yang sama.", senyap);
-        }
-
-        // Semua argumen selain --tanpa-browser adalah perintah pemeliharaan host
-        // (--backup, --restore <berkas>, --Database:Path=...). Tanpa penerusan ini
-        // perintah pemulihan hanya menyalakan aplikasi dan data tidak dipulihkan.
-        var argumenHost = args
-            .Where(a => !string.Equals(a, "--tanpa-browser", StringComparison.OrdinalIgnoreCase))
-            .ToArray();
-        if (argumenHost.Length > 0)
-        {
-            return JalankanPemeliharaan(exe, direktori, argumenHost, senyap);
         }
 
         var dimulaiDiSini = false;

@@ -69,7 +69,9 @@ public class OrderService
         // keunikan nomor telepon dan poin dari dua pesanan bersamaan tidak hilang.
         var order = new SalesOrder
         {
-            OrderNumber = await _documents.NextNumberAsync(DocumentKind.Order, DateTime.UtcNow),
+            // Tanggal di nomor dokumen adalah tanggal kalender toko, bukan UTC: pesanan pukul
+            // 01:00 WIB tetap bernomor hari itu, bukan hari kemarin.
+            OrderNumber = await _documents.NextNumberAsync(DocumentKind.Order, BusinessTime.Now()),
             ProductTemplateId = req.ProductTemplateId,
             CustomerNameSnapshot = req.CustomerName,
             PhoneSnapshot = req.Phone,

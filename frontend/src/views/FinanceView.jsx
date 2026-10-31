@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useBarisBertahap } from '../utils/bertahap';
-import { formatMinor, formatQty, formatDate, toMinor } from '../utils/money';
+import { formatMinor, formatQty, formatDate, toMinor, tanggalTokoISO, selisihHariBisnis } from '../utils/money';
 import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
 import {
   accountTypeLabel,
@@ -55,7 +55,9 @@ const EXPENSE_CATEGORIES = [
   { value: 'Operasional', label: 'Biaya Operasional Lain', account: '5-002 Beban Operasional' },
 ];
 
-const todayISO = () => new Date().toISOString().slice(0, 10);
+// Default rentang memakai kalender toko, bukan UTC: toISOString() masih menunjukkan tanggal
+// kemarin antara 00:00-06:59 WIB sehingga jurnal hari ini tidak ikut terpilih.
+const todayISO = () => tanggalTokoISO();
 const firstOfMonthISO = () => todayISO().slice(0, 8) + '01';
 
 const cashAccounts = (balances) =>
@@ -276,17 +278,17 @@ export default function FinanceView({
 
   // Piutang dari pesanan + pembayaran; utang dari saldo akun Utang Usaha dan baris PO.
   const receivables = useMemo(() => {
-    const midnight = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-    const today = midnight(new Date());
+    // Jadwal ambil dan "hari ini" sama-sama tanggal bisnis kalender toko; zona perangkat
+    // tidak dipakai supaya status lewat tempo tidak bergeser sehari.
+    const hariIni = tanggalTokoISO();
     return (orders ?? [])
       .filter((o) => String(o.status) !== '4' && o.status !== 'Cancelled')
       .map((o) => {
         const paid = Number(o.downPayment ?? 0) +
           (o.payments ?? []).reduce((s, p) => s + Number(p.amount ?? 0), 0);
         const remaining = Number(o.totalAmount ?? 0) - paid;
-        const pickup = o.pickupDate ? new Date(o.pickupDate) : null;
         // Positif = sudah lewat tanggal ambil, nol = hari ini, negatif = masih hitung mundur.
-        const dayDiff = pickup ? Math.round((today - midnight(pickup)) / 86400000) : null;
+        const dayDiff = o.pickupDate ? selisihHariBisnis(o.pickupDate, hariIni) : null;
         return {
           id: o.id, orderNumber: o.orderNumber ?? `ORD-${o.id}`,
           customer: o.customerNameSnapshot ?? '-', pickupDate: o.pickupDate,

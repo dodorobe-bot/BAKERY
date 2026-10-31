@@ -52,6 +52,19 @@ public static class BusinessTime
     public static DateTime Today() => Now().Date;
 
     /// <summary>
+    /// Awal hari kalender toko dalam UTC. Cap waktu kejadian ditulis UTC, jadi rentang
+    /// laporan yang dipilih pemilik sebagai tanggal toko harus diterjemahkan dulu ke batas
+    /// UTC; tanpa ini penjualan pukul 01:00 WIB jatuh ke tanggal UTC kemarin.
+    /// </summary>
+    public static DateTime AwalHariUtc(DateTime tanggalToko)
+    {
+        var lokal = DateTime.SpecifyKind(tanggalToko.Date, DateTimeKind.Unspecified);
+        // Zona dengan pergantian DST tepat tengah malam bisa membuat 00:00 tidak ada di kalender.
+        while (_zone.IsInvalidTime(lokal)) lokal = lokal.AddMinutes(30);
+        return TimeZoneInfo.ConvertTimeToUtc(lokal, _zone);
+    }
+
+    /// <summary>
     /// Membaca cap waktu dari basis data. Kolom lama di beberapa tabel ditulis sebagai waktu
     /// toko tanpa penanda zona; nilai seperti itu dianggap waktu toko supaya riwayat lama tidak
     /// bergeser tujuh jam. Nilai berzona (Z atau offset) dikembalikan sebagai UTC.

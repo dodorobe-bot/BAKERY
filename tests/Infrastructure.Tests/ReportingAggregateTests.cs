@@ -23,9 +23,14 @@ public class ReportingAggregateTests
     private static string Hari(DateTime tanggal) => tanggal.ToString("yyyy-MM-dd");
 
     private int Pesanan(string pickup, long total, long dp, string status = "Pending",
-        DateTime? createdAt = null, int? produk = null, decimal qty = 1m)
+        DateTime? createdAt = null, int? produk = null, decimal qty = 1m, DateTime? createdAtUtc = null)
     {
-        var dibuat = (createdAt ?? BusinessTime.Now()).ToString("yyyy-MM-ddTHH:mm:ss");
+        // CreatedAt disimpan UTC seperti di produksi. Nilai dari tes adalah waktu toko, jadi
+        // diterjemahkan dulu; createdAtUtc dipakai bila tes memang ingin menulis cap waktu UTC.
+        var dibuat = createdAtUtc?.ToString("o")
+            ?? TimeZoneInfo.ConvertTimeToUtc(
+                DateTime.SpecifyKind(createdAt ?? BusinessTime.Now(), DateTimeKind.Unspecified),
+                BusinessTime.Zone).ToString("o");
         _db.Exec($@"
             INSERT INTO SalesOrders (CustomerNameSnapshot, Description, PickupDate, TotalAmount,
                                      DownPayment, Quantity, Status, CreatedAt, ProductTemplateId)
@@ -158,6 +163,39 @@ public class ReportingAggregateTests
         hasil.Beban.Should().ContainSingle();
         hasil.Beban[0].Kode.Should().Be("5-001");
         hasil.Beban[0].Nominal.Should().Be(25_000);
+    }
+
+    [Fact]
+    public async Task PenjualanDiniHari_DihitungPadaTanggalToko_BukanTanggalUtc()
+    {
+        // Regresi: rekap harian dulu memakai potongan tanggal UTC dari CreatedAt, sehingga
+        // penjualan pukul 01:30 WIB (masih tanggal UTC kemarin) hilang dari laporan hari ini
+        // dan muncul pada laporan kemarin.
+        var hariIni = BusinessTime.Today();
+        var awalHari = BusinessTime.AwalHariUtc(hariIni);
+        var diniHari = awalHari.AddMinutes(90);        // 01:30 waktu toko
+        var akhirKemarin = awalHari.AddMinutes(-30);   // 23:30 waktu toko kemarin
+
+        Pesanan(Hari(hariIni), 50_000, 0, createdAtUtc: diniHari);
+        Pesanan(Hari(hariIni.AddDays(-1)), 70_000, 0, createdAtUtc: akhirKemarin);
+
+        var repo = new SalesOrderRepository(_factory);
+        var harian = await repo.GetDailySalesAsync(hariIni, hariIni.AddDays(1));
+
+        harian.Should().ContainSingle("hanya transaksi 01:30 yang jatuh pada tanggal toko hari ini");
+        harian[0].Tanggal.Should().Be(hariIni);
+        harian[0].JumlahPesanan.Should().Be(1);
+        harian[0].Nilai.Should().Be(50_000);
+
+        var analitik = new AnalyticsService(new JournalRepository(_factory), repo);
+        var laporan = await analitik.GetDailyReportAsync(hariIni);
+        laporan.JumlahPesanan.Should().Be(1, "laporan harian MCP memakai jalur yang sama");
+        laporan.NilaiPesanan.Should().Be(50_000);
+
+        var kemarin = await repo.GetDailySalesAsync(hariIni.AddDays(-1), hariIni);
+        kemarin.Should().ContainSingle();
+        kemarin[0].Tanggal.Should().Be(hariIni.AddDays(-1));
+        kemarin[0].Nilai.Should().Be(70_000, "transaksi 23:30 tetap milik tanggal kemarin");
     }
 
     [Fact]

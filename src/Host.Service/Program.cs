@@ -1009,7 +1009,7 @@ try
 
         var wo = new Seruni22Bakery.Domain.Entities.WorkOrder
         {
-            OrderNumber = await documents.NextNumberAsync(DocumentKind.WorkOrder, DateTime.UtcNow),
+            OrderNumber = await documents.NextNumberAsync(DocumentKind.WorkOrder, BusinessTime.Now()),
             ProductTemplateId = dto.ProductTemplateId,
             TargetQuantity = dto.TargetQuantity,
             LaborCost = dto.LaborCost,
@@ -1365,7 +1365,7 @@ try
         }
         var po = new PurchaseOrder
         {
-            PoNumber = await documents.NextNumberAsync(DocumentKind.PurchaseOrder, DateTime.UtcNow),
+            PoNumber = await documents.NextNumberAsync(DocumentKind.PurchaseOrder, BusinessTime.Now()),
             SupplierId = dto.SupplierId,
             ExpectedDate = expectedDate,
             Notes = dto.Notes,
@@ -1883,8 +1883,8 @@ try
     // ── Export PDF / Excel ─────────────────────────────────────────────────
     app.MapGet("/api/export/journal", async (DateTime? from, DateTime? to, string? format, ExportService exp) =>
     {
-        var f = from ?? DateTime.Today.AddDays(-30);
-        var t = to ?? DateTime.Today.AddDays(1);
+        var f = from ?? BusinessTime.Today().AddDays(-30);
+        var t = to ?? BusinessTime.Today().AddDays(1);
         var fmt = string.IsNullOrEmpty(format) ? "excel" : format;
         var (data, ct, fn) = await exp.ExportJournalAsync(f, t, fmt);
         return Results.File(data, ct, fn);
@@ -1892,8 +1892,8 @@ try
 
     app.MapGet("/api/export/orders", async (DateTime? from, DateTime? to, string? format, ExportService exp) =>
     {
-        var f = from ?? DateTime.Today.AddDays(-30);
-        var t = to ?? DateTime.Today.AddDays(1);
+        var f = from ?? BusinessTime.Today().AddDays(-30);
+        var t = to ?? BusinessTime.Today().AddDays(1);
         var fmt = string.IsNullOrEmpty(format) ? "excel" : format;
         var (data, ct, fn) = await exp.ExportOrdersAsync(f, t, fmt);
         return Results.File(data, ct, fn);

@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { orderStatusName } from '../utils/enums';
-import { formatMinor, fromMinor, toMinor, formatDate, formatDateTime } from '../utils/money';
+import { formatMinor, fromMinor, toMinor, formatDate, formatDateTime, tanggalTokoISO } from '../utils/money';
 import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
 import { bolehAksi } from '../utils/kapabilitas';
 
@@ -298,10 +298,10 @@ export default function SalesView({
     if (status === 'Cancelled' && (section === 'preorders' || section === 'receivables')) return false;
 
     if (section === 'preorders') {
-      const jadwal = new Date(ord.pickupDate);
-      const hariIni = new Date();
-      hariIni.setHours(0, 0, 0, 0);
-      if (Number.isNaN(jadwal.getTime()) || jadwal < hariIni) return false;
+      // Jadwal ambil adalah tanggal bisnis kalender toko; dibandingkan sebagai teks ISO supaya
+      // zona perangkat tidak bisa menyembunyikan jadwal hari ini.
+      const jadwal = String(ord.pickupDate ?? '').slice(0, 10);
+      if (!jadwal || jadwal < tanggalTokoISO()) return false;
     }
 
     if (section === 'receivables') {

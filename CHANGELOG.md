@@ -4,6 +4,87 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
+## [1.2.10] — 2026-11-01
+
+Status: **NOT READY** sampai uji pasang/peningkatan 1.2.9 → 1.2.10 dijalankan pada mesin
+bersih atau oleh pemilik. Yang sudah dibuktikan untuk paket ini hanya: build, seluruh tes
+otomatis, gerbang verifikasi API, dan isi paket. Paket **NotSigned** (tidak ada sertifikat).
+Skema basis data: **18** — tidak ada migrasi baru, perubahan hanya perilaku pembacaan/penomoran.
+
+Artefak:
+
+| Berkas | Ukuran | SHA-256 |
+|---|---|---|
+| `Seruni22Bakery_Setup_v1.2.10.exe` | 42.665.720 | `c882b69873cbd7dc51ef58761fe6d38ff2559fbe35141399b7023bced8cd78c5` |
+| `Seruni22Bakery_v1.2.10_x64.msi` | 50.395.652 | `872a3c39fe6f906dd4ced13ca434fdb7351b266147dbbd26e31a4384fff4b4af` |
+
+Berkas di dalam paket: host `Seruni22Bakery.Host.dll`
+`c265d30907d86f767756969df57a47aac000329fc3f4217ba269e06fe6a6d707`, peluncur
+`Seruni22Bakery.exe` `d6e56cdce1a27bf37569f6bd193b1dfda435711196da54dac5d11bb1c2bcf8ae`,
+bundel web `wwwroot/index.html` `d9f8f20f0609a070f147f17fce9f15a562c33a0e352fc983d78ad7a73e2d1c`.
+
+Rilis ini menutup sisa cacat satu-zona-waktu (keluarga BUG-06) yang tertinggal setelah 1.2.9,
+plus satu cacat peluncur yang muncul saat perintah pemeliharaan.
+
+### Diperbaiki
+
+- **Cap waktu ekspor.** Tanggal cetak dan nama berkas `stok-*.pdf/.xlsx` serta
+  `pembelian-*.pdf/.xlsx` memakai jam mesin, bukan jam toko; sekarang `BusinessTime.Now()`.
+- **Rentang bawaan ekspor.** `/api/export/*` tanpa `from`/`to` memakai tanggal mesin; sekarang
+  `BusinessTime.Today()` sehingga 30 hari terakhir dihitung dari hari kalender toko.
+- **Penomoran dokumen.** Nomor ORD/SPK/PO/RTR dikunci pada tanggal UTC, jadi dokumen pukul
+  00:00–06:59 WIB bernomor tanggal kemarin dan urutan hari bergeser. Sekarang memakai tanggal
+  kalender toko (`BusinessTime.Now()` ke `IDocumentSequenceRepository.NextNumberAsync`).
+  Terbukti hidup: pada 04:05 WIB (UTC masih 31 Oktober) verifikasi API menghasilkan
+  `ORD-20261101-0003` dan seterusnya.
+- **Rekap harian.** Penjualan per hari dan laporan harian memotong `CreatedAt` pada 10 karakter
+  pertama (tanggal UTC) dan menyaring tanggal toko dengan teks UTC. Sekarang rentang tanggal toko
+  diterjemahkan ke batas UTC lewat `BusinessTime.AwalHariUtc`, disaring dua tahap (prefix kasar
+  agar indeks `SalesOrders(CreatedAt)` tetap terpakai, lalu pembandingan presisi), dan baris
+  per jam dipetakan kembali ke tanggal toko.
+- **Zona tanggal di antarmuka.** Default rentang Keuangan, umur piutang, dan penyaring
+  pre-order di Penjualan memakai `toISOString()`/tanggal perangkat. Sekarang
+  `tanggalTokoISO()` dan `selisihHariBisnis()` (`frontend/src/utils/money.js`), sama seperti
+  kolom tanggal di layar lain.
+- **Peluncur: perintah pemeliharaan tidak lagi dicegah oleh pemeriksaan "instalasi lain".**
+  Selama ini `--backup`/`--restore` dihentikan lebih dulu dengan kode 1 dan pesan "folder lain"
+  bila ada host dari kanal lain sedang berjalan. Host sendiri yang berwenang: `--restore`
+  menolak dengan kode 3 saat aplikasi berjalan, dan `--backup` memang dirancang jalan saat
+  aplikasi hidup. Pemeriksaan instalasi lain kini hanya memagar jalur start interaktif.
+
+### Pagar dan tes baru
+
+- Enam pemeriksaan sumber di `scripts/verify.ps1` (ekspor, rentang ekspor, penomoran pesanan,
+  penomoran retur, nomor SPK/PO, rekap harian) supaya pola jam mesin tidak kembali lolos.
+- Tes regresi `PenjualanDiniHari_DihitungPadaTanggalToko_BukanTanggalUtc`
+  (`tests/Infrastructure.Tests/ReportingAggregateTests.cs`): dijual pada 01:30 WIB dan
+  23:30 hari sebelumnya. Kontrol negatif dijalankan dengan mengembalikan
+  `SalesOrderRepository.cs` ke versi lama — tes menjadi merah, lalu hijau lagi setelah
+  pemulihan.
+- `tests/Verify/verify-batch3.mjs` diperbaiki: pembanding "hari ini" diambil dari
+  `DocumentSequences.DayKey`, bukan `strftime('%Y%m%d','now')` yang berbasis UTC. Sebelum
+  perbaikan, pemeriksaan ini merah (Order=19/0) justru karena penomoran sudah benar.
+
+### Bukti yang dijalankan
+
+| Pemeriksaan | Hasil |
+|---|---|
+| `dotnet test` Release (dalam `build-installer.ps1`) | Application 51, Domain 83, Infrastructure 143, UI 116 — total 393, 0 gagal |
+| `scripts/verify.ps1 -SkipTests` | 24 langkah lulus, 0 gagal |
+| Uji argumen peluncur | 5 pemeriksaan, 0 gagal (4 kasus penerusan + kontrol negatif merah di peluncur lama) |
+| Verifikasi API hidup | batch2 63, batch3 56, batch6 21, bug09 29 — masing-masing 0 gagal |
+| Isi paket | 393 berkas; host `1.2.10.0`, peluncur `1.2.10`; bebas `.pdb`, `appsettings.Development.json`, `*.db/-wal/-shm`, `jwt.key`, `*.env`; hash cocok `BUILD-INFO.txt` dan `SHA256SUMS.txt` |
+| Isi MSI | 393 entri `File` pada basis perantara WiX dengan sumber `dist\publish-single\**` |
+
+### Belum terbukti untuk rilis ini
+
+- **Uji pasang, peningkatan 1.2.9 → 1.2.10, turun versi, dan copot.** Up ekstrak isi MSI lokal
+  gagal dengan `msiexec` 1618 (instalasi Windows Installer lain sedang berjalan) dan sesi ini
+  tidak punya hak administrator; instalasi milik pemilik yang sedang berjalan tidak disentuh.
+- Perangkat kasir fisik (printer 80 mm, pemindai barcode, laci uang).
+- Kompatibilitas versi Windows lain di luar yang sudah diuji.
+- Tanda tangan Authenticode: `NotSigned` untuk EXE maupun MSI.
+
 ## [1.2.9] — 2026-10-31
 
 Status: **READY FOR LIMITED PILOT** (bukan READY FOR PRODUCTION). Paket **NotSigned**.

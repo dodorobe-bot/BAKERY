@@ -2,8 +2,10 @@
 
 Aplikasi desktop untuk toko dan pabrik roti: penjualan, produksi, pembelian, stok, jurnal keuangan, dan laporan — berjalan **sepenuhnya offline** di satu komputer toko.
 
-- Versi saat ini: **1.2.9**, skema basis data **18**
-- Status rilis: **READY FOR LIMITED PILOT** untuk 1.2.9 (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima), paket **NotSigned**
+- Versi sumber dan paket terbaru: **1.2.10**, skema basis data **18**
+- Status 1.2.10: **NOT READY** — paket sudah dibangun dan seluruh tes otomatis serta gerbang lulus, tetapi uji pasang/peningkatan/copot untuk paket ini belum dijalankan
+- Status 1.2.9: **READY FOR LIMITED PILOT** (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima)
+- Kedua paket **NotSigned** (belum ada sertifikat tanda tangan)
 - Platform: Windows 10/11 x64
 - Riwayat perubahan: [CHANGELOG.md](CHANGELOG.md)
 
@@ -106,15 +108,15 @@ Skrip verifikasi perilaku lain ada di `tests/Verify/*.mjs` (dijalankan terhadap 
 EXE (Inno Setup) — tes, frontend produksi, publish self-contained, peluncur, lalu Inno:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.9
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.10
 ```
 
-Hasil: `dist\publish-single\` dan `dist\installer\Seruni22Bakery_Setup_v1.2.9.exe`, disertai `SHA256SUMS.txt` dan `BUILD-INFO.txt`.
+Hasil: `dist\publish-single\` dan `dist\installer\Seruni22Bakery_Setup_v1.2.10.exe`, disertai `SHA256SUMS.txt` dan `BUILD-INFO.txt`.
 
 MSI (WiX, per-machine) — hanya membungkus folder publish yang sudah ada:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.9
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.10
 ```
 
 Tanda tangan Authenticode (butuh sertifikat; saat ini belum dipakai):
@@ -171,6 +173,11 @@ Installer tidak memuat basis data maupun kunci, dan uninstall tidak menghapus fo
 
 ## Status rilis dan batasan yang diketahui
 
+Status 1.2.10: **NOT READY**. Build, 393 tes otomatis, gerbang verifikasi API, dan isi
+paket lulus; uji pasang/peningkatan 1.2.9 → 1.2.10, penolakan turun versi, dan copot belum
+dijalankan untuk paket ini (mesin ini non-admin dan `msiexec` sedang dipakai instalasi lain).
+Paket 1.2.10 dipakai untuk uji pasang di mesin bersih atau oleh pemilik sebelum status naik.
+
 Status 1.2.9: **READY FOR LIMITED PILOT**, bukan READY FOR PRODUCTION. Perbaikan kode,
 tes otomatis, dan isi paket sudah lulus. Uji pasang/peningkatan/copot 1.2.9 dilaporkan
 lulus oleh pemilik secara tertulis (`lulus=65 gagal=0 total=65`) setelah menjalankan kit
@@ -179,7 +186,20 @@ sampai ke mesin ini, dan pemilik menerima atestasi tertulis sebagai dasar keputu
 Naik ke READY FOR PRODUCTION masih menuntut berkas bukti yang dapat diperiksa, paket
 bertanda tangan, dan uji perangkat kasir fisik.
 
-Bukti terakhir (2026-10-31):
+Bukti 1.2.10 (2026-11-01):
+
+- 393 tes otomatis Release hijau (Application 51, Domain 83, Infrastructure 143, UI 116).
+- `scripts/verify.ps1 -SkipTests`: 24 langkah lulus; verifikasi API hidup batch2 63,
+  batch3 56, batch6 21, bug09 29 — masing-masing 0 gagal; uji argumen peluncur 5/5
+  dengan kontrol negatif merah pada peluncur lama.
+- Penomoran terbukti memakai tanggal toko: pada 04:05 WIB (UTC masih 31 Oktober) host uji
+  menghasilkan `ORD-20261101-0003` dan seterusnya.
+- Isi paket: 393 berkas, host `1.2.10.0`, peluncur `1.2.10`, bebas `.pdb`/DB/`jwt.key`/`.env`,
+  hash cocok dengan `BUILD-INFO.txt` dan `SHA256SUMS.txt`; `NotSigned` pada EXE maupun MSI.
+- Belum dijalankan untuk 1.2.10: pasang/tingkatkan/copot, turun versi, kanal silang EXE↔MSI,
+  dan perangkat kasir fisik.
+
+Bukti terakhir 1.2.9 (2026-10-31):
 
 - 392 tes otomatis hijau (Domain 83, Application 51, Infrastructure 142, UI 116).
 - Biner yang benar-benar dikemas lulus 169 pemeriksaan perilaku dan 25 pemeriksaan

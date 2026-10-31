@@ -137,25 +137,40 @@ public class SalesOrderRepository : ISalesOrderRepository
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
-        // CreatedAt disimpan ISO, jadi perbandingan teks setengah terbuka sudah tepat: [from, to).
+        // Rentang datang sebagai tanggal kalender toko, sedangkan CreatedAt disimpan UTC.
+        // Batasnya diterjemahkan dulu ke UTC, lalu jam UTC tiap baris dipetakan balik ke tanggal
+        // toko. Cara lama (substr tanggal UTC) menaruh penjualan 00:00-06:59 WIB pada hari kemarin.
+        var (dariHari, sampaiHari, dariTeks, sampaiTeks) = RentangTokoUtc(from, to);
         cmd.CommandText = @"
-            SELECT substr(o.CreatedAt, 1, 10) AS Hari,
+            SELECT substr(o.CreatedAt, 1, 13) AS Jam,
                    SUM(CASE WHEN o.Status <> 'Cancelled' THEN 1 ELSE 0 END) AS JumlahPesanan,
                    SUM(CASE WHEN o.Status = 'Cancelled' THEN 1 ELSE 0 END) AS JumlahBatal,
                    COALESCE(SUM(CASE WHEN o.Status <> 'Cancelled' THEN o.Quantity ELSE 0 END), 0) AS Kuantitas,
                    COALESCE(SUM(CASE WHEN o.Status <> 'Cancelled' THEN o.TotalAmount ELSE 0 END), 0) AS Nilai
             FROM SalesOrders o
-            WHERE o.CreatedAt >= @from AND o.CreatedAt < @to
-            GROUP BY Hari ORDER BY Hari;";
-        cmd.Parameters.AddWithValue("@from", from.ToString("yyyy-MM-dd"));
-        cmd.Parameters.AddWithValue("@to", to.ToString("yyyy-MM-dd"));
-        var list = new List<DailySalesSummary>();
+            WHERE o.CreatedAt >= @dariHari AND o.CreatedAt < @sampaiHari
+              AND replace(substr(o.CreatedAt, 1, 19), 'T', ' ') >= @dariTeks
+              AND replace(substr(o.CreatedAt, 1, 19), 'T', ' ') < @sampaiTeks
+            GROUP BY Jam ORDER BY Jam;";
+        cmd.Parameters.AddWithValue("@dariHari", dariHari);
+        cmd.Parameters.AddWithValue("@sampaiHari", sampaiHari);
+        cmd.Parameters.AddWithValue("@dariTeks", dariTeks);
+        cmd.Parameters.AddWithValue("@sampaiTeks", sampaiTeks);
+        var list = new Dictionary<DateTime, (int Pesanan, int Batal, decimal Kuantitas, long Nilai)>();
         using var r = await cmd.ExecuteReaderAsync();
         while (await r.ReadAsync())
-            list.Add(new DailySalesSummary(
-                DateTime.Parse(r.GetString(0)), r.GetInt32(1), r.GetInt32(2),
-                Convert.ToDecimal(r.GetValue(3)), r.GetInt64(4)));
-        return list;
+        {
+            var tanggal = TanggalToko(r.GetString(0));
+            var ada = list.TryGetValue(tanggal, out var terkumpul) ? terkumpul : (0, 0, 0m, 0L);
+            list[tanggal] = (
+                ada.Item1 + r.GetInt32(1),
+                ada.Item2 + r.GetInt32(2),
+                ada.Item3 + Convert.ToDecimal(r.GetValue(3)),
+                ada.Item4 + r.GetInt64(4));
+        }
+        return list.OrderBy(h => h.Key)
+            .Select(h => new DailySalesSummary(h.Key, h.Value.Pesanan, h.Value.Batal, h.Value.Kuantitas, h.Value.Nilai))
+            .ToList();
     }
 
     public async Task<IReadOnlyList<ProductSalesSummary>> GetTopProductSalesAsync(DateTime from, DateTime to, int take)
@@ -164,6 +179,7 @@ public class SalesOrderRepository : ISalesOrderRepository
         var cmd = conn.CreateCommand();
         // Produk nonaktif tidak punya nama aktif, sama seperti daftar produk yang bisa dipilih di kasir:
         // pesanannya masuk keranjang "tanpa produk terdaftar", bukan diberi nama produk yang sudah dimatikan.
+        var (dariHari, sampaiHari, dariTeks, sampaiTeks) = RentangTokoUtc(from, to);
         cmd.CommandText = @"
             SELECT COALESCE(pt.Name, 'Pesanan tanpa produk terdaftar') AS Nama,
                    COUNT(*) AS JumlahPesanan,
@@ -171,12 +187,16 @@ public class SalesOrderRepository : ISalesOrderRepository
                    COALESCE(SUM(o.TotalAmount), 0) AS Nilai
             FROM SalesOrders o
             LEFT JOIN ProductTemplates pt ON pt.Id = o.ProductTemplateId AND pt.IsActive = 1
-            WHERE o.Status <> 'Cancelled' AND o.CreatedAt >= @from AND o.CreatedAt < @to
+            WHERE o.Status <> 'Cancelled' AND o.CreatedAt >= @dariHari AND o.CreatedAt < @sampaiHari
+              AND replace(substr(o.CreatedAt, 1, 19), 'T', ' ') >= @dariTeks
+              AND replace(substr(o.CreatedAt, 1, 19), 'T', ' ') < @sampaiTeks
             GROUP BY Nama
             ORDER BY Nilai DESC, Nama ASC
             LIMIT @take;";
-        cmd.Parameters.AddWithValue("@from", from.ToString("yyyy-MM-dd"));
-        cmd.Parameters.AddWithValue("@to", to.ToString("yyyy-MM-dd"));
+        cmd.Parameters.AddWithValue("@dariHari", dariHari);
+        cmd.Parameters.AddWithValue("@sampaiHari", sampaiHari);
+        cmd.Parameters.AddWithValue("@dariTeks", dariTeks);
+        cmd.Parameters.AddWithValue("@sampaiTeks", sampaiTeks);
         cmd.Parameters.AddWithValue("@take", take);
         var list = new List<ProductSalesSummary>();
         using var r = await cmd.ExecuteReaderAsync();
@@ -184,6 +204,33 @@ public class SalesOrderRepository : ISalesOrderRepository
             list.Add(new ProductSalesSummary(
                 r.GetString(0), r.GetInt32(1), Convert.ToDecimal(r.GetValue(2)), r.GetInt64(3)));
         return list;
+    }
+
+    /// <summary>
+    /// Batas UTC untuk rentang tanggal toko: dua versi, "yyyy-MM-dd" untuk saringan kasar yang
+    /// tetap memakai indeks CreatedAt, dan cap waktu penuh untuk saringan tepat. Versi penuh
+    /// dibandingkan setelah 'T' diganti spasi supaya baris lama berformat "yyyy-MM-dd HH:mm:ss"
+    /// tidak salah urut terhadap baris baru berformat ISO.
+    /// </summary>
+    private static (string DariHari, string SampaiHari, string DariTeks, string SampaiTeks) RentangTokoUtc(
+        DateTime from, DateTime to)
+    {
+        var dari = BusinessTime.AwalHariUtc(from);
+        var sampai = BusinessTime.AwalHariUtc(to);
+        return (dari.ToString("yyyy-MM-dd"),
+                sampai.Date.AddDays(1).ToString("yyyy-MM-dd"),
+                dari.ToString("yyyy-MM-dd HH:mm:ss"),
+                sampai.ToString("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    // Jam UTC dikelompokkan per jam, lalu tiap jam dipetakan ke tanggal toko. Untuk zona
+    // ber-offset jam bulat (seluruh Indonesia) pemetaan ini tepat per menit; zona ber-offset
+    // 30/45 menit hanya bisa bergeser pada jam pertama/terakhir hari itu.
+    private static DateTime TanggalToko(string jamUtc)
+    {
+        var waktu = DateTime.ParseExact(jamUtc.Replace('T', ' '), "yyyy-MM-dd HH",
+            System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None);
+        return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(waktu, DateTimeKind.Utc), BusinessTime.Zone).Date;
     }
 
     // Sisa bayar dihitung di SQL agar sama dengan RemainingAmount() setelah pembayaran dimuat.

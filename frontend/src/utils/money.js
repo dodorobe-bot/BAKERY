@@ -62,3 +62,24 @@ export const formatInstantDate = (value) => {
   const b = bagianWaktu(value);
   return b ? `${b.year}-${b.month}-${b.day}` : '-';
 };
+
+// Tanggal kalender toko dari sebuah cap waktu. new Date().toISOString() memakai UTC, jadi
+// antara 00:00-06:59 WIB tanggalnya masih kemarin; default rentang laporan harus memakai
+// kalender toko seperti kolom tanggal lain di aplikasi.
+export const tanggalTokoISO = (waktu = new Date()) => {
+  const b = bagianWaktu(waktu.toISOString());
+  return b ? `${b.year}-${b.month}-${b.day}` : '-';
+};
+
+// Selisih hari antara dua tanggal bisnis "YYYY-MM-DD" tanpa melihat zona perangkat.
+export const selisihHariBisnis = (tanggal, pembanding = tanggalTokoISO()) => {
+  const keHari = (teks) => {
+    const [tahun, bulan, hari] = String(teks ?? '').slice(0, 10).split('-').map(Number);
+    if (!tahun || !bulan || !hari) return null;
+    return Date.UTC(tahun, bulan - 1, hari) / 86400000;
+  };
+  const a = keHari(pembanding);
+  const b = keHari(tanggal);
+  return a === null || b === null ? null : a - b;
+};
+

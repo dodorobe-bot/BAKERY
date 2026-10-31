@@ -131,7 +131,7 @@ public class ExportService
             page.Footer().AlignCenter().Text(t =>
             {
                 t.Span("Dicetak: ");
-                t.Span(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+                t.Span(BusinessTime.Now().ToString("dd/MM/yyyy HH:mm"));
             });
         })).GeneratePdf();
     }
@@ -286,11 +286,11 @@ public class ExportService
         if (format.Equals("pdf", StringComparison.OrdinalIgnoreCase))
         {
             var bytes = BuildStockPdf(ingredients, namaToko);
-            return (bytes, "application/pdf", $"stok-{DateTime.Now:yyyy-MM-dd}.pdf");
+            return (bytes, "application/pdf", $"stok-{BusinessTime.Now():yyyy-MM-dd}.pdf");
         }
         var xls = BuildStockExcel(ingredients, namaToko);
         return (xls, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"stok-{DateTime.Now:yyyy-MM-dd}.xlsx");
+            $"stok-{BusinessTime.Now():yyyy-MM-dd}.xlsx");
     }
 
     private byte[] BuildStockPdf(IEnumerable<Ingredient> ingredients, string namaToko)
@@ -302,7 +302,7 @@ public class ExportService
             {
                 col.Item().Text(namaToko).FontSize(18).SemiBold();
                 col.Item().Text("Laporan Stok Bahan Baku").FontSize(13);
-                col.Item().Text($"Tanggal: {DateTime.Now:dd/MM/yyyy}").FontSize(10);
+                col.Item().Text($"Tanggal: {BusinessTime.Now():dd/MM/yyyy}").FontSize(10);
                 col.Item().LineHorizontal(1);
             });
             page.Content().Table(table =>
@@ -376,11 +376,11 @@ public class ExportService
         if (format.Equals("pdf", StringComparison.OrdinalIgnoreCase))
         {
             var bytes = BuildPurchasesPdf(list, namaToko);
-            return (bytes, "application/pdf", $"pembelian-{DateTime.Now:yyyy-MM-dd}.pdf");
+            return (bytes, "application/pdf", $"pembelian-{BusinessTime.Now():yyyy-MM-dd}.pdf");
         }
         var xls = BuildPurchasesExcel(list, namaToko);
         return (xls, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"pembelian-{DateTime.Now:yyyy-MM-dd}.xlsx");
+            $"pembelian-{BusinessTime.Now():yyyy-MM-dd}.xlsx");
     }
 
     private byte[] BuildPurchasesPdf(List<PurchaseOrder> orders, string namaToko)
@@ -392,7 +392,7 @@ public class ExportService
             {
                 col.Item().Text(namaToko).FontSize(18).SemiBold();
                 col.Item().Text("Laporan Pembelian").FontSize(13);
-                col.Item().Text($"Tanggal: {DateTime.Now:dd/MM/yyyy}").FontSize(10);
+                col.Item().Text($"Tanggal: {BusinessTime.Now():dd/MM/yyyy}").FontSize(10);
                 col.Item().LineHorizontal(1);
             });
             page.Content().Table(table =>

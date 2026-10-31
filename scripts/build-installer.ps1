@@ -5,7 +5,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$Version = "1.2.9",
+    [string]$Version = "1.2.10",
     [switch]$SkipTests,
     [string]$SignThumbprint = ""
 )

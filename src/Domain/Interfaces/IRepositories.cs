@@ -329,10 +329,10 @@ public interface IPurchaseOrderRepository
 public interface IDocumentSequenceRepository
 {
     /// <summary>
-    /// Nomor berikutnya untuk satu jenis dokumen pada satu hari (UTC). Setiap panggilan
+    /// Nomor berikutnya untuk satu jenis dokumen pada satu hari kalender toko. Setiap panggilan
     /// menaikkan urutan, jadi dua dokumen yang dibuat berdekatan tidak pernah berbagi nomor.
     /// </summary>
-    Task<string> NextNumberAsync(DocumentKind kind, DateTime dayUtc);
+    Task<string> NextNumberAsync(DocumentKind kind, DateTime hariToko);
 }
 
 /// <summary>Catatan satu kunci idempotensi: rute pemiliknya, hasil, dan kapan ditutup.</summary>
