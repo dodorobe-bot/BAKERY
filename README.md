@@ -5,6 +5,7 @@ Aplikasi desktop untuk toko dan pabrik roti: penjualan, produksi, pembelian, sto
 - Versi saat ini: **1.2.9**, skema basis data **18**
 - Status rilis: **READY FOR LIMITED PILOT** untuk 1.2.9 (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima), paket **NotSigned**
 - Platform: Windows 10/11 x64
+- Riwayat perubahan: [CHANGELOG.md](CHANGELOG.md)
 
 ## Arsitektur
 
@@ -218,7 +219,8 @@ Yang **belum** dibuktikan dan tidak boleh diklaim:
 
 ## Dokumentasi
 
-- [Verifikasi paket 1.2.9](docs/verifikasi-paket-1.2.9-2026-10-31.md) — isi paket, uji payload, pagar installer, dan uji pasang yang belum terbukti
+- [Changelog](CHANGELOG.md) — rincian perubahan tiap versi, termasuk seluruh BUG 1.2.9
+- [Verifikasi paket 1.2.9](docs/verifikasi-paket-1.2.9-2026-10-31.md) — isi paket, uji payload, pagar installer, dan atestasi uji pasang pemilik
 - [Verifikasi paket 1.2.7](docs/verifikasi-paket-1.2.7-2026-10-30.md) — isi paket, uji payload, peningkatan MSI, pasang/copot EXE
 - [Laporan GO/NO-GO](docs/laporan-go-no-go-2026-10-29.md) — keputusan kesiapan dan syarat pilot
 - [Cadangan & pemulihan bencana](docs/pemulihan-bencana.md) — panduan pemilik dan teknisi
