@@ -1,0 +1,39 @@
+SERUNI 22 BAKERY - UJI FISIK PERANGKAT KASIR
+Waktu: 2026-11-01 04:35:58 +07:00
+Mode: Print
+Printer: Microsoft Print to PDF
+Lebar kertas: 58 mm
+
+Windows: Microsoft Windows 11 Pro 10.0.26300 64-bit
+Runtime .NET 8: Microsoft.NETCore.App 8.0.32 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+Driver printer: Microsoft Print To PDF
+Port printer: PORTPROMPT:
+Status printer: Normal
+Ukuran kertas Windows: (driver tidak melaporkan; atur dari layar Perangkat Kasir)
+
+Host uji: http://127.0.0.1:51117 (basis data sementara C:\Users\Administrator\AppData\Local\Temp\seruni-pos-fisik-20261101-043558\uji.db)
+Ganti sandi awal: HTTP 200
+Login Owner: HTTP 200
+Simpan pengaturan: HTTP 200
+Pesanan uji: #1 dibuat (HTTP 201)
+Cetak struk uji: HTTP 200 {"jobId":1,"pesan":"Struk terkirim ke printer."}
+Cetak struk pesanan: HTTP 200 {"jobId":2,"pesan":"Struk terkirim ke printer."}
+Jumlah pekerjaan cetak: 2
+  job #2 Receipt Microsoft Print to PDF status=Printed attempts=1 galat=
+  job #1 Test Microsoft Print to PDF status=Printed attempts=1 galat=
+Total pesanan sebelum/sesudah: 2500000 / 2500000
+Status pesanan sebelum/sesudah: 0 / 0
+Pesanan dengan nama uji: 1
+
+PERIKSA MANUAL (wajib, tidak bisa dibuktikan skrip):
+  1. Kertas struk uji keluar utuh: nama toko, garis, Total, rupiah, tidak terpotong.
+  2. Jumlah kolom sesuai lebar: 80 mm = 48 kolom, 58 mm = 32 kolom.
+  3. Potongan kertas rapi bila printer punya pemotong otomatis.
+  4. Mode Failure: saat printer mati/kertas habis, catat apa yang tampil di layar dan di
+     antrean Windows. Windows dapat menerima pekerjaan walau kertas tidak keluar; itu bukan PASS.
+  5. Nyalakan printer/pasang kertas, cetak ulang dari layar Penjualan, pastikan struk kedua
+     keluar dan pesanan tidak bertambah.
+
+HASIL OTOMATIS: PASS - pekerjaan tercatat, pesanan utuh. Hasil cetak fisik menunggu periksa manual.
+
+Berkas bukti: C:\Users\Administrator\AppData\Local\Temp\seruni-pos-fisik-20261101-043558\bukti.txt

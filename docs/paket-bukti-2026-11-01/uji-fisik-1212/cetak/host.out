@@ -1,0 +1,87 @@
+[18:08:12 INF] Jwt:Secret dibuat otomatis untuk instalasi ini dan disimpan di C:\Users\Administrator\AppData\Local\Temp\seruni-pos-fisik-20261101-180809\jwt.key
+[18:08:12 INF] Migrasi 1 diterapkan.
+[Migration] Applied version 1
+[18:08:12 INF] Migrasi 2 diterapkan.
+[Migration] Applied version 2
+[18:08:12 INF] Migrasi 3 diterapkan.
+[Migration] Applied version 3
+[18:08:12 INF] Migrasi 4 diterapkan.
+[Migration] Applied version 4
+[18:08:12 INF] Migrasi 5 diterapkan.
+[Migration] Applied version 5
+[18:08:12 INF] Migrasi 6 diterapkan.
+[Migration] Applied version 6
+[18:08:12 INF] Migrasi 7 diterapkan.
+[Migration] Applied version 7
+[18:08:12 INF] Migrasi 8 diterapkan.
+[Migration] Applied version 8
+[18:08:12 INF] Migrasi 9 diterapkan.
+[Migration] Applied version 9
+[18:08:12 INF] Migrasi 10 diterapkan.
+[Migration] Applied version 10
+[18:08:12 INF] Migrasi 11 diterapkan.
+[Migration] Applied version 11
+[18:08:12 INF] Migrasi 12 diterapkan.
+[Migration] Applied version 12
+[18:08:12 INF] Migrasi 13 diterapkan.
+[Migration] Applied version 13
+[18:08:12 INF] Migrasi 14 diterapkan.
+[Migration] Applied version 14
+[18:08:12 INF] Migrasi 15 diterapkan.
+[Migration] Applied version 15
+[18:08:12 INF] Migrasi 16 diterapkan.
+[Migration] Applied version 16
+[18:08:12 INF] Migrasi 17 diterapkan.
+[Migration] Applied version 17
+[18:08:12 INF] Migrasi 18 diterapkan.
+[Migration] Applied version 18
+[18:08:12 INF] Seruni 22 Bakery service starting on 
+[18:08:12 INF] User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[18:08:12 INF] Now listening on: http://127.0.0.1:56373
+[18:08:12 INF] Application started. Press Ctrl+C to shut down.
+[18:08:12 INF] Hosting environment: Production
+[18:08:12 INF] Content root path: C:\tmp\uji-pindai-1212
+[18:08:12 INF] Request starting HTTP/1.1 GET http://127.0.0.1:56373/health - null null
+[18:08:12 INF] Executing endpoint 'HTTP: GET /health'
+[18:08:12 INF] Setting HTTP status code 200.
+[18:08:12 INF] Writing value of type '<>f__AnonymousType12`3' as Json.
+[18:08:12 INF] Executed endpoint 'HTTP: GET /health'
+[18:08:12 INF] Request finished HTTP/1.1 GET http://127.0.0.1:56373/health - 200 null application/json; charset=utf-8 158.321ms
+[18:08:13 INF] Request starting HTTP/1.1 POST http://127.0.0.1:56373/api/auth/login - application/json 42
+[18:08:13 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:08:13 INF] Setting HTTP status code 200.
+[18:08:13 INF] Writing value of type 'LoginResponse' as Json.
+[18:08:13 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:08:13 INF] Request finished HTTP/1.1 POST http://127.0.0.1:56373/api/auth/login - 200 null application/json; charset=utf-8 415.9944ms
+[18:08:13 INF] Request starting HTTP/1.1 POST http://127.0.0.1:56373/api/auth/change-password - application/json 64
+[18:08:13 INF] Executing endpoint 'HTTP: POST /api/auth/change-password'
+[18:08:14 INF] Setting HTTP status code 200.
+[18:08:14 INF] Executed endpoint 'HTTP: POST /api/auth/change-password'
+[18:08:14 WRN] [Lambat] POST /api/auth/change-password 200 763 ms (id -)
+[18:08:14 INF] Request finished HTTP/1.1 POST http://127.0.0.1:56373/api/auth/change-password - 200 0 null 766.6421ms
+[18:08:14 INF] Request starting HTTP/1.1 POST http://127.0.0.1:56373/api/auth/login - application/json 51
+[18:08:14 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:08:14 INF] Setting HTTP status code 200.
+[18:08:14 INF] Writing value of type 'LoginResponse' as Json.
+[18:08:14 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:08:14 INF] Request finished HTTP/1.1 POST http://127.0.0.1:56373/api/auth/login - 200 null application/json; charset=utf-8 256.0394ms
+[18:08:14 INF] Request starting HTTP/1.1 PUT http://127.0.0.1:56373/api/devices/settings - application/json 148
+[18:08:14 INF] Executing endpoint 'HTTP: PUT /api/devices/settings'
+[18:08:14 INF] Setting HTTP status code 200.
+[18:08:14 INF] Writing value of type 'DeviceSettings' as Json.
+[18:08:14 INF] Executed endpoint 'HTTP: PUT /api/devices/settings'
+[18:08:14 INF] Request finished HTTP/1.1 PUT http://127.0.0.1:56373/api/devices/settings - 200 null application/json; charset=utf-8 24.0737ms
+[18:08:14 INF] Request starting HTTP/1.1 POST http://127.0.0.1:56373/api/orders - application/json 190
+[18:08:14 INF] Executing endpoint 'HTTP: POST /api/orders'
+[18:08:14 INF] Setting HTTP status code 201.
+[18:08:14 INF] Writing value of type '<>f__AnonymousType19`1' as Json.
+[18:08:14 INF] Executed endpoint 'HTTP: POST /api/orders'
+[18:08:14 INF] Request finished HTTP/1.1 POST http://127.0.0.1:56373/api/orders - 201 null application/json; charset=utf-8 53.6588ms
+[18:08:14 INF] Request starting HTTP/1.1 GET http://127.0.0.1:56373/api/orders/1 - null null
+[18:08:14 INF] Executing endpoint 'HTTP: GET /api/orders/{id:int}'
+[18:08:14 INF] Setting HTTP status code 200.
+[18:08:14 INF] Writing value of type 'SalesOrder' as Json.
+[18:08:14 INF] Executed endpoint 'HTTP: GET /api/orders/{id:int}'
+[18:08:14 INF] Request finished HTTP/1.1 GET http://127.0.0.1:56373/api/orders/1 - 200 null application/json; charset=utf-8 24.1294ms
+[18:08:14 INF] Request starting HTTP/1.1 POST http://127.0.0.1:56373/api/devices/test-print - application/x-www-form-urlencoded 0
+[18:08:14 INF] Executing endpoint 'HTTP: POST /api/devices/test-print'

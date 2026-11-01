@@ -16,13 +16,21 @@
     powershell -NoProfile -ExecutionPolicy Bypass -File scripts\pos-physical-check.ps1 `
         -PrinterName "EPSON TM-T82" -PaperWidthMm 80 -AllowPrint
 
+  Jalur ESC/POS langsung (printer jaringan tanpa driver Windows):
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\pos-physical-check.ps1 `
+        -CetakMode escpos-raw -EscPosHost 192.168.1.50 -EscPosPort 9100 -EscPosPotong -AllowPrint
+
     ... -Mode Failure        # dijalankan saat printer DIMATIKAN atau kertas DIKELUARKAN
     ... -SkipPrint           # hanya merekam lingkungan + pesanan uji, tanpa mencetak
     (tanpa -AllowPrint / -SkipPrint: hanya merekam lingkungan printer, tidak menyentuh apa pun)
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)][string]$PrinterName,
+    [ValidateSet('windows-driver', 'escpos-raw')][string]$CetakMode = 'windows-driver',
+    [string]$PrinterName = '',
+    [string]$EscPosHost = '',
+    [ValidateRange(1, 65535)][int]$EscPosPort = 9100,
+    [switch]$EscPosPotong,
     [ValidateSet(58, 80)][int]$PaperWidthMm = 80,
     [ValidateSet('Print', 'Failure')][string]$Mode = 'Print',
     [switch]$AllowPrint,
@@ -31,6 +39,15 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$pakaiEscPos = $CetakMode -eq 'escpos-raw'
+if (-not $pakaiEscPos -and [string]::IsNullOrWhiteSpace($PrinterName)) {
+    Write-Host 'GAGAL: -PrinterName wajib diisi untuk -CetakMode windows-driver.'
+    exit 2
+}
+if ($pakaiEscPos -and [string]::IsNullOrWhiteSpace($EscPosHost)) {
+    Write-Host 'GAGAL: -EscPosHost wajib diisi untuk -CetakMode escpos-raw (contoh: 192.168.1.50).'
+    exit 2
+}
 $root = Split-Path -Parent $PSScriptRoot
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $buktiDir = Join-Path ([System.IO.Path]::GetTempPath()) "seruni-pos-fisik-$stamp"
@@ -66,8 +83,14 @@ function Selesai([int]$kode) {
 
 Tulis 'SERUNI 22 BAKERY - UJI FISIK PERANGKAT KASIR'
 Catat 'Waktu' (Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')
-Catat 'Mode' $Mode
-Catat 'Printer' $PrinterName
+Catat 'Mode uji' $Mode
+Catat 'Mode cetak' $CetakMode
+if ($pakaiEscPos) {
+    Catat 'Tujuan ESC/POS' ('tcp://' + $EscPosHost + ':' + $EscPosPort)
+    Catat 'Potong kertas' $(if ($EscPosPotong) { 'ya' } else { 'tidak' })
+} else {
+    Catat 'Printer' $PrinterName
+}
 Catat 'Lebar kertas' "$PaperWidthMm mm"
 Tulis ''
 
@@ -77,27 +100,40 @@ Catat 'Windows' ($os.Caption + ' ' + $os.Version + ' ' + $os.OSArchitecture)
 $runtime = & dotnet --list-runtimes 2>$null | Where-Object { $_ -like 'Microsoft.NETCore.App 8.*' }
 Catat 'Runtime .NET 8' (($runtime -join '; ') -replace '\s+', ' ')
 
-$printer = Get-Printer -Name $PrinterName -ErrorAction SilentlyContinue
-if ($null -eq $printer) {
-    Tulis ''
-    Tulis "GAGAL: printer '$PrinterName' tidak terpasang di Windows ini."
-    Tulis 'Pasang driver resmi printer lebih dulu, lalu ulangi. Aplikasi tidak memasang driver sendiri.'
-    Tulis ''
-    Tulis 'Printer yang terpasang saat ini:'
-    Get-Printer | Select-Object Name, DriverName, PortName, PrinterStatus | Format-Table -AutoSize |
-        Out-String | ForEach-Object { Tulis $_.TrimEnd() }
-    $gagal = 1
-    Selesai 1
-}
+if ($pakaiEscPos) {
+    # Jalur ESC/POS tidak menyentuh spooler Windows sama sekali, jadi nama printer tidak perlu
+    # ada di Windows. Yang dicatat di sini adalah tujuan TCP-nya.
+    Catat 'Driver printer' 'tidak dipakai (byte ESC/POS dikirim langsung ke port printer)'
+    Catat 'Port printer' ('tcp://' + $EscPosHost + ':' + $EscPosPort)
+    try {
+        $ujiTcp = Test-NetConnection -ComputerName $EscPosHost -Port $EscPosPort -InformationLevel Quiet
+        Catat 'Port terbuka sebelum cetak' $(if ($ujiTcp) { 'ya' } else { 'tidak' })
+    } catch {
+        Catat 'Port terbuka sebelum cetak' '(Test-NetConnection tidak tersedia; hasil cetak yang menentukan)'
+    }
+} else {
+    $printer = Get-Printer -Name $PrinterName -ErrorAction SilentlyContinue
+    if ($null -eq $printer) {
+        Tulis ''
+        Tulis "GAGAL: printer '$PrinterName' tidak terpasang di Windows ini."
+        Tulis 'Pasang driver resmi printer lebih dulu, lalu ulangi. Aplikasi tidak memasang driver sendiri.'
+        Tulis ''
+        Tulis 'Printer yang terpasang saat ini:'
+        Get-Printer | Select-Object Name, DriverName, PortName, PrinterStatus | Format-Table -AutoSize |
+            Out-String | ForEach-Object { Tulis $_.TrimEnd() }
+        $gagal = 1
+        Selesai 1
+    }
 
-Catat 'Driver printer' $printer.DriverName
-Catat 'Port printer' $printer.PortName
-Catat 'Status printer' $printer.PrinterStatus
-try {
-    $konfig = Get-PrintConfiguration -PrinterName $PrinterName -ErrorAction Stop
-    Catat 'Ukuran kertas Windows' ($konfig.PaperSize + ' / ' + $konfig.Duplexing)
-} catch {
-    Catat 'Ukuran kertas Windows' '(driver tidak melaporkan; atur dari layar Perangkat Kasir)'
+    Catat 'Driver printer' $printer.DriverName
+    Catat 'Port printer' $printer.PortName
+    Catat 'Status printer' $printer.PrinterStatus
+    try {
+        $konfig = Get-PrintConfiguration -PrinterName $PrinterName -ErrorAction Stop
+        Catat 'Ukuran kertas Windows' ($konfig.PaperSize + ' / ' + $konfig.Duplexing)
+    } catch {
+        Catat 'Ukuran kertas Windows' '(driver tidak melaporkan; atur dari layar Perangkat Kasir)'
+    }
 }
 Tulis ''
 
@@ -201,10 +237,20 @@ try {
     Catat 'Login Owner' "HTTP $($masuk.Status)"
 
     # ── Pengaturan perangkat pada basis data sementara ───────────────────────
+    # Hanya kunci milik mode yang diuji yang dikirim, sama seperti layar Perangkat Kasir:
+    # mengirim device.printer.name saat mode escpos-raw akan ditolak server (nama itu diperiksa
+    # terhadap katalog Windows), dan mengirim host kosong saat mode driver menghapus alamat tersimpan.
     $setelan = @{
-        'device.printer.name' = $PrinterName
+        'device.printer.mode' = $CetakMode
         'device.paper.width_mm' = [string]$PaperWidthMm
         'device.printer.auto_print' = '0'
+    }
+    if ($pakaiEscPos) {
+        $setelan['device.escpos.host'] = $EscPosHost
+        $setelan['device.escpos.port'] = [string]$EscPosPort
+        $setelan['device.escpos.cut'] = $(if ($EscPosPotong) { '1' } else { '0' })
+    } else {
+        $setelan['device.printer.name'] = $PrinterName
     }
     $simpan = Kirim 'Put' '/api/devices/settings' $setelan $token
     Catat 'Simpan pengaturan' "HTTP $($simpan.Status)"
@@ -303,7 +349,12 @@ Tulis '  1. Kertas struk uji keluar utuh: nama toko, garis, Total, rupiah, tidak
 Tulis '  2. Jumlah kolom sesuai lebar: 80 mm = 48 kolom, 58 mm = 32 kolom.'
 Tulis '  3. Potongan kertas rapi bila printer punya pemotong otomatis.'
 Tulis '  4. Mode Failure: saat printer mati/kertas habis, catat apa yang tampil di layar dan di'
-Tulis '     antrean Windows. Windows dapat menerima pekerjaan walau kertas tidak keluar; itu bukan PASS.'
+if ($pakaiEscPos) {
+    Tulis '     riwayat pekerjaan cetak. Jalur ESC/POS tidak punya antrean Windows: setiap kegagalan'
+    Tulis '     harus tercatat Gagal dengan pesanan tetap utuh, dan struk tidak boleh keluar rangkap.'
+} else {
+    Tulis '     antrean Windows. Windows dapat menerima pekerjaan walau kertas tidak keluar; itu bukan PASS.'
+}
 Tulis '  5. Nyalakan printer/pasang kertas, cetak ulang dari layar Penjualan, pastikan struk kedua'
 Tulis '     keluar dan pesanan tidak bertambah.'
 Tulis ''

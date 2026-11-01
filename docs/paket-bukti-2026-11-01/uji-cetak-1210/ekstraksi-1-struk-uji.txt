@@ -1,0 +1,32 @@
+       Seruni 22 Bakery
+
+Sistem Manajemen Toko Kue
+
+Kantor Sentral & Toko Utama
+
+       UJI CETAK PERANGKAT
+
+================================
+
+Printer Microsoft Print to PDF
+
+Lebar kertas 58 mm / 32 kolom
+
+Waktu  01 November 2026 04:36
+
+--------------------------------
+
+Contoh baris transaksi:
+
+2 x Rp 15.000               Rp 300
+
+--------------------------------
+
+Jika tulisan ini terbaca utuh
+
+tanpa terpotong, lebar kertas
+
+sudah sesuai dengan printer.
+
+       SELESAI
+

@@ -9,18 +9,52 @@ public sealed record DeviceSettings(
     string PrinterName,
     int PaperWidthMm,
     bool AutoPrint,
-    string ScannerSuffix)
+    string ScannerSuffix,
+    string Mode = DeviceSettings.ModeDriverWindows,
+    string EscPosHost = "",
+    int EscPosPort = 9100,
+    bool EscPosPotong = false)
 {
     public const string KunciPrinter = "device.printer.name";
     public const string KunciMode = "device.printer.mode";
     public const string KunciLebar = "device.paper.width_mm";
     public const string KunciAutoPrint = "device.printer.auto_print";
     public const string KunciSuffix = "device.scanner.suffix";
+    public const string KunciEscPosHost = "device.escpos.host";
+    public const string KunciEscPosPort = "device.escpos.port";
+    public const string KunciEscPosPotong = "device.escpos.cut";
 
     public const string ModeDriverWindows = "windows-driver";
+    public const string ModeEscPosRaw = "escpos-raw";
 
     public static readonly int[] LebarDidukung = [58, 80];
+    public const int PortEscPosBawaan = 9100;
+
+    /// <summary>
+    /// Tujuan yang dilaporkan ke layar dan ke antrean cetak. Pada jalur raw nama printer Windows
+    /// tidak dipakai: riwayat harus jujur menunjukkan alamat yang dikirim, bukan driver yang
+    /// tidak pernah disentuh. Kosong bila jalur raw belum punya alamat.
+    /// </summary>
+    public string NamaTujuan => string.Equals(Mode, ModeEscPosRaw, StringComparison.OrdinalIgnoreCase)
+        ? (string.IsNullOrWhiteSpace(EscPosHost) ? "" : $"tcp://{EscPosHost}:{EscPosPort}")
+        : PrinterName;
+
+    public bool PakaiEscPos => string.Equals(Mode, ModeEscPosRaw, StringComparison.OrdinalIgnoreCase);
 }
+
+/// <summary>
+/// Tujuan cetak yang sudah terseleksi. Layanan yang membentuknya dari pengaturan; adaptor
+/// tidak pernah membaca basis data atau registry sendiri.
+/// </summary>
+/// <param name="PotongKertas">hanya dipakai jalur ESC/POS; jalur driver mengabaikannya karena
+/// pemotongan mengikuti kemampuan driver printer.</param>
+public sealed record PrintTarget(
+    string Mode,
+    string PrinterName,
+    string Host,
+    int Port,
+    int PaperWidthMm,
+    bool PotongKertas = false);
 
 public sealed record PrinterInfo(string Name, bool IsDefault);
 
@@ -43,7 +77,7 @@ public interface IReceiptPrinter
 {
     bool Tersedia { get; }
     string NamaAdapter { get; }
-    Task CetakAsync(string printerName, string isi, int paperWidthMm, CancellationToken ct);
+    Task CetakAsync(PrintTarget target, string isi, CancellationToken ct);
 }
 
 /// <summary>Daftar printer terpasang. Implementasi tidak boleh mengarang nama.</summary>

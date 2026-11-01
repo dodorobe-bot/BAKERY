@@ -1,9 +1,9 @@
-﻿Versi          : 1.2.10
-Installer      : D:\bakery-desktop\dist\installer\Seruni22Bakery_Setup_v1.2.10.exe
-Ukuran         : 42665720 byte
-SHA-256 setup  : c882b69873cbd7dc51ef58761fe6d38ff2559fbe35141399b7023bced8cd78c5
-SHA-256 host dll: c265d30907d86f767756969df57a47aac000329fc3f4217ba269e06fe6a6d707
-SHA-256 peluncur : d6e56cdce1a27bf37569f6bd193b1dfda435711196da54dac5d11bb1c2bcf8ae
-SHA-256 index  : d9f8f20f0609a070f147f17fce9f15a562c33a3a0e352fc983d78ad7a73e2d1c
+﻿Versi          : 1.2.12
+Installer      : D:\bakery-desktop\dist\installer\Seruni22Bakery_Setup_v1.2.12.exe
+Ukuran         : 42675344 byte
+SHA-256 setup  : f43f4e8583cc1df84354039925f45046aafe93a6f3996b112c80501229a506c1
+SHA-256 host dll: ccfdc91b193a87b9acb9ab9418cbbb6cf4304f3de604101b4c331f8305f9ad7d
+SHA-256 peluncur : 44290eb7a43cc662e607f097b7bb670cf8fdbf4d1fdf82baf58308c814ea5e27
+SHA-256 index  : 954c5d65e5e15270d40d4c9b9c435da260172be631bc820f4f84012dc96b4617
 Tanda tangan   : NotSigned
-Dibuat         : 2026-11-01 03:45:24 +07:00
+Dibuat         : 2026-11-01 16:54:21 +07:00

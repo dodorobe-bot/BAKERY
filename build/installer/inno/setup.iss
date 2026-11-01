@@ -9,7 +9,7 @@
 ; =====================================================================
 
 #ifndef MyAppVersion
-  #define MyAppVersion "1.2.10"
+  #define MyAppVersion "1.2.12"
 #endif
 #define MyAppVersionQuad MyAppVersion + ".0"
 

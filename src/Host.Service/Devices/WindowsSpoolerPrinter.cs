@@ -18,8 +18,10 @@ public sealed class WindowsSpoolerPrinter : IReceiptPrinter
     public bool Tersedia => OperatingSystem.IsWindows();
     public string NamaAdapter => "windows-driver";
 
-    public Task CetakAsync(string printerName, string isi, int paperWidthMm, CancellationToken ct)
+    public Task CetakAsync(PrintTarget target, string isi, CancellationToken ct)
     {
+        var printerName = target.PrinterName;
+        var paperWidthMm = target.PaperWidthMm;
         if (!Tersedia)
             throw new PlatformNotSupportedException("Pencetakan langsung hanya tersedia di Windows.");
         if (string.IsNullOrWhiteSpace(printerName))

@@ -4,6 +4,91 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
+## [1.2.12] — 2026-11-01
+
+Status: **NOT READY**. Yang sudah dibuktikan: build Release, 489 tes otomatis lulus, gerbang
+verifikasi 28 langkah (169 pemeriksaan API, 0 gagal), isi paket EXE/MSI cocok dengan hasil
+publish, dua siklus hidup "server mati → hidup lagi" di peramban sungguhan, dan
+pasang/peningkatan/copot di Windows Sandbox bersih — 1.2.9 → 1.2.12, **105 pemeriksaan lulus
+0 gagal**, termasuk jalur ESC/POS dari biner hasil peningkatan dan pembuktian data pengguna
+tetap utuh setelah copot (`docs\paket-bukti-2026-11-01\upgrade-1212-sandbox\`). Yang **belum**:
+pencetakan ke printer fisik (thermal 80 mm maupun printer jaringan), pemindai barcode fisik, dan
+laci uang — jalur ESC/POS baru terbukti sampai emulator loopback; pemasangan oleh pemilik di PC
+kasir dan uji di Windows 10 juga belum. Uji perangkat 2026-11-01 hanya bisa membuktikan alur
+pemindai lewat simulasi (14/14 lulus), sementara percobaan cetak driver ke pencetak virtual gagal
+karena port `PORTPROMPT:` menuntut dialog simpan; keduanya dicatat di
+`docs\paket-bukti-2026-11-01\uji-fisik-1212\`. Paket **NotSigned** — 0 sertifikat Authenticode
+terpasang dan `signtool verify /pa` menolak keduanya. Skema basis data: **18** — tidak ada migrasi baru.
+
+Versi **1.2.11 tidak pernah diterbitkan**. Perbaikan struk yang semula direncanakan untuk 1.2.11
+digabung ke paket ini bersama jalur ESC/POS raw dan perbaikan ketahanan sambungan.
+
+Artefak:
+
+| Berkas | Ukuran | SHA-256 |
+|---|---|---|
+| `Seruni22Bakery_Setup_v1.2.12.exe` | 42.675.344 | `f43f4e8583cc1df84354039925f45046aafe93a6f3996b112c80501229a506c1` |
+| `Seruni22Bakery_v1.2.12_x64.msi` | 50.399.748 | `5ee109f9ece7cd24b4125adb5f999aedd8cd90d701a77bb9b2d8e9a8bd8fc859` |
+
+Berkas di dalam paket: host `Seruni22Bakery.Host.dll`
+`ccfdc91b193a87b9acb9ab9418cbbb6cf4304f3de604101b4c331f8305f9ad7d`, peluncur
+`Seruni22Bakery.exe` `44290eb7a43cc662e607f097b7bb670cf8fdbf4d1fdf82baf58308c814ea5e27`,
+bundel web `wwwroot/index.html` `954c5d65e5e15270d40d4c9b9c435da260172be631bc820f4f84012dc96b4617`,
+aset `index-dCrlHoiC.js` (596.507 bita) `602b04bf13dbcc1bd04ce0a56801824a78c8139e366f0f89870d61034cf77135`
+dan `index-RvdFb41s.css` (58.177 bita) `f3f9c629d71f73ca11b8fff08d8daafe5ffe5b9ad8ef2efae5d911b08ea06180`.
+MSI 1.2.12 memakai ProductCode `{1D0B5C27-C2B9-49AD-A675-BA390B33E3E3}`; UpgradeCode
+`B975F792-6F80-4D56-8A64-D274A044DCF1` dipertahankan sehingga peningkatan dari 1.2.9/1.2.10
+dikenali. Kedua paket bertanda tangan **NotSigned**. `dist\installer\SHA256SUMS.txt` memuat
+EXE dan MSI sekaligus dan lolos `sha256sum -c`; `build-msi.ps1` kini menambahkan baris MSI
+sendiri, karena sebelumnya daftar itu hanya berisi EXE.
+
+### Ditambahkan
+
+- **Jalur cetak ESC/POS raw.** Pengaturan Perangkat Kasir kini punya dua jalur: driver Windows
+  (GDI/spooler) dan ESC/POS langsung ke printer jaringan lewat TCP 9100. Urutan byte yang
+  dikirim: `ESC @` (inisialisasi), teks ASCII + LF, `ESC d 3` (umpan kertas), dan `GS V 0` hanya
+  bila opsi potong menyala. Perintah `ESC a/E/t/p` tidak pernah dikirim. Riwayat pekerjaan cetak
+  mencatat tujuan `tcp://ALAMAT:PORT`, dan kegagalan sambung dilaporkan dengan pesan bahasa toko.
+- **Bukti byte-level tanpa printer.** Emulator ESC/POS loopback menerima 1.572 bita untuk dua
+  struk uji (636 + 936) dan isinya diperiksa byte demi byte (`docs/pos-hardware.md` §5b.2).
+  Ini membuktikan perangkat lunak, **bukan** printer fisik.
+- **Alat uji perangkat fisik diperluas.** `scripts/pos-physical-check.ps1` menerima
+  `-CetakMode windows-driver|escpos-raw`, `-EscPosHost`, `-EscPosPort`, `-EscPosPotong`;
+  langkah A1–A7 di `docs/pos-uji-fisik.md` memuat perintah untuk kedua jalur.
+- **Ketahanan sambungan (banner "Server lokal tidak menjawab").** Tiga lapis:
+  1. Kestrel memakai `KeepAliveTimeout` 10 menit, jadi peramban tidak lagi memakai soket yang
+     sudah ditutup server setelah lama didiamkan.
+  2. Klien membedakan "server mati" dari "sambungan putus sekejap": kegagalan jaringan diprobes
+     ke `/health` (tanpa token). Aksi ber-kunci idempotensi boleh diulang karena gerbang server
+     (`src/Host.Service/Idempotensi.cs`) mengerjakan satu niat satu kali.
+  3. Layar tidak lagi menyuruh menekan "Coba lagi" saat server mati: ia menanyakan `/health`
+     setiap 4 detik dan memuat ulang sendiri begitu server hidup, dengan pesan
+     "Menunggu server hidup lagi…".
+
+### Diperbaiki
+
+- **Nominal contoh pada struk uji.** Baris contoh mencetak `2 x Rp 15.000 → Rp 300`; nilainya
+  sekarang `Rp 30.000` (`Money.Format(3_000_000)` di `src/Application/Devices/ReceiptRenderer.cs`).
+- **Batas waktu cetak.** Permintaan cetak memakai batas 60 detik, bukan 15 detik; pengukuran
+  nyata menunjukkan cetak ke antrean Windows bisa memakan ~12 detik dan dulu berakhir dengan
+  pesan gagal padahal struk tercetak.
+- **Pesan kegagalan jaringan tidak lagi menyesatkan.** Sebelumnya semua kegagalan jaringan
+  berbunyi "Server lokal tidak menjawab". Sekarang: server mati → pesan menunggu; GET yang
+  terputus sekejap → "Tekan Coba lagi"; aksi simpan yang terputus → peringatan agar tidak
+  menekan Simpan dua kali.
+
+### Pagar dan tes baru
+
+- `RenderTest_ContohTransaksiKonsisten` (kontrol negatif: MERAH pada kode lama) dan seluruh
+  `ReceiptRenderer` 17/17.
+- Tes encoder ESC/POS dan emulator loopback (urat byte dan ketiadaan perintah yang dilarang).
+- `scripts/verify.ps1` §2d: empat pagar baru — `KeepAliveTimeout` di host, probe `/health` di
+  klien, penantian server di layar, dan **bundel `desktop/` yang benar-benar disajikan** memuat
+  teks penantian itu (bundel basi pernah lolos di rilis sebelumnya).
+
+Rincian bukti: `docs/verifikasi-paket-1.2.12-2026-11-01.md`,
+`docs/paket-bukti-2026-11-01/uji-cetak-1210/README.md`, dan `docs/pos-hardware.md` §5b.
+
 ## [1.2.10] — 2026-11-01
 
 Status: **NOT READY** sampai uji pasang/peningkatan 1.2.9 → 1.2.10 dijalankan pada mesin
@@ -22,7 +107,11 @@ Artefak:
 Berkas di dalam paket: host `Seruni22Bakery.Host.dll`
 `c265d30907d86f767756969df57a47aac000329fc3f4217ba269e06fe6a6d707`, peluncur
 `Seruni22Bakery.exe` `d6e56cdce1a27bf37569f6bd193b1dfda435711196da54dac5d11bb1c2bcf8ae`,
-bundel web `wwwroot/index.html` `d9f8f20f0609a070f147f17fce9f15a562c33a0e352fc983d78ad7a73e2d1c`.
+bundel web `wwwroot/index.html` `d9f8f20f0609a070f147f17fce9f15a562c33a3a0e352fc983d78ad7a73e2d1c`,
+aset `index-B8lfbLcy.js` (589.329 bita) `834b32cd054c2d36b1ad598a8b435c5bab873f5f255811d4a9fc39abbae7fc54`
+dan `index-CoYZy02P.css` (57.262 bita) `9a26e0402c5cbe4c245a6a259b647e4c6a44ef53eac118923ce4664a36da23df`.
+MSI 1.2.10 memakai ProductCode `{F74073DE-74DE-47CB-B9A7-358F0DE5E8FF}`; UpgradeCode
+`B975F792-6F80-4D56-8A64-D274A044DCF1` dipertahankan sehingga peningkatan dari 1.2.9 dikenali.
 
 Rilis ini menutup sisa cacat satu-zona-waktu (keluarga BUG-06) yang tertinggal setelah 1.2.9,
 plus satu cacat peluncur yang muncul saat perintah pemeliharaan.
@@ -73,9 +162,10 @@ plus satu cacat peluncur yang muncul saat perintah pemeliharaan.
 | `dotnet test` Release (dalam `build-installer.ps1`) | Application 51, Domain 83, Infrastructure 143, UI 116 — total 393, 0 gagal |
 | `scripts/verify.ps1 -SkipTests` | 24 langkah lulus, 0 gagal |
 | Uji argumen peluncur | 5 pemeriksaan, 0 gagal (4 kasus penerusan + kontrol negatif merah di peluncur lama) |
-| Verifikasi API hidup | batch2 63, batch3 56, batch6 21, bug09 29 — masing-masing 0 gagal |
+| Verifikasi API hidup (host `bin\Release`, dipakai gerbang) | batch2 63, batch3 56, batch6 21, bug09 29 — masing-masing 0 gagal |
+| Verifikasi API hidup pada **biner yang dikemas** (`dist\publish-single\Seruni22Bakery.Host.exe`, `--Desktop` menunjuk `wwwroot` paket) | empat skrip di atas diulang pada empat basis data sementara: 63 + 56 + 21 + 29 = **169 pemeriksaan, 0 gagal**; `/health` menjawab `1.2.10`; setiap basis data berhenti di skema **18** dengan `integrity_check` ok |
 | Isi paket | 393 berkas; host `1.2.10.0`, peluncur `1.2.10`; bebas `.pdb`, `appsettings.Development.json`, `*.db/-wal/-shm`, `jwt.key`, `*.env`; hash cocok `BUILD-INFO.txt` dan `SHA256SUMS.txt` |
-| Isi MSI | 393 entri `File` pada basis perantara WiX dengan sumber `dist\publish-single\**` |
+| Isi MSI | 393 entri `File`; hasil decompilasi paket menampilkan `MajorUpgrade` dengan pesan turun versi, `LaunchCondition NOT (EXECHANNEL = "exe") AND NOT EXEINSTALLED`, dan `ChannelMarker` HKLM `Version=1.2.10` |
 
 ### Belum terbukti untuk rilis ini
 

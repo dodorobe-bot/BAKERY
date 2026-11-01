@@ -1,0 +1,73 @@
+[17:27:30 INF] Seruni 22 Bakery service starting on 
+[17:27:30 INF] User profile is available. Using 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[17:27:30 INF] Now listening on: http://127.0.0.1:5312
+[17:27:31 INF] Application started. Press Ctrl+C to shut down.
+[17:27:31 INF] Hosting environment: Production
+[17:27:31 INF] Content root path: C:\Program Files\Seruni 22 Bakery
+[17:27:31 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/health - null null
+[17:27:31 INF] Executing endpoint 'HTTP: GET /health'
+[17:27:31 INF] Setting HTTP status code 200.
+[17:27:31 INF] Writing value of type '<>f__AnonymousType12`3' as Json.
+[17:27:31 INF] Executed endpoint 'HTTP: GET /health'
+[17:27:31 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/health - 200 null application/json; charset=utf-8 511.9016ms
+[17:27:31 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5312/api/auth/login - application/json 68
+[17:27:31 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[17:27:32 INF] Setting HTTP status code 200.
+[17:27:32 INF] Writing value of type 'LoginResponse' as Json.
+[17:27:32 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[17:27:32 WRN] [Lambat] POST /api/auth/login 200 852 ms (id -)
+[17:27:32 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5312/api/auth/login - 200 null application/json; charset=utf-8 856.0555ms
+[17:27:32 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/products/1 - null null
+[17:27:32 INF] Executing endpoint 'HTTP: GET /api/products/{id:int}'
+[17:27:32 INF] Setting HTTP status code 200.
+[17:27:32 INF] Writing value of type '<>f__AnonymousType29`8' as Json.
+[17:27:32 INF] Executed endpoint 'HTTP: GET /api/products/{id:int}'
+[17:27:32 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/products/1 - 200 null application/json; charset=utf-8 62.3452ms
+[17:27:33 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/brand - null null
+[17:27:33 INF] Executing endpoint 'HTTP: GET /api/brand'
+[17:27:33 INF] Setting HTTP status code 200.
+[17:27:33 INF] Writing value of type '<>f__AnonymousType48`4' as Json.
+[17:27:33 INF] Executed endpoint 'HTTP: GET /api/brand'
+[17:27:33 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/brand - 200 null application/json; charset=utf-8 5.9597ms
+[17:27:33 INF] Request starting HTTP/1.1 PUT http://127.0.0.1:5312/api/settings - application/json 145
+[17:27:33 INF] Executing endpoint 'HTTP: PUT /api/settings'
+[17:27:33 INF] Setting HTTP status code 200.
+[17:27:33 INF] Writing value of type '<>f__AnonymousType50`1' as Json.
+[17:27:33 INF] Executed endpoint 'HTTP: PUT /api/settings'
+[17:27:33 INF] Request finished HTTP/1.1 PUT http://127.0.0.1:5312/api/settings - 200 null application/json; charset=utf-8 34.592ms
+[17:27:33 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/brand - null null
+[17:27:33 INF] Executing endpoint 'HTTP: GET /api/brand'
+[17:27:33 INF] Setting HTTP status code 200.
+[17:27:33 INF] Writing value of type '<>f__AnonymousType48`4' as Json.
+[17:27:33 INF] Executed endpoint 'HTTP: GET /api/brand'
+[17:27:33 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/brand - 200 null application/json; charset=utf-8 8.7406ms
+[17:27:33 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/system/self-check - null null
+[17:27:33 INF] Executing endpoint 'HTTP: GET /api/system/self-check'
+[17:27:33 INF] Setting HTTP status code 200.
+[17:27:33 INF] Writing value of type '<>f__AnonymousType43`6' as Json.
+[17:27:33 INF] Executed endpoint 'HTTP: GET /api/system/self-check'
+[17:27:33 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/system/self-check - 200 null application/json; charset=utf-8 28.6424ms
+[17:27:45 INF] Request starting HTTP/1.1 PUT http://127.0.0.1:5312/api/devices/settings - application/json 155
+[17:27:45 INF] Executing endpoint 'HTTP: PUT /api/devices/settings'
+[17:27:45 INF] Setting HTTP status code 200.
+[17:27:45 INF] Writing value of type 'DeviceSettings' as Json.
+[17:27:45 INF] Executed endpoint 'HTTP: PUT /api/devices/settings'
+[17:27:45 INF] Request finished HTTP/1.1 PUT http://127.0.0.1:5312/api/devices/settings - 200 null application/json; charset=utf-8 191.7237ms
+[17:27:45 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5312/api/devices/test-print - application/x-www-form-urlencoded 0
+[17:27:45 INF] Executing endpoint 'HTTP: POST /api/devices/test-print'
+[17:27:45 INF] Setting HTTP status code 200.
+[17:27:45 INF] Writing value of type '<>f__AnonymousType53`2' as Json.
+[17:27:45 INF] Executed endpoint 'HTTP: POST /api/devices/test-print'
+[17:27:45 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5312/api/devices/test-print - 200 null application/json; charset=utf-8 200.133ms
+[17:27:46 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/devices/status - null null
+[17:27:46 INF] Executing endpoint 'HTTP: GET /api/devices/status'
+[17:27:46 INF] Setting HTTP status code 200.
+[17:27:46 INF] Writing value of type '<>f__AnonymousType52`6' as Json.
+[17:27:46 INF] Executed endpoint 'HTTP: GET /api/devices/status'
+[17:27:46 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/devices/status - 200 null application/json; charset=utf-8 27.3945ms
+[17:27:46 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/devices/print-jobs - null null
+[17:27:46 INF] Executing endpoint 'HTTP: GET /api/devices/print-jobs'
+[17:27:46 INF] Setting HTTP status code 200.
+[17:27:46 INF] Writing value of type 'SelectListIterator`2' as Json.
+[17:27:46 INF] Executed endpoint 'HTTP: GET /api/devices/print-jobs'
+[17:27:46 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/devices/print-jobs - 200 null application/json; charset=utf-8 32.2057ms

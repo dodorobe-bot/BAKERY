@@ -1,0 +1,144 @@
+[18:06:55 INF] Jwt:Secret dibuat otomatis untuk instalasi ini dan disimpan di C:\tmp\uji-pindai-1212\jwt.key
+[18:06:55 INF] Migrasi 1 diterapkan.
+[Migration] Applied version 1
+[18:06:55 INF] Migrasi 2 diterapkan.
+[Migration] Applied version 2
+[18:06:55 INF] Migrasi 3 diterapkan.
+[Migration] Applied version 3
+[18:06:55 INF] Migrasi 4 diterapkan.
+[Migration] Applied version 4
+[18:06:55 INF] Migrasi 5 diterapkan.
+[Migration] Applied version 5
+[18:06:55 INF] Migrasi 6 diterapkan.
+[Migration] Applied version 6
+[18:06:55 INF] Migrasi 7 diterapkan.
+[Migration] Applied version 7
+[18:06:55 INF] Migrasi 8 diterapkan.
+[Migration] Applied version 8
+[18:06:55 INF] Migrasi 9 diterapkan.
+[Migration] Applied version 9
+[18:06:55 INF] Migrasi 10 diterapkan.
+[Migration] Applied version 10
+[18:06:55 INF] Migrasi 11 diterapkan.
+[Migration] Applied version 11
+[18:06:55 INF] Migrasi 12 diterapkan.
+[Migration] Applied version 12
+[18:06:55 INF] Migrasi 13 diterapkan.
+[Migration] Applied version 13
+[18:06:55 INF] Migrasi 14 diterapkan.
+[Migration] Applied version 14
+[18:06:55 INF] Migrasi 15 diterapkan.
+[Migration] Applied version 15
+[18:06:55 INF] Migrasi 16 diterapkan.
+[Migration] Applied version 16
+[18:06:55 INF] Migrasi 17 diterapkan.
+[Migration] Applied version 17
+[18:06:55 INF] Migrasi 18 diterapkan.
+[Migration] Applied version 18
+[18:06:55 INF] Seruni 22 Bakery service starting on 
+[18:06:56 INF] User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[18:06:56 INF] Now listening on: http://127.0.0.1:5412
+[18:06:56 INF] Application started. Press Ctrl+C to shut down.
+[18:06:56 INF] Hosting environment: Production
+[18:06:56 INF] Content root path: D:\bakery-desktop\dist\publish-single
+[18:06:56 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/health - null null
+[18:06:56 INF] Executing endpoint 'HTTP: GET /health'
+[18:06:56 INF] Setting HTTP status code 200.
+[18:06:56 INF] Writing value of type '<>f__AnonymousType12`3' as Json.
+[18:06:56 INF] Executed endpoint 'HTTP: GET /health'
+[18:06:56 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/health - 200 null application/json; charset=utf-8 174.0549ms
+[18:06:56 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/auth/login - application/json 42
+[18:06:56 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:06:57 INF] Setting HTTP status code 200.
+[18:06:57 INF] Writing value of type 'LoginResponse' as Json.
+[18:06:57 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:06:57 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/auth/login - 200 null application/json; charset=utf-8 389.1712ms
+[18:06:57 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/auth/change-password - application/json 61
+[18:06:57 INF] Executing endpoint 'HTTP: POST /api/auth/change-password'
+[18:06:58 INF] Setting HTTP status code 200.
+[18:06:58 INF] Executed endpoint 'HTTP: POST /api/auth/change-password'
+[18:06:58 WRN] [Lambat] POST /api/auth/change-password 200 792 ms (id -)
+[18:06:58 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/auth/change-password - 200 0 null 795.3301ms
+[18:06:58 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/auth/login - application/json 48
+[18:06:58 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:06:58 INF] Setting HTTP status code 200.
+[18:06:58 INF] Writing value of type 'LoginResponse' as Json.
+[18:06:58 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:06:58 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/auth/login - 200 null application/json; charset=utf-8 248.046ms
+[18:06:58 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/products - application/json 114
+[18:06:58 INF] Executing endpoint 'HTTP: POST /api/products'
+[18:06:58 INF] Setting HTTP status code 200.
+[18:06:58 INF] Writing value of type '<>f__AnonymousType19`1' as Json.
+[18:06:58 INF] Executed endpoint 'HTTP: POST /api/products'
+[18:06:58 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/products - 200 null application/json; charset=utf-8 16.2091ms
+[18:06:58 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/products - application/json 116
+[18:06:58 INF] Executing endpoint 'HTTP: POST /api/products'
+[18:06:58 INF] Setting HTTP status code 200.
+[18:06:58 INF] Writing value of type '<>f__AnonymousType19`1' as Json.
+[18:06:58 INF] Executed endpoint 'HTTP: POST /api/products'
+[18:06:58 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/products - 200 null application/json; charset=utf-8 6.5041ms
+[18:06:58 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/products - application/json 105
+[18:06:58 INF] Executing endpoint 'HTTP: POST /api/products'
+[18:06:58 INF] Setting HTTP status code 200.
+[18:06:58 INF] Writing value of type '<>f__AnonymousType19`1' as Json.
+[18:06:58 INF] Executed endpoint 'HTTP: POST /api/products'
+[18:06:58 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/products - 200 null application/json; charset=utf-8 5.2252ms
+[18:07:35 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/ - null null
+[18:07:35 INF] Executing endpoint 'Fallback {*path:nonfile}'
+[18:07:35 INF] Sending file. Request path: '/index.html'. Physical path: 'D:\bakery-desktop\dist\publish-single\wwwroot\index.html'
+[18:07:35 INF] Executed endpoint 'Fallback {*path:nonfile}'
+[18:07:35 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/index.html - 200 466 text/html 15.6854ms
+[18:07:35 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/assets/index-dCrlHoiC.js - null null
+[18:07:35 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/assets/index-RvdFb41s.css - null null
+[18:07:35 INF] CORS policy execution failed.
+[18:07:35 INF] CORS policy execution failed.
+[18:07:35 INF] Request origin http://127.0.0.1:5412 does not have permission to access the resource.
+[18:07:35 INF] Request origin http://127.0.0.1:5412 does not have permission to access the resource.
+[18:07:35 INF] Sending file. Request path: '/assets/index-RvdFb41s.css'. Physical path: 'D:\bakery-desktop\dist\publish-single\wwwroot\assets\index-RvdFb41s.css'
+[18:07:35 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/assets/index-RvdFb41s.css - 200 58177 text/css 12.1737ms
+[18:07:35 INF] Sending file. Request path: '/assets/index-dCrlHoiC.js'. Physical path: 'D:\bakery-desktop\dist\publish-single\wwwroot\assets\index-dCrlHoiC.js'
+[18:07:35 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/assets/index-dCrlHoiC.js - 200 596507 text/javascript 26.292ms
+[18:07:35 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/api/brand - application/json null
+[18:07:35 INF] Executing endpoint 'HTTP: GET /api/brand'
+[18:07:35 INF] Setting HTTP status code 200.
+[18:07:35 INF] Writing value of type '<>f__AnonymousType48`4' as Json.
+[18:07:35 INF] Executed endpoint 'HTTP: GET /api/brand'
+[18:07:35 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/api/brand - 200 null application/json; charset=utf-8 12.6255ms
+[18:07:35 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5412/api/auth/login - application/json 48
+[18:07:35 INF] CORS policy execution failed.
+[18:07:35 INF] Request origin http://127.0.0.1:5412 does not have permission to access the resource.
+[18:07:35 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[18:07:36 INF] Setting HTTP status code 200.
+[18:07:36 INF] Writing value of type 'LoginResponse' as Json.
+[18:07:36 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[18:07:36 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5412/api/auth/login - 200 null application/json; charset=utf-8 279.6522ms
+[18:07:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/api/dashboard - application/json null
+[18:07:36 INF] Executing endpoint 'HTTP: GET /api/dashboard'
+[18:07:36 INF] Setting HTTP status code 200.
+[18:07:36 INF] Writing value of type 'DashboardSummary' as Json.
+[18:07:36 INF] Executed endpoint 'HTTP: GET /api/dashboard'
+[18:07:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/api/dashboard - 200 null application/json; charset=utf-8 38.9012ms
+[18:07:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/api/orders?limit=100 - application/json null
+[18:07:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/api/customers?limit=50 - application/json null
+[18:07:36 INF] Executing endpoint 'HTTP: GET /api/orders'
+[18:07:36 INF] Executing endpoint 'HTTP: GET /api/customers'
+[18:07:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/api/products - application/json null
+[18:07:36 INF] Executing endpoint 'HTTP: GET /api/products'
+[18:07:36 INF] Setting HTTP status code 200.
+[18:07:36 INF] Writing value of type 'SelectListIterator`2' as Json.
+[18:07:36 INF] Setting HTTP status code 200.
+[18:07:36 INF] Setting HTTP status code 200.
+[18:07:36 INF] Writing value of type 'List`1' as Json.
+[18:07:36 INF] Executed endpoint 'HTTP: GET /api/products'
+[18:07:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/api/products - 200 null application/json; charset=utf-8 47.511ms
+[18:07:36 INF] Writing value of type 'List`1' as Json.
+[18:07:36 INF] Executed endpoint 'HTTP: GET /api/customers'
+[18:07:36 INF] Executed endpoint 'HTTP: GET /api/orders'
+[18:07:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/api/customers?limit=50 - 200 null application/json; charset=utf-8 68.2295ms
+[18:07:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/api/orders?limit=100 - 200 null application/json; charset=utf-8 72.0696ms
+[18:07:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5412/api/devices/status - application/json null
+[18:07:36 INF] Executing endpoint 'HTTP: GET /api/devices/status'
+[18:07:36 INF] Setting HTTP status code 200.
+[18:07:36 INF] Writing value of type '<>f__AnonymousType52`6' as Json.
+[18:07:36 INF] Executed endpoint 'HTTP: GET /api/devices/status'
+[18:07:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5412/api/devices/status - 200 null application/json; charset=utf-8 26.3455ms

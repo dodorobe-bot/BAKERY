@@ -1,0 +1,2043 @@
+﻿2026-11-01 17:30:17.411   Log opened. (Time zone: UTC+07:00)
+2026-11-01 17:30:17.411   Setup version: Inno Setup version 6.7.3
+2026-11-01 17:30:17.422   Original Setup EXE: C:\share\Seruni22Bakery_Setup_v1.2.12.exe
+2026-11-01 17:30:17.424   Setup command line: /SL5="$501DC,41386045,909312,C:\share\Seruni22Bakery_Setup_v1.2.12.exe" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=C:\share\bukti\exe-1212-install.log /DIR=C:\SeruniExe1212 
+2026-11-01 17:30:17.424   Windows version: 10.0.26100
+2026-11-01 17:30:17.424   Windows architecture: x64 (64-bit)
+2026-11-01 17:30:17.424   Machine types supported by system: x86 x64
+2026-11-01 17:30:17.424   User privileges: Administrative
+2026-11-01 17:30:17.424   Administrative install mode: No
+2026-11-01 17:30:17.424   Install mode root key: HKEY_CURRENT_USER
+2026-11-01 17:30:17.439   64-bit install mode: No
+2026-11-01 17:30:17.439   RedirectionGuard status for current process: Enabled in enforcing mode
+2026-11-01 17:30:17.443   Created protected temporary directory: C:\Users\WDAGUtilityAccount\AppData\Local\Temp\is-WKA6J5FP1F.tmp
+2026-11-01 17:30:18.162   Found 364 files to register with RestartManager.
+2026-11-01 17:30:18.162   Calling RestartManager's RmGetList.
+2026-11-01 17:30:18.205   RmGetList finished successfully.
+2026-11-01 17:30:18.205   RestartManager found no applications using one of our files.
+2026-11-01 17:30:18.205   Starting the installation process.
+2026-11-01 17:30:18.221   Creating directory: C:\SeruniExe1212
+2026-11-01 17:30:18.221   Directory for uninstall files: C:\SeruniExe1212
+2026-11-01 17:30:18.221   Creating new uninstall log: C:\SeruniExe1212\unins000.dat
+2026-11-01 17:30:18.285   -- File entry --
+2026-11-01 17:30:18.301   Dest filename: C:\SeruniExe1212\unins000.exe
+2026-11-01 17:30:18.374   Time stamp of our file: 2026-11-01 17:30:16.868
+2026-11-01 17:30:18.374   Installing the file.
+2026-11-01 17:30:18.411   Successfully installed the file.
+2026-11-01 17:30:18.415   -- File entry --
+2026-11-01 17:30:18.415   Dest filename: C:\SeruniExe1212\appsettings.json
+2026-11-01 17:30:18.415   Time stamp of our file: 2026-10-28 20:42:38.000
+2026-11-01 17:30:18.415   Installing the file.
+2026-11-01 17:30:18.415   Successfully installed the file.
+2026-11-01 17:30:18.415   -- File entry --
+2026-11-01 17:30:18.427   Dest filename: C:\SeruniExe1212\aspnetcorev2_inprocess.dll
+2026-11-01 17:30:18.427   Time stamp of our file: 2026-08-22 07:52:40.000
+2026-11-01 17:30:18.429   Installing the file.
+2026-11-01 17:30:18.459   Successfully installed the file.
+2026-11-01 17:30:18.461   -- File entry --
+2026-11-01 17:30:18.461   Dest filename: C:\SeruniExe1212\BCrypt.Net-Next.dll
+2026-11-01 17:30:18.463   Time stamp of our file: 2022-03-03 23:10:20.000
+2026-11-01 17:30:18.463   Installing the file.
+2026-11-01 17:30:18.468   Successfully installed the file.
+2026-11-01 17:30:18.468   -- File entry --
+2026-11-01 17:30:18.468   Dest filename: C:\SeruniExe1212\ClosedXML.dll
+2026-11-01 17:30:18.475   Time stamp of our file: 2024-07-18 21:16:06.000
+2026-11-01 17:30:18.475   Installing the file.
+2026-11-01 17:30:18.561   Successfully installed the file.
+2026-11-01 17:30:18.561   -- File entry --
+2026-11-01 17:30:18.561   Dest filename: C:\SeruniExe1212\clretwrc.dll
+2026-11-01 17:30:18.572   Time stamp of our file: 2026-08-21 04:03:28.000
+2026-11-01 17:30:18.574   Installing the file.
+2026-11-01 17:30:18.587   Successfully installed the file.
+2026-11-01 17:30:18.587   -- File entry --
+2026-11-01 17:30:18.587   Dest filename: C:\SeruniExe1212\clrgc.dll
+2026-11-01 17:30:18.593   Time stamp of our file: 2026-08-21 04:01:24.000
+2026-11-01 17:30:18.594   Installing the file.
+2026-11-01 17:30:18.618   Successfully installed the file.
+2026-11-01 17:30:18.618   -- File entry --
+2026-11-01 17:30:18.618   Dest filename: C:\SeruniExe1212\clrjit.dll
+2026-11-01 17:30:18.618   Time stamp of our file: 2026-08-21 04:00:36.000
+2026-11-01 17:30:18.634   Installing the file.
+2026-11-01 17:30:18.736   Successfully installed the file.
+2026-11-01 17:30:18.738   -- File entry --
+2026-11-01 17:30:18.740   Dest filename: C:\SeruniExe1212\coreclr.dll
+2026-11-01 17:30:18.740   Time stamp of our file: 2026-08-21 03:57:48.000
+2026-11-01 17:30:18.740   Installing the file.
+2026-11-01 17:30:18.931   Successfully installed the file.
+2026-11-01 17:30:18.933   -- File entry --
+2026-11-01 17:30:18.936   Dest filename: C:\SeruniExe1212\createdump.exe
+2026-11-01 17:30:18.938   Time stamp of our file: 2026-08-21 04:03:28.000
+2026-11-01 17:30:18.940   Installing the file.
+2026-11-01 17:30:18.942   Successfully installed the file.
+2026-11-01 17:30:18.944   -- File entry --
+2026-11-01 17:30:18.944   Dest filename: C:\SeruniExe1212\DocumentFormat.OpenXml.dll
+2026-11-01 17:30:18.944   Time stamp of our file: 2022-03-15 08:39:30.000
+2026-11-01 17:30:18.946   Installing the file.
+2026-11-01 17:30:19.076   Successfully installed the file.
+2026-11-01 17:30:19.078   -- File entry --
+2026-11-01 17:30:19.080   Dest filename: C:\SeruniExe1212\ExcelNumberFormat.dll
+2026-11-01 17:30:19.084   Time stamp of our file: 2020-10-02 15:42:28.000
+2026-11-01 17:30:19.086   Installing the file.
+2026-11-01 17:30:19.089   Successfully installed the file.
+2026-11-01 17:30:19.091   -- File entry --
+2026-11-01 17:30:19.091   Dest filename: C:\SeruniExe1212\e_sqlite3.dll
+2026-11-01 17:30:19.091   Time stamp of our file: 2023-08-24 01:33:44.000
+2026-11-01 17:30:19.093   Installing the file.
+2026-11-01 17:30:19.142   Successfully installed the file.
+2026-11-01 17:30:19.142   -- File entry --
+2026-11-01 17:30:19.142   Dest filename: C:\SeruniExe1212\hostfxr.dll
+2026-11-01 17:30:19.142   Time stamp of our file: 2026-08-21 04:13:26.000
+2026-11-01 17:30:19.142   Installing the file.
+2026-11-01 17:30:19.160   Successfully installed the file.
+2026-11-01 17:30:19.160   -- File entry --
+2026-11-01 17:30:19.160   Dest filename: C:\SeruniExe1212\hostpolicy.dll
+2026-11-01 17:30:19.160   Time stamp of our file: 2026-08-21 04:13:28.000
+2026-11-01 17:30:19.174   Installing the file.
+2026-11-01 17:30:19.174   Successfully installed the file.
+2026-11-01 17:30:19.174   -- File entry --
+2026-11-01 17:30:19.174   Dest filename: C:\SeruniExe1212\Irony.dll
+2026-11-01 17:30:19.174   Time stamp of our file: 2018-07-18 08:40:26.000
+2026-11-01 17:30:19.190   Installing the file.
+2026-11-01 17:30:19.190   Successfully installed the file.
+2026-11-01 17:30:19.190   -- File entry --
+2026-11-01 17:30:19.190   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Antiforgery.dll
+2026-11-01 17:30:19.190   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:19.190   Installing the file.
+2026-11-01 17:30:19.190   Successfully installed the file.
+2026-11-01 17:30:19.190   -- File entry --
+2026-11-01 17:30:19.190   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.Abstractions.dll
+2026-11-01 17:30:19.206   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:19.206   Installing the file.
+2026-11-01 17:30:19.206   Successfully installed the file.
+2026-11-01 17:30:19.206   -- File entry --
+2026-11-01 17:30:19.206   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.BearerToken.dll
+2026-11-01 17:30:19.206   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.206   Installing the file.
+2026-11-01 17:30:19.206   Successfully installed the file.
+2026-11-01 17:30:19.206   -- File entry --
+2026-11-01 17:30:19.206   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.Cookies.dll
+2026-11-01 17:30:19.206   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.206   Installing the file.
+2026-11-01 17:30:19.222   Successfully installed the file.
+2026-11-01 17:30:19.222   -- File entry --
+2026-11-01 17:30:19.222   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.Core.dll
+2026-11-01 17:30:19.222   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.222   Installing the file.
+2026-11-01 17:30:19.222   Successfully installed the file.
+2026-11-01 17:30:19.222   -- File entry --
+2026-11-01 17:30:19.222   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.dll
+2026-11-01 17:30:19.222   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.237   Installing the file.
+2026-11-01 17:30:19.237   Successfully installed the file.
+2026-11-01 17:30:19.237   -- File entry --
+2026-11-01 17:30:19.237   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+2026-11-01 17:30:19.237   Time stamp of our file: 2024-09-19 01:41:00.000
+2026-11-01 17:30:19.237   Installing the file.
+2026-11-01 17:30:19.237   Successfully installed the file.
+2026-11-01 17:30:19.237   -- File entry --
+2026-11-01 17:30:19.237   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authentication.OAuth.dll
+2026-11-01 17:30:19.254   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.254   Installing the file.
+2026-11-01 17:30:19.254   Successfully installed the file.
+2026-11-01 17:30:19.254   -- File entry --
+2026-11-01 17:30:19.254   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authorization.dll
+2026-11-01 17:30:19.254   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.254   Installing the file.
+2026-11-01 17:30:19.254   Successfully installed the file.
+2026-11-01 17:30:19.254   -- File entry --
+2026-11-01 17:30:19.254   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Authorization.Policy.dll
+2026-11-01 17:30:19.269   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.269   Installing the file.
+2026-11-01 17:30:19.269   Successfully installed the file.
+2026-11-01 17:30:19.269   -- File entry --
+2026-11-01 17:30:19.269   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Components.Authorization.dll
+2026-11-01 17:30:19.269   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.269   Installing the file.
+2026-11-01 17:30:19.269   Successfully installed the file.
+2026-11-01 17:30:19.269   -- File entry --
+2026-11-01 17:30:19.269   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Components.dll
+2026-11-01 17:30:19.269   Time stamp of our file: 2026-08-22 08:04:52.000
+2026-11-01 17:30:19.269   Installing the file.
+2026-11-01 17:30:19.309   Successfully installed the file.
+2026-11-01 17:30:19.309   -- File entry --
+2026-11-01 17:30:19.309   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Components.Endpoints.dll
+2026-11-01 17:30:19.309   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.309   Installing the file.
+2026-11-01 17:30:19.333   Successfully installed the file.
+2026-11-01 17:30:19.333   -- File entry --
+2026-11-01 17:30:19.333   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Components.Forms.dll
+2026-11-01 17:30:19.333   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.349   Installing the file.
+2026-11-01 17:30:19.349   Successfully installed the file.
+2026-11-01 17:30:19.349   -- File entry --
+2026-11-01 17:30:19.349   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Components.Server.dll
+2026-11-01 17:30:19.349   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.349   Installing the file.
+2026-11-01 17:30:19.389   Successfully installed the file.
+2026-11-01 17:30:19.389   -- File entry --
+2026-11-01 17:30:19.389   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Components.Web.dll
+2026-11-01 17:30:19.389   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.389   Installing the file.
+2026-11-01 17:30:19.401   Successfully installed the file.
+2026-11-01 17:30:19.401   -- File entry --
+2026-11-01 17:30:19.401   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Connections.Abstractions.dll
+2026-11-01 17:30:19.401   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.401   Installing the file.
+2026-11-01 17:30:19.413   Successfully installed the file.
+2026-11-01 17:30:19.413   -- File entry --
+2026-11-01 17:30:19.413   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.CookiePolicy.dll
+2026-11-01 17:30:19.413   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.413   Installing the file.
+2026-11-01 17:30:19.413   Successfully installed the file.
+2026-11-01 17:30:19.413   -- File entry --
+2026-11-01 17:30:19.413   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Cors.dll
+2026-11-01 17:30:19.413   Time stamp of our file: 2026-08-22 08:04:54.000
+2026-11-01 17:30:19.413   Installing the file.
+2026-11-01 17:30:19.429   Successfully installed the file.
+2026-11-01 17:30:19.429   -- File entry --
+2026-11-01 17:30:19.429   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Cryptography.Internal.dll
+2026-11-01 17:30:19.429   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.429   Installing the file.
+2026-11-01 17:30:19.429   Successfully installed the file.
+2026-11-01 17:30:19.429   -- File entry --
+2026-11-01 17:30:19.429   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+2026-11-01 17:30:19.445   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.445   Installing the file.
+2026-11-01 17:30:19.445   Successfully installed the file.
+2026-11-01 17:30:19.445   -- File entry --
+2026-11-01 17:30:19.445   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.DataProtection.Abstractions.dll
+2026-11-01 17:30:19.445   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.445   Installing the file.
+2026-11-01 17:30:19.445   Successfully installed the file.
+2026-11-01 17:30:19.445   -- File entry --
+2026-11-01 17:30:19.445   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.DataProtection.dll
+2026-11-01 17:30:19.445   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.445   Installing the file.
+2026-11-01 17:30:19.468   Successfully installed the file.
+2026-11-01 17:30:19.477   -- File entry --
+2026-11-01 17:30:19.477   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.DataProtection.Extensions.dll
+2026-11-01 17:30:19.477   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.477   Installing the file.
+2026-11-01 17:30:19.477   Successfully installed the file.
+2026-11-01 17:30:19.477   -- File entry --
+2026-11-01 17:30:19.477   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Diagnostics.Abstractions.dll
+2026-11-01 17:30:19.477   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.477   Installing the file.
+2026-11-01 17:30:19.492   Successfully installed the file.
+2026-11-01 17:30:19.492   -- File entry --
+2026-11-01 17:30:19.492   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Diagnostics.dll
+2026-11-01 17:30:19.492   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.492   Installing the file.
+2026-11-01 17:30:19.508   Successfully installed the file.
+2026-11-01 17:30:19.514   -- File entry --
+2026-11-01 17:30:19.514   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Diagnostics.HealthChecks.dll
+2026-11-01 17:30:19.514   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.514   Installing the file.
+2026-11-01 17:30:19.524   Successfully installed the file.
+2026-11-01 17:30:19.524   -- File entry --
+2026-11-01 17:30:19.524   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.dll
+2026-11-01 17:30:19.524   Time stamp of our file: 2026-08-22 08:04:56.000
+2026-11-01 17:30:19.524   Installing the file.
+2026-11-01 17:30:19.524   Successfully installed the file.
+2026-11-01 17:30:19.524   -- File entry --
+2026-11-01 17:30:19.524   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.HostFiltering.dll
+2026-11-01 17:30:19.524   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.524   Installing the file.
+2026-11-01 17:30:19.540   Successfully installed the file.
+2026-11-01 17:30:19.542   -- File entry --
+2026-11-01 17:30:19.542   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Hosting.Abstractions.dll
+2026-11-01 17:30:19.542   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.542   Installing the file.
+2026-11-01 17:30:19.542   Successfully installed the file.
+2026-11-01 17:30:19.542   -- File entry --
+2026-11-01 17:30:19.542   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Hosting.dll
+2026-11-01 17:30:19.542   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.542   Installing the file.
+2026-11-01 17:30:19.556   Successfully installed the file.
+2026-11-01 17:30:19.556   -- File entry --
+2026-11-01 17:30:19.556   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll
+2026-11-01 17:30:19.556   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.556   Installing the file.
+2026-11-01 17:30:19.556   Successfully installed the file.
+2026-11-01 17:30:19.556   -- File entry --
+2026-11-01 17:30:19.556   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Html.Abstractions.dll
+2026-11-01 17:30:19.572   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.572   Installing the file.
+2026-11-01 17:30:19.572   Successfully installed the file.
+2026-11-01 17:30:19.572   -- File entry --
+2026-11-01 17:30:19.572   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.Abstractions.dll
+2026-11-01 17:30:19.572   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.572   Installing the file.
+2026-11-01 17:30:19.588   Successfully installed the file.
+2026-11-01 17:30:19.588   -- File entry --
+2026-11-01 17:30:19.588   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.Connections.Common.dll
+2026-11-01 17:30:19.588   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.588   Installing the file.
+2026-11-01 17:30:19.588   Successfully installed the file.
+2026-11-01 17:30:19.588   -- File entry --
+2026-11-01 17:30:19.588   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.Connections.dll
+2026-11-01 17:30:19.588   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.588   Installing the file.
+2026-11-01 17:30:19.606   Successfully installed the file.
+2026-11-01 17:30:19.606   -- File entry --
+2026-11-01 17:30:19.606   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.dll
+2026-11-01 17:30:19.606   Time stamp of our file: 2026-08-22 08:04:58.000
+2026-11-01 17:30:19.606   Installing the file.
+2026-11-01 17:30:19.620   Successfully installed the file.
+2026-11-01 17:30:19.620   -- File entry --
+2026-11-01 17:30:19.620   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.Extensions.dll
+2026-11-01 17:30:19.620   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.620   Installing the file.
+2026-11-01 17:30:19.636   Successfully installed the file.
+2026-11-01 17:30:19.636   -- File entry --
+2026-11-01 17:30:19.636   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.Features.dll
+2026-11-01 17:30:19.636   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.636   Installing the file.
+2026-11-01 17:30:19.636   Successfully installed the file.
+2026-11-01 17:30:19.652   -- File entry --
+2026-11-01 17:30:19.652   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Http.Results.dll
+2026-11-01 17:30:19.652   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.652   Installing the file.
+2026-11-01 17:30:19.652   Successfully installed the file.
+2026-11-01 17:30:19.652   -- File entry --
+2026-11-01 17:30:19.652   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.HttpLogging.dll
+2026-11-01 17:30:19.652   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.652   Installing the file.
+2026-11-01 17:30:19.668   Successfully installed the file.
+2026-11-01 17:30:19.668   -- File entry --
+2026-11-01 17:30:19.668   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.HttpOverrides.dll
+2026-11-01 17:30:19.668   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.668   Installing the file.
+2026-11-01 17:30:19.668   Successfully installed the file.
+2026-11-01 17:30:19.668   -- File entry --
+2026-11-01 17:30:19.668   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.HttpsPolicy.dll
+2026-11-01 17:30:19.668   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.668   Installing the file.
+2026-11-01 17:30:19.686   Successfully installed the file.
+2026-11-01 17:30:19.686   -- File entry --
+2026-11-01 17:30:19.686   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Identity.dll
+2026-11-01 17:30:19.686   Time stamp of our file: 2026-08-22 08:05:00.000
+2026-11-01 17:30:19.686   Installing the file.
+2026-11-01 17:30:19.700   Successfully installed the file.
+2026-11-01 17:30:19.700   -- File entry --
+2026-11-01 17:30:19.700   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Localization.dll
+2026-11-01 17:30:19.700   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.700   Installing the file.
+2026-11-01 17:30:19.700   Successfully installed the file.
+2026-11-01 17:30:19.700   -- File entry --
+2026-11-01 17:30:19.700   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Localization.Routing.dll
+2026-11-01 17:30:19.700   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.700   Installing the file.
+2026-11-01 17:30:19.716   Successfully installed the file.
+2026-11-01 17:30:19.716   -- File entry --
+2026-11-01 17:30:19.716   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Metadata.dll
+2026-11-01 17:30:19.716   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.716   Installing the file.
+2026-11-01 17:30:19.716   Successfully installed the file.
+2026-11-01 17:30:19.716   -- File entry --
+2026-11-01 17:30:19.716   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Abstractions.dll
+2026-11-01 17:30:19.716   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.716   Installing the file.
+2026-11-01 17:30:19.734   Successfully installed the file.
+2026-11-01 17:30:19.734   -- File entry --
+2026-11-01 17:30:19.734   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.ApiExplorer.dll
+2026-11-01 17:30:19.734   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.734   Installing the file.
+2026-11-01 17:30:19.743   Successfully installed the file.
+2026-11-01 17:30:19.743   -- File entry --
+2026-11-01 17:30:19.743   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Core.dll
+2026-11-01 17:30:19.743   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.743   Installing the file.
+2026-11-01 17:30:19.803   Successfully installed the file.
+2026-11-01 17:30:19.803   -- File entry --
+2026-11-01 17:30:19.803   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Cors.dll
+2026-11-01 17:30:19.805   Time stamp of our file: 2026-08-22 08:05:02.000
+2026-11-01 17:30:19.805   Installing the file.
+2026-11-01 17:30:19.807   Successfully installed the file.
+2026-11-01 17:30:19.807   -- File entry --
+2026-11-01 17:30:19.809   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.DataAnnotations.dll
+2026-11-01 17:30:19.809   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.809   Installing the file.
+2026-11-01 17:30:19.813   Successfully installed the file.
+2026-11-01 17:30:19.813   -- File entry --
+2026-11-01 17:30:19.815   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.dll
+2026-11-01 17:30:19.817   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.819   Installing the file.
+2026-11-01 17:30:19.821   Successfully installed the file.
+2026-11-01 17:30:19.821   -- File entry --
+2026-11-01 17:30:19.821   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Formatters.Json.dll
+2026-11-01 17:30:19.823   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.823   Installing the file.
+2026-11-01 17:30:19.825   Successfully installed the file.
+2026-11-01 17:30:19.825   -- File entry --
+2026-11-01 17:30:19.825   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Formatters.Xml.dll
+2026-11-01 17:30:19.827   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.827   Installing the file.
+2026-11-01 17:30:19.831   Successfully installed the file.
+2026-11-01 17:30:19.833   -- File entry --
+2026-11-01 17:30:19.835   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Localization.dll
+2026-11-01 17:30:19.835   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.837   Installing the file.
+2026-11-01 17:30:19.839   Successfully installed the file.
+2026-11-01 17:30:19.839   -- File entry --
+2026-11-01 17:30:19.839   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.Razor.dll
+2026-11-01 17:30:19.841   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.841   Installing the file.
+2026-11-01 17:30:19.851   Successfully installed the file.
+2026-11-01 17:30:19.851   -- File entry --
+2026-11-01 17:30:19.851   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.RazorPages.dll
+2026-11-01 17:30:19.851   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.851   Installing the file.
+2026-11-01 17:30:19.859   Successfully installed the file.
+2026-11-01 17:30:19.859   -- File entry --
+2026-11-01 17:30:19.859   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.TagHelpers.dll
+2026-11-01 17:30:19.859   Time stamp of our file: 2026-08-22 08:05:04.000
+2026-11-01 17:30:19.859   Installing the file.
+2026-11-01 17:30:19.874   Successfully installed the file.
+2026-11-01 17:30:19.874   -- File entry --
+2026-11-01 17:30:19.874   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Mvc.ViewFeatures.dll
+2026-11-01 17:30:19.874   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.874   Installing the file.
+2026-11-01 17:30:19.906   Successfully installed the file.
+2026-11-01 17:30:19.906   -- File entry --
+2026-11-01 17:30:19.906   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.OutputCaching.dll
+2026-11-01 17:30:19.906   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.906   Installing the file.
+2026-11-01 17:30:19.906   Successfully installed the file.
+2026-11-01 17:30:19.906   -- File entry --
+2026-11-01 17:30:19.922   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.RateLimiting.dll
+2026-11-01 17:30:19.922   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.922   Installing the file.
+2026-11-01 17:30:19.922   Successfully installed the file.
+2026-11-01 17:30:19.922   -- File entry --
+2026-11-01 17:30:19.922   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Razor.dll
+2026-11-01 17:30:19.922   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.922   Installing the file.
+2026-11-01 17:30:19.922   Successfully installed the file.
+2026-11-01 17:30:19.922   -- File entry --
+2026-11-01 17:30:19.922   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Razor.Runtime.dll
+2026-11-01 17:30:19.922   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.922   Installing the file.
+2026-11-01 17:30:19.940   Successfully installed the file.
+2026-11-01 17:30:19.940   -- File entry --
+2026-11-01 17:30:19.940   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.RequestDecompression.dll
+2026-11-01 17:30:19.940   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.940   Installing the file.
+2026-11-01 17:30:19.940   Successfully installed the file.
+2026-11-01 17:30:19.940   -- File entry --
+2026-11-01 17:30:19.940   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll
+2026-11-01 17:30:19.940   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.940   Installing the file.
+2026-11-01 17:30:19.940   Successfully installed the file.
+2026-11-01 17:30:19.940   -- File entry --
+2026-11-01 17:30:19.940   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.ResponseCaching.dll
+2026-11-01 17:30:19.940   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.940   Installing the file.
+2026-11-01 17:30:19.954   Successfully installed the file.
+2026-11-01 17:30:19.954   -- File entry --
+2026-11-01 17:30:19.954   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.ResponseCompression.dll
+2026-11-01 17:30:19.954   Time stamp of our file: 2026-08-22 08:05:06.000
+2026-11-01 17:30:19.954   Installing the file.
+2026-11-01 17:30:19.954   Successfully installed the file.
+2026-11-01 17:30:19.954   -- File entry --
+2026-11-01 17:30:19.954   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Rewrite.dll
+2026-11-01 17:30:19.970   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-11-01 17:30:19.970   Installing the file.
+2026-11-01 17:30:19.970   Successfully installed the file.
+2026-11-01 17:30:19.970   -- File entry --
+2026-11-01 17:30:19.970   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Routing.Abstractions.dll
+2026-11-01 17:30:19.970   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-11-01 17:30:19.970   Installing the file.
+2026-11-01 17:30:19.970   Successfully installed the file.
+2026-11-01 17:30:19.970   -- File entry --
+2026-11-01 17:30:19.986   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Routing.dll
+2026-11-01 17:30:19.986   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-11-01 17:30:19.986   Installing the file.
+2026-11-01 17:30:20.018   Successfully installed the file.
+2026-11-01 17:30:20.018   -- File entry --
+2026-11-01 17:30:20.018   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.HttpSys.dll
+2026-11-01 17:30:20.018   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-11-01 17:30:20.018   Installing the file.
+2026-11-01 17:30:20.049   Successfully installed the file.
+2026-11-01 17:30:20.049   -- File entry --
+2026-11-01 17:30:20.049   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.IIS.dll
+2026-11-01 17:30:20.049   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-11-01 17:30:20.049   Installing the file.
+2026-11-01 17:30:20.081   Successfully installed the file.
+2026-11-01 17:30:20.081   -- File entry --
+2026-11-01 17:30:20.081   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.IISIntegration.dll
+2026-11-01 17:30:20.081   Time stamp of our file: 2026-08-22 08:05:08.000
+2026-11-01 17:30:20.081   Installing the file.
+2026-11-01 17:30:20.081   Successfully installed the file.
+2026-11-01 17:30:20.081   -- File entry --
+2026-11-01 17:30:20.081   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.Kestrel.Core.dll
+2026-11-01 17:30:20.081   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.081   Installing the file.
+2026-11-01 17:30:20.193   Successfully installed the file.
+2026-11-01 17:30:20.193   -- File entry --
+2026-11-01 17:30:20.193   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.Kestrel.dll
+2026-11-01 17:30:20.193   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.209   Installing the file.
+2026-11-01 17:30:20.210   Successfully installed the file.
+2026-11-01 17:30:20.212   -- File entry --
+2026-11-01 17:30:20.212   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes.dll
+2026-11-01 17:30:20.212   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.212   Installing the file.
+2026-11-01 17:30:20.227   Successfully installed the file.
+2026-11-01 17:30:20.227   -- File entry --
+2026-11-01 17:30:20.227   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.Kestrel.Transport.Quic.dll
+2026-11-01 17:30:20.227   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.227   Installing the file.
+2026-11-01 17:30:20.249   Successfully installed the file.
+2026-11-01 17:30:20.249   -- File entry --
+2026-11-01 17:30:20.249   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.dll
+2026-11-01 17:30:20.257   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.257   Installing the file.
+2026-11-01 17:30:20.257   Successfully installed the file.
+2026-11-01 17:30:20.257   -- File entry --
+2026-11-01 17:30:20.257   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.Session.dll
+2026-11-01 17:30:20.257   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.257   Installing the file.
+2026-11-01 17:30:20.273   Successfully installed the file.
+2026-11-01 17:30:20.273   -- File entry --
+2026-11-01 17:30:20.273   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.SignalR.Common.dll
+2026-11-01 17:30:20.273   Time stamp of our file: 2026-08-22 08:05:10.000
+2026-11-01 17:30:20.273   Installing the file.
+2026-11-01 17:30:20.273   Successfully installed the file.
+2026-11-01 17:30:20.280   -- File entry --
+2026-11-01 17:30:20.280   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.SignalR.Core.dll
+2026-11-01 17:30:20.280   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.280   Installing the file.
+2026-11-01 17:30:20.304   Successfully installed the file.
+2026-11-01 17:30:20.304   -- File entry --
+2026-11-01 17:30:20.304   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.SignalR.dll
+2026-11-01 17:30:20.304   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.304   Installing the file.
+2026-11-01 17:30:20.311   Successfully installed the file.
+2026-11-01 17:30:20.311   -- File entry --
+2026-11-01 17:30:20.311   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+2026-11-01 17:30:20.311   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.311   Installing the file.
+2026-11-01 17:30:20.320   Successfully installed the file.
+2026-11-01 17:30:20.320   -- File entry --
+2026-11-01 17:30:20.320   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.StaticFiles.dll
+2026-11-01 17:30:20.320   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.320   Installing the file.
+2026-11-01 17:30:20.320   Successfully installed the file.
+2026-11-01 17:30:20.320   -- File entry --
+2026-11-01 17:30:20.320   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.WebSockets.dll
+2026-11-01 17:30:20.336   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.336   Installing the file.
+2026-11-01 17:30:20.336   Successfully installed the file.
+2026-11-01 17:30:20.342   -- File entry --
+2026-11-01 17:30:20.342   Dest filename: C:\SeruniExe1212\Microsoft.AspNetCore.WebUtilities.dll
+2026-11-01 17:30:20.342   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.342   Installing the file.
+2026-11-01 17:30:20.352   Successfully installed the file.
+2026-11-01 17:30:20.352   -- File entry --
+2026-11-01 17:30:20.352   Dest filename: C:\SeruniExe1212\Microsoft.CSharp.dll
+2026-11-01 17:30:20.352   Time stamp of our file: 2026-08-21 04:23:32.000
+2026-11-01 17:30:20.352   Installing the file.
+2026-11-01 17:30:20.416   Successfully installed the file.
+2026-11-01 17:30:20.416   -- File entry --
+2026-11-01 17:30:20.416   Dest filename: C:\SeruniExe1212\Microsoft.Data.Sqlite.dll
+2026-11-01 17:30:20.416   Time stamp of our file: 2024-09-18 06:49:16.000
+2026-11-01 17:30:20.416   Installing the file.
+2026-11-01 17:30:20.430   Successfully installed the file.
+2026-11-01 17:30:20.430   -- File entry --
+2026-11-01 17:30:20.430   Dest filename: C:\SeruniExe1212\Microsoft.DiaSymReader.Native.amd64.dll
+2026-11-01 17:30:20.434   Time stamp of our file: 2026-08-05 21:09:02.000
+2026-11-01 17:30:20.436   Installing the file.
+2026-11-01 17:30:20.552   Successfully installed the file.
+2026-11-01 17:30:20.554   -- File entry --
+2026-11-01 17:30:20.556   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Caching.Abstractions.dll
+2026-11-01 17:30:20.558   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-11-01 17:30:20.558   Installing the file.
+2026-11-01 17:30:20.564   Successfully installed the file.
+2026-11-01 17:30:20.564   -- File entry --
+2026-11-01 17:30:20.566   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Caching.Memory.dll
+2026-11-01 17:30:20.568   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-11-01 17:30:20.570   Installing the file.
+2026-11-01 17:30:20.577   Successfully installed the file.
+2026-11-01 17:30:20.577   -- File entry --
+2026-11-01 17:30:20.579   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.Abstractions.dll
+2026-11-01 17:30:20.579   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-11-01 17:30:20.579   Installing the file.
+2026-11-01 17:30:20.586   Successfully installed the file.
+2026-11-01 17:30:20.588   -- File entry --
+2026-11-01 17:30:20.588   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.Binder.dll
+2026-11-01 17:30:20.588   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-11-01 17:30:20.590   Installing the file.
+2026-11-01 17:30:20.591   Successfully installed the file.
+2026-11-01 17:30:20.595   -- File entry --
+2026-11-01 17:30:20.595   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.CommandLine.dll
+2026-11-01 17:30:20.595   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-11-01 17:30:20.595   Installing the file.
+2026-11-01 17:30:20.595   Successfully installed the file.
+2026-11-01 17:30:20.595   -- File entry --
+2026-11-01 17:30:20.595   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.dll
+2026-11-01 17:30:20.595   Time stamp of our file: 2026-08-22 08:04:42.000
+2026-11-01 17:30:20.595   Installing the file.
+2026-11-01 17:30:20.607   Successfully installed the file.
+2026-11-01 17:30:20.607   -- File entry --
+2026-11-01 17:30:20.607   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.EnvironmentVariables.dll
+2026-11-01 17:30:20.607   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.607   Installing the file.
+2026-11-01 17:30:20.607   Successfully installed the file.
+2026-11-01 17:30:20.607   -- File entry --
+2026-11-01 17:30:20.607   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.FileExtensions.dll
+2026-11-01 17:30:20.607   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.607   Installing the file.
+2026-11-01 17:30:20.607   Successfully installed the file.
+2026-11-01 17:30:20.607   -- File entry --
+2026-11-01 17:30:20.607   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.Ini.dll
+2026-11-01 17:30:20.623   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.624   Installing the file.
+2026-11-01 17:30:20.624   Successfully installed the file.
+2026-11-01 17:30:20.624   -- File entry --
+2026-11-01 17:30:20.624   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.Json.dll
+2026-11-01 17:30:20.624   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.624   Installing the file.
+2026-11-01 17:30:20.624   Successfully installed the file.
+2026-11-01 17:30:20.624   -- File entry --
+2026-11-01 17:30:20.624   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.KeyPerFile.dll
+2026-11-01 17:30:20.624   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.624   Installing the file.
+2026-11-01 17:30:20.639   Successfully installed the file.
+2026-11-01 17:30:20.639   -- File entry --
+2026-11-01 17:30:20.639   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.UserSecrets.dll
+2026-11-01 17:30:20.639   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.639   Installing the file.
+2026-11-01 17:30:20.639   Successfully installed the file.
+2026-11-01 17:30:20.639   -- File entry --
+2026-11-01 17:30:20.639   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Configuration.Xml.dll
+2026-11-01 17:30:20.639   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.639   Installing the file.
+2026-11-01 17:30:20.655   Successfully installed the file.
+2026-11-01 17:30:20.655   -- File entry --
+2026-11-01 17:30:20.655   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+2026-11-01 17:30:20.655   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.655   Installing the file.
+2026-11-01 17:30:20.655   Successfully installed the file.
+2026-11-01 17:30:20.655   -- File entry --
+2026-11-01 17:30:20.671   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.DependencyInjection.dll
+2026-11-01 17:30:20.671   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.671   Installing the file.
+2026-11-01 17:30:20.687   Successfully installed the file.
+2026-11-01 17:30:20.687   -- File entry --
+2026-11-01 17:30:20.687   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.DependencyModel.dll
+2026-11-01 17:30:20.687   Time stamp of our file: 2024-09-17 06:09:50.000
+2026-11-01 17:30:20.687   Installing the file.
+2026-11-01 17:30:20.687   Successfully installed the file.
+2026-11-01 17:30:20.687   -- File entry --
+2026-11-01 17:30:20.687   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Diagnostics.Abstractions.dll
+2026-11-01 17:30:20.687   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.687   Installing the file.
+2026-11-01 17:30:20.703   Successfully installed the file.
+2026-11-01 17:30:20.703   -- File entry --
+2026-11-01 17:30:20.703   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Diagnostics.dll
+2026-11-01 17:30:20.703   Time stamp of our file: 2026-08-22 08:04:44.000
+2026-11-01 17:30:20.703   Installing the file.
+2026-11-01 17:30:20.703   Successfully installed the file.
+2026-11-01 17:30:20.703   -- File entry --
+2026-11-01 17:30:20.703   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll
+2026-11-01 17:30:20.703   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.703   Installing the file.
+2026-11-01 17:30:20.703   Successfully installed the file.
+2026-11-01 17:30:20.703   -- File entry --
+2026-11-01 17:30:20.703   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Diagnostics.HealthChecks.dll
+2026-11-01 17:30:20.703   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.718   Installing the file.
+2026-11-01 17:30:20.718   Successfully installed the file.
+2026-11-01 17:30:20.718   -- File entry --
+2026-11-01 17:30:20.718   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Features.dll
+2026-11-01 17:30:20.718   Time stamp of our file: 2026-08-22 08:05:12.000
+2026-11-01 17:30:20.718   Installing the file.
+2026-11-01 17:30:20.718   Successfully installed the file.
+2026-11-01 17:30:20.718   -- File entry --
+2026-11-01 17:30:20.718   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.FileProviders.Abstractions.dll
+2026-11-01 17:30:20.718   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.718   Installing the file.
+2026-11-01 17:30:20.734   Successfully installed the file.
+2026-11-01 17:30:20.734   -- File entry --
+2026-11-01 17:30:20.734   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.FileProviders.Composite.dll
+2026-11-01 17:30:20.734   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.734   Installing the file.
+2026-11-01 17:30:20.734   Successfully installed the file.
+2026-11-01 17:30:20.734   -- File entry --
+2026-11-01 17:30:20.734   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.FileProviders.Embedded.dll
+2026-11-01 17:30:20.734   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:20.734   Installing the file.
+2026-11-01 17:30:20.734   Successfully installed the file.
+2026-11-01 17:30:20.734   -- File entry --
+2026-11-01 17:30:20.734   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.FileProviders.Physical.dll
+2026-11-01 17:30:20.734   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.734   Installing the file.
+2026-11-01 17:30:20.755   Successfully installed the file.
+2026-11-01 17:30:20.755   -- File entry --
+2026-11-01 17:30:20.755   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.FileSystemGlobbing.dll
+2026-11-01 17:30:20.755   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.755   Installing the file.
+2026-11-01 17:30:20.767   Successfully installed the file.
+2026-11-01 17:30:20.767   -- File entry --
+2026-11-01 17:30:20.767   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Hosting.Abstractions.dll
+2026-11-01 17:30:20.767   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.767   Installing the file.
+2026-11-01 17:30:20.767   Successfully installed the file.
+2026-11-01 17:30:20.767   -- File entry --
+2026-11-01 17:30:20.767   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Hosting.dll
+2026-11-01 17:30:20.767   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.767   Installing the file.
+2026-11-01 17:30:20.783   Successfully installed the file.
+2026-11-01 17:30:20.783   -- File entry --
+2026-11-01 17:30:20.783   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Http.dll
+2026-11-01 17:30:20.783   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.783   Installing the file.
+2026-11-01 17:30:20.807   Successfully installed the file.
+2026-11-01 17:30:20.807   -- File entry --
+2026-11-01 17:30:20.807   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Identity.Core.dll
+2026-11-01 17:30:20.807   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:20.807   Installing the file.
+2026-11-01 17:30:20.830   Successfully installed the file.
+2026-11-01 17:30:20.830   -- File entry --
+2026-11-01 17:30:20.830   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Identity.Stores.dll
+2026-11-01 17:30:20.830   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:20.830   Installing the file.
+2026-11-01 17:30:20.852   Successfully installed the file.
+2026-11-01 17:30:20.852   -- File entry --
+2026-11-01 17:30:20.852   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Localization.Abstractions.dll
+2026-11-01 17:30:20.852   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:20.852   Installing the file.
+2026-11-01 17:30:20.852   Successfully installed the file.
+2026-11-01 17:30:20.852   -- File entry --
+2026-11-01 17:30:20.852   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Localization.dll
+2026-11-01 17:30:20.852   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:20.852   Installing the file.
+2026-11-01 17:30:20.862   Successfully installed the file.
+2026-11-01 17:30:20.862   -- File entry --
+2026-11-01 17:30:20.862   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.Abstractions.dll
+2026-11-01 17:30:20.862   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.862   Installing the file.
+2026-11-01 17:30:20.894   Successfully installed the file.
+2026-11-01 17:30:20.896   -- File entry --
+2026-11-01 17:30:20.896   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.Configuration.dll
+2026-11-01 17:30:20.896   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.896   Installing the file.
+2026-11-01 17:30:20.896   Successfully installed the file.
+2026-11-01 17:30:20.896   -- File entry --
+2026-11-01 17:30:20.896   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.Console.dll
+2026-11-01 17:30:20.910   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.910   Installing the file.
+2026-11-01 17:30:20.910   Successfully installed the file.
+2026-11-01 17:30:20.910   -- File entry --
+2026-11-01 17:30:20.926   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.Debug.dll
+2026-11-01 17:30:20.926   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.926   Installing the file.
+2026-11-01 17:30:20.926   Successfully installed the file.
+2026-11-01 17:30:20.926   -- File entry --
+2026-11-01 17:30:20.926   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.dll
+2026-11-01 17:30:20.926   Time stamp of our file: 2026-08-22 08:04:46.000
+2026-11-01 17:30:20.926   Installing the file.
+2026-11-01 17:30:20.942   Successfully installed the file.
+2026-11-01 17:30:20.942   -- File entry --
+2026-11-01 17:30:20.942   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.EventLog.dll
+2026-11-01 17:30:20.942   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.942   Installing the file.
+2026-11-01 17:30:20.947   Successfully installed the file.
+2026-11-01 17:30:20.949   -- File entry --
+2026-11-01 17:30:20.949   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.EventSource.dll
+2026-11-01 17:30:20.954   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.954   Installing the file.
+2026-11-01 17:30:20.957   Successfully installed the file.
+2026-11-01 17:30:20.957   -- File entry --
+2026-11-01 17:30:20.957   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Logging.TraceSource.dll
+2026-11-01 17:30:20.957   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.957   Installing the file.
+2026-11-01 17:30:20.957   Successfully installed the file.
+2026-11-01 17:30:20.957   -- File entry --
+2026-11-01 17:30:20.957   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.ObjectPool.dll
+2026-11-01 17:30:20.957   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:20.957   Installing the file.
+2026-11-01 17:30:20.970   Successfully installed the file.
+2026-11-01 17:30:20.970   -- File entry --
+2026-11-01 17:30:20.970   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+2026-11-01 17:30:20.974   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.974   Installing the file.
+2026-11-01 17:30:20.974   Successfully installed the file.
+2026-11-01 17:30:20.974   -- File entry --
+2026-11-01 17:30:20.974   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Options.DataAnnotations.dll
+2026-11-01 17:30:20.974   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.974   Installing the file.
+2026-11-01 17:30:20.974   Successfully installed the file.
+2026-11-01 17:30:20.974   -- File entry --
+2026-11-01 17:30:20.974   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Options.dll
+2026-11-01 17:30:20.974   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.974   Installing the file.
+2026-11-01 17:30:20.994   Successfully installed the file.
+2026-11-01 17:30:20.995   -- File entry --
+2026-11-01 17:30:20.995   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.Primitives.dll
+2026-11-01 17:30:20.995   Time stamp of our file: 2026-08-22 08:04:48.000
+2026-11-01 17:30:20.995   Installing the file.
+2026-11-01 17:30:21.003   Successfully installed the file.
+2026-11-01 17:30:21.005   -- File entry --
+2026-11-01 17:30:21.005   Dest filename: C:\SeruniExe1212\Microsoft.Extensions.WebEncoders.dll
+2026-11-01 17:30:21.005   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:21.005   Installing the file.
+2026-11-01 17:30:21.005   Successfully installed the file.
+2026-11-01 17:30:21.005   -- File entry --
+2026-11-01 17:30:21.005   Dest filename: C:\SeruniExe1212\Microsoft.IdentityModel.Abstractions.dll
+2026-11-01 17:30:21.005   Time stamp of our file: 2024-11-15 11:30:10.000
+2026-11-01 17:30:21.011   Installing the file.
+2026-11-01 17:30:21.011   Successfully installed the file.
+2026-11-01 17:30:21.013   -- File entry --
+2026-11-01 17:30:21.013   Dest filename: C:\SeruniExe1212\Microsoft.IdentityModel.JsonWebTokens.dll
+2026-11-01 17:30:21.013   Time stamp of our file: 2024-11-15 11:30:20.000
+2026-11-01 17:30:21.013   Installing the file.
+2026-11-01 17:30:21.025   Successfully installed the file.
+2026-11-01 17:30:21.027   -- File entry --
+2026-11-01 17:30:21.027   Dest filename: C:\SeruniExe1212\Microsoft.IdentityModel.Logging.dll
+2026-11-01 17:30:21.029   Time stamp of our file: 2024-11-15 11:30:12.000
+2026-11-01 17:30:21.029   Installing the file.
+2026-11-01 17:30:21.031   Successfully installed the file.
+2026-11-01 17:30:21.035   -- File entry --
+2026-11-01 17:30:21.037   Dest filename: C:\SeruniExe1212\Microsoft.IdentityModel.Protocols.dll
+2026-11-01 17:30:21.037   Time stamp of our file: 2023-11-21 08:17:02.000
+2026-11-01 17:30:21.039   Installing the file.
+2026-11-01 17:30:21.041   Successfully installed the file.
+2026-11-01 17:30:21.041   -- File entry --
+2026-11-01 17:30:21.041   Dest filename: C:\SeruniExe1212\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+2026-11-01 17:30:21.041   Time stamp of our file: 2023-11-21 08:30:36.000
+2026-11-01 17:30:21.043   Installing the file.
+2026-11-01 17:30:21.045   Successfully installed the file.
+2026-11-01 17:30:21.047   -- File entry --
+2026-11-01 17:30:21.047   Dest filename: C:\SeruniExe1212\Microsoft.IdentityModel.Tokens.dll
+2026-11-01 17:30:21.051   Time stamp of our file: 2024-11-15 11:30:20.000
+2026-11-01 17:30:21.053   Installing the file.
+2026-11-01 17:30:21.071   Successfully installed the file.
+2026-11-01 17:30:21.074   -- File entry --
+2026-11-01 17:30:21.074   Dest filename: C:\SeruniExe1212\Microsoft.JSInterop.dll
+2026-11-01 17:30:21.076   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:21.078   Installing the file.
+2026-11-01 17:30:21.091   Successfully installed the file.
+2026-11-01 17:30:21.091   -- File entry --
+2026-11-01 17:30:21.093   Dest filename: C:\SeruniExe1212\Microsoft.Net.Http.Headers.dll
+2026-11-01 17:30:21.093   Time stamp of our file: 2026-08-22 08:05:14.000
+2026-11-01 17:30:21.096   Installing the file.
+2026-11-01 17:30:21.113   Successfully installed the file.
+2026-11-01 17:30:21.115   -- File entry --
+2026-11-01 17:30:21.117   Dest filename: C:\SeruniExe1212\Microsoft.VisualBasic.Core.dll
+2026-11-01 17:30:21.119   Time stamp of our file: 2026-08-21 04:23:36.000
+2026-11-01 17:30:21.121   Installing the file.
+2026-11-01 17:30:21.181   Successfully installed the file.
+2026-11-01 17:30:21.181   -- File entry --
+2026-11-01 17:30:21.197   Dest filename: C:\SeruniExe1212\Microsoft.VisualBasic.dll
+2026-11-01 17:30:21.197   Time stamp of our file: 2026-08-21 04:17:32.000
+2026-11-01 17:30:21.197   Installing the file.
+2026-11-01 17:30:21.204   Successfully installed the file.
+2026-11-01 17:30:21.204   -- File entry --
+2026-11-01 17:30:21.204   Dest filename: C:\SeruniExe1212\Microsoft.Win32.Primitives.dll
+2026-11-01 17:30:21.204   Time stamp of our file: 2026-08-21 04:16:28.000
+2026-11-01 17:30:21.204   Installing the file.
+2026-11-01 17:30:21.210   Successfully installed the file.
+2026-11-01 17:30:21.210   -- File entry --
+2026-11-01 17:30:21.210   Dest filename: C:\SeruniExe1212\Microsoft.Win32.Registry.dll
+2026-11-01 17:30:21.210   Time stamp of our file: 2026-08-21 04:23:38.000
+2026-11-01 17:30:21.210   Installing the file.
+2026-11-01 17:30:21.222   Successfully installed the file.
+2026-11-01 17:30:21.223   -- File entry --
+2026-11-01 17:30:21.223   Dest filename: C:\SeruniExe1212\Microsoft.Win32.SystemEvents.dll
+2026-11-01 17:30:21.223   Time stamp of our file: 2023-10-31 21:59:50.000
+2026-11-01 17:30:21.223   Installing the file.
+2026-11-01 17:30:21.228   Successfully installed the file.
+2026-11-01 17:30:21.228   -- File entry --
+2026-11-01 17:30:21.228   Dest filename: C:\SeruniExe1212\mscordaccore.dll
+2026-11-01 17:30:21.228   Time stamp of our file: 2026-08-21 04:06:14.000
+2026-11-01 17:30:21.228   Installing the file.
+2026-11-01 17:30:21.296   Successfully installed the file.
+2026-11-01 17:30:21.298   -- File entry --
+2026-11-01 17:30:21.300   Dest filename: C:\SeruniExe1212\mscordaccore_amd64_amd64_8.0.3126.42015.dll
+2026-11-01 17:30:21.304   Time stamp of our file: 2026-08-21 04:06:14.000
+2026-11-01 17:30:21.304   Installing the file.
+2026-11-01 17:30:21.323   Successfully installed the file.
+2026-11-01 17:30:21.338   -- File entry --
+2026-11-01 17:30:21.339   Dest filename: C:\SeruniExe1212\mscordbi.dll
+2026-11-01 17:30:21.339   Time stamp of our file: 2026-08-21 04:06:04.000
+2026-11-01 17:30:21.339   Installing the file.
+2026-11-01 17:30:21.387   Successfully installed the file.
+2026-11-01 17:30:21.392   -- File entry --
+2026-11-01 17:30:21.392   Dest filename: C:\SeruniExe1212\mscorlib.dll
+2026-11-01 17:30:21.392   Time stamp of our file: 2026-08-21 04:18:30.000
+2026-11-01 17:30:21.392   Installing the file.
+2026-11-01 17:30:21.392   Successfully installed the file.
+2026-11-01 17:30:21.392   -- File entry --
+2026-11-01 17:30:21.392   Dest filename: C:\SeruniExe1212\mscorrc.dll
+2026-11-01 17:30:21.392   Time stamp of our file: 2026-08-21 04:03:32.000
+2026-11-01 17:30:21.392   Installing the file.
+2026-11-01 17:30:21.403   Successfully installed the file.
+2026-11-01 17:30:21.403   -- File entry --
+2026-11-01 17:30:21.403   Dest filename: C:\SeruniExe1212\msquic.dll
+2026-11-01 17:30:21.403   Time stamp of our file: 2026-08-12 04:41:52.000
+2026-11-01 17:30:21.403   Installing the file.
+2026-11-01 17:30:21.435   Successfully installed the file.
+2026-11-01 17:30:21.442   -- File entry --
+2026-11-01 17:30:21.442   Dest filename: C:\SeruniExe1212\netstandard.dll
+2026-11-01 17:30:21.442   Time stamp of our file: 2026-08-21 04:18:30.000
+2026-11-01 17:30:21.442   Installing the file.
+2026-11-01 17:30:21.449   Successfully installed the file.
+2026-11-01 17:30:21.450   -- File entry --
+2026-11-01 17:30:21.450   Dest filename: C:\SeruniExe1212\QuestPDF.dll
+2026-11-01 17:30:21.450   Time stamp of our file: 2024-10-24 18:54:52.000
+2026-11-01 17:30:21.450   Installing the file.
+2026-11-01 17:30:21.470   Successfully installed the file.
+2026-11-01 17:30:21.472   -- File entry --
+2026-11-01 17:30:21.472   Dest filename: C:\SeruniExe1212\QuestPdfSkia.dll
+2026-11-01 17:30:21.472   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:21.474   Installing the file.
+2026-11-01 17:30:21.821   Successfully installed the file.
+2026-11-01 17:30:21.823   -- File entry --
+2026-11-01 17:30:21.825   Dest filename: C:\SeruniExe1212\Serilog.AspNetCore.dll
+2026-11-01 17:30:21.825   Time stamp of our file: 2024-10-11 12:58:26.000
+2026-11-01 17:30:21.827   Installing the file.
+2026-11-01 17:30:21.829   Successfully installed the file.
+2026-11-01 17:30:21.831   -- File entry --
+2026-11-01 17:30:21.831   Dest filename: C:\SeruniExe1212\Serilog.dll
+2026-11-01 17:30:21.833   Time stamp of our file: 2024-06-01 13:19:40.000
+2026-11-01 17:30:21.835   Installing the file.
+2026-11-01 17:30:21.843   Successfully installed the file.
+2026-11-01 17:30:21.843   -- File entry --
+2026-11-01 17:30:21.843   Dest filename: C:\SeruniExe1212\Serilog.Extensions.Hosting.dll
+2026-11-01 17:30:21.845   Time stamp of our file: 2023-11-15 09:04:28.000
+2026-11-01 17:30:21.845   Installing the file.
+2026-11-01 17:30:21.847   Successfully installed the file.
+2026-11-01 17:30:21.847   -- File entry --
+2026-11-01 17:30:21.847   Dest filename: C:\SeruniExe1212\Serilog.Extensions.Logging.dll
+2026-11-01 17:30:21.849   Time stamp of our file: 2023-11-15 05:47:46.000
+2026-11-01 17:30:21.849   Installing the file.
+2026-11-01 17:30:21.855   Successfully installed the file.
+2026-11-01 17:30:21.857   -- File entry --
+2026-11-01 17:30:21.857   Dest filename: C:\SeruniExe1212\Serilog.Formatting.Compact.dll
+2026-11-01 17:30:21.857   Time stamp of our file: 2023-11-09 13:54:56.000
+2026-11-01 17:30:21.859   Installing the file.
+2026-11-01 17:30:21.859   Successfully installed the file.
+2026-11-01 17:30:21.859   -- File entry --
+2026-11-01 17:30:21.861   Dest filename: C:\SeruniExe1212\Serilog.Settings.Configuration.dll
+2026-11-01 17:30:21.861   Time stamp of our file: 2024-10-10 07:05:30.000
+2026-11-01 17:30:21.861   Installing the file.
+2026-11-01 17:30:21.867   Successfully installed the file.
+2026-11-01 17:30:21.869   -- File entry --
+2026-11-01 17:30:21.871   Dest filename: C:\SeruniExe1212\Serilog.Sinks.Console.dll
+2026-11-01 17:30:21.871   Time stamp of our file: 2023-11-09 13:50:30.000
+2026-11-01 17:30:21.871   Installing the file.
+2026-11-01 17:30:21.874   Successfully installed the file.
+2026-11-01 17:30:21.874   -- File entry --
+2026-11-01 17:30:21.874   Dest filename: C:\SeruniExe1212\Serilog.Sinks.Debug.dll
+2026-11-01 17:30:21.874   Time stamp of our file: 2021-02-14 14:47:26.000
+2026-11-01 17:30:21.874   Installing the file.
+2026-11-01 17:30:21.874   Successfully installed the file.
+2026-11-01 17:30:21.874   -- File entry --
+2026-11-01 17:30:21.874   Dest filename: C:\SeruniExe1212\Serilog.Sinks.File.dll
+2026-11-01 17:30:21.874   Time stamp of our file: 2024-06-23 05:44:08.000
+2026-11-01 17:30:21.874   Installing the file.
+2026-11-01 17:30:21.874   Successfully installed the file.
+2026-11-01 17:30:21.874   -- File entry --
+2026-11-01 17:30:21.874   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Application.dll
+2026-11-01 17:30:21.874   Time stamp of our file: 2026-11-01 16:53:28.000
+2026-11-01 17:30:21.889   Installing the file.
+2026-11-01 17:30:21.889   Successfully installed the file.
+2026-11-01 17:30:21.889   -- File entry --
+2026-11-01 17:30:21.889   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Domain.dll
+2026-11-01 17:30:21.889   Time stamp of our file: 2026-11-01 16:53:28.000
+2026-11-01 17:30:21.889   Installing the file.
+2026-11-01 17:30:21.905   Successfully installed the file.
+2026-11-01 17:30:21.910   -- File entry --
+2026-11-01 17:30:21.910   Dest filename: C:\SeruniExe1212\Seruni22Bakery.exe
+2026-11-01 17:30:21.910   Time stamp of our file: 2026-11-01 16:53:38.000
+2026-11-01 17:30:21.910   Installing the file.
+2026-11-01 17:30:21.910   Successfully installed the file.
+2026-11-01 17:30:21.910   -- File entry --
+2026-11-01 17:30:21.910   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Host.deps.json
+2026-11-01 17:30:21.920   Time stamp of our file: 2026-11-01 16:53:36.000
+2026-11-01 17:30:21.920   Installing the file.
+2026-11-01 17:30:21.920   Successfully installed the file.
+2026-11-01 17:30:21.920   -- File entry --
+2026-11-01 17:30:21.920   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Host.dll
+2026-11-01 17:30:21.920   Time stamp of our file: 2026-11-01 16:53:34.000
+2026-11-01 17:30:21.920   Installing the file.
+2026-11-01 17:30:21.936   Successfully installed the file.
+2026-11-01 17:30:21.936   -- File entry --
+2026-11-01 17:30:21.936   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Host.exe
+2026-11-01 17:30:21.936   Time stamp of our file: 2026-11-01 16:53:34.000
+2026-11-01 17:30:21.936   Installing the file.
+2026-11-01 17:30:21.936   Successfully installed the file.
+2026-11-01 17:30:21.936   -- File entry --
+2026-11-01 17:30:21.936   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Host.runtimeconfig.json
+2026-11-01 17:30:21.952   Time stamp of our file: 2026-11-01 16:53:36.000
+2026-11-01 17:30:21.952   Installing the file.
+2026-11-01 17:30:21.952   Successfully installed the file.
+2026-11-01 17:30:21.952   -- File entry --
+2026-11-01 17:30:21.952   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Host.staticwebassets.endpoints.json
+2026-11-01 17:30:21.952   Time stamp of our file: 2026-10-24 21:57:34.000
+2026-11-01 17:30:21.952   Installing the file.
+2026-11-01 17:30:21.952   Successfully installed the file.
+2026-11-01 17:30:21.952   -- File entry --
+2026-11-01 17:30:21.952   Dest filename: C:\SeruniExe1212\Seruni22Bakery.Infrastructure.Sqlite.dll
+2026-11-01 17:30:21.952   Time stamp of our file: 2026-11-01 16:53:30.000
+2026-11-01 17:30:21.952   Installing the file.
+2026-11-01 17:30:21.968   Successfully installed the file.
+2026-11-01 17:30:21.968   -- File entry --
+2026-11-01 17:30:21.968   Dest filename: C:\SeruniExe1212\SixLabors.Fonts.dll
+2026-11-01 17:30:21.968   Time stamp of our file: 2023-08-11 19:04:44.000
+2026-11-01 17:30:21.968   Installing the file.
+2026-11-01 17:30:22.019   Successfully installed the file.
+2026-11-01 17:30:22.021   -- File entry --
+2026-11-01 17:30:22.021   Dest filename: C:\SeruniExe1212\SQLitePCLRaw.batteries_v2.dll
+2026-11-01 17:30:22.021   Time stamp of our file: 2023-08-24 01:41:24.000
+2026-11-01 17:30:22.021   Installing the file.
+2026-11-01 17:30:22.021   Successfully installed the file.
+2026-11-01 17:30:22.021   -- File entry --
+2026-11-01 17:30:22.021   Dest filename: C:\SeruniExe1212\SQLitePCLRaw.core.dll
+2026-11-01 17:30:22.021   Time stamp of our file: 2023-08-24 01:38:38.000
+2026-11-01 17:30:22.021   Installing the file.
+2026-11-01 17:30:22.032   Successfully installed the file.
+2026-11-01 17:30:22.032   -- File entry --
+2026-11-01 17:30:22.032   Dest filename: C:\SeruniExe1212\SQLitePCLRaw.provider.e_sqlite3.dll
+2026-11-01 17:30:22.032   Time stamp of our file: 2023-08-24 01:38:52.000
+2026-11-01 17:30:22.032   Installing the file.
+2026-11-01 17:30:22.048   Successfully installed the file.
+2026-11-01 17:30:22.048   -- File entry --
+2026-11-01 17:30:22.048   Dest filename: C:\SeruniExe1212\System.AppContext.dll
+2026-11-01 17:30:22.048   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:22.048   Installing the file.
+2026-11-01 17:30:22.064   Successfully installed the file.
+2026-11-01 17:30:22.066   -- File entry --
+2026-11-01 17:30:22.066   Dest filename: C:\SeruniExe1212\System.Buffers.dll
+2026-11-01 17:30:22.066   Time stamp of our file: 2026-08-21 04:17:08.000
+2026-11-01 17:30:22.066   Installing the file.
+2026-11-01 17:30:22.066   Successfully installed the file.
+2026-11-01 17:30:22.066   -- File entry --
+2026-11-01 17:30:22.066   Dest filename: C:\SeruniExe1212\System.Collections.Concurrent.dll
+2026-11-01 17:30:22.066   Time stamp of our file: 2026-08-21 04:23:42.000
+2026-11-01 17:30:22.066   Installing the file.
+2026-11-01 17:30:22.080   Successfully installed the file.
+2026-11-01 17:30:22.080   -- File entry --
+2026-11-01 17:30:22.080   Dest filename: C:\SeruniExe1212\System.Collections.dll
+2026-11-01 17:30:22.080   Time stamp of our file: 2026-08-21 04:23:44.000
+2026-11-01 17:30:22.080   Installing the file.
+2026-11-01 17:30:22.096   Successfully installed the file.
+2026-11-01 17:30:22.096   -- File entry --
+2026-11-01 17:30:22.096   Dest filename: C:\SeruniExe1212\System.Collections.Immutable.dll
+2026-11-01 17:30:22.096   Time stamp of our file: 2026-08-21 04:23:48.000
+2026-11-01 17:30:22.096   Installing the file.
+2026-11-01 17:30:22.156   Successfully installed the file.
+2026-11-01 17:30:22.156   -- File entry --
+2026-11-01 17:30:22.160   Dest filename: C:\SeruniExe1212\System.Collections.NonGeneric.dll
+2026-11-01 17:30:22.160   Time stamp of our file: 2026-08-21 04:23:50.000
+2026-11-01 17:30:22.160   Installing the file.
+2026-11-01 17:30:22.160   Successfully installed the file.
+2026-11-01 17:30:22.160   -- File entry --
+2026-11-01 17:30:22.160   Dest filename: C:\SeruniExe1212\System.Collections.Specialized.dll
+2026-11-01 17:30:22.160   Time stamp of our file: 2026-08-21 04:23:54.000
+2026-11-01 17:30:22.160   Installing the file.
+2026-11-01 17:30:22.175   Successfully installed the file.
+2026-11-01 17:30:22.175   -- File entry --
+2026-11-01 17:30:22.175   Dest filename: C:\SeruniExe1212\System.ComponentModel.Annotations.dll
+2026-11-01 17:30:22.175   Time stamp of our file: 2026-08-21 04:23:56.000
+2026-11-01 17:30:22.175   Installing the file.
+2026-11-01 17:30:22.207   Successfully installed the file.
+2026-11-01 17:30:22.207   -- File entry --
+2026-11-01 17:30:22.207   Dest filename: C:\SeruniExe1212\System.ComponentModel.DataAnnotations.dll
+2026-11-01 17:30:22.207   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-11-01 17:30:22.207   Installing the file.
+2026-11-01 17:30:22.207   Successfully installed the file.
+2026-11-01 17:30:22.207   -- File entry --
+2026-11-01 17:30:22.207   Dest filename: C:\SeruniExe1212\System.ComponentModel.dll
+2026-11-01 17:30:22.207   Time stamp of our file: 2026-08-21 04:24:00.000
+2026-11-01 17:30:22.207   Installing the file.
+2026-11-01 17:30:22.207   Successfully installed the file.
+2026-11-01 17:30:22.223   -- File entry --
+2026-11-01 17:30:22.223   Dest filename: C:\SeruniExe1212\System.ComponentModel.EventBasedAsync.dll
+2026-11-01 17:30:22.223   Time stamp of our file: 2026-08-21 04:24:02.000
+2026-11-01 17:30:22.223   Installing the file.
+2026-11-01 17:30:22.223   Successfully installed the file.
+2026-11-01 17:30:22.223   -- File entry --
+2026-11-01 17:30:22.223   Dest filename: C:\SeruniExe1212\System.ComponentModel.Primitives.dll
+2026-11-01 17:30:22.223   Time stamp of our file: 2026-08-21 04:24:04.000
+2026-11-01 17:30:22.223   Installing the file.
+2026-11-01 17:30:22.223   Successfully installed the file.
+2026-11-01 17:30:22.223   -- File entry --
+2026-11-01 17:30:22.223   Dest filename: C:\SeruniExe1212\System.ComponentModel.TypeConverter.dll
+2026-11-01 17:30:22.223   Time stamp of our file: 2026-08-21 04:24:08.000
+2026-11-01 17:30:22.223   Installing the file.
+2026-11-01 17:30:22.271   Successfully installed the file.
+2026-11-01 17:30:22.271   -- File entry --
+2026-11-01 17:30:22.271   Dest filename: C:\SeruniExe1212\System.Configuration.dll
+2026-11-01 17:30:22.271   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-11-01 17:30:22.271   Installing the file.
+2026-11-01 17:30:22.287   Successfully installed the file.
+2026-11-01 17:30:22.287   -- File entry --
+2026-11-01 17:30:22.287   Dest filename: C:\SeruniExe1212\System.Console.dll
+2026-11-01 17:30:22.287   Time stamp of our file: 2026-08-21 04:24:10.000
+2026-11-01 17:30:22.287   Installing the file.
+2026-11-01 17:30:22.303   Successfully installed the file.
+2026-11-01 17:30:22.305   -- File entry --
+2026-11-01 17:30:22.306   Dest filename: C:\SeruniExe1212\System.Core.dll
+2026-11-01 17:30:22.306   Time stamp of our file: 2026-08-21 04:18:28.000
+2026-11-01 17:30:22.306   Installing the file.
+2026-11-01 17:30:22.306   Successfully installed the file.
+2026-11-01 17:30:22.306   -- File entry --
+2026-11-01 17:30:22.306   Dest filename: C:\SeruniExe1212\System.Data.Common.dll
+2026-11-01 17:30:22.306   Time stamp of our file: 2026-08-21 04:24:14.000
+2026-11-01 17:30:22.306   Installing the file.
+2026-11-01 17:30:22.462   Successfully installed the file.
+2026-11-01 17:30:22.464   -- File entry --
+2026-11-01 17:30:22.464   Dest filename: C:\SeruniExe1212\System.Data.DataSetExtensions.dll
+2026-11-01 17:30:22.464   Time stamp of our file: 2026-08-21 04:18:16.000
+2026-11-01 17:30:22.464   Installing the file.
+2026-11-01 17:30:22.473   Successfully installed the file.
+2026-11-01 17:30:22.475   -- File entry --
+2026-11-01 17:30:22.475   Dest filename: C:\SeruniExe1212\System.Data.dll
+2026-11-01 17:30:22.475   Time stamp of our file: 2026-08-21 04:18:22.000
+2026-11-01 17:30:22.475   Installing the file.
+2026-11-01 17:30:22.478   Successfully installed the file.
+2026-11-01 17:30:22.478   -- File entry --
+2026-11-01 17:30:22.478   Dest filename: C:\SeruniExe1212\System.Diagnostics.Contracts.dll
+2026-11-01 17:30:22.478   Time stamp of our file: 2026-08-21 04:16:28.000
+2026-11-01 17:30:22.478   Installing the file.
+2026-11-01 17:30:22.478   Successfully installed the file.
+2026-11-01 17:30:22.478   -- File entry --
+2026-11-01 17:30:22.478   Dest filename: C:\SeruniExe1212\System.Diagnostics.Debug.dll
+2026-11-01 17:30:22.478   Time stamp of our file: 2026-08-21 04:17:10.000
+2026-11-01 17:30:22.478   Installing the file.
+2026-11-01 17:30:22.478   Successfully installed the file.
+2026-11-01 17:30:22.478   -- File entry --
+2026-11-01 17:30:22.478   Dest filename: C:\SeruniExe1212\System.Diagnostics.DiagnosticSource.dll
+2026-11-01 17:30:22.478   Time stamp of our file: 2026-08-21 04:24:18.000
+2026-11-01 17:30:22.478   Installing the file.
+2026-11-01 17:30:22.511   Successfully installed the file.
+2026-11-01 17:30:22.513   -- File entry --
+2026-11-01 17:30:22.513   Dest filename: C:\SeruniExe1212\System.Diagnostics.EventLog.dll
+2026-11-01 17:30:22.513   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:22.513   Installing the file.
+2026-11-01 17:30:22.533   Successfully installed the file.
+2026-11-01 17:30:22.538   -- File entry --
+2026-11-01 17:30:22.540   Dest filename: C:\SeruniExe1212\System.Diagnostics.EventLog.Messages.dll
+2026-11-01 17:30:22.541   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:22.541   Installing the file.
+2026-11-01 17:30:22.570   Successfully installed the file.
+2026-11-01 17:30:22.572   -- File entry --
+2026-11-01 17:30:22.572   Dest filename: C:\SeruniExe1212\System.Diagnostics.FileVersionInfo.dll
+2026-11-01 17:30:22.574   Time stamp of our file: 2026-08-21 04:24:20.000
+2026-11-01 17:30:22.574   Installing the file.
+2026-11-01 17:30:22.578   Successfully installed the file.
+2026-11-01 17:30:22.578   -- File entry --
+2026-11-01 17:30:22.578   Dest filename: C:\SeruniExe1212\System.Diagnostics.Process.dll
+2026-11-01 17:30:22.580   Time stamp of our file: 2026-08-21 04:24:24.000
+2026-11-01 17:30:22.580   Installing the file.
+2026-11-01 17:30:22.589   Successfully installed the file.
+2026-11-01 17:30:22.589   -- File entry --
+2026-11-01 17:30:22.589   Dest filename: C:\SeruniExe1212\System.Diagnostics.StackTrace.dll
+2026-11-01 17:30:22.606   Time stamp of our file: 2026-08-21 04:24:26.000
+2026-11-01 17:30:22.606   Installing the file.
+2026-11-01 17:30:22.606   Successfully installed the file.
+2026-11-01 17:30:22.606   -- File entry --
+2026-11-01 17:30:22.606   Dest filename: C:\SeruniExe1212\System.Diagnostics.TextWriterTraceListener.dll
+2026-11-01 17:30:22.606   Time stamp of our file: 2026-08-21 04:24:30.000
+2026-11-01 17:30:22.606   Installing the file.
+2026-11-01 17:30:22.606   Successfully installed the file.
+2026-11-01 17:30:22.606   -- File entry --
+2026-11-01 17:30:22.606   Dest filename: C:\SeruniExe1212\System.Diagnostics.Tools.dll
+2026-11-01 17:30:22.621   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:22.621   Installing the file.
+2026-11-01 17:30:22.621   Successfully installed the file.
+2026-11-01 17:30:22.621   -- File entry --
+2026-11-01 17:30:22.621   Dest filename: C:\SeruniExe1212\System.Diagnostics.TraceSource.dll
+2026-11-01 17:30:22.621   Time stamp of our file: 2026-08-21 04:24:32.000
+2026-11-01 17:30:22.621   Installing the file.
+2026-11-01 17:30:22.637   Successfully installed the file.
+2026-11-01 17:30:22.637   -- File entry --
+2026-11-01 17:30:22.637   Dest filename: C:\SeruniExe1212\System.Diagnostics.Tracing.dll
+2026-11-01 17:30:22.637   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-11-01 17:30:22.637   Installing the file.
+2026-11-01 17:30:22.643   Successfully installed the file.
+2026-11-01 17:30:22.643   -- File entry --
+2026-11-01 17:30:22.643   Dest filename: C:\SeruniExe1212\System.dll
+2026-11-01 17:30:22.643   Time stamp of our file: 2026-08-21 04:18:30.000
+2026-11-01 17:30:22.643   Installing the file.
+2026-11-01 17:30:22.643   Successfully installed the file.
+2026-11-01 17:30:22.643   -- File entry --
+2026-11-01 17:30:22.643   Dest filename: C:\SeruniExe1212\System.Drawing.Common.dll
+2026-11-01 17:30:22.643   Time stamp of our file: 2024-09-18 23:22:44.000
+2026-11-01 17:30:22.652   Installing the file.
+2026-11-01 17:30:22.684   Successfully installed the file.
+2026-11-01 17:30:22.684   -- File entry --
+2026-11-01 17:30:22.684   Dest filename: C:\SeruniExe1212\System.Drawing.dll
+2026-11-01 17:30:22.684   Time stamp of our file: 2026-08-21 04:18:18.000
+2026-11-01 17:30:22.684   Installing the file.
+2026-11-01 17:30:22.684   Successfully installed the file.
+2026-11-01 17:30:22.684   -- File entry --
+2026-11-01 17:30:22.684   Dest filename: C:\SeruniExe1212\System.Drawing.Primitives.dll
+2026-11-01 17:30:22.684   Time stamp of our file: 2026-08-21 04:24:36.000
+2026-11-01 17:30:22.684   Installing the file.
+2026-11-01 17:30:22.702   Successfully installed the file.
+2026-11-01 17:30:22.702   -- File entry --
+2026-11-01 17:30:22.702   Dest filename: C:\SeruniExe1212\System.Dynamic.Runtime.dll
+2026-11-01 17:30:22.702   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-11-01 17:30:22.702   Installing the file.
+2026-11-01 17:30:22.702   Successfully installed the file.
+2026-11-01 17:30:22.702   -- File entry --
+2026-11-01 17:30:22.702   Dest filename: C:\SeruniExe1212\System.Formats.Asn1.dll
+2026-11-01 17:30:22.702   Time stamp of our file: 2026-08-21 04:24:38.000
+2026-11-01 17:30:22.702   Installing the file.
+2026-11-01 17:30:22.716   Successfully installed the file.
+2026-11-01 17:30:22.716   -- File entry --
+2026-11-01 17:30:22.716   Dest filename: C:\SeruniExe1212\System.Formats.Tar.dll
+2026-11-01 17:30:22.716   Time stamp of our file: 2026-08-21 04:24:42.000
+2026-11-01 17:30:22.716   Installing the file.
+2026-11-01 17:30:22.732   Successfully installed the file.
+2026-11-01 17:30:22.732   -- File entry --
+2026-11-01 17:30:22.748   Dest filename: C:\SeruniExe1212\System.Globalization.Calendars.dll
+2026-11-01 17:30:22.748   Time stamp of our file: 2026-08-21 04:17:10.000
+2026-11-01 17:30:22.748   Installing the file.
+2026-11-01 17:30:22.748   Successfully installed the file.
+2026-11-01 17:30:22.748   -- File entry --
+2026-11-01 17:30:22.748   Dest filename: C:\SeruniExe1212\System.Globalization.dll
+2026-11-01 17:30:22.748   Time stamp of our file: 2026-08-21 04:16:44.000
+2026-11-01 17:30:22.748   Installing the file.
+2026-11-01 17:30:22.748   Successfully installed the file.
+2026-11-01 17:30:22.748   -- File entry --
+2026-11-01 17:30:22.748   Dest filename: C:\SeruniExe1212\System.Globalization.Extensions.dll
+2026-11-01 17:30:22.748   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-11-01 17:30:22.748   Installing the file.
+2026-11-01 17:30:22.748   Successfully installed the file.
+2026-11-01 17:30:22.748   -- File entry --
+2026-11-01 17:30:22.748   Dest filename: C:\SeruniExe1212\System.IdentityModel.Tokens.Jwt.dll
+2026-11-01 17:30:22.748   Time stamp of our file: 2024-11-15 11:30:20.000
+2026-11-01 17:30:22.748   Installing the file.
+2026-11-01 17:30:22.764   Successfully installed the file.
+2026-11-01 17:30:22.764   -- File entry --
+2026-11-01 17:30:22.764   Dest filename: C:\SeruniExe1212\System.IO.Compression.Brotli.dll
+2026-11-01 17:30:22.764   Time stamp of our file: 2026-08-21 04:24:44.000
+2026-11-01 17:30:22.764   Installing the file.
+2026-11-01 17:30:22.764   Successfully installed the file.
+2026-11-01 17:30:22.779   -- File entry --
+2026-11-01 17:30:22.779   Dest filename: C:\SeruniExe1212\System.IO.Compression.dll
+2026-11-01 17:30:22.779   Time stamp of our file: 2026-08-21 04:24:48.000
+2026-11-01 17:30:22.779   Installing the file.
+2026-11-01 17:30:22.795   Successfully installed the file.
+2026-11-01 17:30:22.795   -- File entry --
+2026-11-01 17:30:22.795   Dest filename: C:\SeruniExe1212\System.IO.Compression.FileSystem.dll
+2026-11-01 17:30:22.795   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:22.795   Installing the file.
+2026-11-01 17:30:22.795   Successfully installed the file.
+2026-11-01 17:30:22.795   -- File entry --
+2026-11-01 17:30:22.795   Dest filename: C:\SeruniExe1212\System.IO.Compression.Native.dll
+2026-11-01 17:30:22.795   Time stamp of our file: 2026-08-21 04:14:02.000
+2026-11-01 17:30:22.811   Installing the file.
+2026-11-01 17:30:22.867   Successfully installed the file.
+2026-11-01 17:30:22.867   -- File entry --
+2026-11-01 17:30:22.867   Dest filename: C:\SeruniExe1212\System.IO.Compression.ZipFile.dll
+2026-11-01 17:30:22.867   Time stamp of our file: 2026-08-21 04:24:50.000
+2026-11-01 17:30:22.867   Installing the file.
+2026-11-01 17:30:22.874   Successfully installed the file.
+2026-11-01 17:30:22.874   -- File entry --
+2026-11-01 17:30:22.874   Dest filename: C:\SeruniExe1212\System.IO.dll
+2026-11-01 17:30:22.874   Time stamp of our file: 2026-08-21 04:17:08.000
+2026-11-01 17:30:22.874   Installing the file.
+2026-11-01 17:30:22.874   Successfully installed the file.
+2026-11-01 17:30:22.874   -- File entry --
+2026-11-01 17:30:22.874   Dest filename: C:\SeruniExe1212\System.IO.FileSystem.AccessControl.dll
+2026-11-01 17:30:22.874   Time stamp of our file: 2026-08-21 04:24:54.000
+2026-11-01 17:30:22.874   Installing the file.
+2026-11-01 17:30:22.874   Successfully installed the file.
+2026-11-01 17:30:22.890   -- File entry --
+2026-11-01 17:30:22.890   Dest filename: C:\SeruniExe1212\System.IO.FileSystem.dll
+2026-11-01 17:30:22.890   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-11-01 17:30:22.890   Installing the file.
+2026-11-01 17:30:22.890   Successfully installed the file.
+2026-11-01 17:30:22.890   -- File entry --
+2026-11-01 17:30:22.897   Dest filename: C:\SeruniExe1212\System.IO.FileSystem.DriveInfo.dll
+2026-11-01 17:30:22.897   Time stamp of our file: 2026-08-21 04:24:56.000
+2026-11-01 17:30:22.897   Installing the file.
+2026-11-01 17:30:22.897   Successfully installed the file.
+2026-11-01 17:30:22.897   -- File entry --
+2026-11-01 17:30:22.897   Dest filename: C:\SeruniExe1212\System.IO.FileSystem.Primitives.dll
+2026-11-01 17:30:22.897   Time stamp of our file: 2026-08-21 04:17:10.000
+2026-11-01 17:30:22.897   Installing the file.
+2026-11-01 17:30:22.906   Successfully installed the file.
+2026-11-01 17:30:22.906   -- File entry --
+2026-11-01 17:30:22.906   Dest filename: C:\SeruniExe1212\System.IO.FileSystem.Watcher.dll
+2026-11-01 17:30:22.906   Time stamp of our file: 2026-08-21 04:25:00.000
+2026-11-01 17:30:22.906   Installing the file.
+2026-11-01 17:30:22.906   Successfully installed the file.
+2026-11-01 17:30:22.906   -- File entry --
+2026-11-01 17:30:22.906   Dest filename: C:\SeruniExe1212\System.IO.IsolatedStorage.dll
+2026-11-01 17:30:22.906   Time stamp of our file: 2026-08-21 04:25:02.000
+2026-11-01 17:30:22.906   Installing the file.
+2026-11-01 17:30:22.922   Successfully installed the file.
+2026-11-01 17:30:22.926   -- File entry --
+2026-11-01 17:30:22.926   Dest filename: C:\SeruniExe1212\System.IO.MemoryMappedFiles.dll
+2026-11-01 17:30:22.926   Time stamp of our file: 2026-08-21 04:25:06.000
+2026-11-01 17:30:22.926   Installing the file.
+2026-11-01 17:30:22.926   Successfully installed the file.
+2026-11-01 17:30:22.926   -- File entry --
+2026-11-01 17:30:22.926   Dest filename: C:\SeruniExe1212\System.IO.Packaging.dll
+2026-11-01 17:30:22.926   Time stamp of our file: 2021-10-23 06:49:46.000
+2026-11-01 17:30:22.926   Installing the file.
+2026-11-01 17:30:22.938   Successfully installed the file.
+2026-11-01 17:30:22.938   -- File entry --
+2026-11-01 17:30:22.938   Dest filename: C:\SeruniExe1212\System.IO.Pipelines.dll
+2026-11-01 17:30:22.938   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:22.938   Installing the file.
+2026-11-01 17:30:22.958   Successfully installed the file.
+2026-11-01 17:30:22.958   -- File entry --
+2026-11-01 17:30:22.958   Dest filename: C:\SeruniExe1212\System.IO.Pipes.AccessControl.dll
+2026-11-01 17:30:22.958   Time stamp of our file: 2026-08-21 04:15:32.000
+2026-11-01 17:30:22.958   Installing the file.
+2026-11-01 17:30:22.958   Successfully installed the file.
+2026-11-01 17:30:22.958   -- File entry --
+2026-11-01 17:30:22.958   Dest filename: C:\SeruniExe1212\System.IO.Pipes.dll
+2026-11-01 17:30:22.958   Time stamp of our file: 2026-08-21 04:25:08.000
+2026-11-01 17:30:22.958   Installing the file.
+2026-11-01 17:30:22.970   Successfully installed the file.
+2026-11-01 17:30:22.970   -- File entry --
+2026-11-01 17:30:22.970   Dest filename: C:\SeruniExe1212\System.IO.UnmanagedMemoryStream.dll
+2026-11-01 17:30:22.970   Time stamp of our file: 2026-08-21 04:18:18.000
+2026-11-01 17:30:22.970   Installing the file.
+2026-11-01 17:30:22.970   Successfully installed the file.
+2026-11-01 17:30:22.970   -- File entry --
+2026-11-01 17:30:22.970   Dest filename: C:\SeruniExe1212\System.Linq.dll
+2026-11-01 17:30:22.970   Time stamp of our file: 2026-08-21 04:25:12.000
+2026-11-01 17:30:22.986   Installing the file.
+2026-11-01 17:30:23.002   Successfully installed the file.
+2026-11-01 17:30:23.002   -- File entry --
+2026-11-01 17:30:23.002   Dest filename: C:\SeruniExe1212\System.Linq.Expressions.dll
+2026-11-01 17:30:23.018   Time stamp of our file: 2026-08-21 04:25:16.000
+2026-11-01 17:30:23.018   Installing the file.
+2026-11-01 17:30:23.178   Successfully installed the file.
+2026-11-01 17:30:23.180   -- File entry --
+2026-11-01 17:30:23.180   Dest filename: C:\SeruniExe1212\System.Linq.Parallel.dll
+2026-11-01 17:30:23.182   Time stamp of our file: 2026-08-21 04:25:20.000
+2026-11-01 17:30:23.182   Installing the file.
+2026-11-01 17:30:23.211   Successfully installed the file.
+2026-11-01 17:30:23.211   -- File entry --
+2026-11-01 17:30:23.211   Dest filename: C:\SeruniExe1212\System.Linq.Queryable.dll
+2026-11-01 17:30:23.211   Time stamp of our file: 2026-08-21 04:25:24.000
+2026-11-01 17:30:23.211   Installing the file.
+2026-11-01 17:30:23.231   Successfully installed the file.
+2026-11-01 17:30:23.231   -- File entry --
+2026-11-01 17:30:23.231   Dest filename: C:\SeruniExe1212\System.Memory.dll
+2026-11-01 17:30:23.231   Time stamp of our file: 2026-08-21 04:25:26.000
+2026-11-01 17:30:23.237   Installing the file.
+2026-11-01 17:30:23.249   Successfully installed the file.
+2026-11-01 17:30:23.251   -- File entry --
+2026-11-01 17:30:23.251   Dest filename: C:\SeruniExe1212\System.Net.dll
+2026-11-01 17:30:23.251   Time stamp of our file: 2026-08-21 04:18:08.000
+2026-11-01 17:30:23.251   Installing the file.
+2026-11-01 17:30:23.257   Successfully installed the file.
+2026-11-01 17:30:23.257   -- File entry --
+2026-11-01 17:30:23.257   Dest filename: C:\SeruniExe1212\System.Net.Http.dll
+2026-11-01 17:30:23.257   Time stamp of our file: 2026-08-21 04:25:30.000
+2026-11-01 17:30:23.257   Installing the file.
+2026-11-01 17:30:23.354   Successfully installed the file.
+2026-11-01 17:30:23.354   -- File entry --
+2026-11-01 17:30:23.356   Dest filename: C:\SeruniExe1212\System.Net.Http.Json.dll
+2026-11-01 17:30:23.356   Time stamp of our file: 2026-08-21 04:25:34.000
+2026-11-01 17:30:23.358   Installing the file.
+2026-11-01 17:30:23.364   Successfully installed the file.
+2026-11-01 17:30:23.366   -- File entry --
+2026-11-01 17:30:23.366   Dest filename: C:\SeruniExe1212\System.Net.HttpListener.dll
+2026-11-01 17:30:23.370   Time stamp of our file: 2026-08-21 04:25:36.000
+2026-11-01 17:30:23.370   Installing the file.
+2026-11-01 17:30:23.400   Successfully installed the file.
+2026-11-01 17:30:23.402   -- File entry --
+2026-11-01 17:30:23.404   Dest filename: C:\SeruniExe1212\System.Net.Mail.dll
+2026-11-01 17:30:23.406   Time stamp of our file: 2026-08-21 04:25:40.000
+2026-11-01 17:30:23.406   Installing the file.
+2026-11-01 17:30:23.432   Successfully installed the file.
+2026-11-01 17:30:23.432   -- File entry --
+2026-11-01 17:30:23.432   Dest filename: C:\SeruniExe1212\System.Net.NameResolution.dll
+2026-11-01 17:30:23.432   Time stamp of our file: 2026-08-21 04:25:42.000
+2026-11-01 17:30:23.432   Installing the file.
+2026-11-01 17:30:23.448   Successfully installed the file.
+2026-11-01 17:30:23.448   -- File entry --
+2026-11-01 17:30:23.448   Dest filename: C:\SeruniExe1212\System.Net.NetworkInformation.dll
+2026-11-01 17:30:23.448   Time stamp of our file: 2026-08-21 04:25:46.000
+2026-11-01 17:30:23.448   Installing the file.
+2026-11-01 17:30:23.464   Successfully installed the file.
+2026-11-01 17:30:23.464   -- File entry --
+2026-11-01 17:30:23.464   Dest filename: C:\SeruniExe1212\System.Net.Ping.dll
+2026-11-01 17:30:23.464   Time stamp of our file: 2026-08-21 04:25:48.000
+2026-11-01 17:30:23.464   Installing the file.
+2026-11-01 17:30:23.490   Successfully installed the file.
+2026-11-01 17:30:23.490   -- File entry --
+2026-11-01 17:30:23.490   Dest filename: C:\SeruniExe1212\System.Net.Primitives.dll
+2026-11-01 17:30:23.490   Time stamp of our file: 2026-08-21 04:25:52.000
+2026-11-01 17:30:23.496   Installing the file.
+2026-11-01 17:30:23.512   Successfully installed the file.
+2026-11-01 17:30:23.512   -- File entry --
+2026-11-01 17:30:23.512   Dest filename: C:\SeruniExe1212\System.Net.Quic.dll
+2026-11-01 17:30:23.512   Time stamp of our file: 2026-08-21 04:25:54.000
+2026-11-01 17:30:23.512   Installing the file.
+2026-11-01 17:30:23.544   Successfully installed the file.
+2026-11-01 17:30:23.545   -- File entry --
+2026-11-01 17:30:23.545   Dest filename: C:\SeruniExe1212\System.Net.Requests.dll
+2026-11-01 17:30:23.545   Time stamp of our file: 2026-08-21 04:25:58.000
+2026-11-01 17:30:23.545   Installing the file.
+2026-11-01 17:30:23.560   Successfully installed the file.
+2026-11-01 17:30:23.560   -- File entry --
+2026-11-01 17:30:23.560   Dest filename: C:\SeruniExe1212\System.Net.Security.dll
+2026-11-01 17:30:23.560   Time stamp of our file: 2026-08-21 04:26:00.000
+2026-11-01 17:30:23.560   Installing the file.
+2026-11-01 17:30:23.605   Successfully installed the file.
+2026-11-01 17:30:23.609   -- File entry --
+2026-11-01 17:30:23.609   Dest filename: C:\SeruniExe1212\System.Net.ServicePoint.dll
+2026-11-01 17:30:23.609   Time stamp of our file: 2026-08-21 04:26:04.000
+2026-11-01 17:30:23.609   Installing the file.
+2026-11-01 17:30:23.609   Successfully installed the file.
+2026-11-01 17:30:23.609   -- File entry --
+2026-11-01 17:30:23.609   Dest filename: C:\SeruniExe1212\System.Net.Sockets.dll
+2026-11-01 17:30:23.609   Time stamp of our file: 2026-08-21 04:26:06.000
+2026-11-01 17:30:23.609   Installing the file.
+2026-11-01 17:30:23.639   Successfully installed the file.
+2026-11-01 17:30:23.639   -- File entry --
+2026-11-01 17:30:23.655   Dest filename: C:\SeruniExe1212\System.Net.WebClient.dll
+2026-11-01 17:30:23.655   Time stamp of our file: 2026-08-21 04:26:10.000
+2026-11-01 17:30:23.655   Installing the file.
+2026-11-01 17:30:23.655   Successfully installed the file.
+2026-11-01 17:30:23.655   -- File entry --
+2026-11-01 17:30:23.671   Dest filename: C:\SeruniExe1212\System.Net.WebHeaderCollection.dll
+2026-11-01 17:30:23.671   Time stamp of our file: 2026-08-21 04:26:12.000
+2026-11-01 17:30:23.671   Installing the file.
+2026-11-01 17:30:23.671   Successfully installed the file.
+2026-11-01 17:30:23.671   -- File entry --
+2026-11-01 17:30:23.671   Dest filename: C:\SeruniExe1212\System.Net.WebProxy.dll
+2026-11-01 17:30:23.671   Time stamp of our file: 2026-08-21 04:26:14.000
+2026-11-01 17:30:23.671   Installing the file.
+2026-11-01 17:30:23.687   Successfully installed the file.
+2026-11-01 17:30:23.687   -- File entry --
+2026-11-01 17:30:23.687   Dest filename: C:\SeruniExe1212\System.Net.WebSockets.Client.dll
+2026-11-01 17:30:23.687   Time stamp of our file: 2026-08-21 04:26:18.000
+2026-11-01 17:30:23.687   Installing the file.
+2026-11-01 17:30:23.687   Successfully installed the file.
+2026-11-01 17:30:23.687   -- File entry --
+2026-11-01 17:30:23.687   Dest filename: C:\SeruniExe1212\System.Net.WebSockets.dll
+2026-11-01 17:30:23.687   Time stamp of our file: 2026-08-21 04:26:20.000
+2026-11-01 17:30:23.687   Installing the file.
+2026-11-01 17:30:23.719   Successfully installed the file.
+2026-11-01 17:30:23.719   -- File entry --
+2026-11-01 17:30:23.719   Dest filename: C:\SeruniExe1212\System.Numerics.dll
+2026-11-01 17:30:23.719   Time stamp of our file: 2026-08-21 04:17:42.000
+2026-11-01 17:30:23.719   Installing the file.
+2026-11-01 17:30:23.719   Successfully installed the file.
+2026-11-01 17:30:23.719   -- File entry --
+2026-11-01 17:30:23.719   Dest filename: C:\SeruniExe1212\System.Numerics.Vectors.dll
+2026-11-01 17:30:23.719   Time stamp of our file: 2026-08-21 04:17:40.000
+2026-11-01 17:30:23.719   Installing the file.
+2026-11-01 17:30:23.719   Successfully installed the file.
+2026-11-01 17:30:23.719   -- File entry --
+2026-11-01 17:30:23.735   Dest filename: C:\SeruniExe1212\System.ObjectModel.dll
+2026-11-01 17:30:23.735   Time stamp of our file: 2026-08-21 04:26:24.000
+2026-11-01 17:30:23.735   Installing the file.
+2026-11-01 17:30:23.735   Successfully installed the file.
+2026-11-01 17:30:23.735   -- File entry --
+2026-11-01 17:30:23.735   Dest filename: C:\SeruniExe1212\System.Private.CoreLib.dll
+2026-11-01 17:30:23.735   Time stamp of our file: 2026-08-21 04:10:50.000
+2026-11-01 17:30:23.735   Installing the file.
+2026-11-01 17:30:24.840   Successfully installed the file.
+2026-11-01 17:30:24.842   -- File entry --
+2026-11-01 17:30:24.842   Dest filename: C:\SeruniExe1212\System.Private.DataContractSerialization.dll
+2026-11-01 17:30:24.844   Time stamp of our file: 2026-08-21 04:26:28.000
+2026-11-01 17:30:24.846   Installing the file.
+2026-11-01 17:30:24.968   Successfully installed the file.
+2026-11-01 17:30:24.968   -- File entry --
+2026-11-01 17:30:24.968   Dest filename: C:\SeruniExe1212\System.Private.Uri.dll
+2026-11-01 17:30:24.968   Time stamp of our file: 2026-08-21 04:26:30.000
+2026-11-01 17:30:24.968   Installing the file.
+2026-11-01 17:30:25.000   Successfully installed the file.
+2026-11-01 17:30:25.000   -- File entry --
+2026-11-01 17:30:25.000   Dest filename: C:\SeruniExe1212\System.Private.Xml.dll
+2026-11-01 17:30:25.000   Time stamp of our file: 2026-08-21 04:26:36.000
+2026-11-01 17:30:25.011   Installing the file.
+2026-11-01 17:30:25.518   Successfully installed the file.
+2026-11-01 17:30:25.525   -- File entry --
+2026-11-01 17:30:25.526   Dest filename: C:\SeruniExe1212\System.Private.Xml.Linq.dll
+2026-11-01 17:30:25.526   Time stamp of our file: 2026-08-21 04:26:38.000
+2026-11-01 17:30:25.526   Installing the file.
+2026-11-01 17:30:25.557   Successfully installed the file.
+2026-11-01 17:30:25.560   -- File entry --
+2026-11-01 17:30:25.560   Dest filename: C:\SeruniExe1212\System.Reflection.DispatchProxy.dll
+2026-11-01 17:30:25.560   Time stamp of our file: 2026-08-21 04:26:42.000
+2026-11-01 17:30:25.560   Installing the file.
+2026-11-01 17:30:25.560   Successfully installed the file.
+2026-11-01 17:30:25.560   -- File entry --
+2026-11-01 17:30:25.560   Dest filename: C:\SeruniExe1212\System.Reflection.dll
+2026-11-01 17:30:25.560   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:25.560   Installing the file.
+2026-11-01 17:30:25.573   Successfully installed the file.
+2026-11-01 17:30:25.573   -- File entry --
+2026-11-01 17:30:25.573   Dest filename: C:\SeruniExe1212\System.Reflection.Emit.dll
+2026-11-01 17:30:25.573   Time stamp of our file: 2026-08-21 04:26:44.000
+2026-11-01 17:30:25.573   Installing the file.
+2026-11-01 17:30:25.573   Successfully installed the file.
+2026-11-01 17:30:25.589   -- File entry --
+2026-11-01 17:30:25.589   Dest filename: C:\SeruniExe1212\System.Reflection.Emit.ILGeneration.dll
+2026-11-01 17:30:25.589   Time stamp of our file: 2026-08-21 04:17:30.000
+2026-11-01 17:30:25.589   Installing the file.
+2026-11-01 17:30:25.589   Successfully installed the file.
+2026-11-01 17:30:25.589   -- File entry --
+2026-11-01 17:30:25.589   Dest filename: C:\SeruniExe1212\System.Reflection.Emit.Lightweight.dll
+2026-11-01 17:30:25.589   Time stamp of our file: 2026-08-21 04:17:34.000
+2026-11-01 17:30:25.589   Installing the file.
+2026-11-01 17:30:25.589   Successfully installed the file.
+2026-11-01 17:30:25.589   -- File entry --
+2026-11-01 17:30:25.589   Dest filename: C:\SeruniExe1212\System.Reflection.Extensions.dll
+2026-11-01 17:30:25.589   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-11-01 17:30:25.589   Installing the file.
+2026-11-01 17:30:25.606   Successfully installed the file.
+2026-11-01 17:30:25.606   -- File entry --
+2026-11-01 17:30:25.606   Dest filename: C:\SeruniExe1212\System.Reflection.Metadata.dll
+2026-11-01 17:30:25.606   Time stamp of our file: 2026-08-21 04:26:48.000
+2026-11-01 17:30:25.606   Installing the file.
+2026-11-01 17:30:25.668   Successfully installed the file.
+2026-11-01 17:30:25.668   -- File entry --
+2026-11-01 17:30:25.668   Dest filename: C:\SeruniExe1212\System.Reflection.Primitives.dll
+2026-11-01 17:30:25.684   Time stamp of our file: 2026-08-21 04:17:32.000
+2026-11-01 17:30:25.684   Installing the file.
+2026-11-01 17:30:25.684   Successfully installed the file.
+2026-11-01 17:30:25.684   -- File entry --
+2026-11-01 17:30:25.684   Dest filename: C:\SeruniExe1212\System.Reflection.TypeExtensions.dll
+2026-11-01 17:30:25.684   Time stamp of our file: 2026-08-21 04:26:50.000
+2026-11-01 17:30:25.684   Installing the file.
+2026-11-01 17:30:25.684   Successfully installed the file.
+2026-11-01 17:30:25.684   -- File entry --
+2026-11-01 17:30:25.684   Dest filename: C:\SeruniExe1212\System.Resources.Reader.dll
+2026-11-01 17:30:25.684   Time stamp of our file: 2026-08-21 04:17:12.000
+2026-11-01 17:30:25.684   Installing the file.
+2026-11-01 17:30:25.684   Successfully installed the file.
+2026-11-01 17:30:25.684   -- File entry --
+2026-11-01 17:30:25.684   Dest filename: C:\SeruniExe1212\System.Resources.ResourceManager.dll
+2026-11-01 17:30:25.700   Time stamp of our file: 2026-08-21 04:17:08.000
+2026-11-01 17:30:25.701   Installing the file.
+2026-11-01 17:30:25.701   Successfully installed the file.
+2026-11-01 17:30:25.701   -- File entry --
+2026-11-01 17:30:25.701   Dest filename: C:\SeruniExe1212\System.Resources.Writer.dll
+2026-11-01 17:30:25.701   Time stamp of our file: 2026-08-21 04:26:54.000
+2026-11-01 17:30:25.701   Installing the file.
+2026-11-01 17:30:25.701   Successfully installed the file.
+2026-11-01 17:30:25.701   -- File entry --
+2026-11-01 17:30:25.701   Dest filename: C:\SeruniExe1212\System.Runtime.CompilerServices.Unsafe.dll
+2026-11-01 17:30:25.701   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:25.701   Installing the file.
+2026-11-01 17:30:25.701   Successfully installed the file.
+2026-11-01 17:30:25.701   -- File entry --
+2026-11-01 17:30:25.701   Dest filename: C:\SeruniExe1212\System.Runtime.CompilerServices.VisualC.dll
+2026-11-01 17:30:25.701   Time stamp of our file: 2026-08-21 04:26:56.000
+2026-11-01 17:30:25.716   Installing the file.
+2026-11-01 17:30:25.716   Successfully installed the file.
+2026-11-01 17:30:25.721   -- File entry --
+2026-11-01 17:30:25.721   Dest filename: C:\SeruniExe1212\System.Runtime.dll
+2026-11-01 17:30:25.721   Time stamp of our file: 2026-08-21 04:16:36.000
+2026-11-01 17:30:25.721   Installing the file.
+2026-11-01 17:30:25.721   Successfully installed the file.
+2026-11-01 17:30:25.721   -- File entry --
+2026-11-01 17:30:25.721   Dest filename: C:\SeruniExe1212\System.Runtime.Extensions.dll
+2026-11-01 17:30:25.721   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:25.721   Installing the file.
+2026-11-01 17:30:25.721   Successfully installed the file.
+2026-11-01 17:30:25.721   -- File entry --
+2026-11-01 17:30:25.721   Dest filename: C:\SeruniExe1212\System.Runtime.Handles.dll
+2026-11-01 17:30:25.721   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:25.721   Installing the file.
+2026-11-01 17:30:25.721   Successfully installed the file.
+2026-11-01 17:30:25.731   -- File entry --
+2026-11-01 17:30:25.731   Dest filename: C:\SeruniExe1212\System.Runtime.InteropServices.dll
+2026-11-01 17:30:25.731   Time stamp of our file: 2026-08-21 04:27:00.000
+2026-11-01 17:30:25.731   Installing the file.
+2026-11-01 17:30:25.731   Successfully installed the file.
+2026-11-01 17:30:25.731   -- File entry --
+2026-11-01 17:30:25.731   Dest filename: C:\SeruniExe1212\System.Runtime.InteropServices.JavaScript.dll
+2026-11-01 17:30:25.731   Time stamp of our file: 2026-08-21 04:27:02.000
+2026-11-01 17:30:25.731   Installing the file.
+2026-11-01 17:30:25.731   Successfully installed the file.
+2026-11-01 17:30:25.731   -- File entry --
+2026-11-01 17:30:25.731   Dest filename: C:\SeruniExe1212\System.Runtime.InteropServices.RuntimeInformation.dll
+2026-11-01 17:30:25.748   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:25.748   Installing the file.
+2026-11-01 17:30:25.748   Successfully installed the file.
+2026-11-01 17:30:25.748   -- File entry --
+2026-11-01 17:30:25.748   Dest filename: C:\SeruniExe1212\System.Runtime.Intrinsics.dll
+2026-11-01 17:30:25.748   Time stamp of our file: 2026-08-21 04:17:48.000
+2026-11-01 17:30:25.748   Installing the file.
+2026-11-01 17:30:25.748   Successfully installed the file.
+2026-11-01 17:30:25.748   -- File entry --
+2026-11-01 17:30:25.748   Dest filename: C:\SeruniExe1212\System.Runtime.Loader.dll
+2026-11-01 17:30:25.748   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-11-01 17:30:25.748   Installing the file.
+2026-11-01 17:30:25.763   Successfully installed the file.
+2026-11-01 17:30:25.763   -- File entry --
+2026-11-01 17:30:25.763   Dest filename: C:\SeruniExe1212\System.Runtime.Numerics.dll
+2026-11-01 17:30:25.763   Time stamp of our file: 2026-08-21 04:27:06.000
+2026-11-01 17:30:25.763   Installing the file.
+2026-11-01 17:30:25.779   Successfully installed the file.
+2026-11-01 17:30:25.779   -- File entry --
+2026-11-01 17:30:25.779   Dest filename: C:\SeruniExe1212\System.Runtime.Serialization.dll
+2026-11-01 17:30:25.779   Time stamp of our file: 2026-08-21 04:17:54.000
+2026-11-01 17:30:25.779   Installing the file.
+2026-11-01 17:30:25.779   Successfully installed the file.
+2026-11-01 17:30:25.779   -- File entry --
+2026-11-01 17:30:25.779   Dest filename: C:\SeruniExe1212\System.Runtime.Serialization.Formatters.dll
+2026-11-01 17:30:25.779   Time stamp of our file: 2026-08-21 04:27:08.000
+2026-11-01 17:30:25.779   Installing the file.
+2026-11-01 17:30:25.811   Successfully installed the file.
+2026-11-01 17:30:25.811   -- File entry --
+2026-11-01 17:30:25.811   Dest filename: C:\SeruniExe1212\System.Runtime.Serialization.Json.dll
+2026-11-01 17:30:25.811   Time stamp of our file: 2026-08-21 04:17:18.000
+2026-11-01 17:30:25.811   Installing the file.
+2026-11-01 17:30:25.811   Successfully installed the file.
+2026-11-01 17:30:25.811   -- File entry --
+2026-11-01 17:30:25.811   Dest filename: C:\SeruniExe1212\System.Runtime.Serialization.Primitives.dll
+2026-11-01 17:30:25.811   Time stamp of our file: 2026-08-21 04:27:12.000
+2026-11-01 17:30:25.827   Installing the file.
+2026-11-01 17:30:25.827   Successfully installed the file.
+2026-11-01 17:30:25.827   -- File entry --
+2026-11-01 17:30:25.827   Dest filename: C:\SeruniExe1212\System.Runtime.Serialization.Xml.dll
+2026-11-01 17:30:25.827   Time stamp of our file: 2026-08-21 04:16:30.000
+2026-11-01 17:30:25.827   Installing the file.
+2026-11-01 17:30:25.827   Successfully installed the file.
+2026-11-01 17:30:25.827   -- File entry --
+2026-11-01 17:30:25.827   Dest filename: C:\SeruniExe1212\System.Security.AccessControl.dll
+2026-11-01 17:30:25.827   Time stamp of our file: 2026-08-21 04:27:14.000
+2026-11-01 17:30:25.827   Installing the file.
+2026-11-01 17:30:25.851   Successfully installed the file.
+2026-11-01 17:30:25.851   -- File entry --
+2026-11-01 17:30:25.851   Dest filename: C:\SeruniExe1212\System.Security.Claims.dll
+2026-11-01 17:30:25.851   Time stamp of our file: 2026-08-21 04:27:18.000
+2026-11-01 17:30:25.851   Installing the file.
+2026-11-01 17:30:25.859   Successfully installed the file.
+2026-11-01 17:30:25.859   -- File entry --
+2026-11-01 17:30:25.859   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Algorithms.dll
+2026-11-01 17:30:25.859   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-11-01 17:30:25.859   Installing the file.
+2026-11-01 17:30:25.859   Successfully installed the file.
+2026-11-01 17:30:25.859   -- File entry --
+2026-11-01 17:30:25.859   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Cng.dll
+2026-11-01 17:30:25.859   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-11-01 17:30:25.874   Installing the file.
+2026-11-01 17:30:25.874   Successfully installed the file.
+2026-11-01 17:30:25.874   -- File entry --
+2026-11-01 17:30:25.874   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Csp.dll
+2026-11-01 17:30:25.874   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-11-01 17:30:25.874   Installing the file.
+2026-11-01 17:30:25.874   Successfully installed the file.
+2026-11-01 17:30:25.874   -- File entry --
+2026-11-01 17:30:25.874   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.dll
+2026-11-01 17:30:25.874   Time stamp of our file: 2026-08-21 04:27:20.000
+2026-11-01 17:30:25.874   Installing the file.
+2026-11-01 17:30:25.996   Successfully installed the file.
+2026-11-01 17:30:25.996   -- File entry --
+2026-11-01 17:30:25.996   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Encoding.dll
+2026-11-01 17:30:25.996   Time stamp of our file: 2026-08-21 04:17:30.000
+2026-11-01 17:30:26.002   Installing the file.
+2026-11-01 17:30:26.002   Successfully installed the file.
+2026-11-01 17:30:26.002   -- File entry --
+2026-11-01 17:30:26.002   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.OpenSsl.dll
+2026-11-01 17:30:26.002   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-11-01 17:30:26.002   Installing the file.
+2026-11-01 17:30:26.002   Successfully installed the file.
+2026-11-01 17:30:26.002   -- File entry --
+2026-11-01 17:30:26.002   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Pkcs.dll
+2026-11-01 17:30:26.002   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:26.002   Installing the file.
+2026-11-01 17:30:26.050   Successfully installed the file.
+2026-11-01 17:30:26.050   -- File entry --
+2026-11-01 17:30:26.050   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Primitives.dll
+2026-11-01 17:30:26.065   Time stamp of our file: 2026-08-21 04:17:24.000
+2026-11-01 17:30:26.065   Installing the file.
+2026-11-01 17:30:26.065   Successfully installed the file.
+2026-11-01 17:30:26.065   -- File entry --
+2026-11-01 17:30:26.065   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.X509Certificates.dll
+2026-11-01 17:30:26.065   Time stamp of our file: 2026-08-21 04:17:28.000
+2026-11-01 17:30:26.065   Installing the file.
+2026-11-01 17:30:26.065   Successfully installed the file.
+2026-11-01 17:30:26.065   -- File entry --
+2026-11-01 17:30:26.065   Dest filename: C:\SeruniExe1212\System.Security.Cryptography.Xml.dll
+2026-11-01 17:30:26.065   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:26.065   Installing the file.
+2026-11-01 17:30:26.097   Successfully installed the file.
+2026-11-01 17:30:26.097   -- File entry --
+2026-11-01 17:30:26.097   Dest filename: C:\SeruniExe1212\System.Security.dll
+2026-11-01 17:30:26.097   Time stamp of our file: 2026-08-21 04:18:12.000
+2026-11-01 17:30:26.097   Installing the file.
+2026-11-01 17:30:26.097   Successfully installed the file.
+2026-11-01 17:30:26.097   -- File entry --
+2026-11-01 17:30:26.097   Dest filename: C:\SeruniExe1212\System.Security.Principal.dll
+2026-11-01 17:30:26.097   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:26.097   Installing the file.
+2026-11-01 17:30:26.097   Successfully installed the file.
+2026-11-01 17:30:26.113   -- File entry --
+2026-11-01 17:30:26.113   Dest filename: C:\SeruniExe1212\System.Security.Principal.Windows.dll
+2026-11-01 17:30:26.113   Time stamp of our file: 2026-08-21 04:27:24.000
+2026-11-01 17:30:26.113   Installing the file.
+2026-11-01 17:30:26.113   Successfully installed the file.
+2026-11-01 17:30:26.113   -- File entry --
+2026-11-01 17:30:26.113   Dest filename: C:\SeruniExe1212\System.Security.SecureString.dll
+2026-11-01 17:30:26.129   Time stamp of our file: 2026-08-21 04:18:18.000
+2026-11-01 17:30:26.129   Installing the file.
+2026-11-01 17:30:26.129   Successfully installed the file.
+2026-11-01 17:30:26.129   -- File entry --
+2026-11-01 17:30:26.129   Dest filename: C:\SeruniExe1212\System.ServiceModel.Web.dll
+2026-11-01 17:30:26.129   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-11-01 17:30:26.129   Installing the file.
+2026-11-01 17:30:26.129   Successfully installed the file.
+2026-11-01 17:30:26.129   -- File entry --
+2026-11-01 17:30:26.129   Dest filename: C:\SeruniExe1212\System.ServiceProcess.dll
+2026-11-01 17:30:26.129   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-11-01 17:30:26.129   Installing the file.
+2026-11-01 17:30:26.144   Successfully installed the file.
+2026-11-01 17:30:26.144   -- File entry --
+2026-11-01 17:30:26.144   Dest filename: C:\SeruniExe1212\System.Text.Encoding.CodePages.dll
+2026-11-01 17:30:26.144   Time stamp of our file: 2026-08-21 04:27:28.000
+2026-11-01 17:30:26.144   Installing the file.
+2026-11-01 17:30:26.176   Successfully installed the file.
+2026-11-01 17:30:26.176   -- File entry --
+2026-11-01 17:30:26.192   Dest filename: C:\SeruniExe1212\System.Text.Encoding.dll
+2026-11-01 17:30:26.192   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:26.192   Installing the file.
+2026-11-01 17:30:26.192   Successfully installed the file.
+2026-11-01 17:30:26.192   -- File entry --
+2026-11-01 17:30:26.192   Dest filename: C:\SeruniExe1212\System.Text.Encoding.Extensions.dll
+2026-11-01 17:30:26.192   Time stamp of our file: 2026-08-21 04:17:46.000
+2026-11-01 17:30:26.192   Installing the file.
+2026-11-01 17:30:26.192   Successfully installed the file.
+2026-11-01 17:30:26.192   -- File entry --
+2026-11-01 17:30:26.192   Dest filename: C:\SeruniExe1212\System.Text.Encodings.Web.dll
+2026-11-01 17:30:26.192   Time stamp of our file: 2026-08-21 04:27:30.000
+2026-11-01 17:30:26.192   Installing the file.
+2026-11-01 17:30:26.208   Successfully installed the file.
+2026-11-01 17:30:26.208   -- File entry --
+2026-11-01 17:30:26.208   Dest filename: C:\SeruniExe1212\System.Text.Json.dll
+2026-11-01 17:30:26.208   Time stamp of our file: 2026-08-21 04:27:34.000
+2026-11-01 17:30:26.208   Installing the file.
+2026-11-01 17:30:26.279   Successfully installed the file.
+2026-11-01 17:30:26.287   -- File entry --
+2026-11-01 17:30:26.287   Dest filename: C:\SeruniExe1212\System.Text.RegularExpressions.dll
+2026-11-01 17:30:26.287   Time stamp of our file: 2026-08-21 04:27:36.000
+2026-11-01 17:30:26.287   Installing the file.
+2026-11-01 17:30:26.335   Successfully installed the file.
+2026-11-01 17:30:26.335   -- File entry --
+2026-11-01 17:30:26.335   Dest filename: C:\SeruniExe1212\System.Threading.Channels.dll
+2026-11-01 17:30:26.351   Time stamp of our file: 2026-08-21 04:27:40.000
+2026-11-01 17:30:26.351   Installing the file.
+2026-11-01 17:30:26.351   Successfully installed the file.
+2026-11-01 17:30:26.351   -- File entry --
+2026-11-01 17:30:26.351   Dest filename: C:\SeruniExe1212\System.Threading.dll
+2026-11-01 17:30:26.351   Time stamp of our file: 2026-08-21 04:27:42.000
+2026-11-01 17:30:26.367   Installing the file.
+2026-11-01 17:30:26.367   Successfully installed the file.
+2026-11-01 17:30:26.367   -- File entry --
+2026-11-01 17:30:26.367   Dest filename: C:\SeruniExe1212\System.Threading.Overlapped.dll
+2026-11-01 17:30:26.367   Time stamp of our file: 2026-08-21 04:16:32.000
+2026-11-01 17:30:26.367   Installing the file.
+2026-11-01 17:30:26.367   Successfully installed the file.
+2026-11-01 17:30:26.367   -- File entry --
+2026-11-01 17:30:26.367   Dest filename: C:\SeruniExe1212\System.Threading.RateLimiting.dll
+2026-11-01 17:30:26.367   Time stamp of our file: 2026-08-22 08:04:50.000
+2026-11-01 17:30:26.383   Installing the file.
+2026-11-01 17:30:26.383   Successfully installed the file.
+2026-11-01 17:30:26.383   -- File entry --
+2026-11-01 17:30:26.383   Dest filename: C:\SeruniExe1212\System.Threading.Tasks.Dataflow.dll
+2026-11-01 17:30:26.383   Time stamp of our file: 2026-08-21 04:27:46.000
+2026-11-01 17:30:26.383   Installing the file.
+2026-11-01 17:30:26.415   Successfully installed the file.
+2026-11-01 17:30:26.415   -- File entry --
+2026-11-01 17:30:26.415   Dest filename: C:\SeruniExe1212\System.Threading.Tasks.dll
+2026-11-01 17:30:26.415   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:26.415   Installing the file.
+2026-11-01 17:30:26.415   Successfully installed the file.
+2026-11-01 17:30:26.415   -- File entry --
+2026-11-01 17:30:26.415   Dest filename: C:\SeruniExe1212\System.Threading.Tasks.Extensions.dll
+2026-11-01 17:30:26.415   Time stamp of our file: 2026-08-21 04:16:44.000
+2026-11-01 17:30:26.415   Installing the file.
+2026-11-01 17:30:26.430   Successfully installed the file.
+2026-11-01 17:30:26.430   -- File entry --
+2026-11-01 17:30:26.430   Dest filename: C:\SeruniExe1212\System.Threading.Tasks.Parallel.dll
+2026-11-01 17:30:26.430   Time stamp of our file: 2026-08-21 04:27:48.000
+2026-11-01 17:30:26.430   Installing the file.
+2026-11-01 17:30:26.430   Successfully installed the file.
+2026-11-01 17:30:26.430   -- File entry --
+2026-11-01 17:30:26.430   Dest filename: C:\SeruniExe1212\System.Threading.Thread.dll
+2026-11-01 17:30:26.446   Time stamp of our file: 2026-08-21 04:17:46.000
+2026-11-01 17:30:26.446   Installing the file.
+2026-11-01 17:30:26.446   Successfully installed the file.
+2026-11-01 17:30:26.446   -- File entry --
+2026-11-01 17:30:26.446   Dest filename: C:\SeruniExe1212\System.Threading.ThreadPool.dll
+2026-11-01 17:30:26.446   Time stamp of our file: 2026-08-21 04:16:28.000
+2026-11-01 17:30:26.446   Installing the file.
+2026-11-01 17:30:26.446   Successfully installed the file.
+2026-11-01 17:30:26.446   -- File entry --
+2026-11-01 17:30:26.446   Dest filename: C:\SeruniExe1212\System.Threading.Timer.dll
+2026-11-01 17:30:26.446   Time stamp of our file: 2026-08-21 04:16:44.000
+2026-11-01 17:30:26.446   Installing the file.
+2026-11-01 17:30:26.446   Successfully installed the file.
+2026-11-01 17:30:26.446   -- File entry --
+2026-11-01 17:30:26.446   Dest filename: C:\SeruniExe1212\System.Transactions.dll
+2026-11-01 17:30:26.446   Time stamp of our file: 2026-08-21 04:17:32.000
+2026-11-01 17:30:26.446   Installing the file.
+2026-11-01 17:30:26.446   Successfully installed the file.
+2026-11-01 17:30:26.446   -- File entry --
+2026-11-01 17:30:26.462   Dest filename: C:\SeruniExe1212\System.Transactions.Local.dll
+2026-11-01 17:30:26.462   Time stamp of our file: 2026-08-21 04:27:52.000
+2026-11-01 17:30:26.462   Installing the file.
+2026-11-01 17:30:26.496   Successfully installed the file.
+2026-11-01 17:30:26.496   -- File entry --
+2026-11-01 17:30:26.496   Dest filename: C:\SeruniExe1212\System.ValueTuple.dll
+2026-11-01 17:30:26.496   Time stamp of our file: 2026-08-21 04:17:14.000
+2026-11-01 17:30:26.496   Installing the file.
+2026-11-01 17:30:26.505   Successfully installed the file.
+2026-11-01 17:30:26.505   -- File entry --
+2026-11-01 17:30:26.505   Dest filename: C:\SeruniExe1212\System.Web.dll
+2026-11-01 17:30:26.505   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:26.505   Installing the file.
+2026-11-01 17:30:26.505   Successfully installed the file.
+2026-11-01 17:30:26.505   -- File entry --
+2026-11-01 17:30:26.510   Dest filename: C:\SeruniExe1212\System.Web.HttpUtility.dll
+2026-11-01 17:30:26.510   Time stamp of our file: 2026-08-21 04:27:54.000
+2026-11-01 17:30:26.510   Installing the file.
+2026-11-01 17:30:26.510   Successfully installed the file.
+2026-11-01 17:30:26.510   -- File entry --
+2026-11-01 17:30:26.510   Dest filename: C:\SeruniExe1212\System.Windows.dll
+2026-11-01 17:30:26.510   Time stamp of our file: 2026-08-21 04:17:18.000
+2026-11-01 17:30:26.510   Installing the file.
+2026-11-01 17:30:26.510   Successfully installed the file.
+2026-11-01 17:30:26.510   -- File entry --
+2026-11-01 17:30:26.510   Dest filename: C:\SeruniExe1212\System.Xml.dll
+2026-11-01 17:30:26.510   Time stamp of our file: 2026-08-21 04:18:12.000
+2026-11-01 17:30:26.510   Installing the file.
+2026-11-01 17:30:26.510   Successfully installed the file.
+2026-11-01 17:30:26.510   -- File entry --
+2026-11-01 17:30:26.510   Dest filename: C:\SeruniExe1212\System.Xml.Linq.dll
+2026-11-01 17:30:26.510   Time stamp of our file: 2026-08-21 04:18:20.000
+2026-11-01 17:30:26.525   Installing the file.
+2026-11-01 17:30:26.525   Successfully installed the file.
+2026-11-01 17:30:26.525   -- File entry --
+2026-11-01 17:30:26.525   Dest filename: C:\SeruniExe1212\System.Xml.ReaderWriter.dll
+2026-11-01 17:30:26.525   Time stamp of our file: 2026-08-21 04:17:56.000
+2026-11-01 17:30:26.525   Installing the file.
+2026-11-01 17:30:26.525   Successfully installed the file.
+2026-11-01 17:30:26.525   -- File entry --
+2026-11-01 17:30:26.525   Dest filename: C:\SeruniExe1212\System.Xml.Serialization.dll
+2026-11-01 17:30:26.525   Time stamp of our file: 2026-08-21 04:18:02.000
+2026-11-01 17:30:26.525   Installing the file.
+2026-11-01 17:30:26.525   Successfully installed the file.
+2026-11-01 17:30:26.525   -- File entry --
+2026-11-01 17:30:26.525   Dest filename: C:\SeruniExe1212\System.Xml.XDocument.dll
+2026-11-01 17:30:26.525   Time stamp of our file: 2026-08-21 04:18:20.000
+2026-11-01 17:30:26.525   Installing the file.
+2026-11-01 17:30:26.525   Successfully installed the file.
+2026-11-01 17:30:26.525   -- File entry --
+2026-11-01 17:30:26.525   Dest filename: C:\SeruniExe1212\System.Xml.XmlDocument.dll
+2026-11-01 17:30:26.525   Time stamp of our file: 2026-08-21 04:18:02.000
+2026-11-01 17:30:26.542   Installing the file.
+2026-11-01 17:30:26.542   Successfully installed the file.
+2026-11-01 17:30:26.542   -- File entry --
+2026-11-01 17:30:26.542   Dest filename: C:\SeruniExe1212\System.Xml.XmlSerializer.dll
+2026-11-01 17:30:26.542   Time stamp of our file: 2026-08-21 04:17:16.000
+2026-11-01 17:30:26.542   Installing the file.
+2026-11-01 17:30:26.542   Successfully installed the file.
+2026-11-01 17:30:26.542   -- File entry --
+2026-11-01 17:30:26.542   Dest filename: C:\SeruniExe1212\System.Xml.XPath.dll
+2026-11-01 17:30:26.542   Time stamp of our file: 2026-08-21 04:17:26.000
+2026-11-01 17:30:26.542   Installing the file.
+2026-11-01 17:30:26.542   Successfully installed the file.
+2026-11-01 17:30:26.542   -- File entry --
+2026-11-01 17:30:26.542   Dest filename: C:\SeruniExe1212\System.Xml.XPath.XDocument.dll
+2026-11-01 17:30:26.542   Time stamp of our file: 2026-08-21 04:27:58.000
+2026-11-01 17:30:26.542   Installing the file.
+2026-11-01 17:30:26.557   Successfully installed the file.
+2026-11-01 17:30:26.557   -- File entry --
+2026-11-01 17:30:26.557   Dest filename: C:\SeruniExe1212\web.config
+2026-11-01 17:30:26.557   Time stamp of our file: 2026-11-01 16:53:38.000
+2026-11-01 17:30:26.557   Installing the file.
+2026-11-01 17:30:26.557   Successfully installed the file.
+2026-11-01 17:30:26.557   -- File entry --
+2026-11-01 17:30:26.557   Dest filename: C:\SeruniExe1212\WindowsBase.dll
+2026-11-01 17:30:26.557   Time stamp of our file: 2026-08-21 04:18:12.000
+2026-11-01 17:30:26.557   Installing the file.
+2026-11-01 17:30:26.557   Successfully installed the file.
+2026-11-01 17:30:26.557   -- File entry --
+2026-11-01 17:30:26.557   Dest filename: C:\SeruniExe1212\XLParser.dll
+2026-11-01 17:30:26.557   Time stamp of our file: 2022-05-20 15:49:02.000
+2026-11-01 17:30:26.557   Installing the file.
+2026-11-01 17:30:26.557   Successfully installed the file.
+2026-11-01 17:30:26.557   -- File entry --
+2026-11-01 17:30:26.573   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Black.ttf
+2026-11-01 17:30:26.573   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.573   Installing the file.
+2026-11-01 17:30:26.573   Creating directory: C:\SeruniExe1212\LatoFont
+2026-11-01 17:30:26.605   Successfully installed the file.
+2026-11-01 17:30:26.605   -- File entry --
+2026-11-01 17:30:26.605   Dest filename: C:\SeruniExe1212\LatoFont\Lato-BlackItalic.ttf
+2026-11-01 17:30:26.605   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.605   Installing the file.
+2026-11-01 17:30:26.636   Successfully installed the file.
+2026-11-01 17:30:26.636   -- File entry --
+2026-11-01 17:30:26.636   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Bold.ttf
+2026-11-01 17:30:26.636   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.636   Installing the file.
+2026-11-01 17:30:26.668   Successfully installed the file.
+2026-11-01 17:30:26.668   -- File entry --
+2026-11-01 17:30:26.668   Dest filename: C:\SeruniExe1212\LatoFont\Lato-BoldItalic.ttf
+2026-11-01 17:30:26.668   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.668   Installing the file.
+2026-11-01 17:30:26.716   Successfully installed the file.
+2026-11-01 17:30:26.716   -- File entry --
+2026-11-01 17:30:26.716   Dest filename: C:\SeruniExe1212\LatoFont\Lato-ExtraBold.ttf
+2026-11-01 17:30:26.716   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.716   Installing the file.
+2026-11-01 17:30:26.748   Successfully installed the file.
+2026-11-01 17:30:26.748   -- File entry --
+2026-11-01 17:30:26.748   Dest filename: C:\SeruniExe1212\LatoFont\Lato-ExtraBoldItalic.ttf
+2026-11-01 17:30:26.748   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.748   Installing the file.
+2026-11-01 17:30:26.790   Successfully installed the file.
+2026-11-01 17:30:26.790   -- File entry --
+2026-11-01 17:30:26.790   Dest filename: C:\SeruniExe1212\LatoFont\Lato-ExtraLight.ttf
+2026-11-01 17:30:26.790   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.790   Installing the file.
+2026-11-01 17:30:26.811   Successfully installed the file.
+2026-11-01 17:30:26.811   -- File entry --
+2026-11-01 17:30:26.811   Dest filename: C:\SeruniExe1212\LatoFont\Lato-ExtraLightItalic.ttf
+2026-11-01 17:30:26.811   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.811   Installing the file.
+2026-11-01 17:30:26.843   Successfully installed the file.
+2026-11-01 17:30:26.843   -- File entry --
+2026-11-01 17:30:26.843   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Italic.ttf
+2026-11-01 17:30:26.859   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.859   Installing the file.
+2026-11-01 17:30:26.887   Successfully installed the file.
+2026-11-01 17:30:26.887   -- File entry --
+2026-11-01 17:30:26.887   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Light.ttf
+2026-11-01 17:30:26.887   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.890   Installing the file.
+2026-11-01 17:30:26.906   Successfully installed the file.
+2026-11-01 17:30:26.906   -- File entry --
+2026-11-01 17:30:26.922   Dest filename: C:\SeruniExe1212\LatoFont\Lato-LightItalic.ttf
+2026-11-01 17:30:26.922   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.922   Installing the file.
+2026-11-01 17:30:26.938   Successfully installed the file.
+2026-11-01 17:30:26.938   -- File entry --
+2026-11-01 17:30:26.938   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Medium.ttf
+2026-11-01 17:30:26.938   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.954   Installing the file.
+2026-11-01 17:30:26.982   Successfully installed the file.
+2026-11-01 17:30:26.982   -- File entry --
+2026-11-01 17:30:26.982   Dest filename: C:\SeruniExe1212\LatoFont\Lato-MediumItalic.ttf
+2026-11-01 17:30:26.986   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:26.986   Installing the file.
+2026-11-01 17:30:27.017   Successfully installed the file.
+2026-11-01 17:30:27.017   -- File entry --
+2026-11-01 17:30:27.017   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Regular.ttf
+2026-11-01 17:30:27.017   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:27.017   Installing the file.
+2026-11-01 17:30:27.033   Successfully installed the file.
+2026-11-01 17:30:27.033   -- File entry --
+2026-11-01 17:30:27.033   Dest filename: C:\SeruniExe1212\LatoFont\Lato-SemiBold.ttf
+2026-11-01 17:30:27.033   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:27.033   Installing the file.
+2026-11-01 17:30:27.065   Successfully installed the file.
+2026-11-01 17:30:27.065   -- File entry --
+2026-11-01 17:30:27.081   Dest filename: C:\SeruniExe1212\LatoFont\Lato-SemiBoldItalic.ttf
+2026-11-01 17:30:27.081   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:27.081   Installing the file.
+2026-11-01 17:30:27.113   Successfully installed the file.
+2026-11-01 17:30:27.113   -- File entry --
+2026-11-01 17:30:27.113   Dest filename: C:\SeruniExe1212\LatoFont\Lato-Thin.ttf
+2026-11-01 17:30:27.113   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:27.113   Installing the file.
+2026-11-01 17:30:27.129   Successfully installed the file.
+2026-11-01 17:30:27.129   -- File entry --
+2026-11-01 17:30:27.129   Dest filename: C:\SeruniExe1212\LatoFont\Lato-ThinItalic.ttf
+2026-11-01 17:30:27.129   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:27.129   Installing the file.
+2026-11-01 17:30:27.162   Successfully installed the file.
+2026-11-01 17:30:27.162   -- File entry --
+2026-11-01 17:30:27.162   Dest filename: C:\SeruniExe1212\LatoFont\OFL.txt
+2026-11-01 17:30:27.162   Time stamp of our file: 2024-10-24 18:54:42.000
+2026-11-01 17:30:27.162   Installing the file.
+2026-11-01 17:30:27.169   Successfully installed the file.
+2026-11-01 17:30:27.169   -- File entry --
+2026-11-01 17:30:27.169   Dest filename: C:\SeruniExe1212\wwwroot\favicon.svg
+2026-11-01 17:30:27.169   Time stamp of our file: 2026-10-20 20:06:48.000
+2026-11-01 17:30:27.169   Installing the file.
+2026-11-01 17:30:27.169   Creating directory: C:\SeruniExe1212\wwwroot
+2026-11-01 17:30:27.169   Successfully installed the file.
+2026-11-01 17:30:27.169   -- File entry --
+2026-11-01 17:30:27.169   Dest filename: C:\SeruniExe1212\wwwroot\icons.svg
+2026-11-01 17:30:27.176   Time stamp of our file: 2026-10-20 20:06:48.000
+2026-11-01 17:30:27.176   Installing the file.
+2026-11-01 17:30:27.176   Successfully installed the file.
+2026-11-01 17:30:27.176   -- File entry --
+2026-11-01 17:30:27.176   Dest filename: C:\SeruniExe1212\wwwroot\index.html
+2026-11-01 17:30:27.176   Time stamp of our file: 2026-11-01 16:53:22.000
+2026-11-01 17:30:27.176   Installing the file.
+2026-11-01 17:30:27.176   Successfully installed the file.
+2026-11-01 17:30:27.176   -- File entry --
+2026-11-01 17:30:27.176   Dest filename: C:\SeruniExe1212\wwwroot\assets\index-dCrlHoiC.js
+2026-11-01 17:30:27.176   Time stamp of our file: 2026-11-01 16:53:22.000
+2026-11-01 17:30:27.176   Installing the file.
+2026-11-01 17:30:27.176   Creating directory: C:\SeruniExe1212\wwwroot\assets
+2026-11-01 17:30:27.192   Successfully installed the file.
+2026-11-01 17:30:27.192   -- File entry --
+2026-11-01 17:30:27.209   Dest filename: C:\SeruniExe1212\wwwroot\assets\index-RvdFb41s.css
+2026-11-01 17:30:27.210   Time stamp of our file: 2026-11-01 16:53:22.000
+2026-11-01 17:30:27.210   Installing the file.
+2026-11-01 17:30:27.210   Successfully installed the file.
+2026-11-01 17:30:27.210   -- File entry --
+2026-11-01 17:30:27.210   Dest filename: C:\SeruniExe1212\app.ico
+2026-11-01 17:30:27.210   Time stamp of our file: 2026-10-24 23:39:56.000
+2026-11-01 17:30:27.210   Installing the file.
+2026-11-01 17:30:27.219   Successfully installed the file.
+2026-11-01 17:30:27.219   -- Icon entry --
+2026-11-01 17:30:27.219   Dest filename: C:\Users\WDAGUtilityAccount\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery\Seruni 22 Bakery.lnk
+2026-11-01 17:30:27.224   Creating directory: C:\Users\WDAGUtilityAccount\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery
+2026-11-01 17:30:27.269   Creating the icon.
+2026-11-01 17:30:27.760   Successfully created the icon.
+2026-11-01 17:30:27.766   -- Icon entry --
+2026-11-01 17:30:27.766   Dest filename: C:\Users\WDAGUtilityAccount\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Seruni 22 Bakery\Uninstall Seruni 22 Bakery.lnk
+2026-11-01 17:30:27.766   Creating the icon.
+2026-11-01 17:30:27.786   Successfully created the icon.
+2026-11-01 17:30:27.793   -- Icon entry --
+2026-11-01 17:30:27.793   Dest filename: C:\Users\WDAGUtilityAccount\Desktop\Seruni 22 Bakery.lnk
+2026-11-01 17:30:27.795   Creating the icon.
+2026-11-01 17:30:27.798   Successfully created the icon.
+2026-11-01 17:30:27.892   -- Icon entry --
+2026-11-01 17:30:27.892   Dest filename: C:\SeruniExe1212\Uninstall Seruni 22 Bakery.lnk
+2026-11-01 17:30:27.894   Creating the icon.
+2026-11-01 17:30:27.897   Successfully created the icon.
+2026-11-01 17:30:27.905   -- Registry entry --
+2026-11-01 17:30:27.907   Key: HKEY_CURRENT_USER\Software\Seruni22Bakery
+2026-11-01 17:30:27.907   Value name: Channel
+2026-11-01 17:30:27.908   Creating or opening the key.
+2026-11-01 17:30:27.908   Creating or setting the value.
+2026-11-01 17:30:27.911   Successfully created or set the value.
+2026-11-01 17:30:27.911   -- Registry entry --
+2026-11-01 17:30:27.911   Key: HKEY_CURRENT_USER\Software\Seruni22Bakery
+2026-11-01 17:30:27.911   Value name: Version
+2026-11-01 17:30:27.913   Creating or opening the key.
+2026-11-01 17:30:27.913   Creating or setting the value.
+2026-11-01 17:30:27.913   Successfully created or set the value.
+2026-11-01 17:30:27.913   -- Registry entry --
+2026-11-01 17:30:27.915   Key: HKEY_CURRENT_USER\Software\Seruni22Bakery
+2026-11-01 17:30:27.915   Value name: InstallDir
+2026-11-01 17:30:27.915   Creating or opening the key.
+2026-11-01 17:30:27.917   Creating or setting the value.
+2026-11-01 17:30:27.917   Successfully created or set the value.
+2026-11-01 17:30:27.921   Saving uninstall information.
+2026-11-01 17:30:27.921   Creating new uninstall key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1
+2026-11-01 17:30:27.924   Writing uninstall key values.
+2026-11-01 17:30:27.926   Detected previous administrative 32-bit install? No
+2026-11-01 17:30:27.926   Detected previous administrative 64-bit install? No
+2026-11-01 17:30:27.939   Installation process succeeded.
+2026-11-01 17:30:27.940   Need to restart Windows? No
+2026-11-01 17:30:27.982   Deinitializing Setup.
+2026-11-01 17:30:28.046   Log closed.

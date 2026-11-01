@@ -132,7 +132,7 @@ public static class ReceiptRenderer
         Pasangan("Waktu", FormatWaktu(waktu));
         Baris(new string('-', lebar));
         Baris("Contoh baris transaksi:");
-        Pasangan("2 x Rp 15.000", Money.Format(30_000));
+        Pasangan("2 x Rp 15.000", Money.Format(3_000_000));
         Baris(new string('-', lebar));
         foreach (var potong in Bungkus(
             "Jika tulisan ini terbaca utuh tanpa terpotong, lebar kertas sudah sesuai dengan printer.",

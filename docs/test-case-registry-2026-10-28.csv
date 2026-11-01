@@ -27,7 +27,7 @@ TC-APP-025,xUnit,PosDeviceServiceTests,"SimpanPengaturan_KunciAsing_Ditolak",PAS
 TC-APP-026,xUnit,PosDeviceServiceTests,"SimpanPengaturan_LebarTidakDidukung_Ditolak(lebar: "57")",PASS
 TC-APP-027,xUnit,PosDeviceServiceTests,"SimpanPengaturan_LebarTidakDidukung_Ditolak(lebar: "80.5")",PASS
 TC-APP-028,xUnit,PosDeviceServiceTests,"SimpanPengaturan_LebarTidakDidukung_Ditolak(lebar: "")",PASS
-TC-APP-029,xUnit,PosDeviceServiceTests,"SimpanPengaturan_ModeEscPosBelumTersedia_Ditolak",PASS
+TC-APP-029,xUnit,PosDeviceServiceTests,"SimpanPengaturan_ModeEscPosTanpaAlamat_Ditolak (nama 2026-10-28: SimpanPengaturan_ModeEscPosBelumTersedia_Ditolak; diganti 2026-11-01)",PASS
 TC-APP-030,xUnit,PosDeviceServiceTests,"SimpanPengaturan_PrinterTidakTerpasang_Ditolak",PASS
 TC-APP-031,xUnit,PosDeviceServiceTests,"SimpanPengaturan_Sah_TersimpanDanTerbacaUlang",PASS
 TC-APP-032,xUnit,PosDeviceServiceTests,"PulihkanJobMenggantung_MemakaiBatasWaktuNyata",PASS
@@ -211,7 +211,7 @@ TC-UI-015,xUnit,Tests,"Batch8DeviceApiTests.Kasir_TidakBolehMelihatDaftarPrinter
 TC-UI-016,xUnit,Tests,"Batch8DeviceApiTests.Kasir_BolehMelihatStatusRingkasYangDibutuhkanLayarPenjualan",PASS
 TC-UI-017,xUnit,Tests,"Batch8DeviceApiTests.LebarKertasTidakDidukung_DitolakDanNilaiLamaTetap",PASS
 TC-UI-018,xUnit,Tests,"Batch8DeviceApiTests.KunciPengaturanAsing_Ditolak",PASS
-TC-UI-019,xUnit,Tests,"Batch8DeviceApiTests.ModeEscPosLangsung_DitolakKarenaBelumTerverifikasi",PASS
+TC-UI-019,xUnit,Tests,"Batch8DeviceApiTests.ModeEscPosTanpaAlamat_DitolakKarenaBelumLengkap (nama 2026-10-28: ModeEscPosLangsung_DitolakKarenaBelumTerverifikasi; diganti 2026-11-01)",PASS
 TC-UI-020,xUnit,Tests,"Batch8DeviceApiTests.PrinterTidakTerpasang_Ditolak409TanpaMengubahPengaturan",PASS
 TC-UI-021,xUnit,Tests,"Batch8DeviceApiTests.CetakTanpaPrinter_PesananTetapUtuhDanTidakAdaPekerjaanDibuat",PASS
 TC-UI-022,xUnit,Tests,"Batch8DeviceApiTests.CetakUjiTanpaPrinter_DitolakDanTidakMencatatPekerjaan",PASS
@@ -454,3 +454,10 @@ TC-KIT-050,Kit mesin bersih,"Entri uninstall terhapus",,"PASS"
 TC-KIT-051,Kit mesin bersih,"Data pengguna utuh setelah uninstall",,"PASS"
 TC-KIT-052,Kit mesin bersih,"Data disimpan di",,"INFO"
 TC-KIT-053,Kit mesin bersih,"Log aplikasi terbaru",,"INFO"
+TC-ESC-001,xUnit,EscPosRawPrinterTests,"ESC/POS raw lewat emulator loopback: byte per byte ESC @ / LF / ESC d 3 / GS V 0; ESC a, ESC E, ESC t, ESC p tidak pernah dikirim (2026-11-01)",PASS
+TC-ESC-002,xUnit,"EscPosAlamatTests; PosDeviceServiceTests","Penjaga alamat ESC/POS: hanya loopback/jaringan privat, IP sebagian ditolak, DNS diperiksa ulang saat mencetak, port 1-65535, >65536 byte ditolak sebelum socket dibuka (2026-11-01)",PASS
+TC-ESC-003,xUnit,Batch8DeviceApiTests,"HTTP mode escpos-raw: struk uji dan struk pesanan tiba di emulator, printer tidak menjawab -> 409 + job Failed dengan pesanan utuh, mode driver tidak membuka socket (2026-11-01); filter EscPos = 19 lulus",PASS
+TC-ESC-004,Perangkat,"Printer kasir ESC/POS fisik di jaringan toko","Keluaran kertas nyata, potongan, kertas habis, printer mati",BLOCKED
+TC-ESC-005,xUnit,EscPosRawPrinterTests,"Pesan galat ESC/POS berbahasa Indonesia (2026-11-01): sambungan ditolak -> 'menolak sambungan', hostname .invalid -> 'tidak dikenali jaringan'; teks SocketException bahasa Inggris tidak boleh berdiri sendiri karena tersimpan permanen di riwayat cetak. Nama tes lama SambunganDitolak_GalatDisampaikanKePemanggil diganti",PASS
+TC-ESC-006,Peramban,"DeviceView.jsx lawan socket nyata 127.0.0.1:9111","Jalan di peramban 2026-11-01 dengan DB scratch: struk uji 636 byte dan struk pesanan 928 byte tiba, riwayat menunjuk tcp://127.0.0.1:9111, printer dimatikan -> banner gagal + pesanan tetap Rp 25.000/Belum Bayar, catatan 'Pilihan di layar ini belum disimpan' muncul saat layar beda dari keadaan tersimpan. Bukti mentah run ini terhapus saat perkakas uji dijalankan ulang dan nama berkasnya lalu diisi run lain; DB scratch C:\tmp\escpos-ui.db dan pendengar C:\tmp\escpos-listener.mjs masih ada; byte yang dapat dibuka ulang dicatat di TC-ESC-007 (emulator, bukan printer fisik)",PASS
+TC-ESC-007,Perkakas,"scripts/pos-physical-check.ps1 cabang escpos-raw","Run 2026-11-01 terhadap pengganti printer loopback 127.0.0.1:9111: mode Print menghasilkan dua pekerjaan Printed dan 1572 byte tiba (struk uji 636 + struk pesanan 936, kepala ESC @, ekor ESC d 3 + GS V 0); mode Failure dengan pendengar dimatikan menghasilkan HTTP 409 dan dua pekerjaan Failed dengan galat berbahasa Indonesia sementara pesanan tetap 2500000; regresi windows-driver -SkipPrint dan -AllowPrint tetap PASS (AllowPrint: dua pekerjaan Printed di spooler, bukan bukti kertas); argumen tidak sah keluar kode 2 tanpa menyentuh apa pun, diuji dua arah (escpos-raw tanpa -EscPosHost, windows-driver tanpa -PrinterName). Bukti bukti.txt di %TEMP%\seruni-pos-fisik-20261101-104601, -105531, -104632 dan -140257 serta byte utuh C:\tmp\escpos-bukti\escpos-diterima.bin. Loopback bukan printer fisik; TC-ESC-004 tetap BLOCKED",PASS

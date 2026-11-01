@@ -1,0 +1,57 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261101180809
+Username: DESKTOP-VKRMBR2\Administrator
+RunAs User: DESKTOP-VKRMBR2\Administrator
+Configuration Name: 
+Machine: DESKTOP-VKRMBR2 (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:/tmp/jalankan-uji-cetak.ps1
+Process ID: 9540
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+SERUNI 22 BAKERY - UJI FISIK PERANGKAT KASIR
+Waktu: 2026-11-01 18:08:09 +07:00
+Mode uji: Print
+Mode cetak: windows-driver
+Printer: Microsoft Print to PDF
+Lebar kertas: 58 mm
+
+Windows: Microsoft Windows 11 Pro 10.0.26300 64-bit
+Runtime .NET 8: Microsoft.NETCore.App 8.0.32 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+Driver printer: Microsoft Print To PDF
+Port printer: PORTPROMPT:
+Status printer: Normal
+Ukuran kertas Windows: (driver tidak melaporkan; atur dari layar Perangkat Kasir)
+
+Host uji: http://127.0.0.1:56373 (basis data sementara C:\Users\Administrator\AppData\Local\Temp\seruni-pos-fisik-20261101-180809\uji.db)
+Ganti sandi awal: HTTP 200
+Login Owner: HTTP 200
+Simpan pengaturan: HTTP 200
+Pesanan uji: #1 dibuat (HTTP 201)
+PS>TerminatingError(Invoke-WebRequest): "The operation has timed out."
+>> TerminatingError(Invoke-WebRequest): "The operation has timed out."
+GAGAL tak terduga: The operation has timed out.
+
+PERIKSA MANUAL (wajib, tidak bisa dibuktikan skrip):
+  1. Kertas struk uji keluar utuh: nama toko, garis, Total, rupiah, tidak terpotong.
+  2. Jumlah kolom sesuai lebar: 80 mm = 48 kolom, 58 mm = 32 kolom.
+  3. Potongan kertas rapi bila printer punya pemotong otomatis.
+  4. Mode Failure: saat printer mati/kertas habis, catat apa yang tampil di layar dan di
+     antrean Windows. Windows dapat menerima pekerjaan walau kertas tidak keluar; itu bukan PASS.
+  5. Nyalakan printer/pasang kertas, cetak ulang dari layar Penjualan, pastikan struk kedua
+     keluar dan pesanan tidak bertambah.
+
+HASIL OTOMATIS: FAIL - lihat baris GAGAL di atas.
+
+Berkas bukti: C:\Users\Administrator\AppData\Local\Temp\seruni-pos-fisik-20261101-180809\bukti.txt
+**********************
+Windows PowerShell transcript end
+End time: 20261101180855
+**********************

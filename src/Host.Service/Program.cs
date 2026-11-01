@@ -30,6 +30,14 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
 
+    // Peramban memakai kembali soket HTTP yang sama untuk beberapa permintaan. Bawaan Kestrel
+    // menutup soket diam setelah 130 detik; peramban yang tidak tahu soket itu sudah ditutup tetap
+    // mengirim permintaan berikutnya di sana dan menerima kegagalan jaringan tanpa kode status —
+    // itulah banner "Server lokal tidak menjawab" saat aplikasi baru dibuka lagi setelah lama
+    // didiamkan. Batas yang jauh lebih panjang membuat penutupan itu praktis tidak pernah terjadi
+    // selama jendela aplikasi terbuka.
+    builder.WebHost.ConfigureKestrel(options => options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10));
+
     // ── Configuration ──────────────────────────────────────────────────────────
     // Data operasional, log, kunci, cadangan, dan konfigurasi pengguna hidup di folder data
     // pengguna, terpisah dari folder program. Konfigurasi bawaan tetap di folder program;
@@ -188,7 +196,11 @@ try
     // Perangkat keras hanya disentuh lewat adaptor ini; layar tidak pernah memanggil driver,
     // registry, atau spooler sendiri.
     builder.Services.AddSingleton<IPrinterCatalog, WindowsPrinterCatalog>();
-    builder.Services.AddSingleton<IReceiptPrinter, WindowsSpoolerPrinter>();
+    builder.Services.AddSingleton<WindowsSpoolerPrinter>();
+    builder.Services.AddSingleton<EscPosTcpPrinter>();
+    // Mode cetak ditentukan per pekerjaan dari pengaturan; yang di-inject adalah perantaranya.
+    builder.Services.AddSingleton<IReceiptPrinter>(sp => new CompositeReceiptPrinter(
+        sp.GetRequiredService<WindowsSpoolerPrinter>(), sp.GetRequiredService<EscPosTcpPrinter>()));
 
     builder.Services.AddSingleton(new JwtService(jwtSecret, jwtExpiry));
     builder.Services.AddScoped<AuthService>();
@@ -1749,7 +1761,7 @@ try
         return Results.Ok(peringatan is null ? new { diterapkan = perubahan.Count } : new { diterapkan = perubahan.Count, peringatan });
     }).RequireAuthorization("administration");
 
-    // ── Perangkat kasir: printer Windows (tahap pertama) ────────────────────────
+    // ── Perangkat kasir: printer Windows & ESC/POS langsung ke port 9100 ───────────
     // Layar hanya bisa membaca keadaan perangkat, menyimpan pilihan, mencetak uji, dan meminta
     // struk. Tidak ada endpoint yang menerima perintah shell, jalur driver, atau byte mentah:
     // satu-satunya jalan ke printer adalah adaptor yang terdaftar di server.
@@ -1764,8 +1776,9 @@ try
         return Results.Ok(new
         {
             printerConfigured = snapshot.PerangkatDidukung
-                                && !string.IsNullOrWhiteSpace(snapshot.Settings.PrinterName),
-            printerName = snapshot.Settings.PrinterName,
+                                && !string.IsNullOrWhiteSpace(snapshot.Settings.NamaTujuan),
+            printerName = snapshot.Settings.NamaTujuan,
+            mode = snapshot.Mode,
             paperWidthMm = snapshot.Settings.PaperWidthMm,
             autoPrint = snapshot.Settings.AutoPrint,
             catatan = snapshot.Catatan

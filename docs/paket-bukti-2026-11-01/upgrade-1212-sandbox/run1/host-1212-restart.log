@@ -1,0 +1,18 @@
+[17:27:50 INF] Seruni 22 Bakery service starting on 
+[17:27:50 INF] User profile is available. Using 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[17:27:51 INF] Now listening on: http://127.0.0.1:5312
+[17:27:51 INF] Application started. Press Ctrl+C to shut down.
+[17:27:51 INF] Hosting environment: Production
+[17:27:51 INF] Content root path: C:\Program Files\Seruni 22 Bakery
+[17:27:51 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/health - null null
+[17:27:52 INF] Executing endpoint 'HTTP: GET /health'
+[17:27:52 INF] Setting HTTP status code 200.
+[17:27:52 INF] Writing value of type '<>f__AnonymousType12`3' as Json.
+[17:27:52 INF] Executed endpoint 'HTTP: GET /health'
+[17:27:52 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/health - 200 null application/json; charset=utf-8 219.4312ms
+[17:27:52 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5312/api/devices/status - null null
+[17:27:52 INF] Executing endpoint 'HTTP: GET /api/devices/status'
+[17:27:52 INF] Setting HTTP status code 200.
+[17:27:52 INF] Writing value of type '<>f__AnonymousType52`6' as Json.
+[17:27:52 INF] Executed endpoint 'HTTP: GET /api/devices/status'
+[17:27:52 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5312/api/devices/status - 200 null application/json; charset=utf-8 105.5541ms

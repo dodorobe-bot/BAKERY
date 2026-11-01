@@ -1,0 +1,20 @@
+Pemeriksaan byte struk ESC/POS dari Windows Sandbox (run 2, 2026-11-01)
+Berkas: escpos-diterima.bin
+Ukuran: 635 bita
+SHA-256: a107547c6f04070b445650da77b74086d41f86ab596671fbcf571fb3ff92af22
+
+Urutan awal : 1b 40 (ESC @)
+Urutan akhir : 1b 64 03 (ESC d 3)
+Jumlah LF   : 17
+
+ESC p 0 25 250 (pemantik laci uang)        : tidak ada
+ESC a (perataan)                           : tidak ada
+ESC E (huruf tebal)                        : tidak ada
+ESC t (code page)                          : tidak ada
+GS V (potong kertas)                       : tidak ada
+GS k (barcode)                             : tidak ada
+
+Kesimpulan: struk uji yang dicetak dari biner hasil peningkatan TIDAK memuat
+perintah pemantik laci (ESC p). Aplikasi 1.2.12 memang belum mengendalikan laci uang;
+laci tetap dibuka manual/lewat sakelar printer. Yang diuji di sini adalah jaminan
+negatif, bukan fungsi buka laci.

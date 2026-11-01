@@ -48,12 +48,14 @@ public sealed class PosDeviceService
             ? _catalog.DaftarNama().Select(n => new PrinterInfo(n, string.Equals(n, _catalog.NamaDefault(), StringComparison.OrdinalIgnoreCase))).ToList()
             : [];
 
-        var mode = semua.TryGetValue(DeviceSettings.KunciMode, out var m) && !string.IsNullOrWhiteSpace(m)
-            ? m
-            : DeviceSettings.ModeDriverWindows;
-
         string catatan;
-        if (!_catalog.Tersedia)
+        if (pengaturan.PakaiEscPos)
+        {
+            // Pada jalur raw, daftar printer Windows tidak berarti apa-apa: struk dikirim sebagai
+            // byte ESC/POS ke host/port, jadi hanya alamat dan port yang boleh dikeluhkan.
+            catatan = GalatKonfigurasiEscPos(pengaturan) ?? string.Empty;
+        }
+        else if (!_catalog.Tersedia)
             catatan = "Pencetakan perangkat hanya tersedia saat aplikasi berjalan di Windows.";
         else if (daftar.Count == 0)
             catatan = "Tidak ada printer terpasang di Windows ini. Pasang driver printer lebih dulu.";
@@ -69,7 +71,7 @@ public sealed class PosDeviceService
             OperatingSystem.IsWindows() ? "windows" : "lain",
             daftar,
             pengaturan,
-            mode,
+            pengaturan.Mode,
             catatan);
     }
 
@@ -83,6 +85,9 @@ public sealed class PosDeviceService
             DeviceSettings.KunciLebar,
             DeviceSettings.KunciAutoPrint,
             DeviceSettings.KunciSuffix,
+            DeviceSettings.KunciEscPosHost,
+            DeviceSettings.KunciEscPosPort,
+            DeviceSettings.KunciEscPosPotong,
         };
         var asing = nilai.Keys.Where(k => !dikenal.Contains(k)).ToList();
         if (asing.Count > 0)
@@ -124,12 +129,48 @@ public sealed class PosDeviceService
             }
             else if (kunci.Equals(DeviceSettings.KunciMode, StringComparison.OrdinalIgnoreCase))
             {
-                // Jalur ESC/POS langsung belum diverifikasi pada perangkat nyata, jadi belum
-                // bisa dipilih. Menyimpannya akan membuat status perangkat menyesatkan.
-                if (!string.Equals(v, DeviceSettings.ModeDriverWindows, StringComparison.OrdinalIgnoreCase))
+                if (v is not (DeviceSettings.ModeDriverWindows or DeviceSettings.ModeEscPosRaw))
                     return Result<DeviceSettings>.Fail(ErrorCodes.ValidationFailed,
-                        "Hanya mode 'windows-driver' yang didukung. Mode ESC/POS langsung belum tersedia.");
+                        $"Mode cetak harus '{DeviceSettings.ModeDriverWindows}' atau '{DeviceSettings.ModeEscPosRaw}'.");
             }
+            else if (kunci.Equals(DeviceSettings.KunciEscPosHost, StringComparison.OrdinalIgnoreCase))
+            {
+                // Kosong diperbolehkan: pengaturan boleh disimpan sebelum alamat diisi, selama
+                // mode masih driver Windows. Gerbang combined di bawah yang mencegah raw tanpa alamat.
+                if (v.Length > 0)
+                {
+                    var galatHost = EscPosAlamat.ValidasiHost(v);
+                    if (galatHost != null)
+                        return Result<DeviceSettings>.Fail(ErrorCodes.ValidationFailed, galatHost);
+                }
+            }
+            else if (kunci.Equals(DeviceSettings.KunciEscPosPort, StringComparison.OrdinalIgnoreCase))
+            {
+                if (v.Length > 0)
+                {
+                    if (!int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out var port)
+                        || port < EscPosAlamat.PortMin || port > EscPosAlamat.PortMaks)
+                        return Result<DeviceSettings>.Fail(ErrorCodes.ValidationFailed,
+                            $"Port ESC/POS harus angka {EscPosAlamat.PortMin}-{EscPosAlamat.PortMaks}.");
+                }
+            }
+            else if (kunci.Equals(DeviceSettings.KunciEscPosPotong, StringComparison.OrdinalIgnoreCase))
+            {
+                if (v is not ("" or "0" or "1"))
+                    return Result<DeviceSettings>.Fail(ErrorCodes.ValidationFailed,
+                        "Pemotongan kertas harus '0' (mati) atau '1' (hidup).");
+            }
+        }
+
+        // Mode dan alamat disimpan pada permintaan terpisah, jadi yang divalidasi adalah hasil
+        // akhirnya: gabungan pengaturan lama dengan nilai baru, bukan tiap kunci sendirian.
+        var gabungan = await _settings.GetAllAsync();
+        var efektif = BacaPengaturan(Gabungkan(gabungan, nilai));
+        if (efektif.PakaiEscPos)
+        {
+            var galat = GalatKonfigurasiEscPos(efektif);
+            if (galat != null)
+                return Result<DeviceSettings>.Fail(ErrorCodes.ValidationFailed, galat);
         }
 
         foreach (var (kunci, isi) in nilai)
@@ -145,13 +186,22 @@ public sealed class PosDeviceService
     public async Task<PrintOutcome> CetakStrukAsync(SalesOrder order, bool cetakUlang, int? userId)
     {
         var pengaturan = await GetSettingsAsync();
-        if (string.IsNullOrWhiteSpace(pengaturan.PrinterName))
-            return new PrintOutcome(null, false, ErrorCodes.PrinterNotConfigured,
-                "Printer belum dipilih. Buka Pengaturan Perangkat Kasir. Transaksi tetap tersimpan.");
-        if (_catalog.Tersedia
-            && !_catalog.DaftarNama().Any(n => string.Equals(n, pengaturan.PrinterName, StringComparison.OrdinalIgnoreCase)))
-            return new PrintOutcome(null, false, ErrorCodes.PrinterNotFound,
-                $"Printer '{pengaturan.PrinterName}' tidak terpasang di Windows ini. Periksa Pengaturan Perangkat Kasir. Transaksi tetap tersimpan.");
+        if (pengaturan.PakaiEscPos)
+        {
+            var galat = GalatKonfigurasiEscPos(pengaturan);
+            if (galat != null)
+                return new PrintOutcome(null, false, ErrorCodes.PrinterNotConfigured,
+                    $"{galat} Periksa Pengaturan Perangkat Kasir. Transaksi tetap tersimpan.");
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(pengaturan.PrinterName))
+                return new PrintOutcome(null, false, ErrorCodes.PrinterNotConfigured,
+                    "Printer belum dipilih. Buka Pengaturan Perangkat Kasir. Transaksi tetap tersimpan.");
+            if (TidakTerpasang(pengaturan.PrinterName))
+                return new PrintOutcome(null, false, ErrorCodes.PrinterNotFound,
+                    $"Printer '{pengaturan.PrinterName}' tidak terpasang di Windows ini. Periksa Pengaturan Perangkat Kasir. Transaksi tetap tersimpan.");
+        }
         if (!_printer.Tersedia)
             return new PrintOutcome(null, false, ErrorCodes.PrintFailed,
                 "Pencetakan langsung hanya tersedia saat aplikasi berjalan di Windows. Transaksi tetap tersimpan.");
@@ -166,13 +216,21 @@ public sealed class PosDeviceService
     public async Task<PrintOutcome> CetakUjiAsync(int? userId)
     {
         var pengaturan = await GetSettingsAsync();
-        if (string.IsNullOrWhiteSpace(pengaturan.PrinterName))
-            return new PrintOutcome(null, false, ErrorCodes.PrinterNotConfigured,
-                "Pilih printer lebih dulu sebelum mencetak struk uji.");
-        if (_catalog.Tersedia
-            && !_catalog.DaftarNama().Any(n => string.Equals(n, pengaturan.PrinterName, StringComparison.OrdinalIgnoreCase)))
-            return new PrintOutcome(null, false, ErrorCodes.PrinterNotFound,
-                $"Printer '{pengaturan.PrinterName}' tidak terpasang di Windows ini.");
+        if (pengaturan.PakaiEscPos)
+        {
+            var galat = GalatKonfigurasiEscPos(pengaturan);
+            if (galat != null)
+                return new PrintOutcome(null, false, ErrorCodes.PrinterNotConfigured, galat);
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(pengaturan.PrinterName))
+                return new PrintOutcome(null, false, ErrorCodes.PrinterNotConfigured,
+                    "Pilih printer lebih dulu sebelum mencetak struk uji.");
+            if (TidakTerpasang(pengaturan.PrinterName))
+                return new PrintOutcome(null, false, ErrorCodes.PrinterNotFound,
+                    $"Printer '{pengaturan.PrinterName}' tidak terpasang di Windows ini.");
+        }
         if (!_printer.Tersedia)
             return new PrintOutcome(null, false, ErrorCodes.PrintFailed,
                 "Pencetakan langsung hanya tersedia saat aplikasi berjalan di Windows.");
@@ -180,7 +238,7 @@ public sealed class PosDeviceService
         var outlet = await _settings.GetAsync("outlet_name");
         var merek = await _settings.GetAsync(StoreBrand.NameKey);
         var slogan = await _settings.GetAsync(StoreBrand.TaglineKey);
-        var isi = ReceiptRenderer.RenderTest(outlet, pengaturan.PrinterName, pengaturan.PaperWidthMm, BusinessTime.Now(), merek, slogan);
+        var isi = ReceiptRenderer.RenderTest(outlet, pengaturan.NamaTujuan, pengaturan.PaperWidthMm, BusinessTime.Now(), merek, slogan);
         return await JalankanAsync(PrintJobKind.Test, null, pengaturan, isi, userId);
     }
 
@@ -199,11 +257,19 @@ public sealed class PosDeviceService
     private async Task<PrintOutcome> JalankanAsync(
         PrintJobKind jenis, int? orderId, DeviceSettings pengaturan, string isi, int? userId)
     {
+        var tujuan = new PrintTarget(
+            pengaturan.Mode,
+            pengaturan.PrinterName,
+            pengaturan.EscPosHost,
+            pengaturan.EscPosPort,
+            pengaturan.PaperWidthMm,
+            pengaturan.EscPosPotong);
+
         var job = new PrintJob
         {
             OrderId = orderId,
             Kind = jenis,
-            PrinterName = pengaturan.PrinterName,
+            PrinterName = pengaturan.NamaTujuan,
             PaperWidthMm = pengaturan.PaperWidthMm,
             Status = PrintJobStatus.Pending,
             Payload = isi,
@@ -215,19 +281,38 @@ public sealed class PosDeviceService
         try
         {
             using var cts = new CancellationTokenSource(BatasCetak);
-            await _printer.CetakAsync(pengaturan.PrinterName, isi, pengaturan.PaperWidthMm, cts.Token);
+            await _printer.CetakAsync(tujuan, isi, cts.Token);
             await _jobs.MarkPrintedAsync(jobId, DateTime.UtcNow);
             return new PrintOutcome(jobId, true, null, "Struk terkirim ke printer.");
         }
         catch (Exception ex)
         {
-            var pesan = ex is TimeoutException or OperationCanceledException
+            // Antrean layanan yang putus (20 detik) tidak punya penjelasan sendiri; adaptor yang
+            // sudah menyebutkan sebabnya (mis. timeout sambung ESC/POS 3 detik) dipakai apa adanya.
+            var pesan = ex is OperationCanceledException
                 ? $"Printer tidak merespons dalam {BatasCetak.TotalSeconds:0} detik."
                 : ex.Message;
             await _jobs.MarkFailedAsync(jobId, pesan, DateTime.UtcNow);
             return new PrintOutcome(jobId, false, ErrorCodes.PrintFailed,
                 $"Struk gagal dicetak: {pesan} Transaksi tetap tersimpan; periksa printer lalu cetak ulang.");
         }
+    }
+
+    private bool TidakTerpasang(string namaPrinter) =>
+        _catalog.Tersedia
+        && !_catalog.DaftarNama().Any(n => string.Equals(n, namaPrinter, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>Null bila konfigurasi ESC/POS lengkap dan sah; pesan galat bila tidak.</summary>
+    private static string? GalatKonfigurasiEscPos(DeviceSettings s) =>
+        EscPosAlamat.ValidasiHostLengkap(s.EscPosHost, s.EscPosPort);
+
+    private static IReadOnlyDictionary<string, string> Gabungkan(
+        IReadOnlyDictionary<string, string> tersimpan, IReadOnlyDictionary<string, string> baru)
+    {
+        var hasil = new Dictionary<string, string>(tersimpan, StringComparer.OrdinalIgnoreCase);
+        foreach (var (kunci, isi) in baru)
+            hasil[kunci] = (isi ?? string.Empty).Trim();
+        return hasil;
     }
 
     private static DeviceSettings BacaPengaturan(IReadOnlyDictionary<string, string> semua)
@@ -241,6 +326,15 @@ public sealed class PosDeviceService
         var suffix = semua.TryGetValue(DeviceSettings.KunciSuffix, out var s) && !string.IsNullOrWhiteSpace(s)
             ? s.Trim().ToLowerInvariant()
             : "enter";
-        return new DeviceSettings(printer, lebar, auto, suffix);
+        var mode = semua.TryGetValue(DeviceSettings.KunciMode, out var m) && !string.IsNullOrWhiteSpace(m)
+            ? m.Trim()
+            : DeviceSettings.ModeDriverWindows;
+        var host = semua.TryGetValue(DeviceSettings.KunciEscPosHost, out var h) ? (h ?? "").Trim() : "";
+        var port = semua.TryGetValue(DeviceSettings.KunciEscPosPort, out var pt)
+                   && int.TryParse(pt, NumberStyles.Integer, CultureInfo.InvariantCulture, out var bernilai)
+                   && bernilai is >= EscPosAlamat.PortMin and <= EscPosAlamat.PortMaks
+            ? bernilai : DeviceSettings.PortEscPosBawaan;
+        var potong = semua.TryGetValue(DeviceSettings.KunciEscPosPotong, out var ct) && ct == "1";
+        return new DeviceSettings(printer, lebar, auto, suffix, mode, host, port, potong);
     }
 }

@@ -2,8 +2,8 @@
 
 Aplikasi desktop untuk toko dan pabrik roti: penjualan, produksi, pembelian, stok, jurnal keuangan, dan laporan — berjalan **sepenuhnya offline** di satu komputer toko.
 
-- Versi sumber dan paket terbaru: **1.2.10**, skema basis data **18**
-- Status 1.2.10: **NOT READY** — paket sudah dibangun dan seluruh tes otomatis serta gerbang lulus, tetapi uji pasang/peningkatan/copot untuk paket ini belum dijalankan
+- Versi sumber dan paket terbaru: **1.2.12**, skema basis data **18**
+- Status 1.2.12: **NOT READY** — paket dibangun, 489 tes otomatis dan gerbang verifikasi lulus, dan pasang/peningkatan/copot sudah lulus di Windows Sandbox bersih (1.2.9 → 1.2.12, 105/105); alur pemindai lulus simulasi 14/14, tetapi cetak ke printer fisik, pemindai fisik, laci uang, pemasangan oleh pemilik di PC kasir, dan Windows 10 belum diuji, dan paket belum bertanda tangan. Versi 1.2.11 tidak pernah diterbitkan.
 - Status 1.2.9: **READY FOR LIMITED PILOT** (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima)
 - Kedua paket **NotSigned** (belum ada sertifikat tanda tangan)
 - Platform: Windows 10/11 x64
@@ -108,15 +108,15 @@ Skrip verifikasi perilaku lain ada di `tests/Verify/*.mjs` (dijalankan terhadap 
 EXE (Inno Setup) — tes, frontend produksi, publish self-contained, peluncur, lalu Inno:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.10
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.12
 ```
 
-Hasil: `dist\publish-single\` dan `dist\installer\Seruni22Bakery_Setup_v1.2.10.exe`, disertai `SHA256SUMS.txt` dan `BUILD-INFO.txt`.
+Hasil: `dist\publish-single\` dan `dist\installer\Seruni22Bakery_Setup_v1.2.12.exe`, disertai `SHA256SUMS.txt` dan `BUILD-INFO.txt`.
 
 MSI (WiX, per-machine) — hanya membungkus folder publish yang sudah ada:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.10
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.12
 ```
 
 Tanda tangan Authenticode (butuh sertifikat; saat ini belum dipakai):
@@ -173,10 +173,16 @@ Installer tidak memuat basis data maupun kunci, dan uninstall tidak menghapus fo
 
 ## Status rilis dan batasan yang diketahui
 
-Status 1.2.10: **NOT READY**. Build, 393 tes otomatis, gerbang verifikasi API, dan isi
-paket lulus; uji pasang/peningkatan 1.2.9 → 1.2.10, penolakan turun versi, dan copot belum
-dijalankan untuk paket ini (mesin ini non-admin dan `msiexec` sedang dipakai instalasi lain).
-Paket 1.2.10 dipakai untuk uji pasang di mesin bersih atau oleh pemilik sebelum status naik.
+Status 1.2.12: **NOT READY**. Build Release, 489 tes otomatis, gerbang verifikasi 28 langkah
+(169 pemeriksaan API), isi paket, dan pemulihan layar setelah server mati sudah terbukti.
+Pasang/peningkatan/copot di Windows Sandbox bersih juga sudah lulus: MSI 1.2.9 dinaikkan ke
+MSI 1.2.12 dengan data lama utuh, penolakan turun versi dan kanal silang EXE↔MSI terbukti,
+dan ESC/POS dari biner hasil peningkatan diterima emulator (`lulus=105 gagal=0 total=105`).
+Belum dijalankan untuk paket ini: cetak ke printer fisik, pemindai fisik, dan laci uang,
+pemasangan oleh pemilik di PC kasir, serta uji di Windows 10. Alur pemindai sudah lulus
+simulasi 14/14, dan percobaan cetak driver ke pencetak virtual gagal karena port
+`PORTPROMPT:` (bukan bukti printer thermal).
+Paket 1.2.12 dipakai untuk uji perangkat dan uji pasang oleh pemilik sebelum status naik.
 
 Status 1.2.9: **READY FOR LIMITED PILOT**, bukan READY FOR PRODUCTION. Perbaikan kode,
 tes otomatis, dan isi paket sudah lulus. Uji pasang/peningkatan/copot 1.2.9 dilaporkan
@@ -186,18 +192,45 @@ sampai ke mesin ini, dan pemilik menerima atestasi tertulis sebagai dasar keputu
 Naik ke READY FOR PRODUCTION masih menuntut berkas bukti yang dapat diperiksa, paket
 bertanda tangan, dan uji perangkat kasir fisik.
 
-Bukti 1.2.10 (2026-11-01):
+Bukti 1.2.12 (2026-11-01):
 
-- 393 tes otomatis Release hijau (Application 51, Domain 83, Infrastructure 143, UI 116).
-- `scripts/verify.ps1 -SkipTests`: 24 langkah lulus; verifikasi API hidup batch2 63,
-  batch3 56, batch6 21, bug09 29 — masing-masing 0 gagal; uji argumen peluncur 5/5
+- 489 tes otomatis Release hijau (Application 129, Domain 83, Infrastructure 143, UI 134).
+- `scripts/verify.ps1 -SkipTests -Configuration Release`: 28 langkah lulus; verifikasi API hidup
+  batch2 63, batch3 56, batch6 21, bug09 29 — masing-masing 0 gagal; uji argumen peluncur 5/5
   dengan kontrol negatif merah pada peluncur lama.
-- Penomoran terbukti memakai tanggal toko: pada 04:05 WIB (UTC masih 31 Oktober) host uji
-  menghasilkan `ORD-20261101-0003` dan seterusnya.
-- Isi paket: 393 berkas, host `1.2.10.0`, peluncur `1.2.10`, bebas `.pdb`/DB/`jwt.key`/`.env`,
-  hash cocok dengan `BUILD-INFO.txt` dan `SHA256SUMS.txt`; `NotSigned` pada EXE maupun MSI.
-- Belum dijalankan untuk 1.2.10: pasang/tingkatkan/copot, turun versi, kanal silang EXE↔MSI,
-  dan perangkat kasir fisik.
+- Empat pagar ketahanan sambungan baru (`KeepAliveTimeout`, probe `/health`, penantian di layar,
+  bundel `desktop/` memuat perbaikannya). Kontrol negatif pagar bundel dijalankan: berkas aset
+  dipindahkan → FAIL, dikembalikan → LULUS.
+- Bukti hidup: host scratch dimatikan saat aplikasi terbuka → banner "Menunggu server hidup
+  lagi…" (tanpa tombol Coba lagi); host dijalankan lagi tanpa klik apa pun → banner hilang dan
+  data termuat (log host: 4 `GET /health`, 2 `GET /api/dashboard`). Dijalankan dua kali.
+- Struk uji mencetak `2 x Rp 15.000 … Rp 30.000`; `ReceiptRenderer` 17/17.
+- Jalur ESC/POS raw terbukti sampai emulator loopback (1.572 bita = 636 + 936, diperiksa byte
+  demi byte), dan sekali lagi dari biner hasil peningkatan di Sandbox (635 bita, nominal
+  `Rp 30.000`, pengaturan bertahan setelah host di-restart). **Belum** diuji pada printer fisik.
+- Isi paket: 393 berkas, 135.883.947 bita, host `1.2.12`, peluncur `1.2.12`, bebas
+  `.pdb`/DB/`jwt.key`/`.env`; payload MSI identik dengan `dist\publish-single`; `NotSigned`
+  pada EXE maupun MSI. Rincian: `docs\verifikasi-paket-1.2.12-2026-11-01.md`.
+- Uji pasang/peningkatan/copot 1.2.12 di Windows Sandbox bersih: `lulus=105 gagal=0 total=105`
+  (seluruh 105 pemeriksaan dijalankan ulang dari boot sandbox baru). Lulus: MSI 1.2.9 dipasang
+  lalu ditingkatkan ke 1.2.12 dengan 393/393 berkas payload identik dan data lama utuh; MSI
+  1.2.9 menolak dipasang di atas 1.2.12; EXE 1.2.12 menolak berjalan selama MSI terpasang dan
+  sebaliknya; copot MSI/EXE menyisakan folder data pengguna. Bukti mentah (status,
+  `validasi.log`, log installer/host, byte ESC/POS): `docs\paket-bukti-2026-11-01\upgrade-1212-sandbox\`.
+  Run pertama kit ini melaporkan 5 FAIL; kelimanya cacat harness (pola log, berkas log dibaca
+  saat host masih menulis, jalur pintasan), diperbaiki di skrip uji tanpa melonggarkan
+  pemeriksaan produk, lalu seluruh 105 pemeriksaan diulang.
+- Belum dijalankan untuk 1.2.12: cetak ke printer thermal/jaringan fisik, pemindai barcode fisik,
+  laci uang, pemasangan oleh pemilik di PC kasir, dan Windows 10.
+- Uji perangkat dengan sarana yang ada (2026-11-01): alur pemindai disimulasikan dengan ketukan
+  per karakter + Enter pada aplikasi 1.2.12 yang dikemas — 14/14 lulus (10 pindai cepat tanpa
+  karakter hilang, kode asing ditolak, tanpa Enter tidak memilih produk); itu simulasi, bukan
+  perangkat fisik. Percobaan cetak driver ke `Microsoft Print to PDF` **gagal** karena port
+  `PORTPROMPT:` menuntut dialog simpan (endpoint `test-print` melewati 40 detik, antrean 0),
+  jadi jalur driver thermal tetap belum diuji. Laci uang belum ada; 635 bita struk ESC/POS
+  diperiksa dan tidak memuat `ESC p` maupun perintah terlarang lain. Authenticode: 0 sertifikat,
+  kedua paket `NotSigned`, `signtool verify /pa` menolak. Bukti:
+  `docs\paket-bukti-2026-11-01\uji-fisik-1212\`.
 
 Bukti terakhir 1.2.9 (2026-10-31):
 
@@ -240,6 +273,7 @@ Yang **belum** dibuktikan dan tidak boleh diklaim:
 ## Dokumentasi
 
 - [Changelog](CHANGELOG.md) — rincian perubahan tiap versi, termasuk seluruh BUG 1.2.9
+- [Verifikasi paket 1.2.12](docs/verifikasi-paket-1.2.12-2026-11-01.md) — artefak, isi paket, tes, gerbang, dan bukti pemulihan sambungan; juga daftar yang belum diuji
 - [Verifikasi paket 1.2.9](docs/verifikasi-paket-1.2.9-2026-10-31.md) — isi paket, uji payload, pagar installer, dan atestasi uji pasang pemilik
 - [Verifikasi paket 1.2.7](docs/verifikasi-paket-1.2.7-2026-10-30.md) — isi paket, uji payload, peningkatan MSI, pasang/copot EXE
 - [Laporan GO/NO-GO](docs/laporan-go-no-go-2026-10-29.md) — keputusan kesiapan dan syarat pilot
@@ -248,7 +282,7 @@ Yang **belum** dibuktikan dan tidak boleh diklaim:
 - [Performa navigasi](docs/performa-navigasi-2026-10-29.md)
 - [Notifikasi internal & MCP](docs/internal-notifications-and-mcp.md)
 - [Registri kasus uji](docs/test-case-registry-2026-10-28.md)
-- Bukti mentah uji paket: `docs/paket-bukti-2026-10-29/`, `docs/paket-bukti-2026-10-30/`, `docs/paket-bukti-2026-10-31/`
+- Bukti mentah uji paket: `docs/paket-bukti-2026-10-29/`, `docs/paket-bukti-2026-10-30/`, `docs/paket-bukti-2026-10-31/`, `docs/paket-bukti-2026-11-01/`
 
 ## Riwayat versi singkat
 
@@ -256,6 +290,9 @@ Rincian lengkap ada di [CHANGELOG.md](CHANGELOG.md).
 
 | Versi | Perubahan inti |
 |---|---|
+| 1.2.12 | Jalur cetak ESC/POS raw, perbaikan nominal struk uji, ketahanan sambungan (banner "Server lokal tidak menjawab" memulihkan diri) |
+| 1.2.11 | Tidak dirilis; perubahan digabung ke 1.2.12 |
+| 1.2.10 | Zona waktu toko untuk ekspor, penomoran dokumen, dan rekap harian; peluncur meneruskan perintah pemeliharaan |
 | 1.2.9 | Perbaikan 31 temuan audit: jurnal HPP/persediaan, validasi SPK, status pesanan atomik, RBAC dan kebocoran data, pagar versi/kanal installer |
 | 1.2.8 | Tidak dirilis; perubahan peluncur ikut termuat di 1.2.9 |
 | 1.2.7 | Nama toko, slogan, dan logo dapat diganti kapan saja |

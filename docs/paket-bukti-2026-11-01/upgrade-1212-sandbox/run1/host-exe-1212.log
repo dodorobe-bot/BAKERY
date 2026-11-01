@@ -1,0 +1,79 @@
+[17:30:34 INF] Jwt:Secret dibuat otomatis untuk instalasi ini dan disimpan di C:\data\uji-exe.key
+[17:30:34 INF] Migrasi 1 diterapkan.
+[Migration] Applied version 1
+[17:30:34 INF] Migrasi 2 diterapkan.
+[Migration] Applied version 2
+[17:30:34 INF] Migrasi 3 diterapkan.
+[Migration] Applied version 3
+[17:30:34 INF] Migrasi 4 diterapkan.
+[Migration] Applied version 4
+[17:30:34 INF] Migrasi 5 diterapkan.
+[Migration] Applied version 5
+[17:30:34 INF] Migrasi 6 diterapkan.
+[Migration] Applied version 6
+[17:30:34 INF] Migrasi 7 diterapkan.
+[Migration] Applied version 7
+[17:30:34 INF] Migrasi 8 diterapkan.
+[Migration] Applied version 8
+[17:30:34 INF] Migrasi 9 diterapkan.
+[Migration] Applied version 9
+[17:30:34 INF] Migrasi 10 diterapkan.
+[Migration] Applied version 10
+[17:30:34 INF] Migrasi 11 diterapkan.
+[Migration] Applied version 11
+[17:30:34 INF] Migrasi 12 diterapkan.
+[Migration] Applied version 12
+[17:30:34 INF] Migrasi 13 diterapkan.
+[Migration] Applied version 13
+[17:30:34 INF] Migrasi 14 diterapkan.
+[Migration] Applied version 14
+[17:30:34 INF] Migrasi 15 diterapkan.
+[Migration] Applied version 15
+[17:30:34 INF] Migrasi 16 diterapkan.
+[Migration] Applied version 16
+[17:30:34 INF] Migrasi 17 diterapkan.
+[Migration] Applied version 17
+[17:30:34 INF] Migrasi 18 diterapkan.
+[Migration] Applied version 18
+[17:30:34 INF] Seruni 22 Bakery service starting on 
+[17:30:35 INF] User profile is available. Using 'C:\Users\WDAGUtilityAccount\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+[17:30:35 INF] Now listening on: http://127.0.0.1:5313
+[17:30:35 INF] Application started. Press Ctrl+C to shut down.
+[17:30:35 INF] Hosting environment: Production
+[17:30:35 INF] Content root path: C:\SeruniExe1212
+[17:30:35 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5313/health - null null
+[17:30:36 INF] Executing endpoint 'HTTP: GET /health'
+[17:30:36 INF] Setting HTTP status code 200.
+[17:30:36 INF] Writing value of type '<>f__AnonymousType12`3' as Json.
+[17:30:36 INF] Executed endpoint 'HTTP: GET /health'
+[17:30:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5313/health - 200 null application/json; charset=utf-8 454.8036ms
+[17:30:36 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5313/ - null null
+[17:30:36 INF] Executing endpoint 'Fallback {*path:nonfile}'
+[17:30:36 INF] Sending file. Request path: '/index.html'. Physical path: 'C:\SeruniExe1212\wwwroot\index.html'
+[17:30:36 INF] Executed endpoint 'Fallback {*path:nonfile}'
+[17:30:36 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5313/index.html - 200 466 text/html 16.1634ms
+[17:30:36 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5313/api/auth/login - application/json 60
+[17:30:36 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[17:30:37 INF] Setting HTTP status code 200.
+[17:30:37 INF] Writing value of type 'LoginResponse' as Json.
+[17:30:37 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[17:30:37 WRN] [Lambat] POST /api/auth/login 200 822 ms (id -)
+[17:30:37 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5313/api/auth/login - 200 null application/json; charset=utf-8 825.2019ms
+[17:30:37 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5313/api/auth/change-password - application/json 81
+[17:30:37 INF] Executing endpoint 'HTTP: POST /api/auth/change-password'
+[17:30:38 INF] Setting HTTP status code 200.
+[17:30:38 INF] Executed endpoint 'HTTP: POST /api/auth/change-password'
+[17:30:38 WRN] [Lambat] POST /api/auth/change-password 200 1627 ms (id -)
+[17:30:38 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5313/api/auth/change-password - 200 0 null 1631.3374ms
+[17:30:38 INF] Request starting HTTP/1.1 POST http://127.0.0.1:5313/api/auth/login - application/json 68
+[17:30:38 INF] Executing endpoint 'HTTP: POST /api/auth/login'
+[17:30:39 INF] Setting HTTP status code 200.
+[17:30:39 INF] Writing value of type 'LoginResponse' as Json.
+[17:30:39 INF] Executed endpoint 'HTTP: POST /api/auth/login'
+[17:30:39 INF] Request finished HTTP/1.1 POST http://127.0.0.1:5313/api/auth/login - 200 null application/json; charset=utf-8 372.1596ms
+[17:30:39 INF] Request starting HTTP/1.1 GET http://127.0.0.1:5313/api/system/self-check - null null
+[17:30:39 INF] Executing endpoint 'HTTP: GET /api/system/self-check'
+[17:30:39 INF] Setting HTTP status code 200.
+[17:30:39 INF] Writing value of type '<>f__AnonymousType43`6' as Json.
+[17:30:39 INF] Executed endpoint 'HTTP: GET /api/system/self-check'
+[17:30:39 INF] Request finished HTTP/1.1 GET http://127.0.0.1:5313/api/system/self-check - 200 null application/json; charset=utf-8 27.8692ms

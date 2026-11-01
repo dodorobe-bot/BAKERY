@@ -26,6 +26,10 @@ const idPermintaan = () =>
 // karena memang menyalin seluruh basis data atau membuat berkas besar.
 const BATAS_NORMAL_MS = 15000;
 const BATAS_LAMA_MS = 120000;
+// Cetak punya batasnya sendiri: antrean printer Windows dan sambungan ke printer jaringan bisa
+// memakan belasan detik tanpa berarti gagal, dan mengulanginya atas nama "terlalu lambat" akan
+// mencetak struk dua kali.
+const BATAS_CETAK_MS = 60000;
 
 // Sinyal milik pemanggil (mis. batal saat layar ditinggal) diteruskan ke pengendali lokal,
 // sehingga fetch ikut berhenti tanpa memutus kaitan pengendali dengan pewaktu batas.
@@ -46,6 +50,30 @@ const durasiServer = (nilai) => {
   if (!nilai) return null;
   const cocok = /dur=([\d.]+)/.exec(nilai);
   return cocok ? Number(cocok[1]) : null;
+};
+
+// Kegagalan "tidak ada jawaban sama sekali" dipisah dari kegagalan lain. Keduanya terlihat sama di
+// layar (banner merah) tetapi penyebabnya berbeda: peladen yang mati harus ditunggu sampai hidup
+// lagi, sedangkan sambungan yang putus sekejap cukup diulang.
+export class ServerTidakTerhubung extends Error {
+  constructor(pesan) {
+    super(pesan);
+    this.name = 'ServerTidakTerhubung';
+  }
+}
+
+// /health selalu dijawab tanpa token, jadi probe ini aman dipakai dari layar apa pun.
+const serverHidup = async (batasMs = 2000) => {
+  const pengendali = new AbortController();
+  const pewaktu = setTimeout(() => pengendali.abort(), batasMs);
+  try {
+    const res = await fetch(`${API_BASE}/health`, { cache: 'no-store', signal: pengendali.signal });
+    return res.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(pewaktu);
+  }
 };
 
 export const api = {
@@ -73,6 +101,8 @@ export const api = {
     localStorage.removeItem('s22_token');
     localStorage.removeItem('s22_user');
   },
+  // Dipakai layar untuk menunggu peladen hidup lagi, bukan menekan "Coba lagi" berkali-kali.
+  serverHidup: () => serverHidup(),
 
   async request(endpoint, options = {}) {
     const token = this.getToken();
@@ -129,13 +159,16 @@ export const api = {
       });
       if (riwayatPerf.length > 300) riwayatPerf.shift();
     };
-    // Hanya permintaan baca yang diulang otomatis. Koneksi ke layanan lokal bisa terputus
-    // sekejap — komputer baru bangun dari tidur, layanan baru mulai, atau soket keep-alive
-    // yang sudah ditutup server dipakai lagi. Peramban melaporkannya sebagai
-    // "NetworkError when attempting to fetch resource" tanpa kode status; mengulang sekali
-    // atau dua kali menghapus gangguan sekejap itu. Permintaan yang mengubah data tidak
-    // diulang di sini: pengulangan yang tidak diminta bisa mencatat transaksi dua kali.
-    const batasPercobaan = metode === 'GET' || metode === 'HEAD' ? 3 : 1;
+    // Hanya permintaan yang aman diulang yang mendapat lebih dari satu percobaan. Koneksi ke
+    // layanan lokal bisa terputus sekejap — komputer baru bangun dari tidur, layanan baru mulai,
+    // atau soket keep-alive yang sudah ditutup server dipakai lagi. Peramban melaporkannya sebagai
+    // "NetworkError when attempting to fetch resource" tanpa kode status.
+    //
+    // Aksi perubahan ikut diulang HANYA bila membawa kunci idempotensi: gerbang server
+    // (Idempotensi.cs) membuat permintaan ulang atas niat yang sama dikerjakan satu kali, jadi
+    // pengulangan tidak mencatat transaksi dua kali. Perubahan tanpa kunci tetap satu percobaan.
+    const bolehDiulang = metode === 'GET' || metode === 'HEAD' || Boolean(kunci);
+    const batasPercobaan = bolehDiulang ? 3 : 1;
     let res = null;
     let galatJaringan = null;
     let lewatBatas = false;
@@ -187,7 +220,19 @@ export const api = {
         );
       }
       console.error(`Permintaan ${endpoint} gagal di jaringan:`, galatJaringan);
-      throw new Error('Server lokal tidak menjawab. Pastikan aplikasi masih berjalan, lalu coba lagi.');
+      if (!(await serverHidup())) {
+        throw new ServerTidakTerhubung(
+          'Server lokal belum berjalan atau sudah tertutup. Buka kembali aplikasi Seruni 22 Bakery — ' +
+          'layar ini memuat sendiri begitu server hidup lagi.'
+        );
+      }
+      if (metode === 'GET' || metode === 'HEAD') {
+        throw new Error('Koneksi ke server lokal terputus sekejap. Tekan Coba lagi untuk memuat ulang.');
+      }
+      throw new Error(
+        'Koneksi ke server lokal terputus saat menyimpan. Jangan menekan Simpan dua kali: buka dulu ' +
+        'daftar terkait untuk memastikan data sudah tersimpan, lalu ulangi hanya bila belum.'
+      );
     }
 
     const durasiPeladen = durasiServer(res.headers.get('Server-Timing'));
@@ -336,12 +381,16 @@ export const api = {
   getDeviceStatus: () => api.request('/api/devices/status'),
   saveDeviceSettings: (values) =>
     api.request('/api/devices/settings', { method: 'PUT', body: JSON.stringify(values) }),
-  testPrint: () => api.request('/api/devices/test-print', { method: 'POST' }),
+  // Cetak menunggu antrean printer Windows atau sambungan TCP ke printer jaringan; pada printer
+  // yang baru bangun atau sedang mengantre, jawabannya bisa lewat dari batas normal — batas 15
+  // detik membuat layar berhenti menunggu padahal struknya tetap tercetak (terukur 12 detik).
+  testPrint: () => api.request('/api/devices/test-print', { method: 'POST', timeoutMs: BATAS_CETAK_MS }),
   getPrintJobs: (limit = 50) => api.request(`/api/devices/print-jobs?limit=${limit}`),
   printReceipt: (orderId, { reprint = false, idempotensi = null } = {}) =>
     api.request(`/api/orders/${orderId}/receipt`, {
       method: 'POST',
       idempotensi,
+      timeoutMs: BATAS_CETAK_MS,
       body: JSON.stringify({ cetakUlang: reprint })
     }),
 
@@ -500,7 +549,13 @@ export const api = {
         );
       }
       console.error(`Unduhan ${endpoint} gagal di jaringan:`, galatJaringan);
-      throw new Error('Server lokal tidak menjawab. Pastikan aplikasi masih berjalan, lalu coba lagi.');
+      if (!(await serverHidup())) {
+        throw new ServerTidakTerhubung(
+          'Server lokal belum berjalan atau sudah tertutup. Buka kembali aplikasi Seruni 22 Bakery, ' +
+          'lalu ulangi unduhan.'
+        );
+      }
+      throw new Error('Koneksi ke server lokal terputus sekejap. Tekan unduh lagi untuk mengulang.');
     }
     if (!res.ok) throw new Error(`Export gagal (${res.status})`);
     const blob = await res.blob();

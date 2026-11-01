@@ -156,6 +156,37 @@ foreach ($p in $pagarZona) {
     Catat $p.Nama ($isi -notmatch $p.Pola) $p.Ket
 }
 
+# ── 2d. Pagar ketahanan sambungan ──────────────────────────────────────────
+# Cacat yang dijaga: banner "Server lokal tidak menjawab" muncul berulang ketika soket keep-alive
+# lama dipakai lagi atau saat host baru hidup. Perbaikannya tiga lapis (batas keep-alive Kestrel,
+# probe /health yang membedakan server mati dari gangguan sekejap, dan layar yang menunggu sendiri)
+# sehingga satu lapis yang hilang tidak boleh lolos tanpa ketahuan.
+$pagarSambung = @(
+    @{ Nama = 'Kestrel memakai keep-alive panjang'; File = 'src\Host.Service\Program.cs';
+       Pola = 'KeepAliveTimeout'; Ket = 'tanpa batas ini peramban memakai soket yang sudah ditutup server' },
+    @{ Nama = 'klien membedakan server mati'; File = 'frontend\src\services\api.js';
+       Pola = 'ServerTidakTerhubung[\s\S]*serverHidup'; Ket = 'kegagalan jaringan harus diprobes ke /health' },
+    @{ Nama = 'layar menunggu server hidup lagi'; File = 'frontend\src\App.jsx';
+       Pola = 'api\.serverHidup\(\)'; Ket = 'banner server mati harus memulihkan diri tanpa klik' }
+)
+foreach ($p in $pagarSambung) {
+    $jalur = Join-Path $root $p.File
+    if (-not (Test-Path $jalur)) {
+        Catat $p.Nama $false "berkas tidak ada: $jalur"
+        continue
+    }
+    $isi = Get-Content $jalur -Raw
+    Catat $p.Nama ($isi -match $p.Pola) $p.Ket
+}
+$asetDesktop = @(Get-ChildItem -Path (Join-Path $root 'desktop\assets') -Filter 'index-*.js' -ErrorAction SilentlyContinue)
+if ($asetDesktop.Count -eq 0) {
+    Catat 'bundel desktop memuat penantian server' $false 'desktop\assets\index-*.js tidak ada'
+} else {
+    $gabungAset = ($asetDesktop | ForEach-Object { Get-Content $_.FullName -Raw }) -join "`n"
+    Catat 'bundel desktop memuat penantian server' ($gabungAset -match 'Menunggu server hidup lagi') `
+        'bundel yang disajikan host harus memuat perbaikan, bukan sumber saja (bundel basi pernah lolos)'
+}
+
 # ── 3. Verifikasi perilaku lewat API pada basis data sementara ──────────────
 $verifikasi = @()
 if (-not $SkipVerify) {

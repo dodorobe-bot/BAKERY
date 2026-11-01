@@ -1,0 +1,5 @@
+-rw-r--r-- 1 Administrator 197121 214002 Sep 21 23:12 /c/Users/Administrator/Documents/rew.pdf
+-rw-r--r-- 1 Administrator 197121  51425 Nov  1 14:03 /c/Users/Administrator/Documents/teat 3.pdf
+-rw-r--r-- 1 Administrator 197121  48649 Nov  1 14:03 /c/Users/Administrator/Documents/teat 4.pdf
+-rw-r--r-- 1 Administrator 197121  51366 Nov  1 04:36 /c/Users/Administrator/Documents/test.pdf
+-rw-r--r-- 1 Administrator 197121  49231 Nov  1 04:36 /c/Users/Administrator/Documents/test2.pdf

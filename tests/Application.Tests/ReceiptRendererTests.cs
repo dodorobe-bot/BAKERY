@@ -159,4 +159,18 @@ public class ReceiptRendererTests
         isi.Should().Contain($"{mm} mm");
         isi.Split('\n').Select(b => b.TrimEnd('\r')).Should().OnlyContain(b => b.Length <= ReceiptRenderer.Kolom(mm));
     }
+
+    [Fact]
+    public void RenderTest_ContohTransaksiKonsisten()
+    {
+        // Uang disimpan sebagai unit minor: 2 x Rp 15.000 = 3.000.000 minor, bukan 30.000.
+        // Struk uji pernah mencetak "Rp 300" di samping "2 x Rp 15.000" dan tidak ada tes
+        // yang memeriksa baris contoh ini, jadi kesalahan itu lolos sampai kertas.
+        var isi = ReceiptRenderer.RenderTest("Outlet", "EPSON TM-T82", 80,
+            new DateTime(2026, 10, 28, 9, 0, 0, DateTimeKind.Local));
+
+        var baris = isi.Split('\n').Select(b => b.TrimEnd('\r')).Single(b => b.StartsWith("2 x Rp 15.000", StringComparison.Ordinal));
+        baris.Should().EndWith("Rp 30.000");
+        isi.Should().NotContain("Rp 300");
+    }
 }

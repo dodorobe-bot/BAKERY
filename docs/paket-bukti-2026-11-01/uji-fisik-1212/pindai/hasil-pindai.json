@@ -1,0 +1,80 @@
+{
+  "waktu": "2026-11-01T11:07:34.078Z",
+  "base": "http://127.0.0.1:5412",
+  "langkah": [
+    {
+      "nama": "login UI dengan sandi baru",
+      "lulus": true,
+      "rincian": "menu Penjualan terlihat"
+    },
+    {
+      "nama": "karakter sampai utuh sebelum Enter",
+      "lulus": true,
+      "rincian": "kolom berisi \"8991234567890\""
+    },
+    {
+      "nama": "barcode dikenal memilih produk yang tepat",
+      "lulus": true,
+      "rincian": "select=1 harap=1"
+    },
+    {
+      "nama": "total terisi dari harga katalog",
+      "lulus": true,
+      "rincian": "total=12500 harap=12500"
+    },
+    {
+      "nama": "kolom pindai kosong lagi setelah Enter",
+      "lulus": true,
+      "rincian": "kolom=\"\""
+    },
+    {
+      "nama": "barcode kedua memilih produk kedua",
+      "lulus": true,
+      "rincian": "select=2 harap=2"
+    },
+    {
+      "nama": "total produk kedua benar",
+      "lulus": true,
+      "rincian": "total=8000 harap=8000"
+    },
+    {
+      "nama": "barcode asing menampilkan pesan",
+      "lulus": true,
+      "rincian": "Barcode \"0000000000000\" tidak cocok dengan produk mana pun."
+    },
+    {
+      "nama": "barcode asing tidak mengubah produk terpilih",
+      "lulus": true,
+      "rincian": "select=2"
+    },
+    {
+      "nama": "kolom pindai dikosongkan setelah barcode asing",
+      "lulus": true,
+      "rincian": "kolom=\"\""
+    },
+    {
+      "nama": "tanpa Enter tidak memilih produk",
+      "lulus": true,
+      "rincian": "select tetap=2"
+    },
+    {
+      "nama": "10 pindai cepat: tidak ada karakter hilang",
+      "lulus": true,
+      "rincian": "ok#1 isi=8991234567890 sel=1 tot=12500; ok#2 isi=8991234567890 sel=1 tot=12500; ok#3 isi=8991234567890 sel=1 tot=12500; ok#4 isi=8991234567890 sel=1 tot=12500; ok#5 isi=8991234567890 sel=1 tot=12500; ok#6 isi=8991234567890 sel=1 tot=12500; ok#7 isi=8991234567890 sel=1 tot=12500; ok#8 isi=8991234567890 sel=1 tot=12500; ok#9 isi=8991234567890 sel=1 tot=12500; ok#10 isi=8991234567890 sel=1 tot=12500"
+    },
+    {
+      "nama": "10 pindai cepat selesai < 10 detik",
+      "lulus": true,
+      "rincian": "4189 ms"
+    },
+    {
+      "nama": "fokus di luar kolom: kolom pindai tidak terisi",
+      "lulus": true,
+      "rincian": "kolom=\"\""
+    }
+  ],
+  "galatKonsol": [],
+  "ringkasan": "PASS",
+  "jumlahLulus": 14,
+  "jumlahGagal": 0
+}

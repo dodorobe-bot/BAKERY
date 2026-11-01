@@ -93,6 +93,10 @@ export default function App() {
   const [printJobs, setPrintJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
+  // Server yang mati tidak bisa dihidupkan oleh tombol "Coba lagi": menekannya hanya memunculkan
+  // banner merah yang sama. Selama bendera ini menyala, layar menanyakan /health berkala dan
+  // memuat sendiri begitu server menjawab lagi.
+  const [serverMati, setServerMati] = useState(false);
   // Tab yang datanya sudah diterapkan; layar tujuan baru dirender sesudah ini sama dengan
   // activeTab, sehingga tabel besar tidak digambar dua kali (sekali dengan data lama).
   const [tabSiap, setTabSiap] = useState(null);
@@ -367,6 +371,7 @@ export default function App() {
       if (nomor !== urutanMuat.current) return;
       terapkanData(data);
       setTabSiap(tab);
+      setServerMati(false);
       // Muat ulang paksa (tombol perbarui atau sesudah aksi pengubahan) membuang seluruh simpanan:
       // layar lain yang dibuka berikutnya harus membaca angka terbaru, bukan salinan lama.
       if (paksa) cacheLayar.current.clear();
@@ -375,11 +380,37 @@ export default function App() {
     } catch (err) {
       if (nomor !== urutanMuat.current) return;
       console.error(err);
+      setServerMati(err?.name === 'ServerTidakTerhubung');
       setLoadError(`Data gagal dimuat: ${err.message || 'kesalahan tidak diketahui'}`);
     } finally {
       if (nomor === urutanMuat.current) setLoading(false);
     }
   };
+
+  // Penantian server: /health dibuka tanpa token dan sangat ringan, jadi aman ditanya dari layar
+  // mana pun. Setelah server menjawab, data dimuat ulang sendiri — pengguna tidak perlu menekan
+  // apa pun, apalagi menutup jendela yang terbuka.
+  useEffect(() => {
+    if (!serverMati || !user) return undefined;
+    let berhenti = false;
+    let pewaktu = null;
+    const tunggu = () => {
+      pewaktu = setTimeout(async () => {
+        if (berhenti) return;
+        // Server yang hidup belum tentu bisa melayani data (mis. basis data sedang sibuk), jadi
+        // pemuatan tetap dicoba. Bila berhasil, serverMati padam dan penantian ini berhenti
+        // sendiri; bila gagal karena server, penantian dijadwalkan lagi.
+        if (await api.serverHidup()) await loadData(true);
+        if (!berhenti) tunggu();
+      }, 4000);
+    };
+    tunggu();
+    return () => {
+      berhenti = true;
+      if (pewaktu) clearTimeout(pewaktu);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverMati, user, activeTab]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -1216,7 +1247,13 @@ export default function App() {
             {loadError && (
               <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs flex items-center justify-between gap-3">
                 <span>{loadError}</span>
-                <button onClick={loadData} className="text-rose-300 font-bold hover:text-white shrink-0">Coba lagi</button>
+                {/* Selama server mati tombol "Coba lagi" hanya mengulang kegagalan yang sama;
+                    layar sedang menanyakan /health sendiri dan akan memuat ulang saat server hidup. */}
+                {serverMati ? (
+                  <span className="text-rose-300/80 shrink-0">Menunggu server hidup lagi…</span>
+                ) : (
+                  <button onClick={loadData} className="text-rose-300 font-bold hover:text-white shrink-0">Coba lagi</button>
+                )}
               </div>
             )}
             {(tabSiap === activeTab || loadError) ? renderCurrentView() : <LayarMemuat />}

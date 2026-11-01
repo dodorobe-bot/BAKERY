@@ -1,0 +1,52 @@
+       Seruni 22 Bakery
+
+Sistem Manajemen Toko Kue
+
+Kantor Sentral & Toko Utama
+
+--------------------------------
+
+No. Nota        ORD-20261101-0001
+
+Tgl. Cetak
+
+           01 November 2026 04:36
+
+Tgl. Pesanan
+
+           01 November 2026 04:36
+
+Tgl. Pickup     03 November 2026
+
+--------------------------------
+
+Pelanggan
+
+       Uji Fisik 20261101-043558
+
+--------------------------------
+
+Pesanan:
+
+Bolu pisang dan nastar untuk uji
+
+cetak
+
+2 x Rp 12.500            Rp 25.000
+
+--------------------------------
+
+Total                    Rp 25.000
+
+DP / Uang Muka           Rp 5.000
+
+Sisa Tagihan             Rp 20.000
+
+--------------------------------
+
+Terima kasih atas pesanan Anda!
+
+Simpan struk ini sebagai bukti
+
+             transaksi.
+

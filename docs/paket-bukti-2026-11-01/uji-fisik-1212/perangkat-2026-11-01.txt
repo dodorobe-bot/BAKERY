@@ -1,0 +1,85 @@
+
+===== LINGKUNGAN =====
+OS            : Microsoft Windows 11 Pro build 26300 64-bit
+Pengguna      : DESKTOP-VKRMBR2\Administrator
+Elevated      : False
+RAM MB        : 3746
+
+===== PRINTER TERPASANG (Get-Printer) =====
+Nama=OneNote (Desktop) | Driver=Send to Microsoft OneNote 16 Driver | Port=nul: | Status=Normal | Shared=False | Published=False
+Nama=Microsoft Print to PDF | Driver=Microsoft Print To PDF | Port=PORTPROMPT: | Status=Normal | Shared=False | Published=False
+Jumlah printer: 2
+
+===== PRINTER (Win32_Printer) =====
+Nama=OneNote (Desktop) | Driver=Send to Microsoft OneNote 16 Driver | Port=nul: | WorkOffline=False | Default=False | Status=Unknown
+Nama=Microsoft Print to PDF | Driver=Microsoft Print To PDF | Port=PORTPROMPT: | WorkOffline=False | Default=True | Status=Unknown
+
+===== PORT PRINTER =====
+Nama=COM1: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=COM2: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=COM3: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=COM4: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=FILE: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=LPT1: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=LPT2: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=LPT3: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=PORTPROMPT: | Deskripsi=Local Port | Host= | PortNumber=
+Nama=nul: | Deskripsi=Local Port | Host= | PortNumber=
+
+===== ANTREAN CETAK =====
+Pekerjaan pada printer pertama: 0
+
+===== PERANGKAT PnP (printer/thermal/pos/scanner/barcode/usb-serial) =====
+Nama=USB Composite Device | Kelas=USB | Status=OK | DeviceID=USB\VID_5986&PID_2144\01.00.00
+Nama=Intel(R) USB 3.10 eXtensible Host Controller - 1.20 (Microsoft) | Kelas=USB | Status=OK | DeviceID=PCI\VEN_8086&DEV_51ED&SUBSYS_157D1025&REV_01\3&11583659&0&A0
+Nama=Root Print Queue | Kelas=PrintQueue | Status=OK | DeviceID=SWD\PRINTENUM\PRINTQUEUES
+Nama=OneNote (Desktop) | Kelas=PrintQueue | Status=OK | DeviceID=SWD\PRINTENUM\{B7B80E23-DA4E-4543-8F83-5FD3B34D5441}
+Nama=SanDisk Cruzer Blade USB Device | Kelas=DiskDrive | Status=OK | DeviceID=USBSTOR\DISK&VEN_SANDISK&PROD_CRUZER_BLADE&REV_1.00\4C530000180807122402&0
+Nama=USB Root Hub (USB 3.0) | Kelas=USB | Status=OK | DeviceID=USB\ROOT_HUB30\4&1E991AAA&0&0
+Nama=ACPI Thermal Zone | Kelas=System | Status=OK | DeviceID=ACPI\THERMALZONE\TZ00
+Nama=Composite Bus Enumerator | Kelas=System | Status=OK | DeviceID=ROOT\COMPOSITEBUS\0000
+Nama=Microsoft Print to PDF | Kelas=PrintQueue | Status=OK | DeviceID=SWD\PRINTENUM\{470E58CD-A089-41D4-9B9B-873F814B6FD4}
+Nama=ACER 5M User Facing | Kelas=Camera | Status=OK | DeviceID=USB\VID_5986&PID_2144&MI_00\6&22B28D7E&0&0000
+Nama=USB Input Device | Kelas=HIDClass | Status=OK | DeviceID=USB\VID_046D&PID_C077\5&1780E5F6&0&2
+Nama=Intel® Smart Sound Technology for USB Audio | Kelas=MEDIA | Status=OK | DeviceID=INTELAUDIO\CTLR_DEV_51C8&LINKTYPE_06&DEVTYPE_06&VEN_8086&DEV_AE50&SUBSYS_157D1025&REV_0001\0602
+Nama=USB Input Device | Kelas=HIDClass | Status=OK | DeviceID=USB\VID_0461&PID_4E99&MI_00\6&3076779F&0&0000
+Nama=USB Composite Device | Kelas=USB | Status=OK | DeviceID=USB\VID_04CA&PID_3802\000000000
+Nama=USB Mass Storage Device | Kelas=USB | Status=OK | DeviceID=USB\VID_0781&PID_5567\4C530000180807122402
+Nama=USB Composite Device | Kelas=USB | Status=OK | DeviceID=USB\VID_0461&PID_4E99\5&1780E5F6&0&1
+Nama=USB Input Device | Kelas=HIDClass | Status=OK | DeviceID=USB\VID_0461&PID_4E99&MI_01\6&3076779F&0&0001
+Jumlah kandidat: 17
+
+===== PORT SERIAL (COM) =====
+TIDAK ADA port COM
+
+===== PERANGKAT USB (Win32_USBControllerDevice) =====
+GAGAL: Cannot convert the "Win32_PnPEntity (DeviceID = "USB\ROOT_HUB30\4&1E991AAA&0&0")" value of type "Microsoft.Management.Infrastructure.CimInstance#ROOT/cimv2/Win32_PnPEntity" to type "System.Management.ManagementObject".
+
+===== SERTIFIKAT CODE SIGNING (CurrentUser\My) =====
+TIDAK ADA sertifikat code signing di CurrentUser\My
+
+===== SERTIFIKAT CODE SIGNING (LocalMachine\My) =====
+TIDAK ADA sertifikat code signing di LocalMachine\My
+
+===== SERTIFIKAT TrustedPublisher (sertifikat publik yang dipercaya) =====
+Jumlah: 0
+
+===== ALAT TANDA TANGAN =====
+signtool.exe -> TIDAK ADA di PATH
+osslsigncode.exe -> TIDAK ADA di PATH
+azuresigntool.exe -> TIDAK ADA di PATH
+Kit SDK ada: C:\Program Files (x86)\Windows Kits\10\bin
+
+===== TANDA TANGAN PAKET 1.2.12 =====
+D:\bakery-desktop\dist\installer\Seruni22Bakery_Setup_v1.2.12.exe | Status=NotSigned | Signer=
+D:\bakery-desktop\dist\installer\Seruni22Bakery_v1.2.12_x64.msi | Status=NotSigned | Signer=
+
+===== JARINGAN =====
+IP=172.25.160.1 | Interface=vEthernet (Default Switch) | Prefix=20
+IP=169.254.165.241 | Interface=Ethernet | Prefix=16
+IP=169.254.55.151 | Interface=Local Area Connection* 10 | Prefix=16
+IP=169.254.177.99 | Interface=Local Area Connection* 9 | Prefix=16
+IP=172.16.90.230 | Interface=Wi-Fi | Prefix=24
+Tabel ARP (sebagian): 172.25.175.255, 172.16.90.255, 172.16.90.237, 172.16.90.124
+
+===== SELESAI =====

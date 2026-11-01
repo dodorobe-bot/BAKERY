@@ -1,0 +1,61 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261101181109
+Username: DESKTOP-VKRMBR2\Administrator
+RunAs User: DESKTOP-VKRMBR2\Administrator
+Configuration Name: 
+Machine: DESKTOP-VKRMBR2 (Microsoft Windows NT 10.0.26300.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:/tmp/jalankan-uji-auth.ps1
+Process ID: 14260
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+== HASH SEBELUM ==
+Seruni22Bakery_Setup_v1.2.12.exe F43F4E8583CC1DF84354039925F45046AAFE93A6F3996B112C80501229A506C1
+Seruni22Bakery_v1.2.12_x64.msi 5EE109F9ECE7CD24B4125ADB5F999AEDD8CD90D701A77BB9B2D8E9A8BD8FC859
+
+== SERTIFIKAT CODE SIGNING TERPASANG ==
+Cert:\CurrentUser\My: 0 sertifikat code signing
+Cert:\LocalMachine\My: 0 sertifikat code signing
+TOTAL sertifikat code signing: 0
+
+== PREFLIGHT sign-paket.ps1 DENGAN THUMBPRINT PALSU ==
+PS>TerminatingError(): "Sertifikat dengan thumbprint 0000000000000000000000000000000000000000 tidak ditemukan di CurrentUser\My atau LocalMachine\My."
+PESAN PENOLAKAN: Sertifikat dengan thumbprint 0000000000000000000000000000000000000000 tidak ditemukan di CurrentUser\My atau LocalMachine\My.
+KODE KELUAR:
+
+== HASH SESUDAH ==
+Seruni22Bakery_Setup_v1.2.12.exe F43F4E8583CC1DF84354039925F45046AAFE93A6F3996B112C80501229A506C1 -> TIDAK BERUBAH
+Seruni22Bakery_v1.2.12_x64.msi 5EE109F9ECE7CD24B4125ADB5F999AEDD8CD90D701A77BB9B2D8E9A8BD8FC859 -> TIDAK BERUBAH
+BERKAS BERUBAH: 0
+
+== GET-AUTHENTICODESIGNATURE ==
+Seruni22Bakery_Setup_v1.2.12.exe | Status=NotSigned | Signer=(tidak ada)
+Seruni22Bakery_v1.2.12_x64.msi | Status=NotSigned | Signer=(tidak ada)
+
+== SIGNTOOL VERIFY /pa ==
+signtool: C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe
+Seruni22Bakery_Setup_v1.2.12.exe -> keluar 1
+
+  Number of warnings: 0
+
+  Number of errors: 1
+
+  SignTool Error: No signature found.
+Seruni22Bakery_v1.2.12_x64.msi -> keluar 1
+
+  Number of warnings: 0
+
+  Number of errors: 1
+
+  SignTool Error: No signature found.
+**********************
+Windows PowerShell transcript end
+End time: 20261101181110
+**********************

@@ -1,0 +1,227 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261101172130
+Username: A0EE082B-98FD-4\WDAGUtilityAccount
+RunAs User: A0EE082B-98FD-4\WDAGUtilityAccount
+Configuration Name: 
+Machine: A0EE082B-98FD-4 (Microsoft Windows NT 10.0.26100.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\share\uji-1212.ps1
+Process ID: 5712
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+17:21:32 | lingkungan | INFO | Microsoft Windows 11 Enterprise build 26100; pengguna A0EE082B-98FD-4\WDAGUtilityAccount; elevated=True; RAM 1535 MB
+17:21:32 | mesin bersih: tanpa runtime .NET bersama | PASS | C:\Program Files\dotnet tidak ada (publish self-contained)
+17:21:33 | mesin bersih: belum ada instalasi Seruni | PASS | tidak ada folder program dan tidak ada entri ARP
+17:21:33 | mesin bersih: tanpa penanda kanal | PASS | HKCU dan HKLM Software\Seruni22Bakery tidak ada
+17:21:34 | salinan MSI 1.2.9 utuh | PASS | 50391554 byte, SHA256 4CF092CE05CFB0301D2740CC136322135DC9F506A482C807BEA020782052D635
+17:21:34 | salinan MSI 1.2.12 utuh | PASS | 50399748 byte, SHA256 5EE109F9ECE7CD24B4125ADB5F999AEDD8CD90D701A77BB9B2D8E9A8BD8FC859
+17:21:34 | salinan EXE 1.2.9 utuh | PASS | 42662274 byte, SHA256 FD233BE4E4A8441DD2E63349B723466EE4AB803F41E6D6B357B97E05F55143B7
+17:21:34 | salinan EXE 1.2.12 utuh | PASS | 42675344 byte, SHA256 F43F4E8583CC1DF84354039925F45046AAFE93A6F3996B112C80501229A506C1
+17:21:34 | manifes payload 1.2.12 terbaca | PASS | 393 baris
+17:24:09 | pasang senyap MSI 1.2.9 | PASS | exit 0
+17:24:09 | entri ARP 1.2.9 | PASS | Seruni 22 Bakery 1.2.9
+17:24:09 | versi peluncur 1.2.9 | PASS | 1.2.9
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+17:24:21 | host 1.2.9 menjawab /health | PASS | health 200
+17:24:23 | health melaporkan 1.2.9 | PASS | version=1.2.9
+17:24:24 | login bawaan admin berhasil di 1.2.9 | PASS | token diterima
+17:24:27 | sandi diganti lalu login sandi baru | PASS | login dengan sandi baru berhasil
+17:24:28 | produk uji dibuat di 1.2.9 | PASS | id=1
+17:24:29 | merek disetel di 1.2.9 | PASS | name=Toko Uji Sandbox 1212
+17:24:29 | kunci /api/brand 1.2.9 | INFO | 4 kunci
+17:24:30 | host dihentikan | INFO | Stop-Process
+17:24:33 | basis data pra-peningkatan terbentuk | PASS | uji.db 4096 bita
+17:24:47 | EXE 1.2.12 menolak dipasang selama MSI 1.2.9 ada | PASS | exit 1
+17:24:48 | log EXE menyebut MSI terdeteksi | FAIL | log tidak memuat alasan kanal
+17:24:48 | tidak ada folder EXE setelah penolakan | PASS | folder tidak dibuat
+17:24:48 | tidak ada entri ARP EXE setelah penolakan | PASS | ARP EXE tidak ada
+17:24:48 | penolakan tidak menulis penanda HKCU | PASS | Channel EXE tidak ditulis
+17:24:49 | MSI 1.2.9 tetap satu-satunya instalasi | PASS | Seruni 22 Bakery 1.2.9 [{7609C8A3-2349-4606-A02D-652FE121FB78}]
+17:27:22 | peningkatan senyap MSI 1.2.12 | PASS | exit 0
+17:27:22 | produk 1.2.9 terdeteksi sebagai sasaran peningkatan | PASS | WIX_UPGRADE_DETECTED memuat {7609C8A3-2349-4606-A02D-652FE121FB78}
+17:27:22 | log MSI menyatakan sukses | PASS | status 0
+17:27:23 | RemoveExistingProducts dijalankan | PASS | produk lama dibongkar
+17:27:23 | entri ARP 1.2.12 | PASS | Seruni 22 Bakery 1.2.12
+17:27:23 | entri ARP 1.2.9 hilang | PASS | kunci 1.2.9 tidak ada lagi
+17:27:23 | tepat satu entri Seruni sesudah peningkatan | PASS | Seruni 22 Bakery 1.2.12 [{1D0B5C27-C2B9-49AD-A675-BA390B33E3E3}]
+17:27:26 | seluruh 393 berkas MSI 1.2.12 identik dengan manifes | PASS | cocok=393 beda=0 hanya-terpasang=0 hanya-paket=0 total=393
+17:27:26 | versi peluncur 1.2.12 | PASS | 1.2.12
+17:27:26 | versi host 1.2.12.0 | PASS | 1.2.12.0
+17:27:26 | Host.dll sama dengan manifes | PASS | hash Host.dll cocok
+17:27:26 | bundel 1.2.12 terpasang, aset lama tersapu | PASS | aset=index-dCrlHoiC.js, index-RvdFb41s.css
+17:27:26 | penanda kanal HKLM milik MSI | PASS | Channel=msi Version=1.2.12 InstallDir=C:\Program Files\Seruni 22 Bakery\
+17:27:27 | pintasan menunjuk instalasi 1.2.12 | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+17:27:31 | host hasil peningkatan menjawab /health | PASS | health 200
+17:27:31 | health melaporkan 1.2.12 | PASS | version=1.2.12
+17:27:32 | sandi dari 1.2.9 masih berlaku di 1.2.12 | PASS | login dengan sandi hasil ganti berhasil
+17:27:32 | status wajib-ganti-sandi tidak menyala lagi | PASS | mustChangePassword=False
+17:27:32 | produk dari 1.2.9 terbaca utuh di 1.2.12 | PASS | id=1 name=Roti Uji 1212 harga=15000
+17:27:33 | merek dari 1.2.9 masih tersimpan | PASS | name=Toko Uji Sandbox 1212
+17:27:33 | endpoint /api/brand anonim 4 kunci | PASS | 4 kunci
+17:27:33 | logo bisa dipasang di 1.2.12 hasil peningkatan | PASS | logo kembali sama persis
+17:27:33 | peningkatan periksa-diri basis data: 0 gagal | PASS | 9 pemeriksaan, 0 gagal
+17:27:33 | peningkatan skema terpasang 18 | PASS | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+Exception calling "ReadAllBytes" with "1" argument(s): "The process cannot access the file 
+'C:\share\bukti\host-1212.log' because it is being used by another process."
+At C:\share\uji-1212.ps1:86 char:3
++   $b = [IO.File]::ReadAllBytes($path)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+Exception calling "ReadAllBytes" with "1" argument(s): "The process cannot
+access the file 'C:\share\bukti\host-1212.log' because it is being used by
+another process."
+At C:\share\uji-1212.ps1:86 char:3
++   $b = [IO.File]::ReadAllBytes($path)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+
+Exception calling "GetString" with "1" argument(s): "Array cannot be null.
+Parameter name: bytes"
+At C:\share\uji-1212.ps1:93 char:10
++   return [Text.Encoding]::UTF8.GetString($b)
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+Exception calling "GetString" with "1" argument(s): "Array cannot be null.
+Parameter name: bytes"
+At C:\share\uji-1212.ps1:93 char:10
++   return [Text.Encoding]::UTF8.GetString($b)
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+
+Exception calling "Matches" with "2" argument(s): "Value cannot be null.
+Parameter name: input"
+At C:\share\uji-1212.ps1:397 char:1
++ $migrasiBaru = ([regex]::Matches((Baca-Teks $outHost2), 'Migrasi \d+  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+Exception calling "Matches" with "2" argument(s): "Value cannot be null.
+Parameter name: input"
+At C:\share\uji-1212.ps1:397 char:1
++ $migrasiBaru = ([regex]::Matches((Baca-Teks $outHost2), 'Migrasi \d+  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+
+17:27:35 | tidak ada migrasi baru di atas skema 18 | FAIL | migrasi dijalankan x, seharusnya 0
+17:27:45 | emulator ESC/POS loopback siap di port 9100 | PASS | listener aktif
+17:27:45 | pengaturan escpos-raw tersimpan | PASS | mode=escpos-raw
+17:27:45 | cetak uji diterima host hasil peningkatan | PASS | jobId=1
+17:27:45 | emulator menerima byte cetak | PASS | 635 bita
+17:27:45 | struk diawali ESC @ | PASS | 0x1B 0x40
+17:27:45 | nominal contoh struk Rp 30.000 | PASS | baris "2 x Rp 15.000 ... Rp 30.000" ada
+17:27:46 | nominal lama Rp 300 tidak dikirim lagi | PASS | tidak ada "Rp 300"
+17:27:46 | struk diakhiri ESC d 3 | PASS | 0x1B 0x64 0x03
+17:27:46 | tidak ada perintah potong saat cut=0 | PASS | GS V tidak dikirim
+17:27:46 | status perangkat melaporkan mode escpos-raw | PASS | mode=escpos-raw
+17:27:46 | status perangkat melaporkan tujuan tcp | PASS | tujuan=tcp://127.0.0.1:9100
+17:27:46 | riwayat cetak mencatat pekerjaan uji berstatus Printed | PASS | status=Printed kind=Test
+17:27:46 | riwayat cetak mencatat tujuan tcp | PASS | printer=tcp://127.0.0.1:9100
+17:27:46 | host dihentikan | INFO | Stop-Process
+17:27:52 | pilihan escpos-raw bertahan setelah host di-restart | PASS | mode=escpos-raw tujuan=tcp://127.0.0.1:9100
+17:27:52 | host dihentikan | INFO | Stop-Process
+17:27:55 | basis data tetap ada setelah dipakai 1.2.12 | PASS | uji.db 4096 bita
+17:30:02 | MSI 1.2.9 ditolak di atas 1.2.12 | PASS | exit 1603
+17:30:02 | log penolakan menyebut alasan turun versi | PASS | syarat turun versi tercatat
+17:30:02 | versi terpasang tetap 1.2.12 | PASS | 1.2.12
+17:30:10 | copot senyap MSI 1.2.12 | PASS | exit 0
+17:30:13 | folder instalasi MSI hilang | PASS | folder program terhapus
+17:30:13 | pintasan MSI hilang | PASS | Start Menu dan Desktop publik terhapus
+17:30:13 | tidak ada entri ARP tersisa | PASS | daftar program bersih
+17:30:13 | penanda HKLM ikut terhapus | PASS | HKLM Software\Seruni22Bakery hilang
+17:30:13 | data di luar folder program tetap utuh | PASS | uji.db dan uji.key masih ada setelah copot
+17:30:28 | pasang senyap EXE 1.2.12 | PASS | exit 0
+17:30:31 | 393 berkas EXE 1.2.12 identik dengan manifes | PASS | cocok=393 beda=0 hanya-terpasang=4 hanya-paket=0 total=397
+17:30:32 | versi peluncur EXE 1.2.12 | PASS | 1.2.12
+17:30:32 | versi host EXE 1.2.12.0 | PASS | 1.2.12.0
+17:30:32 | penanda kanal HKCU milik EXE | PASS | Channel=exe Version=1.2.12 InstallDir=C:\SeruniExe1212
+17:30:32 | pintasan per-pengguna menunjuk folder uji | FAIL | pintasan per-pengguna salah
+17:30:32 | entri ARP EXE 1.2.12 | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.12
+17:30:36 | host dari folder EXE menjawab /health | PASS | health 200
+17:30:36 | health EXE melaporkan 1.2.12 | PASS | version=1.2.12
+17:30:36 | SPA EXE memuat bundel 1.2.12 | PASS | status 200
+17:30:37 | login bawaan pada basis data EXE | PASS | token diterima
+17:30:39 | ganti sandi pada basis data EXE | PASS | login dengan sandi baru berhasil
+17:30:39 | EXE periksa-diri basis data: 0 gagal | PASS | 9 pemeriksaan, 0 gagal
+17:30:39 | EXE skema terpasang 18 | PASS | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+Exception calling "ReadAllBytes" with "1" argument(s): "The process cannot access the file 
+'C:\share\bukti\host-exe-1212.log' because it is being used by another process."
+At C:\share\uji-1212.ps1:86 char:3
++   $b = [IO.File]::ReadAllBytes($path)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+Exception calling "ReadAllBytes" with "1" argument(s): "The process cannot
+access the file 'C:\share\bukti\host-exe-1212.log' because it is being used by
+another process."
+At C:\share\uji-1212.ps1:86 char:3
++   $b = [IO.File]::ReadAllBytes($path)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : IOException
+
+Exception calling "GetString" with "1" argument(s): "Array cannot be null.
+Parameter name: bytes"
+At C:\share\uji-1212.ps1:93 char:10
++   return [Text.Encoding]::UTF8.GetString($b)
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+Exception calling "GetString" with "1" argument(s): "Array cannot be null.
+Parameter name: bytes"
+At C:\share\uji-1212.ps1:93 char:10
++   return [Text.Encoding]::UTF8.GetString($b)
++          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+
+Exception calling "Matches" with "2" argument(s): "Value cannot be null.
+Parameter name: input"
+At C:\share\uji-1212.ps1:524 char:1
++ $migrasiExe = ([regex]::Matches((Baca-Teks $outHost3), 'Migrasi \d+ d ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+Exception calling "Matches" with "2" argument(s): "Value cannot be null.
+Parameter name: input"
+At C:\share\uji-1212.ps1:524 char:1
++ $migrasiExe = ([regex]::Matches((Baca-Teks $outHost3), 'Migrasi \d+ d ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
+    + FullyQualifiedErrorId : ArgumentNullException
+
+17:30:41 | basis data EXE baru menjalankan 18 migrasi | FAIL | migrasi=
+17:30:41 | host dihentikan | INFO | Stop-Process
+17:30:46 | EXE 1.2.12 menolak dipasang bila versi lebih baru tercatat | PASS | exit 1
+17:30:46 | log penolakan EXE menyebut versi lebih baru | FAIL | alasan versi tidak tercatat
+17:30:46 | EXE 1.2.12 tetap terpasang | PASS | 1.2.12
+17:30:46 | penanda versi dikembalikan ke 1.2.12 | PASS | Version=1.2.12
+17:32:55 | MSI 1.2.12 ditolak selama EXE terpasang | PASS | exit 1603
+17:32:55 | log MSI menyebut kanal EXE | PASS | alasan kanal tercatat
+17:32:55 | tidak ada folder MSI setelah penolakan | PASS | folder Program Files tidak dibuat
+17:32:56 | tidak ada entri ARP MSI setelah penolakan | PASS | ARP MSI tidak ada
+17:32:56 | EXE tetap satu-satunya instalasi | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.12 [{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1]
+17:33:01 | copot senyap EXE 1.2.12 | PASS | exit 0
+17:33:06 | folder EXE hilang | PASS | folder program EXE terhapus
+17:33:06 | pintasan EXE hilang | PASS | pintasan per-pengguna terhapus
+17:33:06 | entri ARP EXE hilang | PASS | ARP EXE terhapus
+17:33:06 | penanda HKCU EXE hilang | PASS | Channel EXE terhapus
+17:33:06 | folder data pengguna tetap ada | PASS | penanda-data.txt masih ada
+17:33:06 | berkas basis data pengguna tetap ada | PASS | seruni22bakery.db penanda masih ada
+17:33:06 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+17:33:06 | rekap | FAIL | lulus=100 gagal=5 total=105 minimal=80
+**********************
+Windows PowerShell transcript end
+End time: 20261101173306
+**********************

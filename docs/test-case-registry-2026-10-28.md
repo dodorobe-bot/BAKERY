@@ -48,7 +48,7 @@ Dibuat 2026-10-28 dari eksekusi nyata, bukan dari daftar niat.
 | TC-APP-026 | PosDeviceServiceTests | `SimpanPengaturan_LebarTidakDidukung_Ditolak(lebar: "57")` | PASS |
 | TC-APP-027 | PosDeviceServiceTests | `SimpanPengaturan_LebarTidakDidukung_Ditolak(lebar: "80.5")` | PASS |
 | TC-APP-028 | PosDeviceServiceTests | `SimpanPengaturan_LebarTidakDidukung_Ditolak(lebar: "")` | PASS |
-| TC-APP-029 | PosDeviceServiceTests | `SimpanPengaturan_ModeEscPosBelumTersedia_Ditolak` | PASS |
+| TC-APP-029 | PosDeviceServiceTests | `SimpanPengaturan_ModeEscPosTanpaAlamat_Ditolak` (nama 2026-10-28: `..._ModeEscPosBelumTersedia_Ditolak`; diganti 2026-11-01 saat mode `escpos-raw` dibuka) | PASS |
 | TC-APP-030 | PosDeviceServiceTests | `SimpanPengaturan_PrinterTidakTerpasang_Ditolak` | PASS |
 | TC-APP-031 | PosDeviceServiceTests | `SimpanPengaturan_Sah_TersimpanDanTerbacaUlang` | PASS |
 | TC-APP-032 | PosDeviceServiceTests | `PulihkanJobMenggantung_MemakaiBatasWaktuNyata` | PASS |
@@ -247,7 +247,7 @@ Dibuat 2026-10-28 dari eksekusi nyata, bukan dari daftar niat.
 | TC-UI-016 | Tests | `Batch8DeviceApiTests.Kasir_BolehMelihatStatusRingkasYangDibutuhkanLayarPenjualan` | PASS |
 | TC-UI-017 | Tests | `Batch8DeviceApiTests.LebarKertasTidakDidukung_DitolakDanNilaiLamaTetap` | PASS |
 | TC-UI-018 | Tests | `Batch8DeviceApiTests.KunciPengaturanAsing_Ditolak` | PASS |
-| TC-UI-019 | Tests | `Batch8DeviceApiTests.ModeEscPosLangsung_DitolakKarenaBelumTerverifikasi` | PASS |
+| TC-UI-019 | Tests | `Batch8DeviceApiTests.ModeEscPosTanpaAlamat_DitolakKarenaBelumLengkap` (nama 2026-10-28: `ModeEscPosLangsung_DitolakKarenaBelumTerverifikasi`; diganti 2026-11-01) | PASS |
 | TC-UI-020 | Tests | `Batch8DeviceApiTests.PrinterTidakTerpasang_Ditolak409TanpaMengubahPengaturan` | PASS |
 | TC-UI-021 | Tests | `Batch8DeviceApiTests.CetakTanpaPrinter_PesananTetapUtuhDanTidakAdaPekerjaanDibuat` | PASS |
 | TC-UI-022 | Tests | `Batch8DeviceApiTests.CetakUjiTanpaPrinter_DitolakDanTidakMencatatPekerjaan` | PASS |
@@ -559,5 +559,12 @@ Dibuat 2026-10-28 dari eksekusi nyata, bukan dari daftar niat.
 | TC-DEV-001 | Perangkat | Printer thermal 80 mm: cetak struk, kertas habis, printer mati | BLOCKED | Tidak ada perangkat |
 | TC-DEV-002 | Perangkat | Pemindai barcode USB (keyboard wedge) | BLOCKED | Tidak ada perangkat |
 | TC-DEV-003 | Perangkat | Laci uang lewat printer | BLOCKED | Menunggu printer & pemindai lulus |
+| TC-ESC-001 | Perangkat (2026-11-01) | ESC/POS raw: byte per byte yang tiba di socket (`ESC @`, baris `LF`, `ESC d 3`, `GS V 0` hanya saat dihidupkan; `ESC a`/`ESC E`/`ESC t`/`ESC p` dipastikan tidak ada) | PASS (emulator) | `EscPosRawPrinterTests` terhadap `LoopbackEscPosEmulator`; **bukan printer fisik** |
+| TC-ESC-002 | Perangkat (2026-11-01) | Penjaga alamat: hanya loopback/jaringan privat, IP sebagian ditolak, hostname diperiksa ulang terhadap DNS saat mencetak, port 1–65535, muatan > 65 536 byte ditolak sebelum socket dibuka | PASS (emulator) | `EscPosAlamatTests` + `PosDeviceServiceTests` + `Batch8DeviceApiTests` |
+| TC-ESC-003 | Perangkat (2026-11-01) | AlurHTTP mode `escpos-raw`: struk uji & struk pesanan tiba, printer tidak menjawab → 409 + pekerjaan `Failed` dengan pesanan utuh, mode driver tidak membuka socket | PASS (emulator) | `Batch8DeviceApiTests`, filter `FullyQualifiedName~EscPos` = 19 lulus |
+| TC-ESC-004 | Perangkat | Printer kasir ESC/POS fisik di jaringan toko (keluaran kertas, potongan, kertas habis, printer mati) | BLOCKED | Tidak ada perangkat di mesin ini; tetap menjadi syarat verdict |
+| TC-ESC-005 | Perangkat (2026-11-01) | Pesan galat ESC/POS berbahasa Indonesia: sambungan ditolak → "…menolak sambungan…", nama host tak ter-resolution → "…tidak dikenali jaringan…"; teks `SocketException` sistem tidak boleh jadi satu-satunya penjelasan (tersimpan permanen di riwayat cetak) | PASS | `EscPosRawPrinterTests.SambunganDitolak_PesanBahasaIndonesiaBukanTeksSistem` + `NamaHostTidakTerResolution_PesanMenyuruhPakaiAlamatIp`; nama tes lama `SambunganDitolak_GalatDisampaikanKePemanggil` diganti 2026-11-01 |
+| TC-ESC-006 | Peramban (2026-11-01) | Layar Perangkat Kasir dijalankan di peramban terhadap socket nyata: struk uji 636 byte dan struk pesanan 928 byte tiba di `127.0.0.1:9111`, riwayat menampilkan `tcp://127.0.0.1:9111`, printer dimatikan → banner gagal + pesanan utuh, dan catatan "Pilihan di layar ini belum disimpan" muncul saat layar berbeda dari keadaan tersimpan | PASS | Host uji + DB scratch `C:\tmp\escpos-ui.db` port 5177; skrip pendengar `C:\tmp\escpos-listener.mjs`. **Berkas byte mentah run ini (`C:\tmp\escpos-diterima.bin`, `C:\tmp\escpos-listener.log`) terhapus saat perkakas uji dijalankan ulang dan nama itu lalu diisi run lain, jadi angka byte di atas tercatat dari pengamatan langsung, bukan dari berkas yang masih ada — lihat `docs/pos-hardware.md` §5b.1; byte yang bisa dibuka ulang ada di TC-ESC-007.** **Emulator, bukan printer fisik** |
+| TC-ESC-007 | Perkakas (2026-11-01) | `scripts/pos-physical-check.ps1` cabang `escpos-raw`: mode Print (dua pekerjaan `Printed` ke `tcp://127.0.0.1:9111`, pesanan tetap 2500000, 1572 byte = struk uji 636 + struk pesanan 936 tiba) dan mode Failure dengan pendengar dimatikan (HTTP 409, dua pekerjaan `Failed`, `galat=` berbahasa Indonesia, pesanan tidak berubah); regresi jalur driver `-SkipPrint` dan `-AllowPrint` tetap PASS (pada `-AllowPrint` spooler menerima dua pekerjaan `Printed` — itu penerimaan antrean, bukan bukti kertas); argumen tidak sah keluar kode 2 tanpa menyentuh apa pun, diuji dua-duanya: `escpos-raw` tanpa `-EscPosHost` dan `windows-driver` tanpa `-PrinterName` | PASS | `%TEMP%\seruni-pos-fisik-20261101-104601\bukti.txt`, `...-105531\bukti.txt`, `...-104632\bukti.txt`, `...-140257\bukti.txt`; byte utuh di `C:\tmp\escpos-bukti\escpos-diterima.bin`. **Loopback, bukan printer fisik — TC-ESC-004 tetap BLOCKED** |
 
 Keterangan: PASS = dijalankan dan lulus dengan bukti; PASS (terukur) = angka nyata tanpa ambang; NOT RUN = belum dijalankan; BLOCKED = tidak dapat dijalankan di lingkungan ini.

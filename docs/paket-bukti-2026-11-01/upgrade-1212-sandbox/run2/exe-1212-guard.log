@@ -1,0 +1,18 @@
+﻿2026-11-01 17:48:43.401   Log opened. (Time zone: UTC+07:00)
+2026-11-01 17:48:43.402   Setup version: Inno Setup version 6.7.3
+2026-11-01 17:48:43.402   Original Setup EXE: C:\share\Seruni22Bakery_Setup_v1.2.12.exe
+2026-11-01 17:48:43.404   Setup command line: /SL5="$40050,41386045,909312,C:\share\Seruni22Bakery_Setup_v1.2.12.exe" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=C:\share\bukti\exe-1212-guard.log /DIR=C:\SeruniExe1212 
+2026-11-01 17:48:43.405   Windows version: 10.0.26100
+2026-11-01 17:48:43.405   Windows architecture: x64 (64-bit)
+2026-11-01 17:48:43.405   Machine types supported by system: x86 x64
+2026-11-01 17:48:43.407   User privileges: Administrative
+2026-11-01 17:48:43.407   Administrative install mode: No
+2026-11-01 17:48:43.407   Install mode root key: HKEY_CURRENT_USER
+2026-11-01 17:48:43.407   64-bit install mode: No
+2026-11-01 17:48:43.407   RedirectionGuard status for current process: Enabled in enforcing mode
+2026-11-01 17:48:43.407   Created protected temporary directory: C:\Users\WDAGUtilityAccount\AppData\Local\Temp\is-5NLKD48D8A.tmp
+2026-11-01 17:48:43.490   Pagar kanal: penanda HKLM Software\Seruni22Bakery\Channel = msi ditemukan.
+2026-11-01 17:48:43.490   InitializeSetup returned False; aborting.
+2026-11-01 17:48:43.490   Got EAbort exception.
+2026-11-01 17:48:43.490   Deinitializing Setup.
+2026-11-01 17:48:43.490   Log closed.

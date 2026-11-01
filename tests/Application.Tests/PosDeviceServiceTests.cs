@@ -84,10 +84,12 @@ public class PosDeviceServiceTests
         public string NamaAdapter => "palsu";
         public Exception? Gagal { get; set; }
         public List<string> Dicetak { get; } = [];
+        public List<PrintTarget> Tujuan { get; } = [];
 
-        public Task CetakAsync(string printerName, string isi, int paperWidthMm, CancellationToken ct)
+        public Task CetakAsync(PrintTarget target, string isi, CancellationToken ct)
         {
             if (Gagal is not null) throw Gagal;
+            Tujuan.Add(target);
             Dicetak.Add(isi);
             return Task.CompletedTask;
         }
@@ -293,15 +295,181 @@ public class PosDeviceServiceTests
     }
 
     [Fact]
-    public async Task SimpanPengaturan_ModeEscPosBelumTersedia_Ditolak()
+    public async Task SimpanPengaturan_ModeEscPosTanpaAlamat_Ditolak()
+    {
+        var (layanan, _, _, setelan, _) = Buat();
+
+        var hasil = await layanan.SimpanPengaturanAsync(
+            new Dictionary<string, string> { [DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw }, userId: 1);
+
+        hasil.Success.Should().BeFalse();
+        hasil.ErrorCode.Should().Be(ErrorCodes.ValidationFailed);
+        hasil.ErrorMessage.Should().Contain("belum diisi");
+        setelan.Nilai.Should().NotContainKey(DeviceSettings.KunciMode,
+            "mode yang belum lengkap tidak boleh tersimpan separuh");
+    }
+
+    [Theory]
+    [InlineData("8.8.8.8")]
+    [InlineData("100.100.100.100")]
+    [InlineData("999.1.1.1")]
+    [InlineData("http://192.168.1.50")]
+    [InlineData("192.168.1.50:9100")]
+    [InlineData("")]
+    public async Task SimpanPengaturan_AlamatEscPosTidakLolos_Ditolak(string host)
+    {
+        var (layanan, _, _, setelan, _) = Buat();
+
+        var hasil = await layanan.SimpanPengaturanAsync(new Dictionary<string, string>
+        {
+            [DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw,
+            [DeviceSettings.KunciEscPosHost] = host,
+        }, userId: 1);
+
+        hasil.Success.Should().BeFalse($"alamat '{host}' tidak boleh diterima");
+        setelan.Nilai.Should().NotContainKey(DeviceSettings.KunciEscPosHost);
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("65536")]
+    [InlineData("abc")]
+    [InlineData("9100.5")]
+    public async Task SimpanPengaturan_PortEscPosTidakSah_Ditolak(string port)
+    {
+        var (layanan, _, _, setelan, _) = Buat();
+
+        var hasil = await layanan.SimpanPengaturanAsync(new Dictionary<string, string>
+        {
+            [DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw,
+            [DeviceSettings.KunciEscPosHost] = "192.168.1.50",
+            [DeviceSettings.KunciEscPosPort] = port,
+        }, userId: 1);
+
+        hasil.Success.Should().BeFalse();
+        setelan.Nilai.Should().NotContainKey(DeviceSettings.KunciEscPosPort);
+    }
+
+    [Fact]
+    public async Task SimpanPengaturan_EscPosLengkap_TersimpanDanTerbacaUlang()
     {
         var (layanan, _, _, _, _) = Buat();
 
+        var hasil = await layanan.SimpanPengaturanAsync(new Dictionary<string, string>
+        {
+            [DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw,
+            [DeviceSettings.KunciEscPosHost] = "192.168.1.50",
+            [DeviceSettings.KunciEscPosPort] = "9100",
+            [DeviceSettings.KunciEscPosPotong] = "1",
+        }, userId: 1);
+
+        hasil.Success.Should().BeTrue(hasil.ErrorMessage ?? "");
+        hasil.Data!.Mode.Should().Be(DeviceSettings.ModeEscPosRaw);
+        hasil.Data.EscPosHost.Should().Be("192.168.1.50");
+        hasil.Data.EscPosPort.Should().Be(9100);
+        hasil.Data.EscPosPotong.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task SimpanPengaturan_ModeLain_DitolakDenganPesanKeduaMode()
+    {
+        var (layanan, _, _, setelan, _) = Buat();
+
         var hasil = await layanan.SimpanPengaturanAsync(
-            new Dictionary<string, string> { [DeviceSettings.KunciMode] = "escpos-raw" }, userId: 1);
+            new Dictionary<string, string> { [DeviceSettings.KunciMode] = "bluetooth" }, userId: 1);
 
         hasil.ErrorCode.Should().Be(ErrorCodes.ValidationFailed);
-        hasil.ErrorMessage.Should().Contain("windows-driver");
+        hasil.ErrorMessage.Should().Contain("windows-driver").And.Contain("escpos-raw");
+        setelan.Nilai.Should().NotContainKey(DeviceSettings.KunciMode);
+    }
+
+    [Fact]
+    public async Task CetakStruk_EscPos_TujuanMemakaiAlamatBukanNamaPrinterWindows()
+    {
+        var (layanan, antrean, printer, setelan, _) = Buat();
+        setelan.Nilai[DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw;
+        setelan.Nilai[DeviceSettings.KunciEscPosHost] = "192.168.1.50";
+        setelan.Nilai[DeviceSettings.KunciEscPosPort] = "9100";
+        setelan.Nilai[DeviceSettings.KunciEscPosPotong] = "1";
+
+        var hasil = await layanan.CetakStrukAsync(Pesanan(), cetakUlang: false, userId: 3);
+
+        hasil.Berhasil.Should().BeTrue();
+        var tujuan = printer.Tujuan.Single();
+        tujuan.Mode.Should().Be(DeviceSettings.ModeEscPosRaw);
+        tujuan.Host.Should().Be("192.168.1.50");
+        tujuan.Port.Should().Be(9100);
+        tujuan.PotongKertas.Should().BeTrue();
+        antrean.Job.Single().PrinterName.Should().Be("tcp://192.168.1.50:9100",
+            "riwayat harus jujur ke mana byte dikirim");
+    }
+
+    [Fact]
+    public async Task CetakStruk_EscPos_TanpaCekKatalogWindows()
+    {
+        // Printer jaringan tidak ada di registry; daftar printer Windows tidak boleh jadi alasan gagal.
+        var (layanan, _, printer, setelan, katalog) = Buat();
+        katalog.Nama.Clear();
+        setelan.Nilai[DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw;
+        setelan.Nilai[DeviceSettings.KunciEscPosHost] = "127.0.0.1";
+
+        var hasil = await layanan.CetakStrukAsync(Pesanan(), cetakUlang: false, userId: 3);
+
+        hasil.Berhasil.Should().BeTrue(hasil.Pesan ?? "");
+        printer.Tujuan.Single().Port.Should().Be(DeviceSettings.PortEscPosBawaan);
+    }
+
+    [Fact]
+    public async Task CetakStruk_EscPosAlamatBelumLengkap_TidakMembuatPekerjaan()
+    {
+        var (layanan, antrean, printer, setelan, _) = Buat();
+        setelan.Nilai[DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw;
+
+        var hasil = await layanan.CetakStrukAsync(Pesanan(), cetakUlang: false, userId: 3);
+
+        hasil.ErrorCode.Should().Be(ErrorCodes.PrinterNotConfigured);
+        hasil.Pesan.Should().Contain("belum diisi").And.Contain("Transaksi tetap tersimpan");
+        antrean.Job.Should().BeEmpty();
+        printer.Dicetak.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task CetakUji_EscPos_MencatatAlamatPadaStruk()
+    {
+        var (layanan, antrean, printer, setelan, _) = Buat();
+        setelan.Nilai[DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw;
+        setelan.Nilai[DeviceSettings.KunciEscPosHost] = "10.0.0.9";
+
+        var hasil = await layanan.CetakUjiAsync(userId: 3);
+
+        hasil.Berhasil.Should().BeTrue(hasil.Pesan ?? "");
+        antrean.Job.Single().PrinterName.Should().Be("tcp://10.0.0.9:9100");
+        printer.Dicetak.Single().Should().Contain("tcp://10.0.0.9:9100");
+    }
+
+    [Fact]
+    public async Task PantauStatus_EscPos_KatalogKosongBukanKeluhan()
+    {
+        var (layanan, _, _, setelan, katalog) = Buat();
+        katalog.Nama.Clear();
+        setelan.Nilai[DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw;
+        setelan.Nilai[DeviceSettings.KunciEscPosHost] = "192.168.1.50";
+
+        var snapshot = await layanan.GetSnapshotAsync();
+
+        snapshot.Mode.Should().Be(DeviceSettings.ModeEscPosRaw);
+        snapshot.Catatan.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task PantauStatus_EscPos_BelumAdaAlamatMemberiCatatan()
+    {
+        var (layanan, _, _, setelan, _) = Buat();
+        setelan.Nilai[DeviceSettings.KunciMode] = DeviceSettings.ModeEscPosRaw;
+
+        var snapshot = await layanan.GetSnapshotAsync();
+
+        snapshot.Catatan.Should().Contain("Alamat printer ESC/POS belum diisi");
     }
 
     [Fact]

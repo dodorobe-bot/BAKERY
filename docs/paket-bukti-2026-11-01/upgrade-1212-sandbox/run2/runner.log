@@ -1,0 +1,115 @@
+﻿mulai 2026-11-01 17:44:08
+17:44:08 sandbox diluncurkan
+17:46:07 | lingkungan | INFO | Microsoft Windows 11 Enterprise build 26100; pengguna A0EE082B-98FD-4\WDAGUtilityAccount; elevated=True; RAM 1535 MB
+17:46:07 | mesin bersih: tanpa runtime .NET bersama | PASS | C:\Program Files\dotnet tidak ada (publish self-contained)
+17:46:08 | mesin bersih: belum ada instalasi Seruni | PASS | tidak ada folder program dan tidak ada entri ARP
+17:46:08 | mesin bersih: tanpa penanda kanal | PASS | HKCU dan HKLM Software\Seruni22Bakery tidak ada
+17:46:09 | salinan MSI 1.2.9 utuh | PASS | 50391554 byte, SHA256 4CF092CE05CFB0301D2740CC136322135DC9F506A482C807BEA020782052D635
+17:46:09 | salinan MSI 1.2.12 utuh | PASS | 50399748 byte, SHA256 5EE109F9ECE7CD24B4125ADB5F999AEDD8CD90D701A77BB9B2D8E9A8BD8FC859
+17:46:10 | salinan EXE 1.2.9 utuh | PASS | 42662274 byte, SHA256 FD233BE4E4A8441DD2E63349B723466EE4AB803F41E6D6B357B97E05F55143B7
+17:46:10 | salinan EXE 1.2.12 utuh | PASS | 42675344 byte, SHA256 F43F4E8583CC1DF84354039925F45046AAFE93A6F3996B112C80501229A506C1
+17:46:10 | manifes payload 1.2.12 terbaca | PASS | 393 baris
+17:48:27 | pasang senyap MSI 1.2.9 | PASS | exit 0
+17:48:27 | entri ARP 1.2.9 | PASS | Seruni 22 Bakery 1.2.9
+17:48:27 | versi peluncur 1.2.9 | PASS | 1.2.9
+17:48:34 | host 1.2.9 menjawab /health | PASS | health 200
+17:48:35 | health melaporkan 1.2.9 | PASS | version=1.2.9
+17:48:35 | login bawaan admin berhasil di 1.2.9 | PASS | token diterima
+17:48:37 | sandi diganti lalu login sandi baru | PASS | login dengan sandi baru berhasil
+17:48:37 | produk uji dibuat di 1.2.9 | PASS | id=1
+17:48:37 | merek disetel di 1.2.9 | PASS | name=Toko Uji Sandbox 1212
+17:48:37 | kunci /api/brand 1.2.9 | INFO | 4 kunci
+17:48:37 | host dihentikan | INFO | Stop-Process
+17:48:40 | basis data pra-peningkatan terbentuk | PASS | uji.db 4096 bita
+17:48:43 | EXE 1.2.12 menolak dipasang selama MSI 1.2.9 ada | PASS | exit 1
+17:48:43 | log EXE menyebut MSI terdeteksi | PASS | alasan kanal tercatat di log
+17:48:43 | tidak ada folder EXE setelah penolakan | PASS | folder tidak dibuat
+17:48:44 | tidak ada entri ARP EXE setelah penolakan | PASS | ARP EXE tidak ada
+17:48:44 | penolakan tidak menulis penanda HKCU | PASS | Channel EXE tidak ditulis
+17:48:44 | MSI 1.2.9 tetap satu-satunya instalasi | PASS | Seruni 22 Bakery 1.2.9 [{7609C8A3-2349-4606-A02D-652FE121FB78}]
+17:51:06 | peningkatan senyap MSI 1.2.12 | PASS | exit 0
+17:51:06 | produk 1.2.9 terdeteksi sebagai sasaran peningkatan | PASS | WIX_UPGRADE_DETECTED memuat {7609C8A3-2349-4606-A02D-652FE121FB78}
+17:51:06 | log MSI menyatakan sukses | PASS | status 0
+17:51:06 | RemoveExistingProducts dijalankan | PASS | produk lama dibongkar
+17:51:06 | entri ARP 1.2.12 | PASS | Seruni 22 Bakery 1.2.12
+17:51:06 | entri ARP 1.2.9 hilang | PASS | kunci 1.2.9 tidak ada lagi
+17:51:07 | tepat satu entri Seruni sesudah peningkatan | PASS | Seruni 22 Bakery 1.2.12 [{1D0B5C27-C2B9-49AD-A675-BA390B33E3E3}]
+17:51:13 | seluruh 393 berkas MSI 1.2.12 identik dengan manifes | PASS | cocok=393 beda=0 hanya-terpasang=0 hanya-paket=0 total=393
+17:51:13 | versi peluncur 1.2.12 | PASS | 1.2.12
+17:51:13 | versi host 1.2.12.0 | PASS | 1.2.12.0
+17:51:13 | Host.dll sama dengan manifes | PASS | hash Host.dll cocok
+17:51:13 | bundel 1.2.12 terpasang, aset lama tersapu | PASS | aset=index-dCrlHoiC.js, index-RvdFb41s.css
+17:51:13 | penanda kanal HKLM milik MSI | PASS | Channel=msi Version=1.2.12 InstallDir=C:\Program Files\Seruni 22 Bakery\
+17:51:14 | pintasan menunjuk instalasi 1.2.12 | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+17:51:17 | host hasil peningkatan menjawab /health | PASS | health 200
+17:51:17 | health melaporkan 1.2.12 | PASS | version=1.2.12
+17:51:18 | sandi dari 1.2.9 masih berlaku di 1.2.12 | PASS | login dengan sandi hasil ganti berhasil
+17:51:18 | status wajib-ganti-sandi tidak menyala lagi | PASS | mustChangePassword=False
+17:51:18 | produk dari 1.2.9 terbaca utuh di 1.2.12 | PASS | id=1 name=Roti Uji 1212 harga=15000
+17:51:18 | merek dari 1.2.9 masih tersimpan | PASS | name=Toko Uji Sandbox 1212
+17:51:18 | endpoint /api/brand anonim 4 kunci | PASS | 4 kunci
+17:51:18 | logo bisa dipasang di 1.2.12 hasil peningkatan | PASS | logo kembali sama persis
+17:51:18 | peningkatan periksa-diri basis data: 0 gagal | PASS | 9 pemeriksaan, 0 gagal
+17:51:18 | peningkatan skema terpasang 18 | PASS | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+17:51:27 | emulator ESC/POS loopback siap di port 9100 | PASS | listener aktif
+17:51:27 | pengaturan escpos-raw tersimpan | PASS | mode=escpos-raw
+17:51:27 | cetak uji diterima host hasil peningkatan | PASS | jobId=1
+17:51:28 | emulator menerima byte cetak | PASS | 635 bita
+17:51:28 | struk diawali ESC @ | PASS | 0x1B 0x40
+17:51:28 | nominal contoh struk Rp 30.000 | PASS | baris "2 x Rp 15.000 ... Rp 30.000" ada
+17:51:28 | nominal lama Rp 300 tidak dikirim lagi | PASS | tidak ada "Rp 300"
+17:51:28 | struk diakhiri ESC d 3 | PASS | 0x1B 0x64 0x03
+17:51:28 | tidak ada perintah potong saat cut=0 | PASS | GS V tidak dikirim
+17:51:28 | status perangkat melaporkan mode escpos-raw | PASS | mode=escpos-raw
+17:51:28 | status perangkat melaporkan tujuan tcp | PASS | tujuan=tcp://127.0.0.1:9100
+17:51:28 | riwayat cetak mencatat pekerjaan uji berstatus Printed | PASS | status=Printed kind=Test
+17:51:28 | riwayat cetak mencatat tujuan tcp | PASS | printer=tcp://127.0.0.1:9100
+17:51:28 | host dihentikan | INFO | Stop-Process
+17:51:33 | pilihan escpos-raw bertahan setelah host di-restart | PASS | mode=escpos-raw tujuan=tcp://127.0.0.1:9100
+17:51:33 | host dihentikan | INFO | Stop-Process
+17:51:36 | tidak ada migrasi baru di atas skema 18 | PASS | migrasi dijalankan x0 (diharapkan 0)
+17:51:37 | basis data tetap ada setelah dipakai 1.2.12 | PASS | uji.db 4096 bita
+17:53:42 | MSI 1.2.9 ditolak di atas 1.2.12 | PASS | exit 1603
+17:53:42 | log penolakan menyebut alasan turun versi | PASS | syarat turun versi tercatat
+17:53:43 | versi terpasang tetap 1.2.12 | PASS | 1.2.12
+17:53:49 | copot senyap MSI 1.2.12 | PASS | exit 0
+17:53:53 | folder instalasi MSI hilang | PASS | folder program terhapus
+17:53:53 | pintasan MSI hilang | PASS | Start Menu dan Desktop publik terhapus
+17:53:53 | tidak ada entri ARP tersisa | PASS | daftar program bersih
+17:53:53 | penanda HKLM ikut terhapus | PASS | HKLM Software\Seruni22Bakery hilang
+17:53:53 | data di luar folder program tetap utuh | PASS | uji.db dan uji.key masih ada setelah copot
+17:54:05 | pasang senyap EXE 1.2.12 | PASS | exit 0
+17:54:07 | 393 berkas EXE 1.2.12 identik dengan manifes | PASS | cocok=393 beda=0 hanya-terpasang=4 hanya-paket=0 total=397
+17:54:07 | versi peluncur EXE 1.2.12 | PASS | 1.2.12
+17:54:07 | versi host EXE 1.2.12.0 | PASS | 1.2.12.0
+17:54:07 | penanda kanal HKCU milik EXE | PASS | Channel=exe Version=1.2.12 InstallDir=C:\SeruniExe1212
+17:54:07 | pintasan per-pengguna menunjuk folder uji | PASS | target C:\SeruniExe1212\Seruni22Bakery.exe
+17:54:07 | entri ARP EXE 1.2.12 | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.12
+17:54:11 | host dari folder EXE menjawab /health | PASS | health 200
+17:54:11 | health EXE melaporkan 1.2.12 | PASS | version=1.2.12
+17:54:11 | SPA EXE memuat bundel 1.2.12 | PASS | status 200
+17:54:12 | login bawaan pada basis data EXE | PASS | token diterima
+17:54:13 | ganti sandi pada basis data EXE | PASS | login dengan sandi baru berhasil
+17:54:13 | EXE periksa-diri basis data: 0 gagal | PASS | 9 pemeriksaan, 0 gagal
+17:54:13 | EXE skema terpasang 18 | PASS | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+17:54:13 | host dihentikan | INFO | Stop-Process
+17:54:16 | basis data EXE baru menjalankan 18 migrasi | PASS | 18 migrasi
+17:54:19 | EXE 1.2.12 menolak dipasang bila versi lebih baru tercatat | PASS | exit 1
+17:54:19 | log penolakan EXE menyebut versi lebih baru | PASS | alasan versi tercatat
+17:54:19 | EXE 1.2.12 tetap terpasang | PASS | 1.2.12
+17:54:19 | penanda versi dikembalikan ke 1.2.12 | PASS | Version=1.2.12
+17:56:27 | MSI 1.2.12 ditolak selama EXE terpasang | PASS | exit 1603
+17:56:27 | log MSI menyebut kanal EXE | PASS | alasan kanal tercatat
+17:56:27 | tidak ada folder MSI setelah penolakan | PASS | folder Program Files tidak dibuat
+17:56:27 | tidak ada entri ARP MSI setelah penolakan | PASS | ARP MSI tidak ada
+17:56:27 | EXE tetap satu-satunya instalasi | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.12 [{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1]
+17:56:32 | copot senyap EXE 1.2.12 | PASS | exit 0
+17:56:37 | folder EXE hilang | PASS | folder program EXE terhapus
+17:56:37 | pintasan EXE hilang | PASS | pintasan per-pengguna terhapus
+17:56:37 | entri ARP EXE hilang | PASS | ARP EXE terhapus
+17:56:37 | penanda HKCU EXE hilang | PASS | Channel EXE terhapus
+17:56:37 | folder data pengguna tetap ada | PASS | penanda-data.txt masih ada
+17:56:37 | berkas basis data pengguna tetap ada | PASS | seruni22bakery.db penanda masih ada
+17:56:38 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+17:56:38 | rekap | PASS | lulus=105 gagal=0 total=105
+17:56:44 selesai 2026-11-01 17:56:44 ok=True

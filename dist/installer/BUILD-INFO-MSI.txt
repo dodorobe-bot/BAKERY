@@ -1,89 +1,95 @@
-Versi          : 1.2.9 (skema basis data 18)
-MSI            : D:\bakery-desktop\dist\installer\Seruni22Bakery_v1.2.9_x64.msi
-Ukuran         : 50391554 byte
-SHA-256        : 4cf092ce05cfb0301d2740cc136322135dc9f506a482c807bea020782052d635
+Versi          : 1.2.10 (skema basis data 18)
+MSI            : D:\bakery-desktop\dist\installer\Seruni22Bakery_v1.2.10_x64.msi
+Ukuran         : 50395652 byte
+SHA-256        : 872a3c39fe6f906dd4ced13ca434fdb7351b266147dbbd26e31a4384fff4b4af
 Tanda tangan   : NotSigned (belum ada sertifikat code signing)
                  Pembelian sertifikat ditunda sampai paket didistribusikan ke
                  pihak lain (keputusan 2026-10-29). Jalur tanda tangan siap:
                  scripts\sign-paket.ps1 -Thumbprint <40 hex> (atau -PfxPath <berkas>).
                  Setelah ditandatangani, SHA-256 di berkas ini dan SHA256SUMS.txt
                  ikut berubah; jalankan ulang uji sandbox.
-Dibuat         : 2026-10-31 07:06:25 +07:00
+Dibuat         : 2026-11-01 03:57 +07:00
 
 Sumber definisi : build\installer\wix\Package.wxs
-  - WiX Toolset 5.0.2 (dotnet tool), -ext WixToolset.UI.wixext
-  - Version dari define ProductVersion (1.2.9), bukan angka tetap
+  - WiX Toolset 5.0.2 (dotnet tool), -ext WixToolset.UI.wixext, -arch x64
+  - Version dari define ProductVersion (1.2.10), bukan angka tetap
   - Payload: dist\publish-single (self-contained win-x64) + frontend\dist di wwwroot
-  - 393 berkas, 135.851.669 bita tak terkompresi di dalam kabinet
+  - 393 berkas, 135.853.838 bita tak terkompresi di sumber payload
 
-Perubahan 1.2.9 : seluruh temuan audit tahap kedua (BUG-001 s.d. BUG-031) ditutup.
-  Ringkasnya: penutupan jurnal HPP/transfer/opname, stok per lokasi pada penerimaan,
-  biaya retur, perlindungan balapan pesanan/pembelian, otorisasi dan paparan data,
-  integritas basis data, perbaikan antarmuka, dan pagar kanal instalasi. Skema naik
-  ke 18 lewat migrasi 018_CostOfGoodsAndInventoryJournals.sql.
-  Rincian: docs\verifikasi-paket-1.2.9-2026-10-31.md
+Perubahan 1.2.10 : enam sisa cacat ditutup di atas 1.2.9. Lima kebocoran jam toko
+  (cap waktu dan nama berkas ekspor, rentang bawaan /api/export, penomoran
+  ORD/SPK/PO/RTR, rekap penjualan dan laporan harian, default tanggal di layar
+  Keuangan dan Penjualan) dan satu cacat peluncur (perintah pemeliharaan
+  --backup/--restore ditahan pagar "instalasi lain berjalan"). Skema tetap 18,
+  tidak ada migrasi baru. Rincian: CHANGELOG.md bagian [1.2.10].
 
 Perintah build:
-  powershell -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.9
-  powershell -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.9
+  powershell -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -Version 1.2.10
+  powershell -ExecutionPolicy Bypass -File scripts\build-msi.ps1 -Version 1.2.10
   (dijalankan dari D:\bakery-desktop; build-installer mengisi dist\publish-single,
   build-msi hanya membungkus folder itu. Keduanya memeriksa versi vs csproj host,
   mengunci -arch x64, lalu mencetak ukuran/SHA-256/status tanda tangan.)
 
-Identitas paket (dibaca dari tabel Property MSI, 2026-10-31)
+Identitas paket (dibaca dari hasil decompilasi MSI, 2026-11-01)
   ProductName    : Seruni 22 Bakery
-  ProductVersion : 1.2.9
+  ProductVersion : 1.2.10
   Manufacturer   : Seruni 22
-  UpgradeCode    : B975F792-6F80-4D56-8A64-D274A044DCF1 (dipertahankan antar versi)
-  ProductCode    : {7609C8A3-2349-4606-A02D-652FE121FB78}
-                   (dibuat otomatis WiX per build; ProductCode 1.2.7
-                   {A0AEA895-FC09-4312-8E24-8C9E0FEABDC8} TIDAK berlaku untuk
+  UpgradeCode    : B975F792-6F80-4D56-8A64-D274A044DCF1 (dipertahankan antar versi,
+                   sama dengan 1.2.4 s.d. 1.2.9 sehingga peningkatan dikenali)
+  ProductCode    : {F74073DE-74DE-47CB-B9A7-358F0DE5E8FF}
+                   (dibuat otomatis WiX per build; ProductCode 1.2.9
+                   {7609C8A3-2349-4606-A02D-652FE121FB78} TIDAK berlaku untuk
                    paket ini. Copot/pindai harus memakai ProductCode di atas
                    atau nama "Seruni 22 Bakery")
   Scope          : perMachine (ALLUSERS=1, memasang ke Program Files, butuh hak administrator)
   UI             : WixUI_Minimal
 
 Pagar yang terkandung di paket ini
-  - LaunchCondition "NOT WIX_DOWNGRADE_DETECTED": versi lama tidak bisa dipasang
-    di atas versi lebih baru.
+  - MajorUpgrade dengan pesan "Versi yang lebih baru dari Seruni 22 Bakery sudah
+    terpasang": versi lama tidak bisa dipasang di atas versi lebih baru.
   - LaunchCondition "NOT (EXECHANNEL = ""exe"") AND NOT EXEINSTALLED": MSI menolak
     dipasang selama kanal EXE terpasang, baik yang menulis penanda HKCU
     Software\Seruni22Bakery\Channel=exe maupun yang hanya meninggalkan entri
     "Program dan Fitur" {5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1.
-  - Komponen ChannelMarker menulis HKLM Software\Seruni22Bakery (Channel=msi,
-    Version=1.2.9, InstallDir) supaya installer EXE bisa mendeteksi kanal MSI.
+  - Komponen ChannelMarker (Guid {3A0F4B1C-6E29-4C47-9D2B-7B5E1C8F2A64}) menulis
+    HKLM Software\Seruni22Bakery (Channel=msi, Version=1.2.10, InstallDir) supaya
+    installer EXE bisa mendeteksi kanal MSI.
 
-Bukti uji paket ini (mesin ini, 2026-10-31)
-  - Ekstraksi administratif (msiexec /a) ke C:\tmp\msi-129: 393 berkas aplikasi.
-  - SHA-256 seluruh 393 berkas dibandingkan dengan dist\publish-single:
-    0 berbeda, 0 berkas yang hanya ada di satu sisi. Hash berkas kunci:
-      Seruni22Bakery.Host.dll  eee0641f2816436741e98c00f378b284e96e77766b378d7884d09b3fc1c828db
-      Seruni22Bakery.exe       4b3ab1127b981c6b8767c5c2b5adbf6c8f063f27bc8db52c70fd7f7cb266ea65
-      wwwroot\index.html       975b00e806d2d76aad41badec6a11059147c1f2690a0b401380ec2870bc6789c
-  - Versi berkas dari payload: host 1.2.9.0 (ProductVersion 1.2.9), peluncur 1.2.9.
-  - Bundel frontend di payload: index-BksMbgv0.js (589.236 bita,
-    1631fbcb348759c4a43aec057e1cd708e91dbbf0c64e62dc17d22fe794a424b6) dan
+Bukti uji paket ini (mesin ini, 2026-11-01)
+  - Cara pembacaan isi paket diubah: ekstraksi administratif (msiexec /a) ditolak
+    di mesin ini dengan 1618 (ada instalasi Windows Installer lain berjalan, dan
+    sesi agen tidak elevated). Isi paket dibaca dengan "wix msi decompile", yang
+    tidak menyentuh layanan installer. Tabel File berisi 393 baris dengan sumber
+    dist\publish-single, sama banyaknya dengan 393 berkas di folder itu.
+  - Berkas kunci di dist\publish-single (yang dibungkus paket):
+      Seruni22Bakery.Host.dll  c265d30907d86f767756969df57a47aac000329fc3f4217ba269e06fe6a6d707
+      Seruni22Bakery.exe       d6e56cdce1a27bf37569f6bd193b1dfda435711196da54dac5d11bb1c2bcf8ae
+      wwwroot\index.html       d9f8f20f0609a070f147f17fce9f15a562c33a3a0e352fc983d78ad7a73e2d1c
+  - Bundel frontend di payload: index-B8lfbLcy.js (589.329 bita,
+    834b32cd054c2d36b1ad598a8b435c5bab873f5f255811d4a9fc39abbae7fc54) dan
     index-CoYZy02P.css (57.262 bita,
     9a26e0402c5cbe4c245a6a259b647e4c6a44ef53eac118923ce4664a36da23df).
-    Hanya dua aset ini yang ada; bundel 1.2.7 tidak ikut.
-  - Tabel File memuat 393 baris; tidak ada PDB, basis data, kunci JWT, atau
-    appsettings.Development.json di dalam paket.
-  - Uji perilaku langsung pada binari payload (bukan salinan build) yang isinya
-    identik dengan isi MSI: empat skrip verifikasi API dijalankan lewat HTTP pada
-    basis data sementara, ditambah periksa-diri dan endpoint merek:
+    Bundel 1.2.9 (index-BksMbgv0.js) tidak ikut terbungkus.
+  - Pemeriksaan isi statis 20 langkah, 0 gagal (bebas PDB, basis data, jwt.key,
+    appsettings.Development.json; versi berkas host 1.2.10.0 dan peluncur 1.2.10).
+  - Uji perilaku pada BINER HASIL PUBLISH (bukan salinan bin\Release yang dipakai
+    gerbang): Seruni22Bakery.Host.exe dari dist\publish-single dijalankan dengan
+    --Desktop:StaticFilesPath menunjuk wwwroot paket dan empat basis data sementara
+    di C:\tmp\payload-uji-1210:
       verify-batch2  63 pemeriksaan, 0 gagal
       verify-batch3  56 pemeriksaan, 0 gagal
       verify-batch6  21 pemeriksaan, 0 gagal
       verify-bug09   29 pemeriksaan, 0 gagal
-      periksa-diri   9 pemeriksaan, 0 gagal; skema terpasang 18 = terkemas 18
-      /api/brand     anonim, empat kunci: logo, name, outlet, tagline
-      /health        version 1.2.9; 18 migrasi diterapkan pada basis data baru
+      /health        version 1.2.10 pada tiap run
+      SchemaVersion  18 baris, nilai tertinggi 18, integrity_check ok (empat basis data)
     Jumlah 169 pemeriksaan perilaku, 0 gagal, tanpa proses yatim.
-  - Basis data nyata tidak disentuh: semua uji memakai basis data sementara di
-    folder temp yang dihapus lagi.
+    Log: C:\tmp\uji-biner-paket-1210.log
+  - Penomoran dengan tanggal toko terbukti hidup pada gerbang hari ini: 04:05 WIB
+    (UTC masih 31 Oktober) menghasilkan ORD-20261101-0003 dan seterusnya.
+  - Basis data nyata tidak disentuh: semua uji memakai basis data sementara.
 
-BELUM diuji untuk 1.2.9 di mesin ini: pemasangan/peningkatan MSI (mesin ini masih
-memakai MSI 1.2.7 milik pemilik), copot MSI, membuka peluncur pada data nyata,
-code signing, dan perangkat kasir fisik. Installer EXE 1.2.9 sudah terbukti
-menolak berjalan di mesin ini karena mendeteksi MSI 1.2.7 (exit 1, tidak ada
-berkas terpasang), lihat docs\verifikasi-paket-1.2.9-2026-10-31.md.
+BELUM diuji untuk 1.2.10 di mesin ini: pemasangan, peningkatan 1.2.9 -> 1.2.10,
+penolakan turun versi, dan copot (butuh mesin bersih atau hak administrator;
+kit uji siap salin ada di docs\paket-bukti-2026-11-01\uji-1210), membuka peluncur
+pada data nyata, code signing, dan perangkat kasir fisik. Status rilis 1.2.10
+karena itu NOT READY; lihat CHANGELOG.md bagian [1.2.10].
