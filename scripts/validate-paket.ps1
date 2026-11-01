@@ -192,10 +192,24 @@ if (Test-Path $sumPath) {
         Lulus 'SHA256SUMS memakai akhir baris LF' 'aman untuk sha256sum -c'
     }
     $petaSum = @{}
+    $namaTidakAman = New-Object System.Collections.ArrayList
     foreach ($baris in ($mentah -split "`n")) {
         if ($baris -match '^([0-9a-fA-F]{64})\s+\*?(.+?)\s*$') {
-            $petaSum[$Matches[2]] = $Matches[1].ToLowerInvariant()
+            $nama = $Matches[2]
+            # sha256sum hanya menamai berkas di folder yang sama. Nama yang memuat pemisah
+            # jalur atau ".." membuat Join-Path di bawah membaca berkas di luar folder paket,
+            # sehingga pemeriksaan hash bisa lulus memakai berkas yang salah.
+            if ($nama -match '[\\/]' -or $nama -match '(^|\.)\.\.($|\.)') {
+                [void]$namaTidakAman.Add($nama)
+                continue
+            }
+            $petaSum[$nama] = $Matches[1].ToLowerInvariant()
         }
+    }
+    if ($namaTidakAman.Count -eq 0) {
+        Lulus 'SHA256SUMS hanya memuat nama berkas polos' 'tanpa pemisah jalur atau ..'
+    } else {
+        Gagal 'SHA256SUMS hanya memuat nama berkas polos' (Ringkas-Contoh @($namaTidakAman))
     }
     if ($petaSum.ContainsKey($namaExe)) { Lulus 'SHA256SUMS mencantumkan EXE' $namaExe }
     else { Gagal 'SHA256SUMS mencantumkan EXE' "tidak ada baris untuk $namaExe" }
@@ -362,8 +376,17 @@ if ($TanpaMsi) {
             }
         }
     } finally {
-        Start-Sleep -Milliseconds 300
-        Remove-Item -Path $temp -Recurse -Force -ErrorAction SilentlyContinue
+        # msiexec kadang masih memegang berkas hasil ekstraksi beberapa saat setelah
+        # proses selesai; satu percobaan hapus meninggalkan folder temp permanen.
+        $terhapus = $false
+        for ($percobaan = 0; $percobaan -lt 5 -and -not $terhapus; $percobaan++) {
+            if ($percobaan -gt 0) { Start-Sleep -Milliseconds (500 * $percobaan) }
+            Remove-Item -Path $temp -Recurse -Force -ErrorAction SilentlyContinue
+            $terhapus = -not (Test-Path $temp)
+        }
+        if (-not $terhapus) {
+            Write-Host "   peringatan: folder temp $temp tidak bisa dihapus; bersihkan manual"
+        }
     }
 }
 
@@ -404,11 +427,20 @@ if (Test-Path $infoJson) {
         if ($versiLaporan -ne $Version) { [void]$salah.Add("versi='$versiLaporan'") }
         foreach ($a in @($info.artefak)) {
             if (-not $a) { continue }
-            $jalur = Join-Path $installerDir $a.nama
-            if (Test-Path $jalur) {
-                $hash = (Get-FileHash -Algorithm SHA256 -Path $jalur).Hash.ToLowerInvariant()
-                if ($hash -ne $a.sha256) { [void]$salah.Add("$($a.nama) hash tidak sama dengan laporan") }
+            $namaArtefak = [string]$a.nama
+            if (-not $namaArtefak) { [void]$salah.Add('artefak tanpa nama'); continue }
+            $jalur = Join-Path $installerDir $namaArtefak
+            # Artefak yang tercatat di laporan tetapi tidak ada adalah ketidaksesuaian:
+            # dulu pemeriksaan ini dilewati diam-diam sehingga laporan hantu terlihat sah.
+            if (-not (Test-Path $jalur)) {
+                [void]$salah.Add("$namaArtefak tercatat di laporan tetapi tidak ada")
+                continue
             }
+            if ($null -ne $a.ukuran -and (Get-Item $jalur).Length -ne [int64]$a.ukuran) {
+                [void]$salah.Add("$namaArtefak ukuran tidak sama dengan laporan")
+            }
+            $hash = (Get-FileHash -Algorithm SHA256 -Path $jalur).Hash.ToLowerInvariant()
+            if ($hash -ne $a.sha256) { [void]$salah.Add("$namaArtefak hash tidak sama dengan laporan") }
         }
         if ($salah.Count -eq 0) { Lulus 'BUILD-INFO.json sepakat dengan paket' 'versi dan hash cocok' }
         else { Gagal 'BUILD-INFO.json sepakat dengan paket' (Ringkas-Contoh @($salah)) }

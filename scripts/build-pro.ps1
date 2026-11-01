@@ -229,6 +229,7 @@ try {
     # ── Preflight ──────────────────────────────────────────────────────────
     $hilang = New-Object System.Collections.ArrayList
     if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) { [void]$hilang.Add('dotnet') }
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { [void]$hilang.Add('node') }
     if (-not (Get-Command npm.cmd -ErrorAction SilentlyContinue)) { [void]$hilang.Add('npm.cmd') }
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) { [void]$hilang.Add('git') }
     if (-not (Test-Path $iscc)) { [void]$hilang.Add("ISCC: $iscc") }

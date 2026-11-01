@@ -4,14 +4,20 @@
   Alasan ada: validator yang selalu hijau tidak membuktikan apa pun. Skrip ini menjalankan
   validator pada paket yang benar (harus HIJAU), lalu menyalin paket ke folder sementara dan
   merusaknya dengan cara yang menyerupai kesalahan nyata: checksum salah, baris MSI hilang,
-  manifest payload tidak cocok, MSI tidak ada, versi tertukar, dan folder publish memuat
-  kunci. Setiap kerusakan harus membuat validator berhenti dengan kode 1 dan menyebut
-  pemeriksaan yang tepat. Akhirnya baseline dijalankan lagi untuk membuktikan artefak asli
-  tidak tersentuh.
+  manifest payload tidak cocok, MSI tidak ada, versi tertukar, folder publish memuat
+  kunci, laporan build menyebut artefak hantu, dan SHA256SUMS memuat nama ber-`..`. Setiap
+  kerusakan harus membuat validator berhenti dengan kode 1 dan menyebut pemeriksaan yang
+  tepat. Akhirnya baseline dijalankan lagi untuk membuktikan artefak asli tidak tersentuh.
+
+  Baseline tidak cukup hanya "0 FAIL": laporan JSON juga diperiksa agar payload MSI benar-
+  benar dibandingkan (referensi dan hasil ekstraksi > 0). Tanpa itu, folder publish yang
+  tidak ada membuat perbandingan payload dilewati dan baseline hijau secara palsu.
 
   Selain itu skrip ini membuktikan penjaga versi terbit build-pro.ps1 menolak build ulang
   versi yang sudah punya tag tanpa -IzinkanTulisUlang. Penjaga itu berhenti sebelum satu
-  perintah build pun dijalankan, jadi uji ini tidak menulis apa pun ke dist\.
+  perintah build pun dijalankan, jadi uji ini tidak menulis apa pun ke dist\. Bila tag
+  v<versi> belum ada (misalnya tepat sesudah naik versi), penjaga memang tidak akan menolak;
+  uji itu ditandai SKIP, bukan FAIL, supaya tidak menjalankan build sungguhan.
 
   Tidak memasang paket, tidak menandatangani, tidak menyentuh basis data pengguna.
   Semua berkas uji berada di folder temp dan dibersihkan di akhir; hanya log yang disimpan.
@@ -59,10 +65,6 @@ $publishDir = if ($PublishDir) { Normalisasi-Jalur $PublishDir } else { Join-Pat
 
 $stamp = [Guid]::NewGuid().ToString('N').Substring(0, 8)
 $kerja = Join-Path ([IO.Path]::GetTempPath()) "seruni-uji-$stamp"
-$logDir = Join-Path $kerja 'log'
-New-Item -ItemType Directory -Force -Path $kerja, $logDir | Out-Null
-if (-not $LaporanJson) { $LaporanJson = Join-Path $kerja 'uji-build-pro.json' }
-$LaporanJson = Normalisasi-Jalur $LaporanJson
 
 $namaExe = "Seruni22Bakery_Setup_v$Version.exe"
 $namaMsi = "Seruni22Bakery_v$($Version)_x64.msi"
@@ -72,6 +74,21 @@ $jalurMsiAsli = Join-Path $installerDir $namaMsi
 foreach ($berkas in @($jalurExeAsli, $jalurMsiAsli)) {
     if (-not (Test-Path $berkas)) { throw "Artefak tidak ditemukan: $berkas. Jalankan build lebih dulu." }
 }
+
+# Uji ini menyalin EXE+MSI lalu mengekstrak MSI dua kali; tanpa pemeriksaan ini kehabisan
+# ruang disk muncul sebagai kegagalan uji yang membingungkan di tengah jalan.
+$ukuranArtefakMB = [math]::Ceiling(((Get-Item $jalurExeAsli).Length + (Get-Item $jalurMsiAsli).Length) / 1MB)
+$perluMB = $ukuranArtefakMB * 2 + 300
+$driveUji = New-Object IO.DriveInfo([IO.Path]::GetPathRoot([IO.Path]::GetTempPath()))
+$sisaMB = [math]::Floor($driveUji.AvailableFreeSpace / 1MB)
+if ($sisaMB -lt $perluMB) {
+    throw "Ruang disk $($driveUji.Name) tinggal $sisaMB MB; uji ini butuh sekitar $perluMB MB."
+}
+
+$logDir = Join-Path $kerja 'log'
+New-Item -ItemType Directory -Force -Path $kerja, $logDir | Out-Null
+if (-not $LaporanJson) { $LaporanJson = Join-Path $kerja 'uji-build-pro.json' }
+$LaporanJson = Normalisasi-Jalur $LaporanJson
 
 $hasil = New-Object System.Collections.ArrayList
 
@@ -114,6 +131,48 @@ function Punya-Gagal([string]$teks, [string]$nama) {
     return [regex]::IsMatch($teks, $pola)
 }
 
+function Catat-Lewati([string]$nama, [string]$detail) {
+    [void]$hasil.Add([pscustomobject]@{
+        Uji    = $nama
+        Status = 'SKIP'
+        Detail = $detail
+        Log    = ''
+    })
+    Write-Host ("[SKIP] {0} {1}" -f $nama, $detail)
+}
+
+function Baca-Laporan([string]$jalur) {
+    if (-not (Test-Path $jalur)) { return $null }
+    try { return Get-Content -Path $jalur -Raw | ConvertFrom-Json } catch { return $null }
+}
+
+# Baseline hijau = validator keluar 0, tanpa FAIL, dan payload MSI benar-benar dibandingkan
+# terhadap referensi nyata. Bagian terakhir penting: bila folder publish hilang, validator
+# menandai perbandingan payload SKIP dan hasilnya tetap "0 FAIL" tanpa membuktikan apa pun.
+function Periksa-Baseline([string]$jalurJson) {
+    $l = Baca-Laporan $jalurJson
+    if (-not $l) {
+        return [pscustomobject]@{ Lulus = $false; Detail = 'laporan JSON tidak terbaca' }
+    }
+    $referensi = 0
+    $terekstrak = 0
+    $hilangPayload = -1
+    $berlebih = -1
+    $beda = -1
+    if ($l.payload) {
+        $referensi = [int]$l.payload.Referensi
+        $terekstrak = [int]$l.payload.Terekstrak
+        $hilangPayload = [int]$l.payload.Hilang
+        $berlebih = [int]$l.payload.Berlebih
+        $beda = [int]$l.payload.Beda
+    }
+    $lulus = ($l.gagal -eq 0) -and ($l.jumlahPeriksa -ge 15) -and
+        ($referensi -gt 0) -and ($terekstrak -gt 0) -and
+        ($hilangPayload -eq 0) -and ($berlebih -eq 0) -and ($beda -eq 0)
+    $detail = "periksa $($l.jumlahPeriksa), gagal $($l.gagal), payload $terekstrak/$referensi"
+    return [pscustomobject]@{ Lulus = $lulus; Detail = $detail }
+}
+
 # ── Helper penyusun paket uji ──────────────────────────────────────────────
 $paket = Join-Path $kerja 'paket'
 New-Item -ItemType Directory -Force -Path $paket | Out-Null
@@ -149,8 +208,9 @@ try {
     $r = Validasi $logDasar1 @('-Version', $Version, '-InstallerDir', $installerDir,
         '-PublishDir', $publishDir, '-JsonPath', $jsonKerja)
     $gagalDasar = Jumlah-Gagal $r.Teks
-    Catat-Uji 'baseline paket asli hijau' (($r.Kode -eq 0) -and $gagalDasar -eq 0) `
-        "exit $($r.Kode), $gagalDasar FAIL" $logDasar1
+    $b = Periksa-Baseline $jsonKerja
+    Catat-Uji 'baseline paket asli hijau' (($r.Kode -eq 0) -and $gagalDasar -eq 0 -and $b.Lulus) `
+        "exit $($r.Kode), $gagalDasar FAIL, $($b.Detail)" $logDasar1
 
     # ── 2. Kontrol negatif A: hash EXE di SHA256SUMS diubah ────────────────
     $hashPalsu = ('0' * 64)
@@ -248,27 +308,72 @@ try {
         (($r.Kode -eq 1) -and (Jumlah-Gagal $r.Teks) -eq 1 -and (Punya-Gagal $r.Teks 'publish bebas berkas terlarang')) `
         "exit $($r.Kode), $(Jumlah-Gagal $r.Teks) FAIL" $logF
 
-    # ── 8. Penjaga versi terbit build-pro menolak tanpa izin ───────────────
-    if (-not $LewatiUjiBuildPro) {
-        $keluarDist = Join-Path $kerja 'keluaran-tolak'
-        $logG = Join-Path $logDir '08-penjaga-versi-terbit.log'
-        $r = Jalankan-Anak $buildPro @('-Version', $Version, '-OutRoot', $keluarDist, '-SkipTests', '-SkipMsi', '-SkipVerifikasiPaket') $logG
-        $adaPenjaga = [regex]::IsMatch($r.Teks, '(?m)^\[FAIL\] penjaga versi terbit ')
-        $tidakBuild = -not (Test-Path (Join-Path $keluarDist 'publish-single'))
-        Catat-Uji 'penjaga versi terbit menolak build ulang' `
-            (($r.Kode -eq 1) -and $adaPenjaga -and $tidakBuild) `
-            "exit $($r.Kode), penjaga=$adaPenjaga, tanpa publish=$tidakBuild" $logG
+    # ── 8. Kontrol negatif G: laporan build menyebut artefak hantu ─────────
+    # Ukuran EXE sengaja dibedakan satu byte dan satu artefak tidak pernah ada; keduanya
+    # harus muncul sebagai ketidaksesuaian, bukan dilewati.
+    $infoPalsu = Join-Path $paket 'BUILD-INFO.json'
+    $ukuranExe = (Get-Item (Join-Path $paket $namaExe)).Length
+    $laporanPalsu = [pscustomobject]@{
+        skema   = 1
+        alat    = 'uji-build-pro.ps1'
+        versi   = $Version
+        artefak = @(
+            [pscustomobject]@{ nama = $namaExe; ukuran = ($ukuranExe + 1); sha256 = $hashExe; tandaTangan = 'NotSigned' },
+            [pscustomobject]@{ nama = 'Seruni22Bakery_v99.0.0_x64.msi'; ukuran = 1234; sha256 = ('a' * 64); tandaTangan = 'NotSigned' }
+        )
+    }
+    [IO.File]::WriteAllText($infoPalsu, ($laporanPalsu | ConvertTo-Json -Depth 5), (New-Object Text.UTF8Encoding($false)))
+    $logG = Join-Path $logDir '08-laporan-artefak-hantu.log'
+    $r = Validasi $logG @('-Version', $Version, '-InstallerDir', $paket,
+        '-PublishDir', $publishDir, '-JsonPath', $jsonKerja, '-LewatiEkstraksi', '-TanpaMsi')
+    Catat-Uji 'kontrol G: laporan artefak hantu terdeteksi' `
+        (($r.Kode -eq 1) -and (Jumlah-Gagal $r.Teks) -eq 1 -and (Punya-Gagal $r.Teks 'BUILD-INFO.json sepakat dengan paket')) `
+        "exit $($r.Kode), $(Jumlah-Gagal $r.Teks) FAIL" $logG
+    Remove-Item $infoPalsu -Force -ErrorAction SilentlyContinue
+
+    # ── 9. Kontrol negatif H: nama ber-.. di SHA256SUMS ────────────────────
+    # Tanpa penolakan ini, validator akan membaca berkas di luar folder paket.
+    $barisJahat = "$('b' * 64) *..\..\Windows\System32\drivers\etc\hosts"
+    Tulis-Sums $sumsPaket @($barisExe, $barisMsi, $barisJahat)
+    $logH = Join-Path $logDir '09-sums-nama-berbahaya.log'
+    $r = Validasi $logH @('-Version', $Version, '-InstallerDir', $paket,
+        '-PublishDir', $publishDir, '-JsonPath', $jsonKerja, '-LewatiEkstraksi', '-TanpaMsi')
+    Catat-Uji 'kontrol H: nama ber-.. di SHA256SUMS terdeteksi' `
+        (($r.Kode -eq 1) -and (Jumlah-Gagal $r.Teks) -eq 1 -and (Punya-Gagal $r.Teks 'SHA256SUMS hanya memuat nama berkas polos')) `
+        "exit $($r.Kode), $(Jumlah-Gagal $r.Teks) FAIL" $logH
+    Tulis-Sums $sumsPaket $sumsNormal
+
+    # ── 10. Penjaga versi terbit build-pro menolak tanpa izin ──────────────
+    if ($LewatiUjiBuildPro) {
+        Catat-Lewati 'penjaga versi terbit menolak build ulang' 'dilewati atas permintaan (-LewatiUjiBuildPro)'
+    } elseif (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Catat-Lewati 'penjaga versi terbit menolak build ulang' 'git tidak ditemukan; tag versi tidak bisa diperiksa'
     } else {
-        Catat-Uji 'penjaga versi terbit menolak build ulang' $false 'dilewati atas permintaan (-LewatiUjiBuildPro)' ''
+        $tagAda = ((& git -C $root tag --list "v$Version") -join '').Trim() -ne ''
+        if (-not $tagAda) {
+            # Tanpa tag, penjaga build-pro memang tidak menolak; menjalankan uji ini akan
+            # memulai build sungguhan. Itu bukan kegagalan pagar, jadi ditandai SKIP.
+            Catat-Lewati 'penjaga versi terbit menolak build ulang' "tag v$Version belum ada; penjaga tidak akan menolak build ini"
+        } else {
+            $keluarDist = Join-Path $kerja 'keluaran-tolak'
+            $logI = Join-Path $logDir '10-penjaga-versi-terbit.log'
+            $r = Jalankan-Anak $buildPro @('-Version', $Version, '-OutRoot', $keluarDist, '-SkipTests', '-SkipMsi', '-SkipVerifikasiPaket') $logI
+            $adaPenjaga = [regex]::IsMatch($r.Teks, '(?m)^\[FAIL\] penjaga versi terbit ')
+            $tidakBuild = -not (Test-Path (Join-Path $keluarDist 'publish-single'))
+            Catat-Uji 'penjaga versi terbit menolak build ulang' `
+                (($r.Kode -eq 1) -and $adaPenjaga -and $tidakBuild) `
+                "exit $($r.Kode), penjaga=$adaPenjaga, tanpa publish=$tidakBuild" $logI
+        }
     }
 
-    # ── 9. Baseline sesudah sabotase: paket asli masih hijau ───────────────
-    $logDasar2 = Join-Path $logDir '09-dasar-akhir.log'
+    # ── 11. Baseline sesudah sabotase: paket asli masih hijau ──────────────
+    $logDasar2 = Join-Path $logDir '11-dasar-akhir.log'
     $r = Validasi $logDasar2 @('-Version', $Version, '-InstallerDir', $installerDir,
         '-PublishDir', $publishDir, '-JsonPath', $jsonKerja)
     $gagalAkhir = Jumlah-Gagal $r.Teks
-    Catat-Uji 'baseline akhir tetap hijau' (($r.Kode -eq 0) -and $gagalAkhir -eq 0) `
-        "exit $($r.Kode), $gagalAkhir FAIL" $logDasar2
+    $b = Periksa-Baseline $jsonKerja
+    Catat-Uji 'baseline akhir tetap hijau' (($r.Kode -eq 0) -and $gagalAkhir -eq 0 -and $b.Lulus) `
+        "exit $($r.Kode), $gagalAkhir FAIL, $($b.Detail)" $logDasar2
 }
 finally {
     # Salinan EXE/MSI besar dihapus; log dan laporan JSON dipertahankan sebagai bukti.
@@ -280,6 +385,7 @@ finally {
 }
 
 $gagal = @($hasil | Where-Object Status -eq 'FAIL')
+$lewati = @($hasil | Where-Object Status -eq 'SKIP')
 $laporan = [pscustomobject]@{
     skema       = 1
     alat        = 'uji-build-pro.ps1'
@@ -290,6 +396,7 @@ $laporan = [pscustomobject]@{
     jumlahUji   = $hasil.Count
     lulus       = @($hasil | Where-Object Status -eq 'PASS').Count
     gagal       = $gagal.Count
+    dilewati    = $lewati.Count
     uji         = @($hasil)
 }
 $jsonDir = Split-Path -Parent $LaporanJson
@@ -299,12 +406,16 @@ if (-not (Test-Path $jsonDir)) { New-Item -ItemType Directory -Path $jsonDir -Fo
 Write-Host ''
 Write-Host '================ HASIL UJI BUILD-PRO ================'
 $hasil | Format-Table -AutoSize | Out-String -Width 200 | Write-Host
-Write-Host "Uji: $($hasil.Count) total, $($gagal.Count) gagal"
+Write-Host "Uji: $($hasil.Count) total, $($gagal.Count) gagal, $($lewati.Count) dilewati"
 Write-Host "Log: $logDir"
 Write-Host "Laporan JSON: $LaporanJson"
 if ($gagal.Count -gt 0) {
     Write-Host "UJI GAGAL: $($gagal.Count) harapan tidak terpenuhi."
     exit 1
+}
+if ($lewati.Count -gt 0) {
+    Write-Host 'UJI SELESAI DENGAN UJI DILEWATI - bukan bukti lengkap.'
+    exit 0
 }
 Write-Host 'SEMUA UJI LULUS: pagar menolak paket rusak dan baseline tetap hijau.'
 exit 0
