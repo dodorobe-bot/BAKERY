@@ -7,7 +7,8 @@
 
 [CmdletBinding()]
 param(
-    [string]$Version = "1.2.12",
+    [string]$Version = "",
+    [string]$OutRoot = "",
     [string]$OutputPath = "",
     # Folder hasil publish yang dipaketkan. Nilai ini dulu ditulis mati di Package.wxs
     # sebagai jalur absolut mesin pengembang, sehingga MSI hanya bisa dibangun di satu
@@ -19,9 +20,23 @@ $ErrorActionPreference = "Stop"
 $repo = Split-Path -Parent $PSScriptRoot
 Set-Location $repo
 
-$publishDir = if ($PublishDir) { $PublishDir } else { Join-Path $repo "dist\publish-single" }
-$installerDir = Join-Path $repo "dist\installer"
-$logDir = Join-Path $repo "dist\build-logs"
+function Normalisasi-Jalur([string]$jalur) {
+    return ([IO.Path]::GetFullPath($jalur)).TrimEnd('\', '/')
+}
+
+# Sama seperti build-installer: OutRoot memisahkan build percobaan dari paket terbit.
+$repoPenuh = Normalisasi-Jalur $repo
+$outRoot = if ($OutRoot) { Normalisasi-Jalur $OutRoot } else { Join-Path $repo "dist" }
+$tempPenuh = Normalisasi-Jalur ([IO.Path]::GetTempPath())
+$diBawahRepo = $outRoot.StartsWith($repoPenuh + '\', [StringComparison]::OrdinalIgnoreCase)
+$diBawahTemp = $outRoot.StartsWith($tempPenuh + '\', [StringComparison]::OrdinalIgnoreCase)
+if ($outRoot -eq $repoPenuh -or (-not $diBawahRepo -and -not $diBawahTemp)) {
+    throw "OutRoot '$outRoot' ditolak: harus di dalam repo ($repoPenuh) atau folder temp ($tempPenuh)."
+}
+
+$publishDir = if ($PublishDir) { Normalisasi-Jalur $PublishDir } else { Join-Path $outRoot "publish-single" }
+$installerDir = Join-Path $outRoot "installer"
+$logDir = Join-Path $outRoot "build-logs"
 $hostProject = Join-Path $repo "src\Host.Service\BakeryDesktop.Host.Service.csproj"
 $wxs = Join-Path $repo "build\installer\wix\Package.wxs"
 $wix = Join-Path $env:USERPROFILE ".dotnet\tools\wix.exe"
@@ -33,11 +48,15 @@ if (-not (Test-Path $wix)) {
     throw "WiX tidak ditemukan: $wix. Pasang dengan: dotnet tool install --global wix"
 }
 
-# Versi MSI, versi host, dan nama berkas harus satu angka.
+# Versi MSI, versi host, dan nama berkas harus satu angka. Satu sumber: <Version> csproj.
 $versiCsproj = ([xml](Get-Content -Raw $hostProject)).Project.PropertyGroup.Version |
     Where-Object { $_ } | Select-Object -First 1
-if ($versiCsproj -and $versiCsproj.Trim() -ne $Version) {
-    throw "Versi parameter '$Version' tidak sama dengan <Version> di proyek host ('$($versiCsproj.Trim())')."
+if (-not $versiCsproj) { throw "Proyek host tidak memuat <Version>; versi MSI tidak bisa ditentukan." }
+$versiCsproj = $versiCsproj.Trim()
+if (-not $Version) { $Version = $versiCsproj }
+if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw "Versi '$Version' bukan bentuk x.y.z." }
+if ($versiCsproj -ne $Version) {
+    throw "Versi parameter '$Version' tidak sama dengan <Version> di proyek host ('$versiCsproj')."
 }
 
 New-Item -ItemType Directory -Force -Path $installerDir, $logDir | Out-Null

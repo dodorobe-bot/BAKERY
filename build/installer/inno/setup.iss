@@ -18,6 +18,11 @@
 #define MyAppURL "http://localhost:5000"
 #define MyAppExeName "Seruni22Bakery.exe"
 #define RootDir "..\..\..\"
+; Payload bisa diarahkan ke folder publish lain (build percobaan) lewat
+; /DPayloadDir=... dari scripts\build-installer.ps1. Bawaannya dist\publish-single.
+#ifndef PayloadDir
+  #define PayloadDir RootDir + "dist\publish-single"
+#endif
 
 [Setup]
 AppId={{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}
@@ -72,7 +77,7 @@ Root: "HKCU"; Subkey: "Software\Seruni22Bakery"; ValueType: string; ValueName: "
 
 [Files]
 ; Paket produksi: host .NET self-contained, aset web hasil build, peluncur exe.
-Source: "{#RootDir}dist\publish-single\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "app.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [InstallDelete]
