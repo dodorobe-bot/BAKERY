@@ -1,0 +1,3533 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Buku Manual Pengguna — Seruni 22 Bakery 1.2.12</title>
+<style>
+  :root {
+    --ink: #1a2233;
+    --muted: #5c6678;
+    --line: #d7dde7;
+    --accent: #d9781c;
+    --accent-dark: #a3540f;
+    --accent-soft: #fdf2e7;
+    --navy: #1d2c46;
+    --navy-soft: #eef2f8;
+    --green: #1f7a55;
+    --green-soft: #edf7f1;
+    --blue: #245b8f;
+    --blue-soft: #eef4fb;
+    --red: #a3372b;
+    --red-soft: #fbeeec;
+  }
+  * { box-sizing: border-box; }
+  @page { size: A4; margin: 22mm 18mm 18mm 18mm; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Calibri", Arial, sans-serif;
+    font-size: 10.3pt;
+    line-height: 1.55;
+    color: var(--ink);
+    background: #fff;
+  }
+  p { margin: 0 0 7pt; text-align: justify; }
+  ul, ol { margin: 0 0 7pt; padding-left: 16pt; }
+  li { margin-bottom: 3pt; }
+  b, strong { color: #101827; }
+  code {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 9pt;
+    background: #f2f4f7;
+    padding: 1px 3px;
+    border-radius: 2px;
+  }
+
+  /* ── Sampul ─────────────────────────────────────────────────────────── */
+  .cover { page-break-after: always; padding-top: 0; }
+  .cover-top { display: flex; align-items: center; gap: 12pt; margin-bottom: 12mm; }
+  .brand-mark {
+    width: 17mm; height: 17mm; border-radius: 5mm;
+    background: var(--accent); color: #fff;
+    font-size: 17pt; font-weight: 700; letter-spacing: .02em;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-name { font-size: 15pt; font-weight: 700; color: var(--navy); line-height: 1.2; }
+  .brand-name span { display: block; font-size: 8.6pt; font-weight: 400; color: var(--muted); letter-spacing: .02em; }
+  .cover-kicker {
+    color: var(--accent-dark); font-size: 9pt; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase; margin-bottom: 5pt;
+  }
+  .cover h1 {
+    font-size: 30pt; line-height: 1.12; color: var(--navy);
+    margin: 0 0 7pt; letter-spacing: -0.01em;
+  }
+  .cover h1 .thin { font-weight: 300; color: #42526b; }
+  .cover-sub { font-size: 12pt; color: #41506a; max-width: 150mm; margin-bottom: 8mm; }
+  .cover-rule { width: 32mm; height: 3pt; background: var(--accent); margin: 0 0 9mm; }
+  .cover-meta { display: flex; gap: 10mm; font-size: 9pt; color: var(--muted); margin-bottom: 9mm; }
+  .cover-meta b { display: block; color: var(--ink); font-size: 10pt; }
+  .cover-shot {
+    border: 1px solid var(--line); border-radius: 3mm; overflow: hidden;
+    box-shadow: 0 2mm 6mm rgba(29,44,70,.12); background: #0b1220;
+  }
+  .cover-shot img { width: 100%; display: block; }
+  .cover-shot-bar {
+    height: 6mm; background: #101a2b; display: flex; align-items: center; gap: 2mm;
+    padding: 0 3mm; border-bottom: 1px solid #223049;
+  }
+  .cover-shot-bar i { width: 2.2mm; height: 2.2mm; border-radius: 50%; background: #3a4a66; display: block; }
+  .cover-shot-bar i:first-child { background: var(--accent); }
+  .cover-cap { font-size: 8.3pt; color: var(--muted); margin-top: 4pt; }
+
+  /* ── Halaman depan ──────────────────────────────────────────────────── */
+  .frontmatter { page-break-after: always; }
+  .kicker {
+    font-size: 8.4pt; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--accent-dark); margin-bottom: 3pt;
+  }
+  h1.page-title { font-size: 22pt; color: var(--navy); margin: 0 0 6pt; line-height: 1.2; }
+  .page-lead { font-size: 10.6pt; color: #414f66; margin-bottom: 9pt; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 9.2pt; margin: 0 0 9pt; }
+  th {
+    background: var(--navy-soft); color: var(--navy); text-align: left;
+    font-weight: 600; padding: 4.5pt 5pt; border: 1px solid var(--line);
+  }
+  td { padding: 4.5pt 5pt; border: 1px solid var(--line); vertical-align: top; }
+  tr { page-break-inside: avoid; }
+  td.k { width: 32%; background: #f8f9fb; font-weight: 600; color: #263449; }
+
+  .callout {
+    border-left: 3pt solid var(--blue); background: var(--blue-soft);
+    padding: 6.5pt 9pt; margin: 8pt 0 10pt; border-radius: 0 2pt 2pt 0;
+    page-break-inside: avoid; font-size: 9.5pt;
+  }
+  .callout .label {
+    display: block; font-size: 8pt; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; margin-bottom: 2pt; color: var(--blue);
+  }
+  .callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+  .callout.tip { border-color: var(--green); background: var(--green-soft); }
+  .callout.tip .label { color: var(--green); }
+  .callout.warn { border-color: var(--red); background: var(--red-soft); }
+  .callout.warn .label { color: var(--red); }
+  .callout.note .label { color: var(--blue); }
+  .callout.flow { border-color: var(--accent); background: var(--accent-soft); }
+  .callout.flow .label { color: var(--accent-dark); }
+
+  .flow {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 3pt;
+    font-size: 8.8pt; margin-top: 3pt;
+    page-break-inside: avoid;
+  }
+  .flow span.node {
+    background: #fff; border: 1px solid var(--line); border-radius: 2pt;
+    padding: 2.5pt 5pt; color: var(--navy); font-weight: 600;
+  }
+  .flow span.arrow { color: var(--accent-dark); font-weight: 700; }
+
+  /* ── Daftar isi ─────────────────────────────────────────────────────── */
+  .toc-page { page-break-after: always; }
+  .toc { font-size: 9.7pt; }
+  .toc-part {
+    margin: 9pt 0 3pt; font-size: 8.2pt; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent-dark);
+    border-bottom: 1px solid #e8d8c6; padding-bottom: 2pt;
+    page-break-after: avoid;
+  }
+  /* Baris daftar isi memakai tata letak tabel, bukan flex, supaya Chrome dapat
+     memenggalnya antar halaman tanpa menumpuk teks di kaki halaman. */
+  .toc-line { display: table; width: 100%; margin-bottom: 2.2pt; }
+  .toc-line .no { display: table-cell; width: 17mm; color: var(--muted); font-size: 8.8pt; vertical-align: baseline; }
+  .toc-line .t { display: table-cell; width: 125mm; vertical-align: baseline; }
+  .toc-line .dots { display: table-cell; border-bottom: 1px dotted #c6cedb; vertical-align: baseline; }
+  .toc-line .pg { display: table-cell; width: 8mm; text-align: right; font-variant-numeric: tabular-nums; color: var(--navy); font-weight: 600; vertical-align: baseline; }
+
+  /* ── Bab ────────────────────────────────────────────────────────────── */
+  .chapter { page-break-before: always; }
+  .chapter-eyebrow {
+    font-size: 7.8pt; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--accent-dark); margin-bottom: 6pt;
+  }
+  .chapter-num {
+    font-size: 8.6pt; font-weight: 700; letter-spacing: .2em;
+    color: var(--muted); margin-bottom: 1pt;
+  }
+  h1.chapter-title {
+    font-size: 20.5pt; line-height: 1.18; color: var(--navy);
+    margin: 0 0 4pt; letter-spacing: -0.005em;
+  }
+  .chapter-lead {
+    font-size: 10.6pt; color: #414f66; margin-bottom: 10pt;
+    border-bottom: 1px solid var(--line); padding-bottom: 8pt;
+  }
+  h2 {
+    font-size: 12.6pt; color: var(--navy); margin: 13pt 0 5pt;
+    page-break-after: avoid;
+  }
+  h3 { font-size: 10.8pt; color: #2c3c55; margin: 10pt 0 4pt; page-break-after: avoid; }
+  .chapter ul, .chapter ol { margin-top: 2pt; }
+  .steps { padding-left: 15pt; }
+  .steps li { margin-bottom: 4.5pt; }
+
+  figure {
+    margin: 9pt 0 11pt; border: 1px solid var(--line); border-radius: 3pt;
+    overflow: hidden; page-break-inside: avoid; background: #0b1220;
+  }
+  figure img { width: 100%; display: block; }
+  figcaption {
+    font-size: 8.4pt; color: var(--muted); background: #fff;
+    padding: 4pt 6pt 4.5pt; border-top: 1px solid var(--line);
+  }
+  figcaption b { color: var(--navy); }
+
+  .lead-grid { display: flex; gap: 6mm; margin: 8pt 0 4pt; }
+  .lead-grid > div { flex: 1; }
+
+  .menu-map { font-size: 9pt; }
+  .menu-map td:first-child { width: 46mm; font-weight: 600; color: var(--navy); }
+
+  .small { font-size: 8.6pt; color: var(--muted); }
+  .nowrap { white-space: nowrap; }
+  .keep { page-break-inside: avoid; }
+
+  .end-note {
+    margin-top: 14pt; padding-top: 8pt; border-top: 1px solid var(--line);
+    font-size: 8.8pt; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ SAMPUL ══════════════════════════ -->
+<section class="cover">
+  <div class="cover-top">
+    <div class="brand-mark">S22</div>
+    <div class="brand-name">Seruni 22 Bakery
+      <span>Aplikasi Desktop Toko Roti &middot; Edisi Bisnis Terintegrasi</span>
+    </div>
+  </div>
+
+  <div class="cover-kicker">Buku Manual Pengguna</div>
+  <h1>Panduan Pengoperasian<br><span class="thin">dari Masuk hingga</span><br>Pengaturan Toko &amp; Cabang</h1>
+  <div class="cover-rule"></div>
+  <p class="cover-sub">
+    Langkah demi langkah untuk kasir, dapur, manajer operasional, dan pemilik toko:
+    mencatat pesanan, menjalankan produksi, menerima barang, membaca laporan,
+    sampai merawat data toko.
+  </p>
+
+  <div class="cover-meta">
+    <div><b>Versi aplikasi</b>1.2.12</div>
+    <div><b>Tanggal dokumen</b>2 November 2026</div>
+    <div><b>Bahasa</b>Indonesia</div>
+    <div><b>Lingkup</b>31 menu &middot; 6 kelompok</div>
+  </div>
+
+  <div class="cover-shot">
+    <div class="cover-shot-bar"><i></i><i></i><i></i></div>
+    <img src="gambar/dashboard.png" alt="Tampilan Dasbor &amp; Indikator Utama">
+  </div>
+  <div class="cover-cap">Tampilan Dasbor &amp; Indikator Utama dengan data contoh toko.</div>
+</section>
+
+<!-- ══════════════════════════ TENTANG BUKU INI ══════════════════════════ -->
+<section class="frontmatter">
+  <div class="kicker">Tentang buku ini</div>
+  <h1 class="page-title">Cara memakai buku manual ini</h1>
+  <p class="page-lead">
+    Buku ini disusun mengikuti urutan menu yang tampak di aplikasi. Setiap bab menjelaskan
+    satu menu: apa gunanya, apa yang terlihat di layar, langkah mengoperasikannya, dan menu
+    mana yang harus dibuka sesudahnya.
+  </p>
+
+  <table>
+    <tr><td class="k">Judul dokumen</td><td>Buku Manual Pengguna Seruni 22 Bakery</td></tr>
+    <tr><td class="k">Versi aplikasi</td><td>1.2.12 (Windows, aplikasi desktop dengan basis data lokal)</td></tr>
+    <tr><td class="k">Tanggal</td><td>2 November 2026</td></tr>
+    <tr><td class="k">Pembaca</td><td>Pemilik toko, manajer operasional, kepala dapur, staf kasir</td></tr>
+    <tr><td class="k">Lingkup</td><td>Dari layar masuk sampai menu terakhir, Pengaturan Toko &amp; Cabang, ditambah alur kerja antarmenu dan perawatan data</td></tr>
+    <tr><td class="k">Sumber gambar</td><td>Tangkapan layar aplikasi 1.2.12 yang dijalankan dengan basis data sementara berisi data contoh</td></tr>
+  </table>
+
+  <h2>Cara membaca setiap bab</h2>
+  <p>
+    Bab menu selalu memakai susunan yang sama sehingga mudah dicari saat toko sedang sibuk:
+  </p>
+  <ul>
+    <li><b>Gambar</b> bernomor menunjukkan layar yang dimaksud. Cocokkan judul di layar dengan judul bab.</li>
+    <li><b>Langkah bernomor</b> ditulis sesuai urutan menekan tombol. Nama tombol dan kolom ditulis persis seperti di layar.</li>
+    <li><b>Kotak Catatan</b> berisi hal yang perlu diketahui agar angka tidak salah tafsir.</li>
+    <li><b>Kotak Tips</b> berisi cara kerja yang lebih cepat atau lebih aman.</li>
+    <li><b>Kotak Peringatan</b> berisi tindakan yang sulit dibatalkan atau dapat mengubah stok, uang, dan jurnal.</li>
+    <li><b>Alur antar menu</b> menunjukkan menu berikutnya yang wajar dibuka setelah pekerjaan di bab itu selesai.</li>
+  </ul>
+
+  <div class="callout note">
+    <span class="label">Catatan tentang data contoh</span>
+    <p>
+      Seluruh nama pelanggan, nomor pesanan, dan nominal di dalam gambar adalah data contoh
+      pada basis data sementara. Data toko Anda yang sebenarnya tidak dipakai untuk membuat
+      buku ini dan tidak berubah karenanya.
+    </p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tips pemakaian sehari-hari</span>
+    <p>
+      Gunakan kotak <b>Cari menu atau fitur...</b> di sisi kiri untuk melompat ke menu tanpa
+      menggulir daftar. Tombol <b>Perbarui Data</b> di bilah atas memuat ulang angka layar
+      yang sedang dibuka.
+    </p>
+  </div>
+
+  <div class="callout warn">
+    <span class="label">Peringatan penting</span>
+    <p>
+      Aplikasi ini menyimpan data usaha di PC tempat ia dipasang. Jangan menghapus, memindahkan,
+      atau mengganti nama berkas basis data, dan jangan mencopot aplikasi dengan cara menghapus
+      foldernya. Cara mencadangkan dan memulihkan data dijelaskan di Bab 38.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ DAFTAR ISI ══════════════════════════ -->
+<section class="toc-page">
+  <div class="kicker">Navigasi dokumen</div>
+  <h1 class="page-title" style="margin-bottom:10pt;">Daftar Isi</h1>
+
+  <div class="toc">
+    <div class="toc-part">Bagian I &middot; Pengenalan</div>
+    <div class="toc-line"><span class="no">Bab 1</span><span class="t">Tentang Aplikasi dan Peta Menu</span><span class="dots"></span><span class="pg" data-pg="bab-1">05</span></div>
+    <div class="toc-line"><span class="no">Bab 2</span><span class="t">Masuk dan Mengenal Jendela Kerja</span><span class="dots"></span><span class="pg" data-pg="bab-2">08</span></div>
+
+    <div class="toc-part">Bagian II &middot; Ruang Kerja</div>
+    <div class="toc-line"><span class="no">Bab 3</span><span class="t">Dasbor &amp; Indikator Utama</span><span class="dots"></span><span class="pg" data-pg="bab-3">11</span></div>
+    <div class="toc-line"><span class="no">Bab 4</span><span class="t">Kotak Tugas &amp; Persetujuan</span><span class="dots"></span><span class="pg" data-pg="bab-4">13</span></div>
+    <div class="toc-line"><span class="no">Bab 5</span><span class="t">Pemberitahuan &amp; Catatan Aktivitas</span><span class="dots"></span><span class="pg" data-pg="bab-5">15</span></div>
+
+    <div class="toc-part">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+    <div class="toc-line"><span class="no">Bab 6</span><span class="t">Kasir Penjualan Cepat</span><span class="dots"></span><span class="pg" data-pg="bab-6">17</span></div>
+    <div class="toc-line"><span class="no">Bab 7</span><span class="t">Daftar Pesanan &amp; Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-7">20</span></div>
+    <div class="toc-line"><span class="no">Bab 8</span><span class="t">Pesanan Terjadwal (Pre-Order)</span><span class="dots"></span><span class="pg" data-pg="bab-8">22</span></div>
+    <div class="toc-line"><span class="no">Bab 9</span><span class="t">Data Pelanggan &amp; Klien</span><span class="dots"></span><span class="pg" data-pg="bab-9">24</span></div>
+    <div class="toc-line"><span class="no">Bab 10</span><span class="t">Piutang &amp; Pembayaran</span><span class="dots"></span><span class="pg" data-pg="bab-10">26</span></div>
+    <div class="toc-line"><span class="no">Bab 11</span><span class="t">Retur Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-11">29</span></div>
+
+    <div class="toc-part">Bagian IV &middot; Operasional &amp; Produksi</div>
+    <div class="toc-line"><span class="no">Bab 12</span><span class="t">Perencanaan Jadwal Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-12">31</span></div>
+    <div class="toc-line"><span class="no">Bab 13</span><span class="t">Perintah Kerja (SPK)</span><span class="dots"></span><span class="pg" data-pg="bab-13">33</span></div>
+    <div class="toc-line"><span class="no">Bab 14</span><span class="t">Resep &amp; Daftar Bahan Baku</span><span class="dots"></span><span class="pg" data-pg="bab-14">37</span></div>
+    <div class="toc-line"><span class="no">Bab 15</span><span class="t">Pemakaian Aktual &amp; Hasil</span><span class="dots"></span><span class="pg" data-pg="bab-15">39</span></div>
+    <div class="toc-line"><span class="no">Bab 16</span><span class="t">Pemeriksaan Mutu (QC)</span><span class="dots"></span><span class="pg" data-pg="bab-16">41</span></div>
+    <div class="toc-line"><span class="no">Bab 17</span><span class="t">Harga Pokok Produksi (HPP)</span><span class="dots"></span><span class="pg" data-pg="bab-17">43</span></div>
+
+    <div class="toc-part">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+    <div class="toc-line"><span class="no">Bab 18</span><span class="t">Pembelian &amp; Penerimaan Barang</span><span class="dots"></span><span class="pg" data-pg="bab-18">45</span></div>
+    <div class="toc-line"><span class="no">Bab 19</span><span class="t">Pemasok &amp; Rekanan</span><span class="dots"></span><span class="pg" data-pg="bab-19">49</span></div>
+    <div class="toc-line"><span class="no">Bab 20</span><span class="t">Gudang &amp; Lokasi Rak</span><span class="dots"></span><span class="pg" data-pg="bab-20">51</span></div>
+    <div class="toc-line"><span class="no">Bab 21</span><span class="t">Mutasi Gudang ke Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-21">53</span></div>
+    <div class="toc-line"><span class="no">Bab 22</span><span class="t">Katalog Bahan &amp; Produk Jadi</span><span class="dots"></span><span class="pg" data-pg="bab-22">56</span></div>
+    <div class="toc-line"><span class="no">Bab 23</span><span class="t">Pemeriksaan Fisik (Stok Opname)</span><span class="dots"></span><span class="pg" data-pg="bab-23">58</span></div>
+    <div class="toc-line"><span class="no">Bab 24</span><span class="t">Nomor Batch &amp; Kedaluwarsa</span><span class="dots"></span><span class="pg" data-pg="bab-24">60</span></div>
+
+    <div class="toc-part">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
+    <div class="toc-line"><span class="no">Bab 25</span><span class="t">Buku Besar &amp; Jurnal Umum</span><span class="dots"></span><span class="pg" data-pg="bab-25">62</span></div>
+    <div class="toc-line"><span class="no">Bab 26</span><span class="t">Kas Toko &amp; Rekening Bank</span><span class="dots"></span><span class="pg" data-pg="bab-26">64</span></div>
+    <div class="toc-line"><span class="no">Bab 27</span><span class="t">Utang &amp; Piutang Usaha</span><span class="dots"></span><span class="pg" data-pg="bab-27">66</span></div>
+    <div class="toc-line"><span class="no">Bab 28</span><span class="t">Laporan Keuangan &amp; Laba Rugi</span><span class="dots"></span><span class="pg" data-pg="bab-28">68</span></div>
+
+    <div class="toc-part">Bagian VII &middot; Analisis &amp; Pengaturan</div>
+    <div class="toc-line"><span class="no">Bab 29</span><span class="t">Analisis &amp; Tren Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-29">70</span></div>
+    <div class="toc-line"><span class="no">Bab 30</span><span class="t">Jejak Audit &amp; Riwayat Sistem</span><span class="dots"></span><span class="pg" data-pg="bab-30">72</span></div>
+    <div class="toc-line"><span class="no">Bab 31</span><span class="t">Hak Akses &amp; Pegawai</span><span class="dots"></span><span class="pg" data-pg="bab-31">74</span></div>
+    <div class="toc-line"><span class="no">Bab 32</span><span class="t">Perangkat Kasir</span><span class="dots"></span><span class="pg" data-pg="bab-32">77</span></div>
+    <div class="toc-line"><span class="no">Bab 33</span><span class="t">Pengaturan Toko &amp; Cabang</span><span class="dots"></span><span class="pg" data-pg="bab-33">79</span></div>
+
+    <div class="toc-part">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+    <div class="toc-line"><span class="no">Bab 34</span><span class="t">Alur Kerja Harian</span><span class="dots"></span><span class="pg" data-pg="bab-34">81</span></div>
+    <div class="toc-line"><span class="no">Bab 35</span><span class="t">Alur Pesanan Khusus dan Pre-Order</span><span class="dots"></span><span class="pg" data-pg="bab-35">83</span></div>
+    <div class="toc-line"><span class="no">Bab 36</span><span class="t">Alur Pengadaan sampai HPP</span><span class="dots"></span><span class="pg" data-pg="bab-36">85</span></div>
+    <div class="toc-line"><span class="no">Bab 37</span><span class="t">Alur Tutup Buku dan Pencadangan</span><span class="dots"></span><span class="pg" data-pg="bab-37">86</span></div>
+    <div class="toc-line"><span class="no">Bab 38</span><span class="t">Merawat dan Memulihkan Data</span><span class="dots"></span><span class="pg" data-pg="bab-38">87</span></div>
+    <div class="toc-line"><span class="no">Bab 39</span><span class="t">Batasan Versi 1.2.12</span><span class="dots"></span><span class="pg" data-pg="bab-39">89</span></div>
+
+    <div class="toc-part">Lampiran</div>
+    <div class="toc-line"><span class="no">Lampiran A</span><span class="t">Peta Menu Lengkap</span><span class="dots"></span><span class="pg" data-pg="lamp-a">91</span></div>
+    <div class="toc-line"><span class="no">Lampiran B</span><span class="t">Matriks Peran dan Menu</span><span class="dots"></span><span class="pg" data-pg="lamp-b">93</span></div>
+    <div class="toc-line"><span class="no">Lampiran C</span><span class="t">Arti Status Dokumen</span><span class="dots"></span><span class="pg" data-pg="lamp-c">95</span></div>
+    <div class="toc-line"><span class="no">Lampiran D</span><span class="t">Pesan Kesalahan dan Tindakan</span><span class="dots"></span><span class="pg" data-pg="lamp-d">97</span></div>
+    <div class="toc-line"><span class="no">Lampiran E</span><span class="t">Daftar Gambar</span><span class="dots"></span><span class="pg" data-pg="lamp-e">98</span></div>
+  </div>
+
+  <div class="callout note" style="margin-top:14pt;">
+    <span class="label">Cara cepat mencari</span>
+    <p>
+      Nomor halaman pada daftar ini mengikuti nomor halaman PDF. Bila membaca di komputer,
+      gunakan pencarian teks PDF dan ketik nama menu persis seperti tertulis di aplikasi,
+      misalnya <b>Pengaturan Toko &amp; Cabang</b>.
+    </p>
+  </div>
+
+  <h2 style="margin-top:16pt;">Peta perjalanan buku</h2>
+  <div class="flow">
+    <span class="node">Masuk</span><span class="arrow">&rarr;</span>
+    <span class="node">Ruang kerja</span><span class="arrow">&rarr;</span>
+    <span class="node">Penjualan</span><span class="arrow">&rarr;</span>
+    <span class="node">Produksi</span><span class="arrow">&rarr;</span>
+    <span class="node">Rantai pasok</span><span class="arrow">&rarr;</span>
+    <span class="node">Keuangan</span><span class="arrow">&rarr;</span>
+    <span class="node">Analisis &amp; pengaturan</span>
+  </div>
+  <p class="small" style="margin-top:6pt;">
+    Bagian I&ndash;II membahas pintu masuk dan ruang kerja. Bagian III&ndash;VII mengikuti urutan
+    kelompok menu di sisi kiri aplikasi. Bagian VIII merangkum alur kerja lintas menu,
+    perawatan data, dan batasan versi ini.
+  </p>
+</section>
+
+<!-- ══════════════════════════ BAB 1 ══════════════════════════ -->
+<section class="chapter" id="bab-1">
+  <div class="chapter-eyebrow">Bagian I &middot; Pengenalan</div>
+  <div class="chapter-num">BAB 1</div>
+  <h1 class="chapter-title">Tentang Aplikasi dan Peta Menu</h1>
+  <p class="chapter-lead">
+    Aplikasi Seruni 22 Bakery mencatat penjualan, produksi, persediaan, dan keuangan toko
+    roti dalam satu basis data lokal. Bab ini menunjukkan letak setiap pekerjaan di menu
+    agar Anda membuka layar yang benar sejak awal.
+  </p>
+
+  <h2>1.1 Apa yang diurus aplikasi</h2>
+  <p>
+    Pekerjaan harian toko roti terbagi menjadi lima wilayah yang saling terhubung. Setiap
+    wilayah punya kelompok menu sendiri, tetapi semuanya membaca dan menulis ke basis data
+    yang sama.
+  </p>
+  <table>
+    <tr><th style="width:34%;">Wilayah kerja</th><th>Yang dicatat</th></tr>
+    <tr><td><b>Penjualan</b></td><td>Pesanan pelanggan, uang muka, pelunasan, piutang, retur, cetak struk</td></tr>
+    <tr><td><b>Produksi</b></td><td>Perintah kerja dapur (SPK), resep, pemakaian bahan aktual, pemeriksaan mutu, harga pokok produksi</td></tr>
+    <tr><td><b>Persediaan</b></td><td>Pembelian ke pemasok, penerimaan barang, nomor batch, mutasi gudang ke dapur, stok opname</td></tr>
+    <tr><td><b>Keuangan</b></td><td>Jurnal otomatis, buku kas, utang dan piutang usaha, laba rugi, neraca saldo</td></tr>
+    <tr><td><b>Pengawasan</b></td><td>Dasbor, kotak tugas, notifikasi internal, jejak audit, hak akses, pengaturan toko</td></tr>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Karena semua bagian memakai satu basis data, satu tindakan dapat mengubah beberapa layar
+      sekaligus. Contoh: pesanan yang menjadi lunas mengurangi stok produk jadi di etalase;
+      SPK yang diselesaikan menambah stok etalase dan menulis jurnal tenaga kerja; penerimaan
+      barang menambah stok gudang dan utang pemasok. Bab-bab berikut selalu menyebut akibat
+      seperti ini.
+    </p>
+  </div>
+
+  <h2>1.2 Enam kelompok menu</h2>
+  <p>
+    Menu di sisi kiri disusun dalam enam kelompok. Urutannya mengikuti arus pekerjaan toko:
+    dari pantauan harian, penjualan, produksi, persediaan, keuangan, sampai pengaturan.
+  </p>
+  <table class="menu-map">
+    <tr><th style="width:31%;">Kelompok</th><th>Isi dan kegunaan</th></tr>
+    <tr>
+      <td>RUANG KERJA</td>
+      <td>Dasbor &amp; Indikator Utama, Kotak Tugas &amp; Persetujuan, Pemberitahuan &amp; Catatan Aktivitas. Tempat memulai hari dan melihat apa yang menunggu tindakan.</td>
+    </tr>
+    <tr>
+      <td>PENJUALAN &amp; PELANGGAN</td>
+      <td>Kasir Penjualan Cepat, Daftar Pesanan &amp; Penjualan, Pesanan Terjadwal (Pre-Order), Data Pelanggan &amp; Klien, Piutang &amp; Pembayaran, Retur Penjualan.</td>
+    </tr>
+    <tr>
+      <td>OPERASIONAL &amp; PRODUKSI</td>
+      <td>Perencanaan Jadwal Dapur, Perintah Kerja (SPK), Resep &amp; Daftar Bahan Baku, Pemakaian Aktual &amp; Hasil, Pemeriksaan Mutu (QC), Harga Pokok Produksi (HPP).</td>
+    </tr>
+    <tr>
+      <td>RANTAI PASOK &amp; PERSEDIAAN</td>
+      <td>Pembelian &amp; Penerimaan Barang, Pemasok &amp; Rekanan, Gudang &amp; Lokasi Rak, Mutasi Gudang ke Dapur, Katalog Bahan &amp; Produk Jadi, Pemeriksaan Fisik (Stok Opname), Nomor Batch &amp; Kedaluwarsa.</td>
+    </tr>
+    <tr>
+      <td>KEUANGAN &amp; AKUNTANSI</td>
+      <td>Buku Besar &amp; Jurnal Umum, Kas Toko &amp; Rekening Bank, Utang &amp; Piutang Usaha, Laporan Keuangan &amp; Laba Rugi.</td>
+    </tr>
+    <tr>
+      <td>ANALISIS &amp; PENGATURAN</td>
+      <td>Analisis &amp; Tren Penjualan, Jejak Audit &amp; Riwayat Sistem, Hak Akses &amp; Pegawai, Perangkat Kasir, Pengaturan Toko &amp; Cabang.</td>
+    </tr>
+  </table>
+  <p class="small">Seluruh menu kelompok dapat dilipat atau dibuka dengan menekan nama kelompoknya.</p>
+
+  <h2>1.3 Peran pengguna dan menu yang terlihat</h2>
+  <p>
+    Setiap akun memiliki satu peran. Peran menentukan menu apa yang tampil di sisi kiri dan
+    tindakan apa yang boleh dilakukan. Bila sebuah menu tidak terlihat pada akun Anda, artinya
+    peran tersebut memang tidak berwenang membukanya; server juga menolak permintaan yang
+    melanggar aturan ini.
+  </p>
+  <table>
+    <tr><th style="width:32%;">Peran (label di layar)</th><th>Kewenangan utama</th></tr>
+    <tr>
+      <td><b>Pemilik Toko</b><br><span class="small">Owner</span></td>
+      <td>Semua menu dan tindakan, termasuk Pengaturan Toko &amp; Cabang, Hak Akses &amp; Pegawai, Jejak Audit, dan Perangkat Kasir.</td>
+    </tr>
+    <tr>
+      <td><b>Manajer Operasional</b><br><span class="small">Admin</span></td>
+      <td>Penjualan, pembatalan, retur, ekspor, produksi, persediaan, pembelian, dan keuangan. Tidak dapat membuka empat menu pengaturan sistem milik Pemilik Toko.</td>
+    </tr>
+    <tr>
+      <td><b>Kepala Dapur</b><br><span class="small">Dapur</span></td>
+      <td>Produksi, resep, persediaan, stok opname, batch, dan penerimaan barang. Tidak membuka keuangan, analisis, maupun pengaturan sistem.</td>
+    </tr>
+    <tr>
+      <td><b>Staf Toko / Kasir</b><br><span class="small">Pegawai</span></td>
+      <td>Mencatat pesanan dan pembayaran, melihat pelanggan, piutang, pre-order, serta kotak tugas. Tidak dapat membatalkan pesanan, mencatat retur, atau membuka persediaan dan keuangan.</td>
+    </tr>
+  </table>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan berbagi akun antarpegawai. Jejak Audit mencatat nama akun pada setiap tindakan,
+      sehingga pekerjaan yang dilakukan dengan akun orang lain akan tercatat atas nama pemilik
+      akun tersebut. Buat akun terpisah lewat menu <b>Hak Akses &amp; Pegawai</b> (Bab 31).
+    </p>
+  </div>
+
+  <h2>1.4 Istilah yang dipakai di seluruh buku</h2>
+  <table>
+    <tr><th style="width:30%;">Istilah</th><th>Arti praktis</th></tr>
+    <tr><td><b>Pesanan / nota</b></td><td>Satu transaksi pelanggan dengan nomor unik, misalnya <code>ORD-20261102-0001</code>.</td></tr>
+    <tr><td><b>DP / Uang Muka</b></td><td>Uang yang dibayar di muka. Pesanan dianggap lunas bila DP sudah menutup seluruh total.</td></tr>
+    <tr><td><b>Etalase</b></td><td>Lokasi penyimpanan produk jadi yang siap dijual di toko.</td></tr>
+    <tr><td><b>SPK</b></td><td>Surat Perintah Kerja: perintah produksi untuk sejumlah target produk di dapur.</td></tr>
+    <tr><td><b>Resep / BOM</b></td><td>Daftar bahan dan jumlahnya untuk membuat satu produk. Menentukan kebutuhan bahan saat produksi.</td></tr>
+    <tr><td><b>QC</b></td><td>Pemeriksaan mutu sampel produk setelah SPK selesai.</td></tr>
+    <tr><td><b>HPP</b></td><td>Harga Pokok Produksi. HPP standar dihitung dari resep; HPP aktual dari pemakaian bahan, tenaga kerja, dan overhead SPK yang selesai.</td></tr>
+    <tr><td><b>Batch / lot</b></td><td>Sekumpulan bahan dari satu penerimaan dengan nomor dan tanggal kedaluwarsa sendiri.</td></tr>
+    <tr><td><b>Mutasi</b></td><td>Perpindahan stok antarlokasi, misalnya Gudang Utama ke Dapur Produksi.</td></tr>
+    <tr><td><b>Stok opname</b></td><td>Penghitungan fisik barang untuk menyetel saldo sistem.</td></tr>
+    <tr><td><b>Jurnal</b></td><td>Catatan akuntansi otomatis dari transaksi. Layar keuangan membaca jurnal, bukan angka ketikan terpisah.</td></tr>
+    <tr><td><b>Hari bisnis</b></td><td>Tanggal yang dipakai aplikasi untuk menghitung &ldquo;hari ini&rdquo;, mengikuti zona waktu toko di Pengaturan.</td></tr>
+  </table>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <p>Baru pertama kali memakai aplikasi? Ikuti urutan ini:</p>
+    <div class="flow">
+      <span class="node">Bab 2 Masuk</span><span class="arrow">&rarr;</span>
+      <span class="node">Bab 3 Dasbor</span><span class="arrow">&rarr;</span>
+      <span class="node">Bab 6 Kasir</span><span class="arrow">&rarr;</span>
+      <span class="node">Bab 10 Piutang</span><span class="arrow">&rarr;</span>
+      <span class="node">Bab 13 SPK</span><span class="arrow">&rarr;</span>
+      <span class="node">Bab 25 Keuangan</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 2 ══════════════════════════ -->
+<section class="chapter" id="bab-2">
+  <div class="chapter-eyebrow">Bagian I &middot; Pengenalan</div>
+  <div class="chapter-num">BAB 2</div>
+  <h1 class="chapter-title">Masuk dan Mengenal Jendela Kerja</h1>
+  <p class="chapter-lead">
+    Bab ini memandu Anda membuka aplikasi, melewati layar masuk, mengganti kata sandi
+    sementara, dan memahami bagian-bagian jendela kerja sebelum mulai mencatat transaksi.
+  </p>
+
+  <h2>2.1 Membuka aplikasi</h2>
+  <ol class="steps">
+    <li>Di PC kasir, klik dua kali pintasan <b>Seruni 22 Bakery</b> di Desktop atau cari namanya di menu Start.</li>
+    <li>Tunggu jendela aplikasi terbuka. Aplikasi menjalankan server lokal di PC itu sendiri, jadi pembukaan pertama dapat memerlukan beberapa detik.</li>
+    <li>Bila muncul pesan <b>Data gagal dimuat</b> atau pemberitahuan bahwa server lokal belum menjawab, tunggu sebentar lalu tekan <b>Coba lagi</b> atau tombol <b>Perbarui Data</b> di bilah atas.</li>
+  </ol>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Aplikasi berjalan di PC ini dan menyimpan datanya secara lokal. Pekerjaan harian tidak
+      bergantung pada sambungan internet, dan tidak ada pesan yang dikirim ke layanan luar.
+    </p>
+  </div>
+
+  <h2>2.2 Layar masuk</h2>
+  <figure>
+    <img src="gambar/login.png" alt="Layar masuk aplikasi">
+    <figcaption><b>Gambar 1.</b> Layar masuk dengan nama toko dan slogan dari Pengaturan Toko &amp; Cabang.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Periksa nama toko dan slogan di bagian atas. Keduanya berasal dari <b>Pengaturan Toko &amp; Cabang</b> (Bab 33).</li>
+    <li>Isi <b>Nama Pengguna / ID Pegawai</b> dengan akun yang diberikan pemilik toko.</li>
+    <li>Isi <b>Kata Sandi (PIN)</b>. Huruf besar dan kecil dibedakan.</li>
+    <li>Tekan <b>Masuk ke Sistem</b>. Selama pemeriksaan, tombol berubah menjadi <b>Memeriksa Hak Akses...</b>.</li>
+  </ol>
+  <p>
+    Bila nama pengguna atau kata sandi tidak cocok, layar menampilkan pesan
+    <b>Nama pengguna atau kata sandi tidak cocok.</b> Periksa ejaan dan pastikan tombol Caps Lock
+    tidak aktif. Bila akun dinonaktifkan, hubungi Pemilik Toko.
+  </p>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan menuliskan kata sandi di kertas yang ditempel di meja kasir dan jangan memakai
+      satu akun untuk beberapa orang. Pemilik Toko dapat membuat akun terpisah dan memberikan
+      kata sandi sementara lewat menu <b>Hak Akses &amp; Pegawai</b>.
+    </p>
+  </div>
+
+  <h2>2.3 Mengganti kata sandi sementara</h2>
+  <p>
+    Akun baru yang dibuat dari layar <b>Hak Akses &amp; Pegawai</b> selalu berangkat dengan kata
+    sandi sementara. Sebelum dapat memakai aplikasi, pemilik akun wajib menggantinya sendiri.
+    Layar ini muncul otomatis setelah masuk dan tidak dapat dilewati.
+  </p>
+  <figure>
+    <img src="gambar/login-ganti-sandi.png" alt="Dialog wajib ganti kata sandi">
+    <figcaption><b>Gambar 2.</b> Dialog <b>Ganti Kata Sandi</b> yang menutupi aplikasi sampai kata sandi sementara diganti.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Isi <b>Kata Sandi Saat Ini</b> dengan kata sandi sementara yang diberikan.</li>
+    <li>Isi <b>Kata Sandi Baru</b>. Panjang minimal 8 karakter serta memuat huruf dan angka.</li>
+    <li>Ulangi di <b>Konfirmasi Kata Sandi Baru</b> dengan isi yang sama.</li>
+    <li>Tekan <b>Simpan Kata Sandi Baru</b>. Bila kedua isian berbeda, muncul pesan <b>Kata sandi baru dan konfirmasi tidak cocok.</b></li>
+  </ol>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Pilih kata sandi yang mudah Anda ingat tetapi sulit ditebak orang lain, misalnya
+      gabungan dua kata ditambah angka. Setelah tersimpan, gunakan kata sandi baru pada
+      login berikutnya.
+    </p>
+  </div>
+
+  <h2>2.4 Mengenal jendela kerja</h2>
+  <p>Setelah masuk, jendela kerja terdiri dari tiga bagian tetap:</p>
+  <ul>
+    <li><b>Sidebar kiri</b> memuat merek toko, kotak <b>Cari menu atau fitur...</b>, enam kelompok menu, nama akun beserta peran di bagian bawah, dan ikon keluar.</li>
+    <li><b>Bilah atas</b> menampilkan <b>Lokasi Kerja:</b> beserta nama tempat kerja aktif (misalnya <b>Toko Utama &mdash; Jl. Seruni No. 22</b>) dan tombol <b>Perbarui Data</b> berbentuk lingkaran.</li>
+    <li><b>Area isi</b> menampilkan judul layar, penjelasan singkat, tombol tindakan di kanan atas, dan tabel atau kartu data.</li>
+  </ul>
+  <p>
+    Gunakan kotak pencarian menu untuk melompat ke layar tertentu, misalnya ketik
+    <b>piutang</b> lalu pilih <b>Piutang &amp; Pembayaran</b>. Bila daftar panjang, gunakan
+    tombol <b>Muat lagi</b> di bawah tabel untuk menampilkan baris berikutnya.
+  </p>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Menu yang tidak terlihat bukan kerusakan. Daftar menu disaring sesuai peran akun.
+      Contohnya, Staf Toko / Kasir tidak melihat kelompok Keuangan, dan Manajer Operasional
+      tidak melihat menu pengaturan sistem milik Pemilik Toko.
+    </p>
+  </div>
+
+  <h2>2.5 Keluar dari aplikasi</h2>
+  <ol class="steps">
+    <li>Tekan ikon keluar di pojok kiri bawah sidebar (keterangan <b>Keluar dari Sistem</b>).</li>
+    <li>Anda kembali ke layar masuk. Sesi berakhir dan layar berikutnya meminta kata sandi lagi.</li>
+  </ol>
+  <p>
+    Selalu keluar setelah selesai memakai PC bersama, terutama sebelum serah terima shift.
+    Tindakan yang sudah berhasil disimpan tidak hilang ketika Anda keluar.
+  </p>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <p>Setelah masuk, aplikasi membuka ruang kerja. Mulailah dari dasbor untuk melihat keadaan hari ini.</p>
+    <div class="flow">
+      <span class="node">Layar masuk</span><span class="arrow">&rarr;</span>
+      <span class="node">Dasbor (Bab 3)</span><span class="arrow">&rarr;</span>
+      <span class="node">Kasir (Bab 6) atau Tugas (Bab 4)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 3 ══════════════════════════ -->
+<section class="chapter" id="bab-3">
+  <div class="chapter-eyebrow">Bagian II &middot; Ruang Kerja</div>
+  <div class="chapter-num">BAB 3</div>
+  <h1 class="chapter-title">Dasbor &amp; Indikator Utama</h1>
+  <p class="chapter-lead">
+    Dasbor adalah layar pertama setelah masuk. Isinya ringkasan keadaan toko hari ini:
+    uang masuk, pesanan yang belum selesai, bahan yang menipis, piutang, peringatan, dan
+    pesanan yang akan diambil pelanggan.
+  </p>
+
+  <figure>
+    <img src="gambar/dashboard.png" alt="Dasbor &amp; Indikator Utama">
+    <figcaption><b>Gambar 3.</b> Dasbor &amp; Indikator Utama dengan empat kartu indikator, peringatan, pesanan mendatang, dan jalan pintas menu.</figcaption>
+  </figure>
+
+  <h2>3.1 Empat indikator utama</h2>
+  <table>
+    <tr><th style="width:34%;">Kartu</th><th>Yang perlu dibaca</th></tr>
+    <tr>
+      <td><b>Penerimaan Kasir Hari Ini</b></td>
+      <td>Jumlah uang yang diterima kasir pada hari bisnis berjalan. Baris kecil di bawahnya menunjukkan keterangan kas yang menyertainya.</td>
+    </tr>
+    <tr>
+      <td><b>Pesanan Aktif</b></td>
+      <td>Banyaknya pesanan yang belum lunas. Bila tidak ada, tertulis <b>Tidak ada pesanan aktif</b>.</td>
+    </tr>
+    <tr>
+      <td><b>Bahan Baku Kritis</b></td>
+      <td>Bahan yang stoknya berada di bawah batas minimum. Bila semua aman, tertulis <b>Semua stok aman</b>.</td>
+    </tr>
+    <tr>
+      <td><b>Piutang Belum Lunas</b></td>
+      <td>Sisa tagihan pelanggan, dengan keterangan jumlah tagihan yang sudah melewati jadwal.</td>
+    </tr>
+  </table>
+
+  <h2>3.2 Membaca peringatan dan pesanan mendatang</h2>
+  <p>
+    Di bawah indikator terdapat bagian <b>Notifikasi &amp; Peringatan</b> yang menampilkan
+    hal-hal yang perlu segera diperiksa, misalnya stok menipis, lot mendekati kedaluwarsa,
+    pesanan jatuh tempo, atau dokumen yang belum ditindaklanjuti. Di sebelahnya, tabel
+    <b>Pesanan Mendatang</b> memuat kolom <b>No. Pesanan</b>, <b>Pelanggan</b>, <b>Deskripsi</b>,
+    <b>Tanggal Ambil</b>, dan <b>Status</b>.
+  </p>
+  <ol class="steps">
+    <li>Baca peringatan dari atas ke bawah; urutkan menurut kepentingan toko.</li>
+    <li>Catat nomor pesanan atau nama bahan yang disebut, lalu buka menu sumbernya (lihat kotak alur di bawah).</li>
+    <li>Setelah pekerjaan selesai, tekan tombol <b>Perbarui Data</b> di bilah atas untuk memuat angka terbaru.</li>
+  </ol>
+
+  <h2>3.3 Jalan pintas menu cepat</h2>
+  <p>
+    Di bagian bawah dasbor terdapat empat kartu <b>Jalan Pintas Menu Cepat</b>. Kartu-kartu ini
+    membuka layar yang paling sering dipakai:
+  </p>
+  <table>
+    <tr><th style="width:38%;">Kartu</th><th>Membuka</th></tr>
+    <tr><td><b>Kasir Toko Cepat</b><br><span class="small">Penjualan langsung roti</span></td><td>Menu <b>Kasir Penjualan Cepat</b> (Bab 6)</td></tr>
+    <tr><td><b>Perintah Kerja Dapur</b><br><span class="small">Pantau resep &amp; oven</span></td><td>Menu <b>Perintah Kerja (SPK)</b> (Bab 13)</td></tr>
+    <tr><td><b>Mutasi Bahan Baku</b><br><span class="small">Kirim gudang ke dapur</span></td><td>Menu <b>Mutasi Gudang ke Dapur</b> (Bab 21)</td></tr>
+    <tr><td><b>Buku Kas &amp; Jurnal</b><br><span class="small">Pembukuan otomatis</span></td><td>Menu <b>Buku Besar &amp; Jurnal Umum</b> (Bab 25)</td></tr>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Angka pada dasbor berasal dari transaksi yang sudah tercatat, bukan target harian.
+      Dasbor yang masih kosong pada toko baru berarti belum ada transaksi, bukan kerusakan.
+      Angka akan terisi setelah kasir mencatat pesanan dan pembayaran.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Biasakan membuka dasbor pada awal shift, setelah jam makan siang, dan sebelum tutup.
+      Tiga kali pemeriksaan singkat ini membantu menangkap piutang, stok kritis, dan pesanan
+      yang belum diambil sebelum menjadi masalah.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Dasbor</span><span class="arrow">&rarr;</span>
+      <span class="node">Kasir (Bab 6)</span><span class="arrow">&rarr;</span>
+      <span class="node">Piutang (Bab 10)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 4 ══════════════════════════ -->
+<section class="chapter" id="bab-4">
+  <div class="chapter-eyebrow">Bagian II &middot; Ruang Kerja</div>
+  <div class="chapter-num">BAB 4</div>
+  <h1 class="chapter-title">Kotak Tugas &amp; Persetujuan</h1>
+  <p class="chapter-lead">
+    Kotak tugas bukan daftar pekerjaan yang diketik manual. Isinya disusun aplikasi dari
+    kondisi stok, pesanan, pembelian, dan produksi saat ini, sehingga selalu menunjukkan
+    pekerjaan yang benar-benar menunggu tindakan.
+  </p>
+
+  <figure>
+    <img src="gambar/tasks.png" alt="Kotak Tugas &amp; Persetujuan">
+    <figcaption><b>Gambar 4.</b> Kotak Tugas &amp; Persetujuan dengan daftar <b>Perlu tindakan</b> dan tanggal penyusunan.</figcaption>
+  </figure>
+
+  <h2>4.1 Apa yang muncul di sini</h2>
+  <p>
+    Kepala layar menampilkan <b>Perlu tindakan (n)</b> beserta keterangan
+    <b>disusun {tanggal}</b>. Tugas dapat berasal dari beberapa kondisi, antara lain:
+  </p>
+  <ul>
+    <li>pesanan yang jadwal ambilnya sudah dekat atau terlewat;</li>
+    <li>SPK yang masih terbuka dan belum diselesaikan;</li>
+    <li>purchase order yang belum diterima seluruhnya;</li>
+    <li>stok bahan di bawah batas minimum;</li>
+    <li>lot bahan yang mendekati atau sudah melewati tanggal kedaluwarsa.</li>
+  </ul>
+  <p>
+    Tugas tidak dihapus dengan tombol tersendiri. Tugas hilang dari daftar ketika kondisi
+    penyebabnya sudah diselesaikan di menu asal. Bila daftar kosong, layar menampilkan pesan
+    <b>Tidak ada pekerjaan yang menunggu sekarang.</b> beserta penjelasan bahwa daftar akan
+    terisi sendiri.
+  </p>
+
+  <h2>4.2 Bekerja dari kotak tugas</h2>
+  <ol class="steps">
+    <li>Baca uraian tugas dan tentukan menu sumbernya. Contoh: tugas stok menipis diselesaikan di <b>Pembelian &amp; Penerimaan Barang</b> atau <b>Mutasi Gudang ke Dapur</b>.</li>
+    <li>Buka menu tersebut lewat sidebar atau kotak pencarian.</li>
+    <li>Selesaikan pekerjaannya sesuai bab menu yang bersangkutan.</li>
+    <li>Kembali ke <b>Kotak Tugas &amp; Persetujuan</b> dan periksa apakah tugas sudah hilang dari daftar.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Kotak tugas dapat dibuka oleh semua peran, termasuk Staf Toko / Kasir. Namun tindakan
+      penyelesaiannya tetap mengikuti hak akses. Bila Anda tidak berwenang, catat temuannya
+      dan teruskan kepada Kepala Dapur, Manajer Operasional, atau Pemilik Toko.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Jadikan kotak tugas sebagai agenda serah terima shift. Bila daftar sudah kosong dan
+      dasbor menunjukkan angka wajar, keadaan toko siap diserahkan kepada shift berikutnya.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Kotak Tugas</span><span class="arrow">&rarr;</span>
+      <span class="node">Pesanan / Stok / PO / SPK</span><span class="arrow">&rarr;</span>
+      <span class="node">Kembali ke tugas</span><span class="arrow">&rarr;</span>
+      <span class="node">Dasbor</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 5 ══════════════════════════ -->
+<section class="chapter" id="bab-5">
+  <div class="chapter-eyebrow">Bagian II &middot; Ruang Kerja</div>
+  <div class="chapter-num">BAB 5</div>
+  <h1 class="chapter-title">Pemberitahuan &amp; Catatan Aktivitas</h1>
+  <p class="chapter-lead">
+    Layar ini menyimpan catatan transaksi, tugas, stok, produksi, dan ringkasan harian di
+    basis data lokal. Semua pesan bersifat internal; tidak ada pesan yang dikirim ke layanan
+    luar.
+  </p>
+
+  <figure>
+    <img src="gambar/notifications.png" alt="Notifikasi Internal">
+    <figcaption><b>Gambar 5.</b> Notifikasi Internal dengan ringkasan jumlah, riwayat, dan tombol tindakan.</figcaption>
+  </figure>
+
+  <h2>5.1 Membaca ringkasan notifikasi</h2>
+  <p>Tiga kotak di bagian atas menunjukkan keadaan kotak masuk:</p>
+  <table>
+    <tr><th style="width:34%;">Kotak</th><th>Arti</th></tr>
+    <tr><td><b>Total</b></td><td>Seluruh notifikasi yang tersimpan.</td></tr>
+    <tr><td><b>Belum Dibaca</b></td><td>Notifikasi yang belum dibuka atau ditandai.</td></tr>
+    <tr><td><b>Kritis Belum Dibaca</b></td><td>Notifikasi penting yang belum dibaca; periksa lebih dahulu.</td></tr>
+  </table>
+
+  <h2>5.2 Mengelola riwayat</h2>
+  <ol class="steps">
+    <li>Gunakan tombol <b>Segarkan Pengingat</b> untuk menyusun ulang pengingat stok, kedaluwarsa, tugas, dan ringkasan harian.</li>
+    <li>Baca bagian <b>Riwayat (n)</b> dari atas ke bawah. Notifikasi terbaru berada di atas.</li>
+    <li>Tekan <b>Tandai dibaca</b> pada baris yang sudah ditindaklanjuti, atau <b>Tandai Semua</b> setelah seluruh isi diperiksa.</li>
+  </ol>
+  <p>
+    Bila belum ada notifikasi, layar menampilkan pesan bahwa catatan akan muncul sendiri
+    setelah transaksi tercatat atau setelah pengingat disusun.
+  </p>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Notifikasi hanya alat pengingat. Sumber kebenaran tetap layar menu asalnya. Misalnya,
+      notifikasi stok menipis tidak mengubah stok; periksa <b>Gudang &amp; Lokasi Rak</b> atau
+      <b>Nomor Batch &amp; Kedaluwarsa</b> untuk melihat angka sebenarnya.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Tekan <b>Tandai Semua</b> pada akhir shift setelah Anda mencatat hal yang perlu
+      dikerjakan shift berikutnya. Dengan begitu, daftar keesokan pagi hanya berisi
+      peringatan baru.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Notifikasi</span><span class="arrow">&rarr;</span>
+      <span class="node">Piutang (Bab 10)</span>
+      <span class="arrow">&rarr;</span><span class="node">Batch (Bab 24)</span>
+      <span class="arrow">&rarr;</span><span class="node">Pembelian (Bab 18)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 6 ══════════════════════════ -->
+<section class="chapter" id="bab-6">
+  <div class="chapter-eyebrow">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+  <div class="chapter-num">BAB 6</div>
+  <h1 class="chapter-title">Kasir Penjualan Cepat</h1>
+  <p class="chapter-lead">
+    Menu ini dipakai untuk mencatat penjualan langsung, pesanan dengan uang muka, dan
+    pesanan pelanggan di meja kasir. Satu formulir menghasilkan satu nota dengan nomor
+    pesanan resmi.
+  </p>
+
+  <figure>
+    <img src="gambar/pos.png" alt="Kasir Penjualan Cepat">
+    <figcaption><b>Gambar 6.</b> Layar <b>Kasir Penjualan Cepat</b> beserta daftar pesanan dan tombol <b>Tambah Transaksi / Pesanan</b>.</figcaption>
+  </figure>
+
+  <h2>6.1 Mengenal layar kasir</h2>
+  <ul>
+    <li><b>Tambah Transaksi / Pesanan</b> membuka formulir pesanan baru.</li>
+    <li><b>Muat Ulang</b> memuat daftar pesanan terbaru dari basis data.</li>
+    <li>Kotak pencarian <b>Cari nama pelanggan atau deskripsi...</b> menyaring daftar.</li>
+    <li>Tab <b>Kasir Cepat</b>, <b>Pesanan &amp; Penjualan</b>, <b>Pesanan Terjadwal</b>, <b>Pelanggan</b>, dan <b>Piutang</b> memindahkan Anda ke bagian lain tanpa kembali ke sidebar.</li>
+    <li>Isian tanggal dan tombol <b>Export Excel</b> / <b>Export PDF</b> mengunduh daftar pesanan pada rentang tanggal tertentu.</li>
+  </ul>
+
+  <h2>6.2 Mencatat pesanan baru</h2>
+  <figure>
+    <img src="gambar/pos-form.png" alt="Formulir Tambah Transaksi / Pesanan Baru">
+    <figcaption><b>Gambar 7.</b> Formulir <b>Tambah Transaksi / Pesanan Baru</b> dengan kolom pelanggan, jadwal, produk, total, DP, dan catatan.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Tambah Transaksi / Pesanan</b>.</li>
+    <li>Isi <b>Nama Pelanggan *</b>. Nama ini menjadi identitas pesanan dan pelanggan di layar lain.</li>
+    <li>Isi <b>Nomor Telpon</b> bila tersedia. Nomor ini membantu saat pelanggan perlu dihubungi.</li>
+    <li>Isi <b>Tanggal Pickup *</b> dengan tanggal pengambilan. Untuk penjualan yang diambil saat itu juga, pilih tanggal hari ini.</li>
+    <li>Isi <b>Deskripsi Pesanan *</b>, misalnya jumlah dan jenis roti yang dipesan.</li>
+    <li>Pilih <b>Produk</b> dari katalog, lalu isi <b>Qty</b>. Bila produk tidak dipilih, kolom Total harus diisi sesuai kesepakatan.</li>
+    <li>Periksa <b>Total (Rp) *</b>. Untuk staf kasir, nilai ini dihitung dari harga katalog &times; jumlah unit; perubahan harga dilakukan lewat katalog produk oleh peran yang berwenang.</li>
+    <li>Isi <b>DP / Uang Muka (Rp)</b> bila pelanggan membayar di muka. Isi 0 bila belum ada DP. DP tidak boleh melebihi total.</li>
+    <li>Tambahkan <b>Catatan Tambahan</b> bila ada permintaan khusus, misalnya tulisan pada kemasan atau jam pengambilan.</li>
+    <li>Tekan <b>Simpan Pesanan</b>. Pesanan muncul di daftar dengan nomor baru.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Status pesanan ditentukan dari pembayaran. Bila DP sudah menutup seluruh total,
+      pesanan langsung berstatus <b>Lunas</b> dan stok produk jadi di etalase berkurang.
+      Bila DP belum menutup total, pesanan berstatus <b>DP / Sebagian</b> atau
+      <b>Belum Bayar</b> dan masuk ke daftar piutang.
+    </p>
+  </div>
+
+  <h2>6.3 Memindai barcode produk</h2>
+  <ol class="steps">
+    <li>Letakkan kursor pada kolom <b>Pindai Barcode Produk</b>.</li>
+    <li>Tembakkan pemindai ke barcode kemasan. Pemindai harus mengirim tombol Enter di akhir kode.</li>
+    <li>Produk yang cocok langsung terpilih beserta harganya. Bila kode tidak dikenal, periksa apakah barcode sudah diisi di <b>Resep &amp; Daftar Bahan Baku</b>.</li>
+  </ol>
+  <p class="small">
+    Hanya produk yang punya barcode di katalog yang dapat dipilih lewat pindai. Produk tanpa
+    barcode tetap dapat dipilih manual dari daftar <b>Produk</b>.
+  </p>
+
+  <h2>6.4 Mencatat pembayaran dan mencetak struk</h2>
+  <ol class="steps">
+    <li>Pada baris pesanan, tekan <b>Bayar</b>.</li>
+    <li>Periksa ringkasan <b>Total Pesanan</b>, <b>DP / Uang Muka</b>, <b>Pembayaran Sebelumnya</b>, dan <b>Sisa Tagihan</b>.</li>
+    <li>Isi <b>Nominal Pembayaran (Rp) *</b> sesuai uang yang diterima.</li>
+    <li>Pilih <b>Metode Pembayaran</b>. Gunakan <b>Tunai</b> atau <b>Transfer Bank</b> (lihat peringatan di bawah).</li>
+    <li>Tambahkan <b>Catatan (opsional)</b> bila perlu, lalu tekan <b>Catat Pembayaran</b>.</li>
+    <li>Bila printer sudah diatur di menu <b>Perangkat Kasir</b>, struk tercetak otomatis. Bila gagal, aplikasi menampilkan pesan kegagalan dan menyediakan tombol <b>Cetak lewat peramban</b> atau <b>Cetak ulang</b>.</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; metode pembayaran</span>
+    <p>
+      Pada versi 1.2.12, daftar metode menampilkan <b>Tunai</b>, <b>Transfer Bank</b>,
+      <b>QRIS</b>, dan <b>Kartu Debit</b>, tetapi server baru menerima <b>Tunai</b> dan
+      <b>Transfer</b>. Memilih QRIS atau Kartu Debit akan ditolak dengan pesan bahwa metode
+      harus Tunai atau Transfer. Untuk saat ini, catat pembayaran QRIS atau kartu sebagai
+      <b>Transfer Bank</b> dan tulis keterangannya di kolom Catatan, atau gunakan Tunai bila
+      uang diterima tunai.
+    </p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Untuk pesanan besar, isi DP terlebih dahulu agar pesanan tercatat sebagai
+      <b>DP / Sebagian</b>. Sisa tagihannya otomatis muncul di menu <b>Piutang &amp; Pembayaran</b>
+      sehingga tidak perlu dicatat ulang.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Kasir (Bab 6)</span><span class="arrow">&rarr;</span>
+      <span class="node">Piutang (Bab 10)</span><span class="arrow">&rarr;</span>
+      <span class="node">Daftar Pesanan (Bab 7)</span><span class="arrow">&rarr;</span>
+      <span class="node">Retur (Bab 11)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 7 ══════════════════════════ -->
+<section class="chapter" id="bab-7">
+  <div class="chapter-eyebrow">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+  <div class="chapter-num">BAB 7</div>
+  <h1 class="chapter-title">Daftar Pesanan &amp; Penjualan</h1>
+  <p class="chapter-lead">
+    Layar ini memuat seluruh pesanan toko, katering, dan riwayat transaksi beserta status
+    pembayarannya. Gunakan layar ini untuk mencari nota lama, melunasi, mencetak ulang
+    struk, atau membatalkan pesanan.
+  </p>
+
+  <figure>
+    <img src="gambar/orders.png" alt="Daftar Pesanan &amp; Penjualan">
+    <figcaption><b>Gambar 8.</b> Daftar Pesanan &amp; Penjualan dengan kolom nota, pelanggan, jadwal, total, sisa, status, dan tindakan.</figcaption>
+  </figure>
+
+  <h2>7.1 Membaca daftar</h2>
+  <p>Kolom yang tersedia:</p>
+  <table>
+    <tr><th style="width:30%;">Kolom</th><th>Arti</th></tr>
+    <tr><td><b>Nomor Nota / Faktur</b></td><td>Nomor unik pesanan, misalnya <code>ORD-20261102-0002</code>.</td></tr>
+    <tr><td><b>Nama Pembeli / Instansi</b></td><td>Nama pelanggan yang diisi saat pesanan dibuat.</td></tr>
+    <tr><td><b>Deskripsi</b></td><td>Ringkasan barang yang dipesan.</td></tr>
+    <tr><td><b>Jadwal Ambil</b></td><td>Tanggal pengambilan pesanan.</td></tr>
+    <tr><td><b>Total</b>, <b>Sisa</b></td><td>Nilai pesanan dan sisa yang belum dibayar.</td></tr>
+    <tr><td><b>Status</b></td><td><b>Lunas</b>, <b>DP / Sebagian</b>, <b>Belum Bayar</b>, atau <b>Dibatalkan</b>.</td></tr>
+    <tr><td><b>Tindakan</b></td><td>Tombol <b>Bayar</b>, <b>Cetak Struk</b>, dan <b>Batalkan</b> sesuai status dan peran.</td></tr>
+  </table>
+  <p>
+    Gunakan kotak <b>Cari nama pelanggan atau deskripsi...</b> untuk menyaring. Bila daftar
+    panjang, tekan <b>Muat lagi</b> di bagian bawah untuk memuat pesanan berikutnya.
+  </p>
+
+  <h2>7.2 Mencetak ulang struk</h2>
+  <ol class="steps">
+    <li>Cari pesanan yang dimaksud, lalu tekan <b>Cetak Struk</b> pada barisnya.</li>
+    <li>Tunggu pesan bahwa struk terkirim ke printer. Tombol berubah menjadi <b>Mengirim...</b> selama proses.</li>
+    <li>Bila printer tidak menjawab, periksa menu <b>Perangkat Kasir</b> (Bab 32) dan status printer di Windows.</li>
+  </ol>
+
+  <h2>7.3 Membatalkan pesanan</h2>
+  <ol class="steps">
+    <li>Tekan <b>Batalkan</b> pada baris pesanan.</li>
+    <li>Baca peringatan: pembatalan mengembalikan stok produk jadi ke etalase dan membalik jurnal penjualan pesanan tersebut.</li>
+    <li>Isi <b>Alasan Pembatalan *</b> secara jelas, misalnya pelanggan membatalkan lewat telepon.</li>
+    <li>Tekan <b>Batalkan Pesanan</b> untuk mengonfirmasi, atau <b>Kembali</b> untuk membatalkan tindakan.</li>
+  </ol>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Pembatalan tidak dapat diurungkan dari layar. Pesanan tetap terlihat di riwayat dengan
+      status <b>Dibatalkan</b>, sehingga jejaknya tidak hilang. Hanya Pemilik Toko dan Manajer
+      Operasional yang dapat membatalkan pesanan.
+    </p>
+  </div>
+
+  <h2>7.4 Mengekspor daftar</h2>
+  <ol class="steps">
+    <li>Isi tanggal mulai dan tanggal akhir pada isian di samping tombol ekspor.</li>
+    <li>Tekan <b>Export Excel</b> atau <b>Export PDF</b>.</li>
+    <li>Bila tanggal belum lengkap, aplikasi menampilkan pesan <b>Pilih tanggal mulai dan akhir</b>.</li>
+  </ol>
+  <p class="small">
+    Berkas ekspor memakai nama dan logo toko dari <b>Pengaturan Toko &amp; Cabang</b>.
+    Periksa kembali isi berkas sebelum dikirim ke pihak luar.
+  </p>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Daftar Pesanan</span><span class="arrow">&rarr;</span>
+      <span class="node">Bayar (Bab 10)</span><span class="arrow">&rarr;</span>
+      <span class="node">Cetak (Bab 32)</span><span class="arrow">&rarr;</span>
+      <span class="node">Retur (Bab 11)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 8 ══════════════════════════ -->
+<section class="chapter" id="bab-8">
+  <div class="chapter-eyebrow">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+  <div class="chapter-num">BAB 8</div>
+  <h1 class="chapter-title">Pesanan Terjadwal (Pre-Order)</h1>
+  <p class="chapter-lead">
+    Pre-order adalah pesanan yang diambil pada hari ini atau hari berikutnya. Layar ini
+    menyaring pesanan tersebut dan mengurutkannya dari jadwal pengambilan terdekat sehingga
+    dapur dan kasir dapat bersiap.
+  </p>
+
+  <figure>
+    <img src="gambar/preorders.png" alt="Pesanan Terjadwal (Pre-Order)">
+    <figcaption><b>Gambar 9.</b> Daftar pesanan terjadwal dengan jadwal ambil terdekat di bagian atas.</figcaption>
+  </figure>
+
+  <h2>8.1 Cara pesanan masuk ke daftar ini</h2>
+  <p>
+    Tidak ada formulir terpisah untuk pre-order. Pesanan otomatis tampil di sini bila
+    tanggal pickup-nya adalah hari ini atau sesudahnya. Buat pesanannya lewat
+    <b>Tambah Transaksi / Pesanan</b> seperti pada Bab 6, lalu isi <b>Tanggal Pickup</b>
+    sesuai janji ke pelanggan.
+  </p>
+  <p>
+    Pesanan yang jadwalnya sudah lewat tidak lagi ditampilkan di layar ini. Pesanan tersebut
+    tetap ada di <b>Daftar Pesanan &amp; Penjualan</b> dan dapat muncul sebagai tugas atau
+    notifikasi bila perlu ditindaklanjuti.
+  </p>
+
+  <h2>8.2 Menyiapkan pengambilan</h2>
+  <ol class="steps">
+    <li>Buka layar ini setiap pagi dan periksa jadwal terdekat.</li>
+    <li>Pastikan produk tersedia di etalase atau sudah dijadwalkan dalam SPK.</li>
+    <li>Bila pesanan masih memiliki sisa tagihan, buka <b>Piutang &amp; Pembayaran</b> untuk mencatat pelunasan saat pelanggan mengambil barang.</li>
+    <li>Setelah barang diserahkan, cetak struk dari <b>Daftar Pesanan &amp; Penjualan</b> bila pelanggan memerlukannya.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Layar pre-order hanya menyaring dan mengurutkan. Perubahan status pembayaran, stok, dan
+      jurnal tetap dilakukan dari pesanan dan pembayaran yang sama seperti transaksi biasa.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Untuk pesanan besar, isi deskripsi sedetail mungkin (jumlah per jenis, tulisan pada
+      kemasan, jam pengambilan). Deskripsi ini yang dibaca dapur dan kasir pada layar
+      <b>Perencanaan Jadwal Dapur</b> serta <b>Daftar Pesanan</b>.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Pre-Order</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">Piutang (Bab 10)</span><span class="arrow">&rarr;</span>
+      <span class="node">Daftar Pesanan (Bab 7)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 9 ══════════════════════════ -->
+<section class="chapter" id="bab-9">
+  <div class="chapter-eyebrow">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+  <div class="chapter-num">BAB 9</div>
+  <h1 class="chapter-title">Data Pelanggan &amp; Klien</h1>
+  <p class="chapter-lead">
+    Layar ini menyimpan nama, kontak, poin loyalitas, dan catatan pelanggan. Data terbentuk
+    otomatis saat pesanan pertama disimpan, sehingga kasir tidak perlu mengetik ulang.
+  </p>
+
+  <figure>
+    <img src="gambar/customers.png" alt="Data Pelanggan &amp; Klien">
+    <figcaption><b>Gambar 10.</b> <b>Data Pelanggan &amp; Klien</b> dengan pencarian, jumlah pelanggan, dan riwayat poin.</figcaption>
+  </figure>
+
+  <h2>9.1 Mencari pelanggan</h2>
+  <ol class="steps">
+    <li>Buka <b>Data Pelanggan &amp; Klien</b> dari kelompok Penjualan &amp; Pelanggan.</li>
+    <li>Ketik nama atau nomor telepon pada kotak <b>Cari nama atau telepon&hellip;</b>.</li>
+    <li>Periksa kolom <b>Nama</b>, <b>Telpon</b>, <b>Email</b>, <b>Poin Loyalitas</b>, dan <b>Catatan</b>.</li>
+    <li>Bila daftar panjang, tekan <b>Muat lagi</b> untuk menampilkan pelanggan berikutnya.</li>
+  </ol>
+
+  <h2>9.2 Dari mana data pelanggan berasal</h2>
+  <p>
+    Setiap kali pesanan disimpan pada Bab 6 atau Bab 7, nama pelanggan dicatat sebagai data
+    pelanggan. Nomor telepon yang diisi ikut tersimpan. Layar ini dipakai untuk mencari dan
+    memeriksa data tersebut, bukan untuk membuat pesanan.
+  </p>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Bila daftar masih kosong, artinya belum ada pesanan yang tercatat. Pesan di layar
+      menyebutkan bahwa pelanggan tercatat saat pesanan pertama dibuat.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Gunakan nomor telepon sebagai pembeda ketika ada pelanggan dengan nama sama. Sebelum
+      membuat pesanan baru untuk pelanggan lama, cari namanya di sini agar riwayat dan poin
+      loyalitasnya tetap menyatu.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Kasir (Bab 6)</span><span class="arrow">&rarr;</span>
+      <span class="node">Data Pelanggan</span><span class="arrow">&rarr;</span>
+      <span class="node">Piutang (Bab 10)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 10 ══════════════════════════ -->
+<section class="chapter" id="bab-10">
+  <div class="chapter-eyebrow">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+  <div class="chapter-num">BAB 10</div>
+  <h1 class="chapter-title">Piutang &amp; Pembayaran</h1>
+  <p class="chapter-lead">
+    Menu ini mengumpulkan pesanan yang belum lunas beserta sisa tagihannya. Dari sini kasir
+    menerima pelunasan, dan pesanan berubah menjadi lunas tanpa perlu membuat nota baru.
+  </p>
+
+  <figure>
+    <img src="gambar/receivables.png" alt="Piutang &amp; Pembayaran">
+    <figcaption><b>Gambar 11.</b> Daftar <b>Piutang &amp; Pembayaran</b> dengan sisa tagihan per pesanan dan tombol <b>Bayar</b>.</figcaption>
+  </figure>
+
+  <h2>10.1 Menemukan tagihan</h2>
+  <ol class="steps">
+    <li>Buka <b>Piutang &amp; Pembayaran</b>.</li>
+    <li>Cari nama pelanggan atau nomor pesanan pada kotak pencarian.</li>
+    <li>Periksa <b>Total</b>, <b>Sisa</b>, dan <b>Status</b>. Pesanan dengan status <b>DP / Sebagian</b> atau <b>Belum Bayar</b> masih memiliki sisa tagihan.</li>
+  </ol>
+  <p class="small">
+    Bila layar menampilkan pesan bahwa tidak ada pesanan dengan sisa tagihan, berarti semua
+    pesanan sudah lunas atau dibatalkan.
+  </p>
+
+  <h2>10.2 Mencatat pelunasan</h2>
+  <figure>
+    <img src="gambar/receivables-form.png" alt="Dialog Catat Pembayaran">
+    <figcaption><b>Gambar 12.</b> Dialog <b>Catat Pembayaran</b> dengan ringkasan tagihan, nominal, metode, dan catatan.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Bayar</b> pada baris pesanan yang akan dilunasi.</li>
+    <li>Periksa <b>Total Pesanan</b>, <b>DP / Uang Muka</b>, <b>Pembayaran Sebelumnya</b>, dan <b>Sisa Tagihan</b>.</li>
+    <li>Isi <b>Nominal Pembayaran (Rp) *</b> sesuai uang yang diterima.</li>
+    <li>Pilih <b>Metode Pembayaran</b>: <b>Tunai</b> atau <b>Transfer Bank</b>.</li>
+    <li>Tambahkan <b>Catatan (opsional)</b>, lalu tekan <b>Catat Pembayaran</b>.</li>
+    <li>Periksa status pesanan di daftar. Bila sisa tagihan sudah tertutup, status berubah menjadi <b>Lunas</b>.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Saat pesanan menjadi lunas, stok produk jadi di etalase berkurang sesuai jumlah yang
+      dipesan, dan pembayaran ikut tercatat pada buku kas serta jurnal. Karena itu, jangan
+      mencatat pelunasan dua kali untuk pesanan yang sama.
+    </p>
+  </div>
+
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; metode pembayaran</span>
+    <p>
+      Sama seperti di kasir, server versi 1.2.12 hanya menerima <b>Tunai</b> dan
+      <b>Transfer Bank</b>. Opsi QRIS dan Kartu Debit yang tampil belum diterima. Pilih
+      Transfer Bank dan tulis keterangan di Catatan bila uang masuk melalui QRIS atau kartu.
+    </p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Gunakan menu ini bersama <b>Kotak Tugas</b>. Tugas piutang yang muncul di sana
+      menunjukkan tagihan yang perlu ditagih, sedangkan pelunasan tetap dicatat di layar ini.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Piutang</span><span class="arrow">&rarr;</span>
+      <span class="node">Catat Pembayaran</span><span class="arrow">&rarr;</span>
+      <span class="node">Daftar Pesanan (Bab 7)</span><span class="arrow">&rarr;</span>
+      <span class="node">Kas &amp; Jurnal (Bab 25&ndash;26)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 11 ══════════════════════════ -->
+<section class="chapter" id="bab-11">
+  <div class="chapter-eyebrow">Bagian III &middot; Penjualan &amp; Pelanggan</div>
+  <div class="chapter-num">BAB 11</div>
+  <h1 class="chapter-title">Retur Penjualan</h1>
+  <p class="chapter-lead">
+    Retur mencatat pengembalian barang dari pesanan yang sudah lunas. Uang kembali kepada
+    pelanggan, stok produk jadi kembali ke etalase, dan pendapatan dikurangi melalui jurnal.
+  </p>
+
+  <figure>
+    <img src="gambar/sales_returns.png" alt="Retur Penjualan">
+    <figcaption><b>Gambar 13.</b> Riwayat retur beserta ringkasan dokumen, unit yang dikembalikan, dan uang yang dikembalikan.</figcaption>
+  </figure>
+
+  <h2>11.1 Mencatat retur</h2>
+  <ol class="steps">
+    <li>Tekan <b>Catat Retur</b> di kanan atas.</li>
+    <li>Pilih pesanan pada daftar <b>Pesanan lunas</b>. Hanya pesanan lunas yang dapat diretur.</li>
+    <li>Isi <b>Jumlah unit *</b>. Nilai retur dihitung dari harga pesanan per unit dan tidak dapat diisi bebas.</li>
+    <li>Pilih <b>Metode pengembalian dana</b>: <b>Tunai</b> atau <b>Transfer</b>.</li>
+    <li>Isi <b>Alasan retur *</b>, misalnya produk tidak sesuai pesanan.</li>
+    <li>Tekan <b>Simpan Retur</b>. Dokumen retur baru tercatat dan stok serta jurnal diperbarui.</li>
+  </ol>
+
+  <h2>11.2 Membaca riwayat retur</h2>
+  <p>
+    Tiga kotak ringkasan menunjukkan <b>Dokumen retur</b>, <b>Unit dikembalikan</b>, dan
+    <b>Uang dikembalikan</b>. Tabel <b>Riwayat Retur</b> memuat kolom <b>Nomor retur</b>,
+    <b>Waktu</b>, <b>Pesanan</b>, <b>Pelanggan</b>, <b>Produk</b>, <b>Jumlah</b>,
+    <b>Nilai</b>, <b>Metode</b>, <b>Alasan</b>, dan <b>Dicatat oleh</b>.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Retur mengeluarkan uang dan mengembalikan stok. Hanya Pemilik Toko dan Manajer
+      Operasional yang dapat mencatat retur. Periksa jumlah unit dan alasan sebelum menyimpan;
+      dokumen yang sudah tercatat tidak dapat dihapus dari layar.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Retur adalah dokumen terpisah dengan nomor sendiri, misalnya <code>RTR-20261102-0001</code>.
+      Pesanan aslinya tidak diubah dan tetap tampil di <b>Daftar Pesanan &amp; Penjualan</b>.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Catat retur pada hari yang sama saat barang dikembalikan agar uang, stok, dan laporan
+      harian tetap cocok. Simpan barang yang diretur terpisah sampai alasannya diperiksa.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Daftar Pesanan (Bab 7)</span><span class="arrow">&rarr;</span>
+      <span class="node">Retur</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 12 ══════════════════════════ -->
+<section class="chapter" id="bab-12">
+  <div class="chapter-eyebrow">Bagian IV &middot; Operasional &amp; Produksi</div>
+  <div class="chapter-num">BAB 12</div>
+  <h1 class="chapter-title">Perencanaan Jadwal Dapur</h1>
+  <p class="chapter-lead">
+    Layar ini menampilkan SPK yang masih berstatus terjadwal dan belum mulai dikerjakan.
+    Gunakan untuk melihat antrean dapur, memastikan bahan siap, dan menentukan pekerjaan
+    mana yang dikerjakan lebih dahulu.
+  </p>
+
+  <figure>
+    <img src="gambar/production_plan.png" alt="Perencanaan Jadwal Dapur">
+    <figcaption><b>Gambar 14.</b> <b>Perencanaan Jadwal Dapur</b> dengan kartu ringkasan dan daftar SPK terjadwal.</figcaption>
+  </figure>
+
+  <h2>12.1 Membaca antrean</h2>
+  <p>Empat kartu di bagian atas menunjukkan keadaan lantai produksi:</p>
+  <table>
+    <tr><th style="width:38%;">Kartu</th><th>Arti</th></tr>
+    <tr><td><b>SPK Dalam Antrean Dapur</b><br><span class="small">Siap diaduk &amp; dicetak</span></td><td>SPK yang sudah dibuat dan menunggu dikerjakan.</td></tr>
+    <tr><td><b>Sedang Masuk Oven</b><br><span class="small">Oven deck utama ruang panggang</span></td><td>SPK yang sedang diproses.</td></tr>
+    <tr><td><b>SPK Selesai</b></td><td>SPK yang hasilnya sudah dicatat.</td></tr>
+    <tr><td><b>SPK Dibatalkan</b></td><td>SPK yang dibatalkan beserta alasannya.</td></tr>
+  </table>
+  <p>
+    Tabel <b>Daftar SPK Terjadwal</b> memuat kolom <b>Nomor SPK &amp; Batch</b>,
+    <b>Nama Produk Roti</b>, <b>Jumlah Target</b>, <b>Status Pengerjaan</b>,
+    <b>Tanggal Mulai</b>, dan <b>Tindakan</b>.
+  </p>
+
+  <h2>12.2 Menyiapkan pekerjaan dapur</h2>
+  <ol class="steps">
+    <li>Periksa daftar dari atas ke bawah dan tentukan urutan sesuai kebutuhan toko.</li>
+    <li>Catat bahan yang dibutuhkan dari menu <b>Resep &amp; Daftar Bahan Baku</b> bila perlu.</li>
+    <li>Pastikan bahan sudah berada di <b>Dapur Produksi</b> melalui menu <b>Mutasi Gudang ke Dapur</b> (Bab 21).</li>
+    <li>Buka <b>Perintah Kerja (SPK)</b> untuk memulai atau menyelesaikan pekerjaan.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Layar perencanaan hanya menampilkan SPK yang belum mulai. Setelah SPK diproses atau
+      selesai, ia berpindah ke tab <b>Perintah Kerja (SPK)</b> dan <b>Pemakaian Aktual &amp; Hasil</b>.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Periksa antrean ini sebelum memesan bahan baru. Bila masih ada SPK yang menunggu dengan
+      bahan yang sama, selesaikan dulu agar stok tidak menumpuk atau kedaluwarsa.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Perencanaan</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi (Bab 21)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">QC (Bab 16)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 13 ══════════════════════════ -->
+<section class="chapter" id="bab-13">
+  <div class="chapter-eyebrow">Bagian IV &middot; Operasional &amp; Produksi</div>
+  <div class="chapter-num">BAB 13</div>
+  <h1 class="chapter-title">Perintah Kerja (SPK)</h1>
+  <p class="chapter-lead">
+    SPK adalah perintah produksi untuk sejumlah target produk. Menu ini mencatat pembuatan
+    SPK, pemakaian bahan aktual, hasil baik dan gagal, serta akibatnya pada stok etalase,
+    jurnal, dan HPP.
+  </p>
+
+  <figure>
+    <img src="gambar/production_orders.png" alt="Perintah Kerja (SPK)">
+    <figcaption><b>Gambar 15.</b> Daftar <b>Perintah Kerja (SPK)</b> beserta status pengerjaan dan tindakan per baris.</figcaption>
+  </figure>
+
+  <h2>13.1 Mengenal layar SPK</h2>
+  <p>
+    Layar ini memiliki tab <b>Perencanaan</b>, <b>Perintah Kerja (SPK)</b>, dan
+    <b>Pemakaian Aktual &amp; Hasil</b>. Tombol <b>Buat SPK Produksi Baru</b> membuka formulir
+    SPK. Pada setiap baris tersedia tindakan <b>Selesaikan</b>, <b>Batalkan</b>, atau
+    <b>Hanya lihat</b>, tergantung status dan peran Anda.
+  </p>
+  <p>
+    Status SPK yang mungkin terlihat: <b>Terjadwal</b>, <b>Diproses</b>, <b>Selesai</b>, dan
+    <b>Dibatalkan</b>. Nomor SPK, misalnya <code>SPK-20261102-0001</code>, dipakai untuk
+    merujuk pekerjaan ini di layar QC dan HPP.
+  </p>
+
+  <h2>13.2 Membuat SPK baru</h2>
+  <figure>
+    <img src="gambar/production_orders-form.png" alt="Formulir Buat SPK Produksi Baru">
+    <figcaption><b>Gambar 16.</b> Formulir <b>Buat SPK Produksi Baru</b> dengan produk, target jumlah, tenaga kerja, dan overhead.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Buat SPK Produksi Baru</b>.</li>
+    <li>Pilih <b>Produk *</b>. Daftar produk berasal dari katalog; bila kosong, periksa menu <b>Resep &amp; Daftar Bahan Baku</b>.</li>
+    <li>Isi <b>Target Jumlah (buah) *</b>, misalnya 100.</li>
+    <li>Isi <b>Biaya Tenaga Kerja (Rp)</b> dan <b>Biaya Overhead (Rp)</b> untuk pekerjaan ini. Keduanya dalam rupiah penuh; overhead mencakup gas, listrik, dan biaya sejenis.</li>
+    <li>Tekan <b>Buat SPK</b>. SPK muncul di tab Perencanaan dengan status <b>Terjadwal</b>.</li>
+  </ol>
+  <p class="small">
+    Kebutuhan bahan dihitung dari resep produk &times; target jumlah. Anda tidak perlu
+    mengetik daftar bahan saat membuat SPK.
+  </p>
+
+  <h2>13.3 Menyiapkan bahan di dapur</h2>
+  <ol class="steps">
+    <li>Periksa kebutuhan bahan pada rincian SPK.</li>
+    <li>Buka <b>Mutasi Gudang ke Dapur</b> (Bab 21) dan kirim bahan dari <b>Gudang Utama Bahan Baku</b> ke <b>Dapur Produksi</b>.</li>
+    <li>Pastikan jumlah yang dikirim mencukupi target produksi. Sistem menolak penyelesaian bila pemakaian aktual melebihi stok dapur.</li>
+  </ol>
+
+  <h2>13.4 Menyelesaikan SPK dan mencatat hasil</h2>
+  <figure>
+    <img src="gambar/production_orders-complete.png" alt="Dialog Penyelesaian SPK">
+    <figcaption><b>Gambar 17.</b> Dialog <b>Penyelesaian SPK</b> dengan perhitungan pemakaian bahan dan hasil produksi.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Selesaikan</b> pada baris SPK yang sudah dikerjakan.</li>
+    <li>Periksa bagian <b>Perhitungan Pemakaian Bahan Baku di Dapur</b>. Kolom <b>Standar Resep</b> menunjukkan kebutuhan menurut resep, sedangkan <b>Dipakai Aktual</b> dapat Anda sesuaikan dengan pemakaian nyata.</li>
+    <li>Perhatikan <b>Sisa Stok Dapur</b> pada setiap baris. Angka ini berasal dari stok dapur saat ini.</li>
+    <li>Isi <b>Roti Bagus (Lolos Uji)</b> dengan jumlah produk yang siap dijual.</li>
+    <li>Isi <b>Roti Gagal / Bantat</b> bila ada, lalu pilih alasan yang paling sesuai.</li>
+    <li>Isi <b>Rusak Saat Proses</b> bila ada kerusakan lain, lalu pilih alasannya.</li>
+    <li>Centang pilihan olah kembali bila roti gagal akan dijadikan tepung roti atau olahan sekunder yang tercatat.</li>
+    <li>Tekan <b>Simpan Hasil &amp; Perbarui Stok Gudang</b>.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Setiap bahan dalam resep harus tercatat tepat satu kali. Sistem menolak penyelesaian
+      bila ada bahan yang belum diisi atau bila jumlahnya tidak wajar. Jumlah roti bagus
+      ditambahkan ke stok <b>Etalase</b>, sedangkan biaya tenaga kerja dan overhead dibukukan
+      ke jurnal. Data ini juga menjadi dasar HPP aktual pada Bab 17.
+    </p>
+  </div>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      SPK yang sudah selesai tidak dapat dibatalkan. Pembatalan hanya berlaku untuk SPK
+      berstatus <b>Terjadwal</b> atau <b>Diproses</b>, dan hanya dapat dilakukan Pemilik Toko
+      atau Manajer Operasional. Bila perlu membatalkan, isi alasannya dengan jelas karena
+      alasan tersebut tersimpan di riwayat.
+    </p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Timbang bahan sebelum produksi dan catat pemakaian aktual apa adanya. Selisih kecil
+      antara standar dan aktual adalah informasi berharga untuk menghitung HPP dan menekan
+      pemborosan, bukan kesalahan yang perlu disembunyikan.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Buat SPK</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi bahan (Bab 21)</span><span class="arrow">&rarr;</span>
+      <span class="node">Selesaikan SPK</span><span class="arrow">&rarr;</span>
+      <span class="node">QC (Bab 16)</span><span class="arrow">&rarr;</span>
+      <span class="node">HPP (Bab 17)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 14 ══════════════════════════ -->
+<section class="chapter" id="bab-14">
+  <div class="chapter-eyebrow">Bagian IV &middot; Operasional &amp; Produksi</div>
+  <div class="chapter-num">BAB 14</div>
+  <h1 class="chapter-title">Resep &amp; Daftar Bahan Baku</h1>
+  <p class="chapter-lead">
+    Di sinilah katalog produk dan bahan baku dikelola. Resep menentukan bahan yang dibutuhkan
+    SPK, sedangkan harga bahan dan harga jual menentukan HPP serta margin yang tampil di
+    layar lain.
+  </p>
+
+  <figure>
+    <img src="gambar/recipes_bom.png" alt="Resep &amp; BOM Produk">
+    <figcaption><b>Gambar 18.</b> Tab <b>Produk &amp; Resep</b> dengan HPP, harga jual, margin, serta daftar bahan baku.</figcaption>
+  </figure>
+
+  <h2>14.1 Dua tab kerja</h2>
+  <ul>
+    <li><b>Produk &amp; Resep</b> memuat nama produk, kategori, HPP, harga jual, margin, dan komposisi bahan.</li>
+    <li><b>Bahan Baku</b> memuat nama bahan, satuan, harga per satuan, stok, dan batas minimum.</li>
+  </ul>
+  <p>
+    Tombol <b>Tambah Produk</b> dan <b>Tambah Bahan</b> membuka formulir baru. Ikon pensil
+    membuka formulir ubah, sedangkan ikon nonaktif mengeluarkan produk atau bahan dari daftar
+    aktif setelah Anda mengonfirmasi.
+  </p>
+
+  <h2>14.2 Menambah atau mengubah produk</h2>
+  <ol class="steps">
+    <li>Tekan <b>Tambah Produk</b>, atau ikon pensil pada produk yang akan diubah.</li>
+    <li>Isi <b>Nama Produk *</b> dan pilih <b>Kategori</b> (Roti, Kue, Minuman, atau Lainnya).</li>
+    <li>Isi <b>Barcode Produk</b> bila produk akan dipindai di kasir.</li>
+    <li>Isi <b>Harga Jual (Rp) *</b> dalam rupiah penuh, bukan sen.</li>
+    <li>Pada bagian <b>Komposisi Bahan Baku (BOM)</b>, tekan <b>Tambah Bahan</b> lalu pilih bahan dan isi <b>Qty</b>.</li>
+    <li>Ulangi untuk setiap bahan, lalu tekan <b>Tambah Produk</b> atau <b>Simpan Perubahan</b>.</li>
+  </ol>
+
+  <h2>14.3 Menambah atau mengubah bahan baku</h2>
+  <ol class="steps">
+    <li>Buka tab <b>Bahan Baku</b>, lalu tekan <b>Tambah Bahan</b> atau ikon pensil.</li>
+    <li>Isi <b>Nama Bahan *</b>, <b>Satuan *</b>, dan <b>Merek</b>.</li>
+    <li>Isi <b>Harga per Satuan (Rp) *</b> sesuai harga beli terkini.</li>
+    <li>Isi <b>Stok Saat Ini</b> (atau <b>Stok Awal</b>) dan <b>Min. Stok</b>.</li>
+    <li>Tekan <b>Tambah Bahan</b> atau <b>Simpan Perubahan</b>.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Kolom stok pada formulir bahan adalah total semua lokasi dan bukan alat untuk
+      memindahkan stok. Perpindahan barang dilakukan lewat <b>Mutasi Gudang ke Dapur</b>,
+      sedangkan penyetelan hasil hitung fisik dilakukan lewat <b>Pemeriksaan Fisik (Stok Opname)</b>.
+      Batas minimum yang Anda isi memunculkan pengingat <b>Bahan Baku Kritis</b> di dasbor.
+    </p>
+  </div>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Menonaktifkan produk atau bahan akan menyembunyikannya dari pilihan resep, pembelian,
+      dan kasir. Data lama tidak dihapus, tetapi jangan menonaktifkan bahan yang masih dipakai
+      resep aktif tanpa menggantinya lebih dahulu.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Perbarui harga bahan setiap kali menerima barang dengan harga baru. HPP standar memakai
+      harga bahan saat ini, sehingga harga yang usang membuat margin terlihat lebih baik
+      daripada kenyataan.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Resep &amp; Bahan</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">HPP (Bab 17)</span><span class="arrow">&rarr;</span>
+      <span class="node">Kasir (Bab 6)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 15 ══════════════════════════ -->
+<section class="chapter" id="bab-15">
+  <div class="chapter-eyebrow">Bagian IV &middot; Operasional &amp; Produksi</div>
+  <div class="chapter-num">BAB 15</div>
+  <h1 class="chapter-title">Pemakaian Aktual &amp; Hasil</h1>
+  <p class="chapter-lead">
+    Layar ini adalah arsip produksi: SPK yang sudah selesai atau dibatalkan beserta pemakaian
+    bahan aktual dan hasilnya. Isinya dipakai untuk memeriksa efisiensi dapur dan menjadi
+    bahan pemeriksaan mutu serta HPP.
+  </p>
+
+  <figure>
+    <img src="gambar/production_actual.png" alt="Pemakaian Aktual &amp; Hasil">
+    <figcaption><b>Gambar 19.</b> Tab <b>Pemakaian Aktual &amp; Hasil</b> dengan SPK selesai dan dibatalkan.</figcaption>
+  </figure>
+
+  <h2>15.1 Membaca arsip produksi</h2>
+  <ol class="steps">
+    <li>Buka <b>Perintah Kerja (SPK)</b>, lalu pilih tab <b>Pemakaian Aktual &amp; Hasil</b>.</li>
+    <li>Periksa daftar <b>Daftar SPK Selesai &amp; Dibatalkan</b>.</li>
+    <li>Bandingkan jumlah target dengan hasil baik dan gagal pada SPK yang selesai.</li>
+    <li>Gunakan nomor SPK untuk mencocokkan data dengan pemeriksaan mutu dan HPP.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Layar ini bersifat arsip. Angka pemakaian dan hasil tidak diubah di sini; catatan
+      dihasilkan saat SPK diselesaikan pada Bab 13. Bila ada kekeliruan, perbaiki proses pada
+      SPK berikutnya dan catat temuan untuk pemilik toko.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Bila hasil gagal berulang pada produk yang sama, periksa takaran resep, kualitas bahan,
+      dan suhu oven. Riwayat beberapa SPK di layar ini membantu melihat apakah masalahnya
+      sesekali atau berulang.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">SPK selesai (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">Pemakaian Aktual</span><span class="arrow">&rarr;</span>
+      <span class="node">QC (Bab 16)</span><span class="arrow">&rarr;</span>
+      <span class="node">HPP (Bab 17)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 16 ══════════════════════════ -->
+<section class="chapter" id="bab-16">
+  <div class="chapter-eyebrow">Bagian IV &middot; Operasional &amp; Produksi</div>
+  <div class="chapter-num">BAB 16</div>
+  <h1 class="chapter-title">Pemeriksaan Mutu (QC)</h1>
+  <p class="chapter-lead">
+    QC mencatat hasil pemeriksaan sampel produk per SPK: jumlah sampel, jumlah lulus dan
+    gagal, serta catatan tampilan dan rasa. Keputusan lulus atau gagal dihitung server dari
+    angka yang dikirim.
+  </p>
+
+  <figure>
+    <img src="gambar/quality_control.png" alt="Pemeriksaan Mutu (QC)">
+    <figcaption><b>Gambar 20.</b> Layar <b>Pemeriksaan Mutu (QC)</b> dengan ringkasan, peringatan SPK belum diperiksa, dan riwayat.</figcaption>
+  </figure>
+
+  <h2>16.1 Mencatat pemeriksaan</h2>
+  <ol class="steps">
+    <li>Pastikan SPK sudah berstatus <b>Selesai</b> pada Bab 13.</li>
+    <li>Tekan <b>Periksa SPK</b>.</li>
+    <li>Pilih SPK pada daftar <b>SPK selesai</b>. Satu SPK hanya memiliki satu hasil pemeriksaan.</li>
+    <li>Isi <b>Sampel *</b>, <b>Lulus *</b>, dan <b>Gagal *</b>.</li>
+    <li>Isi <b>Catatan tampilan</b> (warna, bentuk, kerataan), <b>Catatan rasa</b> (rasa, tekstur, aroma), dan <b>Catatan tambahan</b> bila ada.</li>
+    <li>Tekan <b>Simpan Hasil</b>. Hasil muncul di riwayat.</li>
+  </ol>
+
+  <h2>16.2 Membaca ringkasan dan riwayat</h2>
+  <p>
+    Tiga kotak menunjukkan <b>Sudah diperiksa</b>, <b>Unit lulus sampel</b>, dan
+    <b>Unit gagal sampel</b>. Bila ada SPK selesai yang belum diperiksa, layar menampilkan
+    peringatan beserta nomornya. Tabel <b>Riwayat Pemeriksaan</b> memuat kolom <b>Waktu</b>,
+    <b>SPK</b>, <b>Produk</b>, <b>Sampel</b>, <b>Lulus</b>, <b>Gagal</b>, <b>Keputusan</b>,
+    <b>Catatan</b>, dan <b>Pemeriksa</b>.
+  </p>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Jumlah lulus dan gagal sebaiknya dijumlahkan dengan jumlah sampel. Keputusan akhir
+      dihitung server, bukan diketik manual, sehingga hasil di riwayat konsisten.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Periksa sampel dari beberapa loyang, bukan hanya satu, lalu catat perbedaan tampilan
+      atau rasa secara konkret. Catatan yang spesifik membantu dapur memperbaiki proses pada
+      produksi berikutnya.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">SPK selesai (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">QC</span><span class="arrow">&rarr;</span>
+      <span class="node">HPP (Bab 17)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 17 ══════════════════════════ -->
+<section class="chapter" id="bab-17">
+  <div class="chapter-eyebrow">Bagian IV &middot; Operasional &amp; Produksi</div>
+  <div class="chapter-num">BAB 17</div>
+  <h1 class="chapter-title">Harga Pokok Produksi (HPP)</h1>
+  <p class="chapter-lead">
+    Layar ini membandingkan HPP standar dari resep dengan HPP aktual dari SPK yang sudah
+    selesai, lalu menunjukkan margin terhadap harga jual katalog.
+  </p>
+
+  <figure>
+    <img src="gambar/cost_calc.png" alt="Harga Pokok Produksi (HPP)">
+    <figcaption><b>Gambar 21.</b> <b>Harga Pokok Produksi (HPP)</b> dengan ringkasan biaya, margin, dan selisih per produk.</figcaption>
+  </figure>
+
+  <h2>17.1 Dua jenis HPP</h2>
+  <table>
+    <tr><th style="width:34%;">Jenis</th><th>Dasar perhitungan</th></tr>
+    <tr><td><b>HPP standar</b></td><td>Resep &times; harga bahan saat ini. Berguna untuk menetapkan harga jual sebelum produksi.</td></tr>
+    <tr><td><b>HPP aktual</b></td><td>Pemakaian bahan aktual, biaya tenaga kerja, dan overhead pada SPK yang sudah selesai. Berguna untuk melihat biaya nyata per unit.</td></tr>
+  </table>
+
+  <h2>17.2 Membaca tabel</h2>
+  <p>
+    Filter <b>Semua produk</b> menampilkan seluruh produk aktif. Pilih <b>Perlu perhatian</b>
+    untuk menyaring produk yang harga jualnya di bawah HPP atau biaya aktualnya melebihi
+    standar. Kolom yang tersedia: <b>Produk</b>, <b>Harga jual</b>, <b>HPP standar</b>,
+    <b>Margin standar</b>, <b>SPK selesai</b>, <b>HPP aktual/unit</b>, dan <b>Selisih</b>.
+  </p>
+  <ol class="steps">
+    <li>Periksa kartu <b>Harga jual di bawah HPP</b>. Produk pada kelompok ini merugi bila dijual dengan harga sekarang.</li>
+    <li>Buka <b>Perlu perhatian</b> untuk melihat produk yang perlu ditinjau.</li>
+    <li>Bila HPP aktual lebih tinggi dari standar, periksa pemakaian bahan pada Bab 15 dan harga bahan pada Bab 14.</li>
+    <li>Bila harga jual di bawah HPP, tinjau harga jual di <b>Resep &amp; Daftar Bahan Baku</b> atau komposisi resepnya.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      HPP aktual hanya muncul untuk produk yang sudah memiliki SPK selesai. Produk baru
+      dengan resep tetapi belum pernah diproduksi akan menampilkan tanda <b>belum ada</b>
+      pada kolom biaya aktual.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Periksa HPP setelah menerima barang dengan harga baru atau setelah beberapa SPK selesai.
+      Menyesuaikan harga jual berdasarkan HPP aktual lebih aman daripada berdasarkan perkiraan.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Resep (Bab 14)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">HPP</span><span class="arrow">&rarr;</span>
+      <span class="node">Harga jual (Bab 14)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 18 ══════════════════════════ -->
+<section class="chapter" id="bab-18">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 18</div>
+  <h1 class="chapter-title">Pembelian &amp; Penerimaan Barang</h1>
+  <p class="chapter-lead">
+    Menu ini mencatat pesanan pembelian ke pemasok dan penerimaan barangnya. Penerimaan
+    menambah stok di lokasi yang dipilih, memperbarui status PO, dan mencatat utang usaha.
+  </p>
+
+  <figure>
+    <img src="gambar/purchases.png" alt="Pembelian &amp; Penerimaan Barang">
+    <figcaption><b>Gambar 22.</b> Layar <b>Pembelian &amp; Penerimaan Barang</b> dengan daftar PO, status, dan tindakan.</figcaption>
+  </figure>
+
+  <h2>18.1 Membuat purchase order</h2>
+  <figure>
+    <img src="gambar/purchases-form.png" alt="Formulir Buat Purchase Order Baru">
+    <figcaption><b>Gambar 23.</b> Formulir <b>Buat Purchase Order Baru</b> dengan pemasok, tanggal, dan baris bahan.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Buat PO Baru</b>.</li>
+    <li>Pilih <b>Pemasok *</b>. Bila pemasok belum ada, tambahkan lebih dahulu di Bab 19.</li>
+    <li>Isi <b>Tanggal Expected</b> bila ada perkiraan tanggal kedatangan.</li>
+    <li>Tambahkan <b>Catatan</b> bila perlu.</li>
+    <li>Pada bagian <b>Baris Bahan *</b>, tekan <b>Tambah Bahan</b> lalu pilih bahan.</li>
+    <li>Isi <b>Qty</b> dan <b>Harga (Rp)</b> per satuan. Kolom <b>Satuan</b> terisi otomatis dari master bahan dan tidak dapat diganti.</li>
+    <li>Ulangi untuk setiap bahan, lalu tekan <b>Buat PO</b>.</li>
+  </ol>
+  <p>
+    PO baru muncul di daftar dengan status <b>Draf</b>. Nomor PO, misalnya
+    <code>PO-20261102-0001</code>, dipakai untuk merujuk dokumen ini saat penerimaan.
+  </p>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Satuan mengikuti master bahan agar jumlah yang dipesan dan diterima memakai ukuran yang
+      sama. Bila satuan yang dibutuhkan berbeda, ubah satuannya di <b>Resep &amp; Daftar Bahan
+      Baku</b> sebelum membuat PO, jangan mencampur satuan dalam satu baris.
+    </p>
+  </div>
+
+  <h2>18.2 Menerima barang</h2>
+  <figure>
+    <img src="gambar/purchases-receive.png" alt="Dialog Terima Barang">
+    <figcaption><b>Gambar 24.</b> Dialog <b>Terima Barang</b> dengan jumlah dipesan, sudah diterima, sisa, lokasi simpan, batch, dan kedaluwarsa.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Terima</b> pada baris PO yang barangnya datang.</li>
+    <li>Periksa <b>Dipesan</b>, <b>Sudah Diterima</b>, dan <b>Sisa</b> pada setiap bahan.</li>
+    <li>Isi <b>Terima Sekarang</b> sesuai jumlah fisik yang benar-benar diterima. Penerimaan boleh sebagian.</li>
+    <li>Pilih <b>Lokasi Simpan</b>: gudang atau dapur.</li>
+    <li>Isi <b>Nomor Batch (opsional)</b> dan <b>Kedaluwarsa</b> bila bahan perlu dilacak lotnya.</li>
+    <li>Isi <b>Catatan Penerimaan</b> bila ada kondisi khusus, misalnya kemasan penyok.</li>
+    <li>Tekan <b>Simpan Penerimaan</b>.</li>
+  </ol>
+  <p>
+    Setelah disimpan, stok bertambah di lokasi yang dipilih. Status PO menjadi
+    <b>Diterima Sebagian</b> atau <b>Diterima</b>, dan lot baru muncul di menu
+    <b>Nomor Batch &amp; Kedaluwarsa</b>.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Tanggal kedaluwarsa harus setelah tanggal penerimaan. Penerimaan yang sudah disimpan
+      tidak dapat dihapus dari layar; periksa jumlah dan lokasi sebelum menekan
+      <b>Simpan Penerimaan</b>. PO yang sudah diterima sebagian tidak menampilkan tombol
+      <b>Batal</b>; selesaikan penerimaan sisanya atau biarkan sesuai keadaan nyata.
+    </p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Terima barang pada hari kedatangan, bukan menunggu akhir minggu. Semakin cepat stok dan
+      lot dicatat, semakin kecil kemungkinan produksi memakai bahan yang belum masuk sistem.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">PO (Bab 18)</span><span class="arrow">&rarr;</span>
+      <span class="node">Penerimaan</span><span class="arrow">&rarr;</span>
+      <span class="node">Batch (Bab 24)</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi (Bab 21)</span><span class="arrow">&rarr;</span>
+      <span class="node">Utang (Bab 27)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 19 ══════════════════════════ -->
+<section class="chapter" id="bab-19">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 19</div>
+  <h1 class="chapter-title">Pemasok &amp; Rekanan</h1>
+  <p class="chapter-lead">
+    Layar ini menyimpan daftar pemasok beserta kontak dan alamatnya. Data pemasok dipakai
+    saat membuat purchase order dan melihat utang usaha.
+  </p>
+
+  <figure>
+    <img src="gambar/suppliers.png" alt="Pemasok &amp; Rekanan">
+    <figcaption><b>Gambar 25.</b> Daftar <b>Pemasok &amp; Rekanan</b> dengan kontak dan tindakan ubah.</figcaption>
+  </figure>
+
+  <h2>19.1 Menambah pemasok</h2>
+  <ol class="steps">
+    <li>Buka tab <b>Pemasok</b> di layar Pembelian, atau menu <b>Pemasok &amp; Rekanan</b>.</li>
+    <li>Tekan <b>Tambah Pemasok</b>.</li>
+    <li>Isi <b>Nama Pemasok *</b>, lalu lengkapi <b>Nama Kontak</b>, <b>Telepon</b>, <b>Email</b>, <b>Alamat</b>, dan <b>Catatan</b>.</li>
+    <li>Tekan <b>Tambah Pemasok</b> untuk menyimpan.</li>
+  </ol>
+  <p>
+    Untuk mengubah data, tekan <b>Edit</b> pada baris pemasok, perbaiki isian, lalu tekan
+    <b>Simpan Perubahan</b>. Daftar menampilkan kolom <b>Nama</b>, <b>Kontak</b>,
+    <b>Telepon</b>, <b>Email</b>, dan <b>Aksi</b>.
+  </p>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Nama pemasok yang sudah dipakai PO tidak berubah pada dokumen lama walaupun Anda
+      memperbaiki ejaannya. Perubahan berlaku untuk dokumen dan tampilan berikutnya.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Simpan nomor telepon dan nama kontak yang benar-benar dihubungi saat barang terlambat.
+      Informasi ini juga membantu saat memeriksa utang per pemasok di Bab 27.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Pemasok</span><span class="arrow">&rarr;</span>
+      <span class="node">PO (Bab 18)</span><span class="arrow">&rarr;</span>
+      <span class="node">Utang (Bab 27)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 20 ══════════════════════════ -->
+<section class="chapter" id="bab-20">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 20</div>
+  <h1 class="chapter-title">Gudang &amp; Lokasi Rak</h1>
+  <p class="chapter-lead">
+    Layar ini menunjukkan stok bahan per lokasi penyimpanan: gudang, dapur, dan etalase.
+    Angka diambil dari pencatatan stok per lokasi, bukan dari perkiraan.
+  </p>
+
+  <figure>
+    <img src="gambar/inventory_locations.png" alt="Gudang &amp; Lokasi Rak">
+    <figcaption><b>Gambar 26.</b> Tab <b>Stok per Lokasi</b> dengan pemilih lokasi, ringkasan nilai persediaan, dan tabel stok.</figcaption>
+  </figure>
+
+  <h2>20.1 Memeriksa stok satu lokasi</h2>
+  <ol class="steps">
+    <li>Buka menu <b>Gudang &amp; Lokasi Rak</b>.</li>
+    <li>Pilih lokasi pada daftar di bagian atas, misalnya <b>Gudang Utama Bahan Baku</b> atau <b>Dapur Produksi</b>.</li>
+    <li>Periksa kartu <b>Nilai persediaan lokasi ini</b>, <b>Baris stok</b>, <b>Di bawah minimum</b>, dan <b>Stok nol di semua lokasi</b>.</li>
+    <li>Gunakan kotak <b>Cari nama bahan...</b> untuk menemukan bahan tertentu.</li>
+  </ol>
+  <p>
+    Tabel memuat kolom <b>Bahan</b>, <b>Satuan</b>, <b>Stok lokasi</b>, <b>Minimum</b>,
+    <b>Cukup?</b>, <b>Harga satuan</b>, <b>Nilai stok</b>, dan <b>Aksi</b>. Tanda
+    <b>Kurang</b> berarti stok di bawah minimum; <b>Cukup</b> berarti sebaliknya.
+  </p>
+
+  <h2>20.2 Pindah ke layar lain</h2>
+  <ul>
+    <li><b>Kirim Bahan</b> membuka formulir mutasi untuk memindahkan stok (Bab 21).</li>
+    <li>Tab <b>Mutasi Gudang &rarr; Dapur</b> menampilkan riwayat perpindahan.</li>
+    <li>Tab <b>Katalog Bahan &amp; Produk Jadi</b> menampilkan daftar harga dan stok produk jadi (Bab 22).</li>
+  </ul>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Bila layar menampilkan peringatan bahwa belum ada lokasi aktif, stok tidak dapat
+      ditampilkan. Hubungi pemilik atau pengembang untuk memastikan lokasi penyimpanan sudah
+      dibuat di basis data.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Periksa kolom <b>Cukup?</b> sebelum memulai produksi. Bahan yang berstatus
+      <b>Kurang</b> sebaiknya dimutasi atau dibeli lebih dahulu agar SPK tidak terhenti.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Gudang &amp; Lokasi</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi (Bab 21)</span><span class="arrow">&rarr;</span>
+      <span class="node">Opname (Bab 23)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 21 ══════════════════════════ -->
+<section class="chapter" id="bab-21">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 21</div>
+  <h1 class="chapter-title">Mutasi Gudang ke Dapur</h1>
+  <p class="chapter-lead">
+    Mutasi memindahkan bahan dari satu lokasi ke lokasi lain, biasanya dari gudang utama ke
+    dapur produksi. Setiap pengiriman menulis dua kaki mutasi dalam satu transaksi sehingga
+    stok asal dan tujuan selalu seimbang.
+  </p>
+
+  <figure>
+    <img src="gambar/kitchen_transfer.png" alt="Mutasi Gudang ke Dapur">
+    <figcaption><b>Gambar 27.</b> Tab <b>Mutasi Gudang &rarr; Dapur</b> dengan riwayat pergerakan stok terakhir.</figcaption>
+  </figure>
+
+  <h2>21.1 Mencatat perpindahan bahan</h2>
+  <figure>
+    <img src="gambar/kitchen_transfer-form.png" alt="Formulir Mutasi Bahan">
+    <figcaption><b>Gambar 28.</b> Formulir <b>Mutasi Bahan</b> dengan lokasi asal, lokasi tujuan, bahan, jumlah, dan catatan.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Kirim Bahan</b> pada layar Gudang atau <b>Buka Formulir Mutasi</b> pada tab mutasi.</li>
+    <li>Pilih <b>Dari lokasi</b>, misalnya <b>WH-MAIN &middot; Gudang Utama Bahan Baku</b>.</li>
+    <li>Pilih <b>Ke lokasi</b>, misalnya <b>KIT-DAPUR &middot; Dapur Produksi</b>.</li>
+    <li>Pilih <b>Bahan</b>. Satuan mengikuti master bahan; keterangan di bawah kolom jumlah menunjukkan stok yang tersedia di lokasi asal.</li>
+    <li>Isi <b>Jumlah</b> sesuai kebutuhan.</li>
+    <li>Isi <b>Catatan</b>, misalnya kebutuhan SPK shift pagi.</li>
+    <li>Tekan <b>Catat Mutasi</b>.</li>
+  </ol>
+
+  <h2>21.2 Membaca riwayat</h2>
+  <p>
+    Bagian <b>Pergerakan stok terakhir</b> menampilkan kolom <b>Waktu</b>, <b>Jenis</b>,
+    <b>Bahan</b>, <b>Jumlah</b>, dan <b>Sumber dokumen</b>. Gunakan filter <b>Semua lokasi</b>
+    untuk mempersempit tampilan. Jumlah yang keluar dari gudang dan masuk ke dapur tercatat
+    sebagai satu dokumen mutasi.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jumlah tidak boleh melebihi stok di lokasi asal. Lokasi asal dan tujuan juga harus
+      berbeda. Bila muncul pesan <b>Jumlah melebihi stok tersedia di lokasi asal</b>, periksa
+      stok terbaru di Bab 20 atau catat penerimaan barang lebih dahulu.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Mutasi bukan pengeluaran biaya; ia hanya memindahkan barang. Nilai persediaan ikut
+      berpindah antarakun lokasi melalui jurnal otomatis sehingga total persediaan toko tidak
+      berubah karena mutasi.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Kirim bahan untuk satu SPK sekaligus dan tulis nomor SPK pada Catatan. Dengan begitu,
+      sisa bahan di dapur mudah ditelusuri bila produksi selesai dengan pemakaian berbeda.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Gudang (Bab 20)</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">Opname (Bab 23)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 22 ══════════════════════════ -->
+<section class="chapter" id="bab-22">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 22</div>
+  <h1 class="chapter-title">Katalog Bahan &amp; Produk Jadi</h1>
+  <p class="chapter-lead">
+    Katalog memuat dua daftar acuan: bahan baku beserta harga satuannya, dan produk jadi
+    beserta harga jual serta stoknya per lokasi. Layar ini dipakai untuk memeriksa harga dan
+    ketersediaan sebelum menjual atau memproduksi.
+  </p>
+
+  <figure>
+    <img src="gambar/stock_catalog.png" alt="Katalog Bahan &amp; Produk Jadi">
+    <figcaption><b>Gambar 29.</b> Tab <b>Katalog Bahan &amp; Produk Jadi</b> dengan katalog bahan dan katalog produk jadi.</figcaption>
+  </figure>
+
+  <h2>22.1 Katalog bahan baku</h2>
+  <p>
+    Tabel <b>Katalog bahan baku</b> memuat kolom <b>Bahan</b>, <b>Satuan</b>,
+    <b>Harga satuan</b>, dan <b>Total semua lokasi</b>. Gunakan untuk memeriksa harga acuan
+    sebelum membuat PO atau menghitung HPP.
+  </p>
+
+  <h2>22.2 Katalog produk jadi</h2>
+  <p>
+    Tabel <b>Katalog produk jadi</b> memuat kolom <b>Produk</b>, <b>Kategori</b>,
+    <b>Harga jual</b>, <b>Bahan resep</b>, dan <b>Stok jadi per lokasi</b>. Stok jadi
+    menunjukkan jumlah produk siap jual di setiap lokasi, termasuk etalase.
+  </p>
+  <p>
+    Bila stok produk jadi kosong, periksa apakah SPK untuk produk tersebut sudah diselesaikan
+    (Bab 13). Menyelesaikan SPK menambahkan jumlah roti bagus ke etalase.
+  </p>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Katalog bersifat acuan. Mengubah harga atau produk dilakukan lewat
+      <b>Resep &amp; Daftar Bahan Baku</b> (Bab 14), bukan di layar ini.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Sebelum menerima pesanan besar, periksa stok jadi per lokasi. Bila belum cukup, buat
+      SPK dan pastikan bahan tersedia agar janji pengambilan tidak terlewat.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Katalog</span><span class="arrow">&rarr;</span>
+      <span class="node">Kasir (Bab 6)</span>
+      <span class="arrow">&rarr;</span><span class="node">SPK (Bab 13)</span>
+      <span class="arrow">&rarr;</span><span class="node">Resep (Bab 14)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 23 ══════════════════════════ -->
+<section class="chapter" id="bab-23">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 23</div>
+  <h1 class="chapter-title">Pemeriksaan Fisik (Stok Opname)</h1>
+  <p class="chapter-lead">
+    Opname membandingkan saldo sistem dengan jumlah fisik di rak. Selisih disetel sebagai
+    penyesuaian dan tercatat di jejak audit, sehingga stok sistem kembali sesuai kenyataan.
+  </p>
+
+  <figure>
+    <img src="gambar/stock_opname.png" alt="Pemeriksaan Fisik (Stok Opname)">
+    <figcaption><b>Gambar 30.</b> Layar <b>Pemeriksaan Fisik (Stok Opname)</b> dengan pilihan lokasi, saldo sistem, jumlah fisik, dan selisih.</figcaption>
+  </figure>
+
+  <h2>23.1 Menghitung dan menyetel stok</h2>
+  <ol class="steps">
+    <li>Pilih lokasi pada daftar di bagian atas.</li>
+    <li>Isi <b>Alasan opname</b>, misalnya selisih hitung fisik tanggal tertentu. Alasan ini ikut tercatat.</li>
+    <li>Hitung barang di rak, lalu isi <b>Jumlah fisik</b> pada baris bahan yang diperiksa.</li>
+    <li>Periksa kolom <b>Selisih</b>. Angka positif berarti jumlah fisik lebih banyak dari sistem; angka negatif berarti sebaliknya.</li>
+    <li>Tekan <b>Hitung</b> untuk menyiapkan baris, lalu <b>Setel</b> untuk menyimpan penyesuaian. Gunakan <b>Batal</b> bila hitungan keliru.</li>
+    <li>Ulangi untuk bahan lain, lalu periksa jejak audit bila perlu.</li>
+  </ol>
+  <p>
+    Setelah disetel, layar menampilkan pesan bahwa stok bahan telah disetel ke jumlah baru.
+    Nilai persediaan dan jurnal penyesuaian ikut diperbarui.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Penyetelan stok mengubah saldo dan menulis jurnal. Lakukan hanya setelah barang
+      benar-benar dihitung, bukan untuk menutupi selisih yang belum dijelaskan. Hanya Kepala
+      Dapur, Manajer Operasional, dan Pemilik Toko yang dapat menyetel stok.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Opname per lokasi. Bila barang yang sama disimpan di gudang dan dapur, hitung dan
+      setel masing-masing lokasi agar tidak terjadi pemindahan stok yang tidak nyata.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Lakukan opname pada saat toko sepi dan produksi belum dimulai. Catat tanggal dan alasan
+      dengan jelas agar selisih mudah ditelusuri di kemudian hari.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Gudang (Bab 20)</span><span class="arrow">&rarr;</span>
+      <span class="node">Opname</span><span class="arrow">&rarr;</span>
+      <span class="node">Jejak Audit (Bab 30)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 24 ══════════════════════════ -->
+<section class="chapter" id="bab-24">
+  <div class="chapter-eyebrow">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
+  <div class="chapter-num">BAB 24</div>
+  <h1 class="chapter-title">Nomor Batch &amp; Kedaluwarsa</h1>
+  <p class="chapter-lead">
+    Setiap lot bahan dapat memiliki nomor batch dan tanggal kedaluwarsa. Layar ini membantu
+    memakai bahan yang paling cepat kedaluwarsa dan mengeluarkan lot yang sudah lewat.
+  </p>
+
+  <figure>
+    <img src="gambar/batch_expiry.png" alt="Nomor Batch &amp; Kedaluwarsa">
+    <figcaption><b>Gambar 31.</b> Daftar lot dengan status <b>aman</b>, <b>segera</b>, dan <b>kedaluwarsa</b>.</figcaption>
+  </figure>
+
+  <h2>24.1 Membaca status lot</h2>
+  <p>Gunakan filter <b>Semua</b>, <b>aman</b>, <b>segera</b>, atau <b>kedaluwarsa</b>.</p>
+  <table>
+    <tr><th style="width:28%;">Status</th><th>Arti</th></tr>
+    <tr><td><b>aman</b></td><td>Tanggal kedaluwarsa masih jauh dari hari bisnis.</td></tr>
+    <tr><td><b>segera</b></td><td>Lot mendekati kedaluwarsa dan perlu dipakai lebih dahulu.</td></tr>
+    <tr><td><b>kedaluwarsa</b></td><td>Tanggal kedaluwarsa sudah lewat; jangan dipakai untuk produksi.</td></tr>
+  </table>
+  <p>
+    Kolom yang tersedia: <b>Bahan</b>, <b>Nomor Batch</b>, <b>Diterima</b>,
+    <b>Kedaluwarsa</b>, <b>Sisa hari</b>, <b>Biaya</b>, <b>satuan</b>, dan <b>Status</b>.
+    <b>Sisa hari</b> bernilai negatif bila lot sudah kedaluwarsa.
+  </p>
+
+  <h2>24.2 Mencatat lot secara manual</h2>
+  <ol class="steps">
+    <li>Tekan <b>Catat Lot</b>.</li>
+    <li>Pilih <b>Bahan</b>.</li>
+    <li>Isi <b>Nomor batch</b>, misalnya <code>GUL-2026-10-A</code>.</li>
+    <li>Isi <b>Tanggal terima</b>, <b>Kedaluwarsa *</b>, dan <b>Biaya per satuan (Rp)</b>.</li>
+    <li>Tekan <b>Simpan Lot</b>. Daftar dimuat ulang dan lot baru muncul.</li>
+  </ol>
+  <p class="small">
+    Pencatatan manual dipakai untuk bahan yang dibeli tunai lalu dikemas sendiri, di luar
+    struk penerimaan. Lot dari penerimaan barang tercatat otomatis saat Bab 18 disimpan.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan memakai lot berstatus <b>kedaluwarsa</b> untuk produksi. Periksa lot
+      <b>segera</b> pada awal shift dan pakai lebih dahulu. Lot yang sudah kedaluwarsa tetap
+      terlihat di riwayat sebagai bukti, bukan dihapus.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Tulis nomor batch pada kemasan asli saat barang diterima. Dengan begitu, penelusuran
+      bahan yang bermasalah dapat dilakukan tanpa membongkar seluruh gudang.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Penerimaan (Bab 18)</span><span class="arrow">&rarr;</span>
+      <span class="node">Batch</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi (Bab 21)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 25 ══════════════════════════ -->
+<section class="chapter" id="bab-25">
+  <div class="chapter-eyebrow">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
+  <div class="chapter-num">BAB 25</div>
+  <h1 class="chapter-title">Buku Besar &amp; Jurnal Umum</h1>
+  <p class="chapter-lead">
+    Semua transaksi operasional menulis jurnal secara otomatis. Layar ini menampilkan kaki
+    jurnal pada rentang tanggal tertentu, sehingga Anda dapat menelusuri asal angka di
+    laporan keuangan.
+  </p>
+
+  <figure>
+    <img src="gambar/general_ledger.png" alt="Buku Besar &amp; Jurnal Umum">
+    <figcaption><b>Gambar 32.</b> Tab <b>Buku Besar &amp; Jurnal Umum</b> dengan rentang tanggal, filter akun, dan daftar kaki jurnal.</figcaption>
+  </figure>
+
+  <h2>25.1 Menampilkan jurnal</h2>
+  <ol class="steps">
+    <li>Buka <b>Buku Besar &amp; Jurnal Umum</b>.</li>
+    <li>Isi <b>Dari tanggal</b> dan <b>Sampai tanggal</b>, lalu tekan <b>Terapkan</b>.</li>
+    <li>Periksa keterangan <b>Rentang aktif</b> yang menunjukkan jumlah entri dan jumlah yang termuat.</li>
+    <li>Gunakan filter <b>Semua akun</b> dan <b>Semua sumber</b> untuk mempersempit daftar.</li>
+  </ol>
+  <p>
+    Tabel <b>Jurnal per rentang tanggal</b> memuat kolom <b>Tgl.</b>, <b>Ref</b>,
+    <b>Keterangan</b>, <b>Akun</b>, <b>Debit</b>, <b>Kredit</b>, dan <b>Sumber</b>.
+    Di bagian bawah terlihat penanda <b>seimbang</b> atau <b>SELISIH</b> sebagai pemeriksaan
+    cepat keseimbangan debit dan kredit.
+  </p>
+
+  <h2>25.2 Asal angka jurnal</h2>
+  <table>
+    <tr><th style="width:38%;">Transaksi</th><th>Jurnal yang ditulis</th></tr>
+    <tr><td>Pesanan dan uang muka</td><td>Pendapatan, uang muka pelanggan, dan kas/bank</td></tr>
+    <tr><td>Pelunasan piutang</td><td>Kas/bank dan pengurangan piutang</td></tr>
+    <tr><td>Penerimaan barang</td><td>Persediaan gudang atau dapur dan utang pemasok</td></tr>
+    <tr><td>Penyelesaian SPK</td><td>Pemakaian bahan, tenaga kerja, overhead, dan produk jadi</td></tr>
+    <tr><td>Mutasi dan opname</td><td>Perpindahan nilai antarlokasi dan penyesuaian selisih</td></tr>
+    <tr><td>Retur penjualan</td><td>Pengurangan pendapatan, kas/bank, dan pengembalian stok</td></tr>
+    <tr><td>Pengeluaran kas</td><td>Beban terkait dan pengurangan kas</td></tr>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Istilah <b>tercatat</b> pada layar keuangan berarti jurnal berstatus Posted di basis
+      data. Layar ini tidak menyediakan formulir jurnal manual; koreksi dilakukan dengan
+      memperbaiki transaksi sumbernya atau mencatat pengeluaran yang sesuai.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Bila angka laporan terasa janggal, telusuri dulu jurnal pada tanggal terkait dengan
+      filter sumber. Kolom <b>Sumber</b> menunjukkan dokumen asal sehingga Anda dapat kembali
+      ke pesanan, SPK, atau penerimaan yang membentuk angka tersebut.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Transaksi (Bab 6, 13, 18)</span><span class="arrow">&rarr;</span>
+      <span class="node">Jurnal</span><span class="arrow">&rarr;</span>
+      <span class="node">Kas (Bab 26)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 26 ══════════════════════════ -->
+<section class="chapter" id="bab-26">
+  <div class="chapter-eyebrow">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
+  <div class="chapter-num">BAB 26</div>
+  <h1 class="chapter-title">Kas Toko &amp; Rekening Bank</h1>
+  <p class="chapter-lead">
+    Layar ini menunjukkan saldo kas dan bank, uang masuk dan keluar pada hari bisnis, serta
+    buku kas berjalan. Dari sini pengeluaran tunai toko dicatat.
+  </p>
+
+  <figure>
+    <img src="gambar/cash_bank.png" alt="Kas Toko &amp; Rekening Bank">
+    <figcaption><b>Gambar 33.</b> Tab <b>Kas Toko &amp; Rekening Bank</b> dengan saldo, arus kas hari ini, dan buku kas.</figcaption>
+  </figure>
+
+  <h2>26.1 Membaca saldo dan buku kas</h2>
+  <p>
+    Empat kartu menunjukkan <b>Saldo kas &amp; bank per {tanggal}</b>,
+    <b>Masuk hari bisnis ini</b>, <b>Keluar hari bisnis ini</b>, dan
+    <b>Selisih vs kas fisik</b>. Tabel buku kas memuat <b>Tgl.</b>, <b>Keterangan</b>,
+    <b>Masuk</b>, <b>Keluar</b>, dan <b>Saldo berjalan</b>.
+  </p>
+
+  <h2>26.2 Mencatat pengeluaran kas</h2>
+  <ol class="steps">
+    <li>Tekan <b>Catat Pengeluaran Kas</b> di kanan atas.</li>
+    <li>Pilih <b>Kategori biaya</b>: <b>Bahan Baku &amp; Kebutuhan Dapur</b>, <b>Gaji &amp; Upah Karyawan</b>, atau <b>Biaya Operasional Lain</b>.</li>
+    <li>Isi <b>Nominal (Rp)</b> dan <b>Keterangan</b>, misalnya pembelian gas elpiji.</li>
+    <li>Tekan <b>Simpan Pengeluaran</b>. Beban tercatat dan kas berkurang pada jurnal.</li>
+  </ol>
+  <p class="small">
+    Keterangan di dialog menunjukkan akun beban yang akan didebit dan bahwa kas dikredit
+    dari akun <b>1-001 Kas &amp; Bank</b>.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; rekonsiliasi belum aktif</span>
+    <p>
+      Bagian <b>Rekonsiliasi akhir shift</b> masih dinonaktifkan pada versi 1.2.12 karena
+      belum tersedia jalur penyimpanan rekonsiliasi. Jangan mengandalkan kolom
+      <b>Selisih vs kas fisik</b> untuk menutup shift. Hitung kas secara manual dan catat
+      selisih yang perlu disesuaikan melalui prosedur toko.
+    </p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Pengeluaran kas mengurangi saldo dan laba. Pastikan kategori dan keterangannya benar
+      sebelum menyimpan karena koreksi dilakukan lewat jurnal, bukan dengan menghapus baris
+      dari layar ini.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Catat pengeluaran kecil pada hari yang sama. Menumpuk banyak pengeluaran di akhir bulan
+      membuat arus kas harian tidak mencerminkan keadaan sebenarnya.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Kas</span><span class="arrow">&rarr;</span>
+      <span class="node">Jurnal (Bab 25)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laba Rugi (Bab 28)</span><span class="arrow">&rarr;</span>
+      <span class="node">Cadangan (Bab 37)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 27 ══════════════════════════ -->
+<section class="chapter" id="bab-27">
+  <div class="chapter-eyebrow">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
+  <div class="chapter-num">BAB 27</div>
+  <h1 class="chapter-title">Utang &amp; Piutang Usaha</h1>
+  <p class="chapter-lead">
+    Layar ini merangkum piutang pelanggan dan utang kepada pemasok dari dokumen yang sudah
+    tercatat. Gunakan untuk melihat siapa yang masih harus membayar dan kepada siapa toko
+    masih berutang.
+  </p>
+
+  <figure>
+    <img src="gambar/payables_receivables.png" alt="Utang &amp; Piutang Usaha">
+    <figcaption><b>Gambar 34.</b> Tab <b>Utang &amp; Piutang Usaha</b> dengan ringkasan dan rincian per pesanan serta per dokumen pembelian.</figcaption>
+  </figure>
+
+  <h2>27.1 Piutang pelanggan</h2>
+  <p>
+    Kartu ringkasan menunjukkan <b>Piutang usaha (saldo akun)</b>,
+    <b>Sisa bayar pesanan</b>, <b>Jatuh tempo lewat</b>, dan <b>Uang muka pelanggan</b>.
+    Tabel <b>Piutang per pesanan</b> memuat <b>No. pesanan</b>, <b>Pelanggan</b>,
+    <b>Nilai</b>, <b>Dibayar</b>, <b>Sisa</b>, dan <b>Umur vs tanggal ambil</b>.
+  </p>
+  <p>
+    Untuk menerima pembayaran, buka <b>Piutang &amp; Pembayaran</b> (Bab 10). Layar ini
+    hanya menampilkan ringkasan.
+  </p>
+
+  <h2>27.2 Utang pemasok</h2>
+  <p>
+    Tabel <b>Utang pemasok per dokumen</b> memuat <b>Dokumen</b>, <b>Pemasok</b>,
+    <b>Nilai pesanan</b>, <b>Nilai terima</b>, dan <b>Baris</b>. Nilainya berasal dari
+    penerimaan barang yang sudah dicatat pada Bab 18.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; pembayaran pemasok belum aktif</span>
+    <p>
+      Tombol <b>Catat pembayaran pemasok</b> masih dinonaktifkan pada versi 1.2.12 karena
+      belum ada jalur penyimpanan pembayaran pemasok. Catat pembayaran di luar aplikasi
+      sesuai prosedur toko dan simpan buktinya; jangan mengubah data penerimaan untuk
+      menandai utang sudah dibayar.
+    </p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Umur piutang dihitung terhadap tanggal ambil pesanan, bukan tanggal nota. Piutang yang
+      melewati tanggal ambil perlu ditagih lebih dahulu.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Periksa layar ini setiap akhir minggu bersama buku kas. Selisih antara uang yang sudah
+      masuk dan sisa tagihan biasanya menunjukkan piutang yang perlu ditagih atau pembayaran
+      yang belum dicatat.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Piutang (Bab 10)</span><span class="arrow">&rarr;</span>
+      <span class="node">Utang &amp; Piutang</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 28 ══════════════════════════ -->
+<section class="chapter" id="bab-28">
+  <div class="chapter-eyebrow">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
+  <div class="chapter-num">BAB 28</div>
+  <h1 class="chapter-title">Laporan Keuangan &amp; Laba Rugi</h1>
+  <p class="chapter-lead">
+    Laporan membaca jurnal pada rentang tanggal yang dipilih. Layar ini menampilkan laba
+    rugi per akun dan neraca saldo, serta menyediakan ekspor Excel dan PDF.
+  </p>
+
+  <figure>
+    <img src="gambar/financial_reports.png" alt="Laporan Keuangan &amp; Laba Rugi">
+    <figcaption><b>Gambar 35.</b> Tab <b>Laporan Keuangan &amp; Laba Rugi</b> dengan ringkasan periode, laba rugi, dan neraca saldo.</figcaption>
+  </figure>
+
+  <h2>28.1 Memilih periode</h2>
+  <ol class="steps">
+    <li>Buka tab <b>Laporan Keuangan &amp; Laba Rugi</b>.</li>
+    <li>Isi <b>Dari tanggal</b> dan <b>Sampai tanggal</b>, lalu tekan <b>Terapkan</b>.</li>
+    <li>Periksa keterangan <b>Rentang aktif</b> untuk memastikan jumlah entri yang termuat.</li>
+  </ol>
+
+  <h2>28.2 Membaca ringkasan</h2>
+  <table>
+    <tr><th style="width:38%;">Kartu</th><th>Arti</th></tr>
+    <tr><td><b>Omzet periode</b></td><td>Kredit akun pendapatan pada rentang yang dipilih.</td></tr>
+    <tr><td><b>Laba (rugi) bersih</b></td><td>Pendapatan dikurangi seluruh beban pada rentang tersebut.</td></tr>
+    <tr><td><b>Margin kotor periode</b></td><td>Dihitung bila beban pokok penjualan tersedia. Bila belum, ditandai <b>tidak ada</b>.</td></tr>
+    <tr><td><b>Pagar periode</b></td><td>Penanda penguncian periode fiskal. Nilai <b>belum ada</b> berarti penguncian belum diaktifkan pada versi ini.</td></tr>
+  </table>
+  <p>
+    Tabel <b>Laba Rugi</b> memuat <b>Perkiraan</b>, <b>Pendapatan</b>, dan <b>Beban</b>
+    dengan baris <b>Laba (rugi) bersih</b> di bagian bawah. Tabel <b>Neraca saldo per akun</b>
+    memuat <b>Akun</b>, <b>Tipe</b>, dan <b>Saldo normal</b>.
+  </p>
+
+  <h2>28.3 Mengekspor laporan</h2>
+  <ol class="steps">
+    <li>Pastikan rentang tanggal sudah benar.</li>
+    <li>Tekan <b>Excel</b> atau <b>PDF</b> pada bagian Laba Rugi.</li>
+    <li>Periksa berkas hasil ekspor sebelum dikirim kepada pihak luar.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Laporan tidak memakai angka ketikan terpisah; semua nilai dibaca dari jurnal. Bila ada
+      transaksi yang belum tercatat, angkanya belum akan muncul. Periksa kembali pesanan,
+      penerimaan, SPK, dan pengeluaran pada periode tersebut.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Bandingkan laporan bulan ini dengan bulan sebelumnya pada tanggal yang sama, bukan
+      dengan bulan penuh. Perbandingan yang setara lebih membantu daripada angka besar yang
+      belum selesai dihitung.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Jurnal (Bab 25)</span><span class="arrow">&rarr;</span>
+      <span class="node">Kas (Bab 26)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan</span><span class="arrow">&rarr;</span>
+      <span class="node">Cadangan (Bab 37)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 29 ══════════════════════════ -->
+<section class="chapter" id="bab-29">
+  <div class="chapter-eyebrow">Bagian VII &middot; Analisis &amp; Pengaturan</div>
+  <div class="chapter-num">BAB 29</div>
+  <h1 class="chapter-title">Analisis &amp; Tren Penjualan</h1>
+  <p class="chapter-lead">
+    Layar ini merangkum pendapatan, beban, jumlah pesanan, produk terlaris, dan beban per
+    akun pada rentang tertentu. Angka pendapatan dan beban berasal dari jurnal, sedangkan
+    jumlah pesanan berasal dari daftar penjualan.
+  </p>
+
+  <figure>
+    <img src="gambar/executive_analytics.png" alt="Analisis &amp; Tren Penjualan">
+    <figcaption><b>Gambar 36.</b> <b>Analisis &amp; Tren Penjualan</b> dengan ringkasan, pendapatan harian, produk terlaris, dan beban per akun.</figcaption>
+  </figure>
+
+  <h2>29.1 Membaca ringkasan</h2>
+  <p>
+    Enam kartu menunjukkan <b>Pendapatan</b>, <b>Beban</b>,
+    <b>Selisih Pendapatan &minus; Beban</b>, <b>Rasio Selisih</b>, <b>Pesanan</b>, dan
+    <b>Rata-rata Pesanan</b>. Rentang yang dipakai ditulis di bawah judul layar; secara
+    bawaan layar memuat rentang 90 hari terakhir.
+  </p>
+
+  <h2>29.2 Membaca rincian</h2>
+  <ul>
+    <li><b>Pendapatan harian</b> menunjukkan naik turun pendapatan per hari pada rentang tersebut.</li>
+    <li><b>Produk terlaris</b> memuat kolom <b>Produk</b>, <b>Unit</b>, dan <b>Nilai</b>.</li>
+    <li><b>Beban per akun</b> memuat kolom <b>Akun</b> dan <b>Nominal</b>.</li>
+  </ul>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      <b>Selisih Pendapatan &minus; Beban</b> bukan laba kotor akuntansi. Nilai ini dihitung
+      dari seluruh pendapatan jurnal dikurangi beban pada rentang yang sama, sehingga bisa
+      berbeda dari laba rugi pada Bab 28 yang memakai pengelompokan akun lebih lengkap.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Gunakan produk terlaris untuk merencanakan SPK berikutnya, lalu cocokkan dengan stok
+      bahan di Bab 20. Produk yang laris tetapi bahannya menipis perlu diprioritaskan
+      pembeliannya.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Analisis</span><span class="arrow">&rarr;</span>
+      <span class="node">Resep (Bab 14)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">Laporan (Bab 28)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 30 ══════════════════════════ -->
+<section class="chapter" id="bab-30">
+  <div class="chapter-eyebrow">Bagian VII &middot; Analisis &amp; Pengaturan</div>
+  <div class="chapter-num">BAB 30</div>
+  <h1 class="chapter-title">Jejak Audit &amp; Riwayat Sistem</h1>
+  <p class="chapter-lead">
+    Setiap aksi tulis yang berhasil dicatat: siapa pelakunya, kapan terjadi, dan nilai apa
+    yang berubah. Percobaan yang ditolak karena peran tidak berwenang juga tercatat.
+  </p>
+
+  <figure>
+    <img src="gambar/audit_log.png" alt="Jejak Audit &amp; Riwayat Sistem">
+    <figcaption><b>Gambar 37.</b> <b>Jejak Audit &amp; Riwayat Sistem</b> dengan pencarian, filter entitas, dan catatan perubahan.</figcaption>
+  </figure>
+
+  <h2>30.1 Menelusuri satu kejadian</h2>
+  <ol class="steps">
+    <li>Buka <b>Jejak Audit &amp; Riwayat Sistem</b>.</li>
+    <li>Ketik nama pelaksana, aksi, atau entitas pada kotak <b>Cari pelaksana, aksi, atau entitas...</b>.</li>
+    <li>Pilih jenis pada daftar <b>Semua jenis entitas</b> bila ingin mempersempit, misalnya hanya pesanan atau hanya pengguna.</li>
+    <li>Baca baris <b>Catatan perubahan (n)</b> dari yang terbaru. Kolom <b>Waktu</b>, <b>Pelaksana</b>, <b>Aksi</b>, <b>Entitas</b>, dan <b>Perubahan</b> menunjukkan rangkaian kejadian.</li>
+  </ol>
+  <p>
+    Nilai sebelum dan sesudah perubahan ditampilkan sebagai <b>lama:</b> dan <b>baru:</b>.
+    Bila rincian nilai tidak disimpan per baris, layar menulis
+    <b>nilai tidak disimpan per baris</b>.
+  </p>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Jejak audit bersifat baca-saja. Tidak ada tombol untuk mengubah atau menghapus catatan.
+      Gunakan layar ini untuk menjawab pertanyaan seperti siapa yang membatalkan pesanan,
+      kapan stok disetel, atau mengapa sebuah percobaan ditolak.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Saat menelusuri selisih stok, cari kata <b>koreksi stok</b> atau <b>opname</b> pada
+      tanggal yang dicurigai. Kolom <b>Perubahan</b> biasanya memuat alasan yang diisi saat
+      penyetelan.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Audit</span><span class="arrow">&rarr;</span>
+      <span class="node">Pesanan / Stok / Pengguna</span><span class="arrow">&rarr;</span>
+      <span class="node">Perbaikan di menu asal</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 31 ══════════════════════════ -->
+<section class="chapter" id="bab-31">
+  <div class="chapter-eyebrow">Bagian VII &middot; Analisis &amp; Pengaturan</div>
+  <div class="chapter-num">BAB 31</div>
+  <h1 class="chapter-title">Hak Akses &amp; Pegawai</h1>
+  <p class="chapter-lead">
+    Dari layar ini Pemilik Toko membuat akun pegawai, memberikan kata sandi sementara,
+    mengganti peran, serta menonaktifkan akun yang tidak dipakai lagi.
+  </p>
+
+  <figure>
+    <img src="gambar/user_management.png" alt="Hak Akses &amp; Pegawai">
+    <figcaption><b>Gambar 38.</b> <b>Hak Akses &amp; Pegawai</b> dengan ringkasan akun dan daftar pengguna.</figcaption>
+  </figure>
+
+  <h2>31.1 Mengenal daftar akun</h2>
+  <p>
+    Tiga kartu menunjukkan <b>Akun terdaftar</b>, <b>Owner aktif</b>, dan
+    <b>Wajib ganti sandi</b>. Tabel memuat kolom <b>Nama pengguna</b>, <b>Peran</b>,
+    <b>Status</b>, <b>Login terakhir</b>, dan <b>Aksi</b>. Status yang mungkin terlihat:
+    <b>aktif</b>, <b>nonaktif</b>, <b>wajib ganti sandi</b>, dan <b>terkunci</b>.
+  </p>
+
+  <h2>31.2 Menambah pegawai</h2>
+  <figure>
+    <img src="gambar/user_management-form.png" alt="Dialog Tambah Pegawai">
+    <figcaption><b>Gambar 39.</b> Dialog <b>Tambah Pegawai</b> dengan nama pengguna, kata sandi awal, dan peran.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Tekan <b>Tambah Pegawai</b>.</li>
+    <li>Isi <b>Nama pengguna</b>, misalnya <code>kasir-sore</code>.</li>
+    <li>Isi <b>Kata sandi awal</b> minimal 8 karakter serta memuat huruf dan angka.</li>
+    <li>Pilih <b>Peran</b>: <b>Pemilik Toko (Owner)</b>, <b>Manajer Operasional (Admin)</b>, <b>Kepala Dapur (Dapur)</b>, atau <b>Staf Toko / Kasir (Pegawai)</b>.</li>
+    <li>Tekan <b>Simpan Pegawai</b>. Akun baru berstatus <b>wajib ganti sandi</b>.</li>
+    <li>Serahkan kata sandi sementara kepada pegawai; ia wajib menggantinya sendiri pada login pertama (Bab 2.3).</li>
+  </ol>
+
+  <h2>31.3 Mengelola akun yang ada</h2>
+  <ul>
+    <li><b>Beri sandi sementara</b> mengganti kata sandi pegawai yang lupa sandi, lalu memaksanya mengganti pada login berikutnya.</li>
+    <li><b>Nonaktifkan</b> menghentikan akses akun tanpa menghapus riwayat pekerjaannya. Gunakan <b>Aktifkan</b> untuk membuka kembali.</li>
+    <li>Peran dapat diubah pada formulir ubah akun; perubahan berlaku pada login berikutnya.</li>
+  </ul>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan menonaktifkan seluruh akun Pemilik Toko. Pastikan selalu ada akun Owner aktif
+      yang dapat membuka pengaturan dan membuat akun lain. Kata sandi tidak pernah
+      ditampilkan atau dikirim balik oleh aplikasi, jadi simpan kata sandi sementara di
+      tempat aman dan serahkan hanya kepada pemiliknya.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Perubahan peran memengaruhi menu yang terlihat. Setelah peran diubah, minta pegawai
+      keluar dan masuk kembali agar daftar menu serta hak aksesnya diperbarui.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Gunakan nama pengguna yang mudah dikenali, misalnya gabungan nama dan shift. Dengan
+      begitu, Jejak Audit langsung menunjukkan siapa yang mengerjakan suatu tindakan.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Hak Akses</span><span class="arrow">&rarr;</span>
+      <span class="node">Login pegawai (Bab 2)</span><span class="arrow">&rarr;</span>
+      <span class="node">Ganti sandi</span><span class="arrow">&rarr;</span>
+      <span class="node">Audit (Bab 30)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 32 ══════════════════════════ -->
+<section class="chapter" id="bab-32">
+  <div class="chapter-eyebrow">Bagian VII &middot; Analisis &amp; Pengaturan</div>
+  <div class="chapter-num">BAB 32</div>
+  <h1 class="chapter-title">Perangkat Kasir</h1>
+  <p class="chapter-lead">
+    Layar ini mengatur cara struk dicetak, lebar kertas, dan pengujian printer serta pemindai
+    barcode. Driver printer dipasang lewat Windows; aplikasi hanya memilih printer dan
+    mengirim pekerjaan cetak.
+  </p>
+
+  <figure>
+    <img src="gambar/device_settings.png" alt="Perangkat Kasir">
+    <figcaption><b>Gambar 40.</b> <b>Perangkat Kasir</b> dengan pilihan mode cetak, lebar kertas, status perangkat, dan riwayat pekerjaan cetak.</figcaption>
+  </figure>
+
+  <h2>32.1 Memilih cara mencetak</h2>
+  <table>
+    <tr><th style="width:34%;">Mode</th><th>Keterangan</th></tr>
+    <tr>
+      <td><b>Driver Windows</b></td>
+      <td>Memakai printer yang sudah terpasang di Windows. Driver wajib ada dan printer harus tampil di daftar.</td>
+    </tr>
+    <tr>
+      <td><b>ESC/POS langsung</b></td>
+      <td>Mengirim perintah ESC/POS ke port printer jaringan tanpa driver. Isi <b>Alamat printer</b> (misalnya <code>192.168.1.50</code>) dan <b>Port</b> (bawaan 9100).</td>
+    </tr>
+  </table>
+  <ol class="steps">
+    <li>Pilih <b>Cara mencetak</b>.</li>
+    <li>Pada mode driver, pilih printer di daftar <b>Printer terpasang di Windows</b>.</li>
+    <li>Pada mode ESC/POS, isi alamat dan port printer jaringan.</li>
+    <li>Pilih <b>Lebar kertas</b>: <b>58 mm &middot; 32 kolom</b> atau <b>80 mm &middot; 48 kolom</b>.</li>
+    <li>Centang <b>Potong kertas setelah struk selesai</b> bila printer mendukung pemotong.</li>
+    <li>Centang <b>Cetak struk otomatis setelah pembayaran berhasil</b> bila ingin struk langsung dicetak.</li>
+    <li>Tekan <b>Simpan Pengaturan</b>, lalu <b>Cetak Struk Uji</b> untuk memastikan hasilnya.</li>
+  </ol>
+
+  <h2>32.2 Menguji pemindai dan melihat riwayat</h2>
+  <p>
+    Kolom <b>Pemindai Barcode</b> menerima ketikan dari pemindai mode keyboard. Pindai satu
+    barcode; kode yang terbaca muncul di bawah kolom. Bagian <b>Riwayat Pekerjaan Cetak</b>
+    menampilkan <b>Waktu</b>, <b>Jenis</b>, <b>Pesanan</b>, <b>Printer</b>, <b>Kertas</b>,
+    <b>Status</b>, dan <b>Keterangan</b> dengan status <b>Tercetak</b>, <b>Gagal</b>, atau
+    <b>Menunggu</b>.
+  </p>
+
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; batas pengujian perangkat</span>
+    <p>
+      Pada versi 1.2.12, jalur ESC/POS baru terbukti terhadap emulasi di mesin pengembang dan
+      jalur driver baru diuji dengan pencetak virtual, belum pada printer kasir fisik.
+      Pemindai juga baru diuji melalui simulasi. Uji printer, pemindai, dan kertas pada
+      perangkat toko yang sebenarnya sebelum mengandalkannya saat jam sibuk.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Aplikasi belum mengirim perintah buka laci uang. Buka laci secara manual atau melalui
+      tombol pada printer yang mendukung. Jangan mengubah pengaturan printer saat ada
+      transaksi yang sedang dicetak.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Cetak struk uji setiap pagi sebelum toko dibuka. Bila struk uji gagal, perbaiki
+      pengaturan lebih dahulu agar pembayaran pertama tidak tertunda.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Perangkat Kasir</span><span class="arrow">&rarr;</span>
+      <span class="node">Cetak uji</span><span class="arrow">&rarr;</span>
+      <span class="node">Kasir (Bab 6)</span><span class="arrow">&rarr;</span>
+      <span class="node">Riwayat cetak</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 33 ══════════════════════════ -->
+<section class="chapter" id="bab-33">
+  <div class="chapter-eyebrow">Bagian VII &middot; Analisis &amp; Pengaturan</div>
+  <div class="chapter-num">BAB 33</div>
+  <h1 class="chapter-title">Pengaturan Toko &amp; Cabang</h1>
+  <p class="chapter-lead">
+    Menu terakhir di sidebar ini mengatur identitas toko, zona waktu hari bisnis, logo,
+    pencadangan data, dan pemeriksaan mandiri basis data. Perubahan di sini berlaku tanpa
+    memasang ulang aplikasi.
+  </p>
+
+  <figure>
+    <img src="gambar/settings.png" alt="Pengaturan Toko &amp; Cabang">
+    <figcaption><b>Gambar 41.</b> <b>Pengaturan Toko &amp; Cabang</b> dengan identitas toko, logo, zona waktu, cadangan, dan tombol <b>Periksa Basis Data</b>.</figcaption>
+  </figure>
+
+  <h2>33.1 Mengubah identitas toko</h2>
+  <ol class="steps">
+    <li>Isi <b>Nama toko</b> (tampil di layar masuk, menu, struk, dan ekspor).</li>
+    <li>Isi <b>Slogan di bawah nama toko</b>.</li>
+    <li>Isi <b>Nama tempat kerja</b> (tampil di bilah atas).</li>
+    <li>Pilih <b>Zona waktu operasi</b>, misalnya <b>Asia/Jakarta</b>.</li>
+    <li>Pada <b>Logo toko</b>, tekan <b>Pilih gambar&hellip;</b> untuk mengunggah PNG, JPEG, atau WebP. Gunakan <b>Hapus logo</b> untuk kembali ke inisial nama toko.</li>
+    <li>Tekan <b>Simpan Pengaturan</b>.</li>
+  </ol>
+  <p>
+    Gambar logo diperkecil otomatis. Bila tidak ada logo, kotak merek menampilkan inisial
+    nama toko. Perubahan nama, slogan, dan logo langsung terlihat setelah disimpan.
+    Mata uang tetap <b>IDR</b> dan versi aplikasi hanya berubah lewat pemasangan pembaruan.
+  </p>
+
+  <h2>33.2 Merawat data dari layar ini</h2>
+  <p>
+    Kartu <b>Cadangan &amp; penyimpanan</b> menampilkan ukuran <b>Basis data + WAL</b>,
+    <b>Total cadangan</b>, <b>Sisa disk</b>, dan <b>Cadangan terverifikasi terakhir</b>.
+    Daftar di bawahnya memuat berkas cadangan otomatis beserta ukuran dan tanda verifikasi.
+  </p>
+  <ol class="steps">
+    <li>Tekan <b>Buat cadangan sekarang</b> untuk membuat cadangan baru.</li>
+    <li>Tekan <b>Salin</b> pada baris cadangan, atau <b>Salin cadangan terbaru ke folder lain (flash disk/komputer lain)</b> untuk menyimpan salinan di luar PC.</li>
+    <li>Tekan <b>Periksa Basis Data</b> untuk menjalankan pemeriksaan mandiri. Hasilnya <b>Sehat &mdash; {n} pemeriksaan lolos</b> atau keterangan jumlah pemeriksaan yang bermasalah.</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Cadangan yang hanya tersimpan di PC yang sama belum melindungi dari kerusakan PC.
+      Salin cadangan ke flash disk atau komputer lain secara berkala. Jangan menghapus,
+      memindahkan, atau mengganti nama berkas basis data, dan jangan mencopot aplikasi dengan
+      menghapus foldernya.
+    </p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Catatan &mdash; yang tidak dapat diubah di sini</span>
+    <ul>
+      <li>Hak akses pegawai diatur di menu <b>Hak Akses &amp; Pegawai</b> (Bab 31).</li>
+      <li>Zona waktu menentukan perhitungan &ldquo;hari ini&rdquo; untuk tempo, laporan harian, dan nomor dokumen.</li>
+      <li>Perubahan pada layar ini dicatat di Jejak Audit beserta nilai sebelum dan sesudahnya.</li>
+      <li>Kata sandi dan token aplikasi tidak ditampilkan di mana pun, termasuk di layar ini.</li>
+    </ul>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Periksa <b>Cadangan terverifikasi terakhir</b> setiap awal bulan. Bila tanggalnya sudah
+      lama atau <b>Sisa disk</b> menipis, buat cadangan baru dan salin ke media di luar PC.
+    </p>
+  </div>
+
+  <div class="callout flow">
+    <span class="label">Alur antar menu</span>
+    <div class="flow">
+      <span class="node">Pengaturan</span><span class="arrow">&rarr;</span>
+      <span class="node">Simpan identitas</span><span class="arrow">&rarr;</span>
+      <span class="node">Buat cadangan</span><span class="arrow">&rarr;</span>
+      <span class="node">Periksa basis data</span><span class="arrow">&rarr;</span>
+      <span class="node">Jejak Audit (Bab 30)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 34 ══════════════════════════ -->
+<section class="chapter" id="bab-34">
+  <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+  <div class="chapter-num">BAB 34</div>
+  <h1 class="chapter-title">Alur Kerja Harian</h1>
+  <p class="chapter-lead">
+    Bab ini merangkum urutan pekerjaan dari membuka toko sampai menutup hari. Gunakan sebagai
+    daftar periksa agar tidak ada transaksi yang tertinggal di salah satu menu.
+  </p>
+
+  <h2>34.1 Pagi sebelum toko dibuka</h2>
+  <table>
+    <tr><th style="width:20%;">Waktu</th><th style="width:38%;">Tindakan</th><th>Menu</th></tr>
+    <tr><td>Pagi</td><td>Masuk dengan akun sendiri; periksa nama toko dan outlet di layar masuk.</td><td>Layar masuk (Bab 2)</td></tr>
+    <tr><td>Pagi</td><td>Baca empat indikator, peringatan, dan pesanan mendatang.</td><td>Dasbor (Bab 3)</td></tr>
+    <tr><td>Pagi</td><td>Periksa pekerjaan yang menunggu tindakan.</td><td>Kotak Tugas (Bab 4)</td></tr>
+    <tr><td>Pagi</td><td>Cetak struk uji dan pastikan printer siap.</td><td>Perangkat Kasir (Bab 32)</td></tr>
+    <tr><td>Pagi</td><td>Periksa lot yang mendekati kedaluwarsa dan stok bahan kritis.</td><td>Batch (Bab 24), Gudang (Bab 20)</td></tr>
+    <tr><td>Pagi</td><td>Tentukan produksi hari ini dan pastikan bahan sudah di dapur.</td><td>SPK (Bab 13), Mutasi (Bab 21)</td></tr>
+  </table>
+
+  <h2>34.2 Siang saat toko berjalan</h2>
+  <ol class="steps">
+    <li>Catat pesanan dan pembayaran di <b>Kasir Penjualan Cepat</b> (Bab 6).</li>
+    <li>Catat pelunasan pelanggan di <b>Piutang &amp; Pembayaran</b> (Bab 10).</li>
+    <li>Terima barang yang datang dan simpan nomor batch-nya (Bab 18 dan 24).</li>
+    <li>Selesaikan SPK yang sudah matang, lalu catat hasil dan pemakaian bahan (Bab 13).</li>
+    <li>Catat pemeriksaan mutu untuk SPK yang selesai (Bab 16).</li>
+    <li>Periksa <b>Pesanan Terjadwal (Pre-Order)</b> agar pengambilan hari ini tidak terlewat (Bab 8).</li>
+  </ol>
+
+  <h2>34.3 Sore dan tutup toko</h2>
+  <ol class="steps">
+    <li>Selesaikan pesanan yang masih menggantung dan periksa piutang yang jatuh tempo.</li>
+    <li>Catat pengeluaran kas hari itu (Bab 26).</li>
+    <li>Periksa Buku Besar untuk memastikan tidak ada transaksi yang tertinggal (Bab 25).</li>
+    <li>Cetak laporan harian bila diperlukan (Bab 28).</li>
+    <li>Buat cadangan bila hari itu banyak transaksi atau menjelang akhir bulan (Bab 33 dan 37).</li>
+    <li>Keluar dari aplikasi sebelum serah terima shift (Bab 2.5).</li>
+  </ol>
+
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Cetak atau simpan daftar periksa ini di dekat kasir. Menandai setiap langkah yang sudah
+      dikerjakan lebih cepat daripada mengingat-ingat menu mana yang belum dibuka.
+    </p>
+  </div>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan menutup aplikasi saat ada transaksi yang sedang disimpan. Tunggu sampai pesan
+      berhasil muncul, lalu periksa apakah data sudah tampil di daftar sebelum keluar.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 35 ══════════════════════════ -->
+<section class="chapter" id="bab-35">
+  <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+  <div class="chapter-num">BAB 35</div>
+  <h1 class="chapter-title">Alur Pesanan Khusus dan Pre-Order</h1>
+  <p class="chapter-lead">
+    Pesanan besar untuk arisan, hajatan, atau kantor biasanya melewati beberapa menu:
+    uang muka, perencanaan produksi, pemeriksaan mutu, pelunasan, dan serah terima barang.
+    Bab ini menunjukkan urutannya.
+  </p>
+
+  <div class="callout flow">
+    <span class="label">Alur lengkap</span>
+    <div class="flow">
+      <span class="node">Pesanan + DP (Bab 6)</span><span class="arrow">&rarr;</span>
+      <span class="node">Pre-Order (Bab 8)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">QC (Bab 16)</span><span class="arrow">&rarr;</span>
+      <span class="node">Pelunasan (Bab 10)</span><span class="arrow">&rarr;</span>
+      <span class="node">Serah terima (Bab 7)</span>
+    </div>
+  </div>
+
+  <h2>35.1 Langkah demi langkah</h2>
+  <ol class="steps">
+    <li><b>Catat pesanan dan DP.</b> Isi nama instansi, nomor telepon, tanggal pickup, deskripsi, produk, jumlah, total, dan DP. Status menjadi <b>DP / Sebagian</b> bila DP belum menutup total.</li>
+    <li><b>Periksa daftar pre-order.</b> Pastikan pesanan muncul pada tanggal yang benar dan deskripsinya lengkap.</li>
+    <li><b>Rencanakan produksi.</b> Buat SPK sesuai jumlah yang dipesan, lalu siapkan bahan di dapur melalui mutasi.</li>
+    <li><b>Selesaikan SPK dan catat hasil.</b> Jumlah roti bagus masuk ke etalase; jumlah gagal dicatat beserta alasannya.</li>
+    <li><b>Periksa mutu.</b> Catat sampel, lulus, gagal, serta catatan tampilan dan rasa.</li>
+    <li><b>Catat pelunasan.</b> Saat pelanggan membayar sisa, buka <b>Piutang &amp; Pembayaran</b>, tekan <b>Bayar</b>, dan isi nominal. Jangan membuat pesanan baru untuk pelunasan.</li>
+    <li><b>Serahkan barang dan cetak struk.</b> Periksa status <b>Lunas</b> sebelum barang diserahkan, lalu cetak struk dari <b>Daftar Pesanan &amp; Penjualan</b>.</li>
+  </ol>
+
+  <h2>35.2 Contoh kasus</h2>
+  <table>
+    <tr><th style="width:30%;">Kasus</th><th>Perlakuan</th></tr>
+    <tr><td><b>Pesanan lunas di muka</b></td><td>DP sama dengan total. Pesanan langsung berstatus <b>Lunas</b>, stok etalase berkurang, dan struk dapat dicetak.</td></tr>
+    <tr><td><b>Pesanan dengan DP</b></td><td>Status <b>DP / Sebagian</b>. Catat pelunasan pada hari pengambilan; stok berkurang saat pesanan menjadi lunas.</td></tr>
+    <tr><td><b>Pesanan belum bayar</b></td><td>Status <b>Belum Bayar</b>. Pesanan masuk daftar piutang dan perlu ditagih sebelum serah terima.</td></tr>
+    <tr><td><b>Pesanan dibatalkan</b></td><td>Batalkan dengan alasan. Stok dan jurnal dikembalikan; pesanan tetap terlihat di riwayat.</td></tr>
+    <tr><td><b>Barang dikembalikan</b></td><td>Setelah pesanan lunas, catat retur dengan jumlah unit dan alasan (Bab 11).</td></tr>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Satu pesanan hanya memiliki satu nota. Uang muka dan pelunasan dicatat pada nota yang
+      sama agar sisa tagihan, jurnal, dan laporan tidak terpecah menjadi beberapa dokumen.
+    </p>
+  </div>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan menyerahkan barang sebelum status pesanan <b>Lunas</b> kecuali ada kebijakan
+      toko yang jelas. Pesanan yang masih memiliki sisa tagihan tetap muncul di daftar
+      piutang dan dapat menimbulkan selisih kas.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 36 ══════════════════════════ -->
+<section class="chapter" id="bab-36">
+  <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+  <div class="chapter-num">BAB 36</div>
+  <h1 class="chapter-title">Alur Pengadaan sampai HPP</h1>
+  <p class="chapter-lead">
+    Alur ini menghubungkan pemasok, gudang, dapur, dan laporan biaya. Setiap langkah
+    menambah atau memindahkan stok, sehingga urutan yang benar menjaga angka persediaan dan
+    HPP tetap masuk akal.
+  </p>
+
+  <div class="callout flow">
+    <span class="label">Alur lengkap</span>
+    <div class="flow">
+      <span class="node">PO (Bab 18)</span><span class="arrow">&rarr;</span>
+      <span class="node">Terima + batch (Bab 18, 24)</span><span class="arrow">&rarr;</span>
+      <span class="node">Mutasi (Bab 21)</span><span class="arrow">&rarr;</span>
+      <span class="node">SPK (Bab 13)</span><span class="arrow">&rarr;</span>
+      <span class="node">QC (Bab 16)</span><span class="arrow">&rarr;</span>
+      <span class="node">HPP (Bab 17)</span>
+    </div>
+  </div>
+
+  <h2>36.1 Langkah demi langkah</h2>
+  <ol class="steps">
+    <li><b>Buat PO</b> ke pemasok dengan bahan, jumlah, satuan, dan harga yang disepakati.</li>
+    <li><b>Terima barang</b> saat datang. Isi jumlah fisik, pilih lokasi simpan, dan catat nomor batch serta kedaluwarsa bila perlu.</li>
+    <li><b>Periksa stok</b> di <b>Gudang &amp; Lokasi Rak</b>. Pastikan bahan masuk ke lokasi yang benar.</li>
+    <li><b>Mutasi ke dapur</b> sesuai kebutuhan SPK. Tulis nomor SPK pada catatan mutasi.</li>
+    <li><b>Buat dan selesaikan SPK</b>. Catat pemakaian aktual, hasil bagus, hasil gagal, dan alasannya.</li>
+    <li><b>Periksa mutu</b> produk yang selesai dan catat hasilnya.</li>
+    <li><b>Baca HPP</b> untuk melihat biaya aktual per unit dan membandingkannya dengan standar serta harga jual.</li>
+  </ol>
+
+  <h2>36.2 Pemeriksaan di setiap peralihan</h2>
+  <table>
+    <tr><th style="width:34%;">Peralihan</th><th>Yang harus cocok</th></tr>
+    <tr><td>PO &rarr; penerimaan</td><td>Jumlah diterima tidak melebihi sisa pesanan; satuan sama; lokasi tujuan gudang atau dapur.</td></tr>
+    <tr><td>Penerimaan &rarr; stok</td><td>Stok bertambah di lokasi yang dipilih, bukan di lokasi lain.</td></tr>
+    <tr><td>Gudang &rarr; dapur</td><td>Jumlah mutasi tidak melebihi stok asal; dua lokasi berbeda.</td></tr>
+    <tr><td>SPK &rarr; etalase</td><td>Jumlah roti bagus menambah stok produk jadi; jumlah gagal tercatat dengan alasan.</td></tr>
+    <tr><td>SPK &rarr; HPP</td><td>Pemakaian aktual, tenaga kerja, dan overhead sesuai dengan yang dicatat.</td></tr>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Jangan mengoreksi stok dengan mengubah angka di katalog. Gunakan <b>Mutasi</b> untuk
+      memindahkan barang dan <b>Stok Opname</b> untuk menyetel selisih hasil hitung fisik.
+      Kedua jalur itu menulis jejak yang dapat ditelusuri.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Bila HPP aktual melonjak, periksa urutan ini dari belakang: harga bahan terakhir,
+      jumlah pemakaian, lalu hasil produksi. Sering kali penyebabnya adalah harga bahan yang
+      belum diperbarui atau hasil gagal yang tinggi.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 37 ══════════════════════════ -->
+<section class="chapter" id="bab-37">
+  <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+  <div class="chapter-num">BAB 37</div>
+  <h1 class="chapter-title">Alur Tutup Buku dan Pencadangan</h1>
+  <p class="chapter-lead">
+    Tutup buku berarti memastikan seluruh transaksi hari atau bulan itu sudah tercatat,
+    laporan sudah diperiksa, dan data sudah dicadangkan. Urutan berikut mencegah pekerjaan
+    hilang saat pergantian periode.
+  </p>
+
+  <h2>37.1 Tutup harian</h2>
+  <ol class="steps">
+    <li>Buka <b>Kotak Tugas</b> dan pastikan tidak ada pekerjaan mendesak yang tertinggal.</li>
+    <li>Periksa <b>Daftar Pesanan</b> dan <b>Piutang</b> untuk pesanan hari ini.</li>
+    <li>Catat pengeluaran kas hari itu di <b>Kas Toko &amp; Rekening Bank</b>.</li>
+    <li>Buka <b>Buku Besar &amp; Jurnal Umum</b> dan pilih rentang hari ini; pastikan penanda <b>seimbang</b>.</li>
+    <li>Bila perlu, cetak <b>Laporan Keuangan &amp; Laba Rugi</b> untuk hari itu.</li>
+    <li>Buat cadangan melalui <b>Pengaturan Toko &amp; Cabang</b>, lalu keluar dari aplikasi.</li>
+  </ol>
+
+  <h2>37.2 Tutup bulanan</h2>
+  <ol class="steps">
+    <li>Periksa kembali penerimaan barang, SPK selesai, QC, dan retur pada bulan tersebut.</li>
+    <li>Bandingkan <b>Neraca saldo per akun</b> dengan catatan toko.</li>
+    <li>Periksa <b>Utang &amp; Piutang Usaha</b> dan tindak lanjuti saldo yang menua.</li>
+    <li>Ekspor laporan bulanan ke Excel atau PDF untuk arsip.</li>
+    <li>Buat cadangan baru dan <b>salin ke folder lain</b> (flash disk atau komputer lain).</li>
+    <li>Jalankan <b>Periksa Basis Data</b>; simpan hasilnya bila ada temuan.</li>
+  </ol>
+
+  <h2>37.3 Jadwal pencadangan yang disarankan</h2>
+  <table>
+    <tr><th style="width:26%;">Frekuensi</th><th>Tindakan</th></tr>
+    <tr><td><b>Setiap hari</b></td><td>Cadangkan setelah tutup toko bila hari itu ada transaksi.</td></tr>
+    <tr><td><b>Setiap minggu</b></td><td>Salin cadangan terbaru ke media di luar PC dan periksa ukurannya.</td></tr>
+    <tr><td><b>Setiap bulan</b></td><td>Buat cadangan arsip, ekspor laporan, dan jalankan pemeriksaan basis data.</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan menghapus cadangan lama untuk menghemat ruang. Simpan beberapa cadangan
+      terakhir dan setidaknya satu salinan di luar PC. Cadangan yang belum pernah diuji
+      pemulihannya belum dapat diandalkan saat keadaan darurat.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Beri nama folder salinan dengan tanggal, misalnya <code>Seruni22-2026-11</code>, agar
+      mudah menemukan cadangan saat dibutuhkan.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 38 ══════════════════════════ -->
+<section class="chapter" id="bab-38">
+  <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+  <div class="chapter-num">BAB 38</div>
+  <h1 class="chapter-title">Merawat dan Memulihkan Data</h1>
+  <p class="chapter-lead">
+    Data usaha adalah aset utama toko. Bab ini merangkum cara merawat basis data, membuat
+    cadangan yang terverifikasi, dan langkah awal bila data perlu dipulihkan.
+  </p>
+
+  <h2>38.1 Rutinitas perawatan</h2>
+  <ul>
+    <li>Buka <b>Pengaturan Toko &amp; Cabang</b> dan periksa <b>Sisa disk</b> serta
+      <b>Cadangan terverifikasi terakhir</b> secara berkala.</li>
+    <li>Tekan <b>Periksa Basis Data</b> untuk menjalankan pemeriksaan mandiri. Tindak lanjuti
+      bila hasilnya menyebutkan pemeriksaan yang bermasalah.</li>
+    <li>Simpan salinan cadangan di media lain. Cadangan di PC yang sama tidak melindungi dari
+      kerusakan perangkat atau kehilangan PC.</li>
+    <li>Jangan membuka, mengubah, atau menghapus berkas basis data dengan alat lain.</li>
+    <li>Jangan memindahkan atau mengganti nama folder data saat aplikasi berjalan.</li>
+  </ul>
+
+  <h2>38.2 Membuat cadangan yang layak dipercaya</h2>
+  <ol class="steps">
+    <li>Pastikan tidak ada transaksi yang sedang disimpan.</li>
+    <li>Tekan <b>Buat cadangan sekarang</b> pada Pengaturan.</li>
+    <li>Periksa daftar cadangan: berkas baru muncul beserta ukuran dan tanda verifikasi.</li>
+    <li>Tekan <b>Salin</b> atau gunakan <b>Salin cadangan terbaru ke folder lain</b> untuk
+      menyimpan salinan di luar PC.</li>
+    <li>Catat tanggal cadangan di buku operasional toko.</li>
+  </ol>
+
+  <h2>38.3 Bila data perlu dipulihkan</h2>
+  <ol class="steps">
+    <li>Hentikan pemakaian aplikasi dan jangan mencatat transaksi baru.</li>
+    <li>Hubungi pemilik toko atau pendamping teknis yang memahami prosedur pemulihan.</li>
+    <li>Gunakan cadangan terbaru yang sudah terverifikasi. Jangan menimpa basis data dengan
+      berkas yang tidak jelas asalnya.</li>
+    <li>Setelah pemulihan, periksa <b>Periksa Basis Data</b>, lalu cocokkan beberapa transaksi
+      terakhir dengan catatan toko.</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan mencopot aplikasi untuk memperbaiki masalah data, dan jangan menghapus folder
+      data pengguna. Pencopotan aplikasi tidak menghapus data usaha, tetapi menghapus folder
+      data secara manual akan menghilangkan seluruh riwayat toko.
+    </p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Pemulihan penuh memerlukan langkah teknis di luar layar aplikasi. Ikuti panduan
+      pemulihan yang disertakan bersama paket atau minta pendampingan. Bila tidak yakin,
+      berhenti dan simpan salinan semua berkas sebelum melakukan tindakan apa pun.
+    </p>
+  </div>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Uji pemulihan pada komputer lain secara berkala, bukan saat keadaan darurat. Uji ini
+      memastikan cadangan benar-benar dapat dibuka dan dipakai.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BAB 39 ══════════════════════════ -->
+<section class="chapter" id="bab-39">
+  <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
+  <div class="chapter-num">BAB 39</div>
+  <h1 class="chapter-title">Batasan Versi 1.2.12</h1>
+  <p class="chapter-lead">
+    Bab ini menyebutkan hal yang belum tersedia atau belum diuji pada versi ini. Tujuannya
+    agar Anda tidak mengandalkan fitur yang belum siap saat toko sedang beroperasi.
+  </p>
+
+  <table>
+    <tr><th style="width:30%;">Hal</th><th>Keadaan pada 1.2.12</th><th style="width:30%;">Yang dapat dilakukan</th></tr>
+    <tr>
+      <td><b>Tanda tangan aplikasi</b></td>
+      <td>Paket pemasangan belum ditandatangani Authenticode.</td>
+      <td>Windows dapat menampilkan peringatan. Pastikan berkas berasal dari sumber resmi dan periksa versinya.</td>
+    </tr>
+    <tr>
+      <td><b>Printer thermal fisik</b></td>
+      <td>Jalur driver diuji dengan pencetak virtual; jalur ESC/POS diuji dengan emulasi, belum pada printer fisik.</td>
+      <td>Uji <b>Cetak Struk Uji</b> pada printer toko sebelum jam sibuk.</td>
+    </tr>
+    <tr>
+      <td><b>Pemindai barcode</b></td>
+      <td>Diuji melalui simulasi mode keyboard, belum pada perangkat fisik.</td>
+      <td>Uji kolom <b>Pemindai Barcode</b> di Perangkat Kasir dengan pemindai toko.</td>
+    </tr>
+    <tr>
+      <td><b>Laci uang</b></td>
+      <td>Aplikasi belum mengirim perintah buka laci.</td>
+      <td>Buka laci secara manual atau lewat tombol printer yang mendukung.</td>
+    </tr>
+    <tr>
+      <td><b>QRIS dan Kartu Debit</b></td>
+      <td>Pilihan tampil di layar, tetapi server menolak; hanya Tunai dan Transfer yang diterima.</td>
+      <td>Pilih Transfer Bank dan tulis keterangan di Catatan, atau gunakan Tunai.</td>
+    </tr>
+    <tr>
+      <td><b>Rekonsiliasi kas</b></td>
+      <td>Bagian rekonsiliasi akhir shift masih dinonaktifkan.</td>
+      <td>Hitung kas secara manual dan catat selisih sesuai prosedur toko.</td>
+    </tr>
+    <tr>
+      <td><b>Pembayaran pemasok</b></td>
+      <td>Tombol <b>Catat pembayaran pemasok</b> masih dinonaktifkan.</td>
+      <td>Catat pembayaran di luar aplikasi dan simpan buktinya; jangan mengubah penerimaan.</td>
+    </tr>
+    <tr>
+      <td><b>Beberapa PC sekaligus</b></td>
+      <td>Data tersimpan di PC tempat aplikasi dipasang; tidak ada sinkronisasi otomatis ke PC lain.</td>
+      <td>Gunakan satu PC kasir utama. Untuk kebutuhan beberapa PC, konsultasikan dengan pengembang.</td>
+    </tr>
+    <tr>
+      <td><b>Pemulihan data</b></td>
+      <td>Pemulihan memerlukan langkah teknis di luar aplikasi.</td>
+      <td>Ikuti panduan pemulihan dan minta pendampingan bila tidak yakin.</td>
+    </tr>
+    <tr>
+      <td><b>Zona waktu</b></td>
+      <td>Hanya satu zona waktu operasi yang dipakai seluruh layar.</td>
+      <td>Pilih zona waktu toko dengan benar di Pengaturan; perubahan memengaruhi hari bisnis.</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Bila kebutuhan toko bergantung pada salah satu hal di atas, jangan menganggapnya sudah
+      berfungsi hanya karena tombolnya terlihat. Lakukan uji pada perangkat dan data toko
+      sendiri, lalu catat hasilnya sebelum mengubah prosedur operasional.
+    </p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Buku ini menjelaskan versi 1.2.12. Bila aplikasi diperbarui, periksa kembali daftar ini
+      pada dokumentasi versi yang terpasang. Nomor versi terlihat di <b>Pengaturan Toko &amp;
+      Cabang</b> dan pada layar Perangkat Kasir.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ LAMPIRAN A ══════════════════════════ -->
+<section class="chapter" id="lamp-a">
+  <div class="chapter-eyebrow">Lampiran</div>
+  <div class="chapter-num">LAMPIRAN A</div>
+  <h1 class="chapter-title">Peta Menu Lengkap</h1>
+  <p class="chapter-lead">
+    Tiga puluh satu menu aplikasi beserta kegunaan singkat dan nomor bab pembahasannya.
+  </p>
+
+  <table>
+    <tr><th style="width:26%;">Kelompok</th><th style="width:34%;">Menu</th><th>Kegunaan</th><th style="width:8%;">Bab</th></tr>
+    <tr><td rowspan="3"><b>Ruang Kerja</b></td><td>Dasbor &amp; Indikator Utama</td><td>Ringkasan uang masuk, pesanan aktif, stok kritis, dan piutang</td><td>3</td></tr>
+    <tr><td>Kotak Tugas &amp; Persetujuan</td><td>Pekerjaan yang menunggu tindakan dari kondisi nyata</td><td>4</td></tr>
+    <tr><td>Pemberitahuan &amp; Catatan Aktivitas</td><td>Notifikasi internal dan ringkasan harian</td><td>5</td></tr>
+
+    <tr><td rowspan="6"><b>Penjualan &amp; Pelanggan</b></td><td>Kasir Penjualan Cepat</td><td>Mencatat penjualan, pesanan, DP, dan pembayaran</td><td>6</td></tr>
+    <tr><td>Daftar Pesanan &amp; Penjualan</td><td>Mencari nota, mencetak struk, membatalkan pesanan</td><td>7</td></tr>
+    <tr><td>Pesanan Terjadwal (Pre-Order)</td><td>Pesanan dengan jadwal ambil hari ini atau sesudahnya</td><td>8</td></tr>
+    <tr><td>Data Pelanggan &amp; Klien</td><td>Nama, kontak, poin, dan catatan pelanggan</td><td>9</td></tr>
+    <tr><td>Piutang &amp; Pembayaran</td><td>Menerima pelunasan pesanan</td><td>10</td></tr>
+    <tr><td>Retur Penjualan</td><td>Mengembalikan barang dan dana pelanggan</td><td>11</td></tr>
+
+    <tr><td rowspan="6"><b>Operasional &amp; Produksi</b></td><td>Perencanaan Jadwal Dapur</td><td>Antrean SPK yang belum mulai</td><td>12</td></tr>
+    <tr><td>Perintah Kerja (SPK)</td><td>Membuat, memproses, dan menyelesaikan produksi</td><td>13</td></tr>
+    <tr><td>Resep &amp; Daftar Bahan Baku</td><td>Mengelola produk, resep, bahan, dan harga</td><td>14</td></tr>
+    <tr><td>Pemakaian Aktual &amp; Hasil</td><td>Arsip SPK selesai dan dibatalkan</td><td>15</td></tr>
+    <tr><td>Pemeriksaan Mutu (QC)</td><td>Mencatat sampel, lulus, gagal, dan catatan mutu</td><td>16</td></tr>
+    <tr><td>Harga Pokok Produksi (HPP)</td><td>Membandingkan HPP standar, HPP aktual, dan margin</td><td>17</td></tr>
+
+    <tr><td rowspan="7"><b>Rantai Pasok &amp; Persediaan</b></td><td>Pembelian &amp; Penerimaan Barang</td><td>Membuat PO dan menerima barang</td><td>18</td></tr>
+    <tr><td>Pemasok &amp; Rekanan</td><td>Data pemasok dan kontak</td><td>19</td></tr>
+    <tr><td>Gudang &amp; Lokasi Rak</td><td>Stok per lokasi dan nilai persediaan</td><td>20</td></tr>
+    <tr><td>Mutasi Gudang ke Dapur</td><td>Memindahkan bahan antarlokasi</td><td>21</td></tr>
+    <tr><td>Katalog Bahan &amp; Produk Jadi</td><td>Harga acuan dan stok produk jadi</td><td>22</td></tr>
+    <tr><td>Pemeriksaan Fisik (Stok Opname)</td><td>Menghitung dan menyetel stok fisik</td><td>23</td></tr>
+    <tr><td>Nomor Batch &amp; Kedaluwarsa</td><td>Melacak lot dan tanggal kedaluwarsa</td><td>24</td></tr>
+
+    <tr><td rowspan="4"><b>Keuangan &amp; Akuntansi</b></td><td>Buku Besar &amp; Jurnal Umum</td><td>Melihat jurnal otomatis dan sumbernya</td><td>25</td></tr>
+    <tr><td>Kas Toko &amp; Rekening Bank</td><td>Saldo kas, buku kas, dan pengeluaran</td><td>26</td></tr>
+    <tr><td>Utang &amp; Piutang Usaha</td><td>Saldo piutang pelanggan dan utang pemasok</td><td>27</td></tr>
+    <tr><td>Laporan Keuangan &amp; Laba Rugi</td><td>Laba rugi, neraca saldo, dan ekspor</td><td>28</td></tr>
+
+    <tr><td rowspan="5"><b>Analisis &amp; Pengaturan</b></td><td>Analisis &amp; Tren Penjualan</td><td>Pendapatan, beban, produk terlaris</td><td>29</td></tr>
+    <tr><td>Jejak Audit &amp; Riwayat Sistem</td><td>Catatan perubahan dan percobaan yang ditolak</td><td>30</td></tr>
+    <tr><td>Hak Akses &amp; Pegawai</td><td>Akun, peran, dan kata sandi sementara</td><td>31</td></tr>
+    <tr><td>Perangkat Kasir</td><td>Printer, kertas, pemindai, dan uji cetak</td><td>32</td></tr>
+    <tr><td>Pengaturan Toko &amp; Cabang</td><td>Identitas, zona waktu, cadangan, periksa basis data</td><td>33</td></tr>
+  </table>
+</section>
+
+<!-- ══════════════════════════ LAMPIRAN B ══════════════════════════ -->
+<section class="chapter" id="lamp-b">
+  <div class="chapter-eyebrow">Lampiran</div>
+  <div class="chapter-num">LAMPIRAN B</div>
+  <h1 class="chapter-title">Matriks Peran dan Menu</h1>
+  <p class="chapter-lead">
+    Ringkasan menu yang terlihat dan tindakan yang diizinkan untuk setiap peran. Server tetap
+    memeriksa setiap permintaan, jadi menghindari menu bukan satu-satunya pengaman.
+  </p>
+
+  <h2>B.1 Menu per kelompok</h2>
+  <table>
+    <tr><th style="width:34%;">Kelompok menu</th><th>Pemilik Toko</th><th>Manajer Operasional</th><th>Kepala Dapur</th><th>Staf Toko / Kasir</th></tr>
+    <tr><td>Ruang Kerja</td><td>Semua</td><td>Semua</td><td>Hanya Kotak Tugas</td><td>Hanya Kotak Tugas</td></tr>
+    <tr><td>Penjualan &amp; Pelanggan</td><td>Semua</td><td>Semua</td><td>&mdash;</td><td>Tanpa Retur Penjualan</td></tr>
+    <tr><td>Operasional &amp; Produksi</td><td>Semua</td><td>Semua</td><td>Semua</td><td>&mdash;</td></tr>
+    <tr><td>Rantai Pasok &amp; Persediaan</td><td>Semua</td><td>Semua</td><td>Semua</td><td>&mdash;</td></tr>
+    <tr><td>Keuangan &amp; Akuntansi</td><td>Semua</td><td>Semua</td><td>&mdash;</td><td>&mdash;</td></tr>
+    <tr><td>Analisis &amp; Pengaturan</td><td>Semua</td><td>Hanya Analisis</td><td>&mdash;</td><td>&mdash;</td></tr>
+  </table>
+
+  <h2>B.2 Tindakan penting</h2>
+  <table>
+    <tr><th style="width:38%;">Tindakan</th><th>Pemilik</th><th>Manajer</th><th>Kepala Dapur</th><th>Kasir</th></tr>
+    <tr><td>Mencatat pesanan dan pembayaran</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Ya</td></tr>
+    <tr><td>Membatalkan pesanan</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Mencatat retur penjualan</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Mengekspor daftar penjualan</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Membuat SPK dan menyelesaikannya</td><td>Ya</td><td>Ya</td><td>Ya</td><td>Tidak</td></tr>
+    <tr><td>Membatalkan SPK</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Membuat purchase order</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Menerima barang</td><td>Ya</td><td>Ya</td><td>Ya</td><td>Tidak</td></tr>
+    <tr><td>Menyetel stok (opname)</td><td>Ya</td><td>Ya</td><td>Ya</td><td>Tidak</td></tr>
+    <tr><td>Mencatat pengeluaran kas</td><td>Ya</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Mengelola akun pegawai</td><td>Ya</td><td>Tidak</td><td>Tidak</td><td>Tidak</td></tr>
+    <tr><td>Mengubah Pengaturan Toko &amp; Cabang</td><td>Ya</td><td>Tidak</td><td>Tidak</td><td>Tidak</td></tr>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Catatan</span>
+    <p>
+      Bila tombol tertentu tidak terlihat, kemungkinan besar peran Anda tidak berwenang.
+      Jangan meminta kata sandi akun lain; minta pemilik membuatkan akun dengan peran yang
+      sesuai kebutuhan.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ LAMPIRAN C ══════════════════════════ -->
+<section class="chapter" id="lamp-c">
+  <div class="chapter-eyebrow">Lampiran</div>
+  <div class="chapter-num">LAMPIRAN C</div>
+  <h1 class="chapter-title">Arti Status Dokumen</h1>
+  <p class="chapter-lead">
+    Status membantu membaca keadaan dokumen. Berikut arti status yang tampil di layar.
+  </p>
+
+  <h2>C.1 Pesanan</h2>
+  <table>
+    <tr><th style="width:28%;">Status</th><th>Arti</th></tr>
+    <tr><td><b>Belum Bayar</b></td><td>Belum ada pembayaran yang tercatat.</td></tr>
+    <tr><td><b>DP / Sebagian</b></td><td>Sudah ada uang muka atau pembayaran sebagian, tetapi total belum tertutup.</td></tr>
+    <tr><td><b>Lunas</b></td><td>Total sudah tertutup; stok produk jadi berkurang dan struk dapat dicetak.</td></tr>
+    <tr><td><b>Dibatalkan</b></td><td>Pesanan dibatalkan; stok dan jurnal dikembalikan, riwayat tetap tersimpan.</td></tr>
+  </table>
+
+  <h2>C.2 Perintah Kerja (SPK)</h2>
+  <table>
+    <tr><th style="width:28%;">Status</th><th>Arti</th></tr>
+    <tr><td><b>Terjadwal</b></td><td>SPK sudah dibuat dan menunggu dikerjakan.</td></tr>
+    <tr><td><b>Diproses</b></td><td>SPK sedang dikerjakan di dapur.</td></tr>
+    <tr><td><b>Selesai</b></td><td>Hasil produksi sudah dicatat; stok etalase dan jurnal sudah diperbarui.</td></tr>
+    <tr><td><b>Dibatalkan</b></td><td>SPK dibatalkan beserta alasan yang diisi.</td></tr>
+  </table>
+
+  <h2>C.3 Purchase Order (PO)</h2>
+  <table>
+    <tr><th style="width:28%;">Status</th><th>Arti</th></tr>
+    <tr><td><b>Draf</b></td><td>PO baru dibuat dan belum diterima barangnya.</td></tr>
+    <tr><td><b>Terkirim</b></td><td>PO sudah dikirim ke pemasok dan menunggu kedatangan barang.</td></tr>
+    <tr><td><b>Diterima Sebagian</b></td><td>Sebagian barang sudah diterima; sisa masih menunggu.</td></tr>
+    <tr><td><b>Diterima</b></td><td>Seluruh barang sudah diterima.</td></tr>
+    <tr><td><b>Dibatalkan</b></td><td>PO dibatalkan sebelum ada penerimaan.</td></tr>
+  </table>
+
+  <h2>C.4 Lot, cetak, dan akun</h2>
+  <table>
+    <tr><th style="width:28%;">Dokumen</th><th>Status dan arti</th></tr>
+    <tr><td><b>Batch bahan</b></td><td><b>aman</b> (kedaluwarsa masih jauh), <b>segera</b> (mendekati kedaluwarsa), <b>kedaluwarsa</b> (sudah lewat).</td></tr>
+    <tr><td><b>Pekerjaan cetak</b></td><td><b>Tercetak</b>, <b>Gagal</b>, atau <b>Menunggu</b>.</td></tr>
+    <tr><td><b>Akun pegawai</b></td><td><b>aktif</b>, <b>nonaktif</b>, <b>wajib ganti sandi</b>, atau <b>terkunci</b>.</td></tr>
+  </table>
+</section>
+
+<!-- ══════════════════════════ LAMPIRAN D ══════════════════════════ -->
+<section class="chapter" id="lamp-d">
+  <div class="chapter-eyebrow">Lampiran</div>
+  <div class="chapter-num">LAMPIRAN D</div>
+  <h1 class="chapter-title">Pesan Kesalahan dan Tindakan</h1>
+  <p class="chapter-lead">
+    Pesan berikut sering muncul saat pengoperasian. Cocokkan pesan di layar dengan tabel ini
+    sebelum menghubungi pendamping teknis.
+  </p>
+
+  <table>
+    <tr><th style="width:40%;">Pesan / gejala</th><th>Tindakan</th></tr>
+    <tr>
+      <td><b>Nama pengguna atau kata sandi tidak cocok.</b></td>
+      <td>Periksa ejaan, Caps Lock, dan akun yang dipakai. Bila tetap gagal, minta Pemilik Toko memberikan kata sandi sementara.</td>
+    </tr>
+    <tr>
+      <td><b>Kata sandi baru dan konfirmasi tidak cocok.</b></td>
+      <td>Ketik ulang kata sandi baru pada kedua kolom dengan isi yang sama.</td>
+    </tr>
+    <tr>
+      <td><b>Minimal 8 karakter serta memuat huruf dan angka.</b></td>
+      <td>Gunakan kata sandi yang lebih panjang dan mengandung huruf serta angka.</td>
+    </tr>
+    <tr>
+      <td><b>Metode pembayaran harus salah satu dari: Tunai, Transfer.</b></td>
+      <td>Pilih Tunai atau Transfer Bank. Untuk QRIS atau kartu, pilih Transfer Bank dan tulis keterangannya di Catatan.</td>
+    </tr>
+    <tr>
+      <td><b>Jumlah melebihi stok tersedia di lokasi asal (&hellip;).</b></td>
+      <td>Periksa stok lokasi asal di Bab 20, catat penerimaan bila barang baru datang, atau kurangi jumlah mutasi.</td>
+    </tr>
+    <tr>
+      <td><b>Lokasi asal dan tujuan harus berbeda.</b></td>
+      <td>Pilih lokasi tujuan yang berbeda dari lokasi asal.</td>
+    </tr>
+    <tr>
+      <td><b>Tanggal kedaluwarsa harus setelah tanggal penerimaan.</b></td>
+      <td>Perbaiki tanggal kedaluwarsa. Jangan mengisi tanggal yang sudah lewat untuk penerimaan baru.</td>
+    </tr>
+    <tr>
+      <td><b>PO sudah diterima penuh / PO sudah dibatalkan.</b></td>
+      <td>PO tidak dapat diterima lagi. Periksa daftar PO dan pilih dokumen yang masih memiliki sisa.</td>
+    </tr>
+    <tr>
+      <td><b>Data gagal dimuat</b> atau pemberitahuan server lokal belum menjawab.</td>
+      <td>Tunggu sebentar dan tekan <b>Coba lagi</b> atau <b>Perbarui Data</b>. Bila tetap gagal, tutup dan buka kembali aplikasi. Jangan menghapus basis data.</td>
+    </tr>
+    <tr>
+      <td><b>Pilih tanggal mulai dan akhir</b> saat mengekspor.</td>
+      <td>Isi kedua tanggal sebelum menekan Export Excel atau Export PDF.</td>
+    </tr>
+    <tr>
+      <td><b>Struk gagal dicetak.</b></td>
+      <td>Periksa printer di Windows dan pengaturan <b>Perangkat Kasir</b>, lalu gunakan <b>Cetak ulang</b>. Pembayaran tetap tersimpan.</td>
+    </tr>
+    <tr>
+      <td><b>Tidak ada bahan baku dari resep.</b></td>
+      <td>Lengkapi komposisi produk di <b>Resep &amp; Daftar Bahan Baku</b> sebelum menyelesaikan SPK.</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Jangan mengatasi pesan kesalahan dengan menghapus data, mengubah berkas basis data, atau
+      memakai akun lain. Catat pesan yang muncul, waktu kejadian, dan tindakan yang sedang
+      dilakukan, lalu sampaikan kepada pendamping teknis.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ LAMPIRAN E ══════════════════════════ -->
+<section class="chapter" id="lamp-e">
+  <div class="chapter-eyebrow">Lampiran</div>
+  <div class="chapter-num">LAMPIRAN E</div>
+  <h1 class="chapter-title">Daftar Gambar</h1>
+  <p class="chapter-lead">
+    Seluruh tangkapan layar yang dipakai dalam buku ini, beserta bab pembahasannya.
+  </p>
+
+  <table>
+    <tr><th style="width:10%;">No.</th><th>Keterangan</th><th style="width:10%;">Bab</th></tr>
+    <tr><td>1</td><td>Layar masuk aplikasi</td><td>2</td></tr>
+    <tr><td>2</td><td>Dialog Ganti Kata Sandi wajib</td><td>2</td></tr>
+    <tr><td>3</td><td>Dasbor &amp; Indikator Utama</td><td>3</td></tr>
+    <tr><td>4</td><td>Kotak Tugas &amp; Persetujuan</td><td>4</td></tr>
+    <tr><td>5</td><td>Notifikasi Internal</td><td>5</td></tr>
+    <tr><td>6</td><td>Kasir Penjualan Cepat</td><td>6</td></tr>
+    <tr><td>7</td><td>Formulir Tambah Transaksi / Pesanan Baru</td><td>6</td></tr>
+    <tr><td>8</td><td>Daftar Pesanan &amp; Penjualan</td><td>7</td></tr>
+    <tr><td>9</td><td>Pesanan Terjadwal (Pre-Order)</td><td>8</td></tr>
+    <tr><td>10</td><td>Data Pelanggan &amp; Klien</td><td>9</td></tr>
+    <tr><td>11</td><td>Piutang &amp; Pembayaran</td><td>10</td></tr>
+    <tr><td>12</td><td>Dialog Catat Pembayaran</td><td>10</td></tr>
+    <tr><td>13</td><td>Retur Penjualan</td><td>11</td></tr>
+    <tr><td>14</td><td>Perencanaan Jadwal Dapur</td><td>12</td></tr>
+    <tr><td>15</td><td>Daftar Perintah Kerja (SPK)</td><td>13</td></tr>
+    <tr><td>16</td><td>Formulir Buat SPK Produksi Baru</td><td>13</td></tr>
+    <tr><td>17</td><td>Dialog Penyelesaian SPK</td><td>13</td></tr>
+    <tr><td>18</td><td>Resep &amp; BOM Produk</td><td>14</td></tr>
+    <tr><td>19</td><td>Pemakaian Aktual &amp; Hasil</td><td>15</td></tr>
+    <tr><td>20</td><td>Pemeriksaan Mutu (QC)</td><td>16</td></tr>
+    <tr><td>21</td><td>Harga Pokok Produksi (HPP)</td><td>17</td></tr>
+    <tr><td>22</td><td>Pembelian &amp; Penerimaan Barang</td><td>18</td></tr>
+    <tr><td>23</td><td>Formulir Buat Purchase Order Baru</td><td>18</td></tr>
+    <tr><td>24</td><td>Dialog Terima Barang</td><td>18</td></tr>
+    <tr><td>25</td><td>Pemasok &amp; Rekanan</td><td>19</td></tr>
+    <tr><td>26</td><td>Gudang &amp; Lokasi Rak</td><td>20</td></tr>
+    <tr><td>27</td><td>Mutasi Gudang &rarr; Dapur</td><td>21</td></tr>
+    <tr><td>28</td><td>Formulir Mutasi Bahan</td><td>21</td></tr>
+    <tr><td>29</td><td>Katalog Bahan &amp; Produk Jadi</td><td>22</td></tr>
+    <tr><td>30</td><td>Pemeriksaan Fisik (Stok Opname)</td><td>23</td></tr>
+    <tr><td>31</td><td>Nomor Batch &amp; Kedaluwarsa</td><td>24</td></tr>
+    <tr><td>32</td><td>Buku Besar &amp; Jurnal Umum</td><td>25</td></tr>
+    <tr><td>33</td><td>Kas Toko &amp; Rekening Bank</td><td>26</td></tr>
+    <tr><td>34</td><td>Utang &amp; Piutang Usaha</td><td>27</td></tr>
+    <tr><td>35</td><td>Laporan Keuangan &amp; Laba Rugi</td><td>28</td></tr>
+    <tr><td>36</td><td>Analisis &amp; Tren Penjualan</td><td>29</td></tr>
+    <tr><td>37</td><td>Jejak Audit &amp; Riwayat Sistem</td><td>30</td></tr>
+    <tr><td>38</td><td>Hak Akses &amp; Pegawai</td><td>31</td></tr>
+    <tr><td>39</td><td>Dialog Tambah Pegawai</td><td>31</td></tr>
+    <tr><td>40</td><td>Perangkat Kasir</td><td>32</td></tr>
+    <tr><td>41</td><td>Pengaturan Toko &amp; Cabang</td><td>33</td></tr>
+  </table>
+
+  <div class="end-note">
+    Buku Manual Pengguna Seruni 22 Bakery &middot; Versi aplikasi 1.2.12 &middot;
+    Dokumen disusun 2 November 2026. Gambar diambil dari aplikasi dengan basis data sementara
+    berisi data contoh.
+  </div>
+</section>
+
+</body>
+</html>
