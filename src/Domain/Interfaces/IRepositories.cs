@@ -63,12 +63,31 @@ public interface ISalesOrderRepository
     Task<IReadOnlyList<SalesOrder>> GetByPickupDateRangeAsync(DateTime from, DateTime to);
     /// <summary>Jumlah dan sisa bayar seluruh pesanan belum lunas, dihitung di SQL.</summary>
     Task<OutstandingSummary> GetOutstandingSummaryAsync();
-    /// <summary>Jumlah pesanan belum lunas pada dua keranjang tenggat, dihitung di SQL.</summary>
-    Task<DeadlineCounts> GetOutstandingBreakdownAsync(DateTime today);
-    /// <summary>Pesanan belum lunas yang jadwal ambilnya sebelum <paramref name="today"/>, paling dekat lebih dulu.</summary>
-    Task<IReadOnlyList<SalesOrder>> GetOutstandingOverdueAsync(DateTime today, int limit);
-    /// <summary>Pesanan belum lunas yang jadwal ambilnya hari ini atau sesudahnya, paling dekat lebih dulu.</summary>
-    Task<IReadOnlyList<SalesOrder>> GetOutstandingUpcomingAsync(DateTime today, int limit);
+    /// <summary>
+    /// Jumlah pesanan belum lunas pada dua keranjang tenggat, dihitung di SQL.
+    /// <paramref name="createdByUserId"/> diisi untuk cakupan per kasir; null berarti seluruh toko.
+    /// </summary>
+    Task<DeadlineCounts> GetOutstandingBreakdownAsync(DateTime today, int? createdByUserId = null);
+    /// <summary>
+    /// Pesanan belum lunas yang jadwal ambilnya sebelum <paramref name="today"/>, paling dekat lebih dulu.
+    /// <paramref name="createdByUserId"/> diisi untuk cakupan per kasir; null berarti seluruh toko.
+    /// </summary>
+    Task<IReadOnlyList<SalesOrder>> GetOutstandingOverdueAsync(DateTime today, int limit, int? createdByUserId = null);
+    /// <summary>
+    /// Pesanan belum lunas yang jadwal ambilnya hari ini atau sesudahnya, paling dekat lebih dulu.
+    /// <paramref name="createdByUserId"/> diisi untuk cakupan per kasir; null berarti seluruh toko.
+    /// </summary>
+    Task<IReadOnlyList<SalesOrder>> GetOutstandingUpcomingAsync(DateTime today, int limit, int? createdByUserId = null);
+    /// <summary>
+    /// Jumlah pesanan belum lunas (sisa bayar masih positif) untuk pagination layar keuangan.
+    /// <paramref name="createdByUserId"/> diisi untuk cakupan per kasir; null berarti seluruh toko.
+    /// </summary>
+    Task<int> CountOutstandingAsync(int? createdByUserId = null);
+    /// <summary>
+    /// Halaman pesanan belum lunas, jadwal ambil terdekat lebih dulu. Dipakai layar keuangan
+    /// supaya daftar piutang tidak berhenti diam-diam pada seratus baris pertama.
+    /// </summary>
+    Task<IReadOnlyList<SalesOrder>> GetOutstandingListAsync(int limit, int offset, int? createdByUserId = null);
     /// <summary>Rekap per hari untuk grafik analitik (rentang setengah terbuka [from, to)).</summary>
     Task<IReadOnlyList<DailySalesSummary>> GetDailySalesAsync(DateTime from, DateTime to);
     /// <summary>Produk dengan nilai pesanan terbesar pada rentang, dihitung di SQL.</summary>

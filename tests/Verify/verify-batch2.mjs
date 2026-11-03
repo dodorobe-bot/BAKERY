@@ -202,21 +202,23 @@ catat('hasil produksi menambah stok produk jadi di etalase',
   stokProdukSesudahProduksi === stokProdukSebelumProduksi + 4,
   `stok produk ${stokProdukSebelumProduksi} -> ${stokProdukSesudahProduksi}`);
 
-// Skema jurnal SPK: bahan 12.000.000 dari persediaan dapur dipecah menjadi barang jadi
-// 9.600.000 (4 unit baik) dan kerugian scrap 2.400.000 (1 unit), ditambah tenaga kerja
-// 100.000 dan overhead 50.000 yang dibayar tunai. Jumlahnya harus seimbang.
+// Skema jurnal SPK: bahan 12.000.000 dari persediaan dapur ditambah tenaga kerja
+// 100.000 dan overhead 50.000 yang dibayar tunai dikapitalisasi ke barang jadi.
+// 4 unit baik menyerap 9.750.000 (bahan 9.600.000 + konversi 150.000); 1 unit scrap
+// menjadi kerugian 2.400.000. Tenaga kerja/overhead tidak boleh dibebankan dua kali.
 const totalDebitSPK = (entriSPK?.lines || []).reduce((a, l) => a + l.debitAmount, 0);
 const totalKreditSPK = (entriSPK?.lines || []).reduce((a, l) => a + l.creditAmount, 0);
 const barisAkunSPK = (kode) => (entriSPK?.lines || []).filter((l) => l.account?.code === kode);
 const debitAkun = (kode) => barisAkunSPK(kode).reduce((a, l) => a + l.debitAmount, 0);
 const kreditAkun = (kode) => barisAkunSPK(kode).reduce((a, l) => a + l.creditAmount, 0);
-catat('jurnal SPK seimbang dan memecah biaya bahan dengan benar',
+catat('jurnal SPK mengapitalisasi bahan, tenaga kerja, dan overhead dengan benar',
   !!entriSPK && totalDebitSPK === totalKreditSPK && totalDebitSPK === 12150000 &&
-  debitAkun('1-006') === 9600000 && debitAkun('5-004') === 2400000 &&
-  kreditAkun('1-004') === 12000000 && debitAkun('5-003') === 100000 && debitAkun('5-002') === 50000 &&
+  debitAkun('1-006') === 9750000 && debitAkun('5-004') === 2400000 &&
+  kreditAkun('1-004') === 12000000 && debitAkun('5-003') === 0 && debitAkun('5-002') === 0 &&
   kreditAkun('1-001') === 150000,
   `debit=${totalDebitSPK} kredit=${totalKreditSPK} ` +
-  `fg=${debitAkun('1-006')} scrap=${debitAkun('5-004')} dapur=${kreditAkun('1-004')}`);
+  `fg=${debitAkun('1-006')} scrap=${debitAkun('5-004')} dapur=${kreditAkun('1-004')} ` +
+  `kas=${kreditAkun('1-001')} gaji=${debitAkun('5-003')} ops=${debitAkun('5-002')}`);
 
 // Muatan ini sengaja lengkap valid: penolakannya harus datang dari penjaga status SPK,
 // bukan dari pagar scrap, supaya 'ditolak' tidak menjadi hijau palsu.

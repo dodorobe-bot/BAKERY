@@ -69,7 +69,7 @@ public class AccountingClosureTests
     }
 
     /// <summary>SPK 5 unit baik; bahan 2 kg @ Rp 1.000 = 200.000, tenaga 40.000, overhead 20.000.</summary>
-    private async Task<long> ProduksiAsync(int produk, int bahan, int goodUnits)
+    private async Task<(int Id, long Hpp)> ProduksiAsync(int produk, int bahan, int goodUnits)
     {
         await _stock.ApplyAsync(new[]
         {
@@ -99,7 +99,7 @@ public class AccountingClosureTests
         var hpp = ProductionCostRules.CostPerGoodUnit(
             materialCost, wo.LaborCost, wo.OverheadCost, 0, goodUnits);
         await _production.CompleteWorkOrderAsync(id, goodUnits, 0, materials, [], journal, hpp);
-        return hpp;
+        return (id, hpp);
     }
 
     private async Task<int> PesananLunasAsync(int produk, decimal quantity, long total)
@@ -136,7 +136,7 @@ public class AccountingClosureTests
     {
         var bahan = BahanBaru("Bahan HPP Jual", 100_000);
         var produk = ProdukBaru("Roti HPP Jual");
-        var hpp = await ProduksiAsync(produk, bahan, goodUnits: 5);
+        var (_, hpp) = await ProduksiAsync(produk, bahan, goodUnits: 5);
         hpp.Should().Be(52_000);
 
         var orderId = await PesananLunasAsync(produk, quantity: 2, total: 300_000);
@@ -156,12 +156,95 @@ public class AccountingClosureTests
             "nilai persediaan kembali seperti sebelum penjualan");
     }
 
+    /// <summary>
+    /// Nilai stok produk jadi persis seperti yang dipakai menu Inventaris: jumlah fisik dikali
+    /// biaya rata-rata per unit yang tersimpan, bukan angka yang dihitung ulang di tes.
+    /// </summary>
+    private (decimal Quantity, long Value) NilaiStokJadi(int produk)
+    {
+        var jumlah = Convert.ToDecimal(_db.Scalar(
+            $"SELECT COALESCE(SUM(Quantity), 0) FROM FinishedGoodsStock WHERE ProductTemplateId = {produk};"));
+        var nilai = Convert.ToInt64(_db.Scalar(
+            "SELECT COALESCE(SUM(CAST(ROUND(Quantity * AverageCostMinorUnits) AS INTEGER)), 0) " +
+            $"FROM FinishedGoodsStock WHERE ProductTemplateId = {produk};"));
+        return (jumlah, nilai);
+    }
+
+    [Fact]
+    public async Task JurnalProduksi_SamaDenganNilaiStokProdukJadi()
+    {
+        var bahan = BahanBaru("Bahan Kapitalisasi", 100_000);
+        var produk = ProdukBaru("Roti Kapitalisasi");
+
+        var (woId, hpp) = await ProduksiAsync(produk, bahan, goodUnits: 5);
+        hpp.Should().Be(52_000);
+
+        // Bahan 200.000 + tenaga 40.000 + overhead 20.000 semuanya menempel di stok.
+        Baris("1-006", "WorkOrder", woId).Should().Be((260_000L, 0L),
+            "persediaan produk jadi harus didebit sebesar HPP penuh, bukan hanya bahan");
+        Baris("1-004", "WorkOrder", woId).Credit.Should().Be(200_000);
+        Baris("1-001", "WorkOrder", woId).Credit.Should().Be(60_000,
+            "tenaga kerja dan overhead tetap dibayar tunai saat produksi");
+        Baris("5-003", "WorkOrder", woId).Debit.Should().Be(0,
+            "tenaga kerja yang sudah masuk stok tidak boleh dibebankan dua kali");
+        Baris("5-002", "WorkOrder", woId).Debit.Should().Be(0,
+            "overhead yang sudah masuk stok tidak boleh dibebankan dua kali");
+
+        NilaiStokJadi(produk).Should().Be((5m, 260_000L),
+            "saldo buku besar 1-006 dan nilai stok fisik harus memakai angka yang sama");
+    }
+
+    [Fact]
+    public async Task PenjualanSeluruhStok_MenutupSaldoPersediaanJadiTanpaSelisih()
+    {
+        var bahan = BahanBaru("Bahan Habis Jual", 100_000);
+        var produk = ProdukBaru("Roti Habis Jual");
+
+        var (woId, hpp) = await ProduksiAsync(produk, bahan, goodUnits: 5);
+        var orderId = await PesananLunasAsync(produk, quantity: 5, total: 500_000);
+
+        Baris("5-005", "SalesOrder", orderId).Debit.Should().Be(hpp * 5,
+            "HPP penjualan memakai biaya penuh yang tadi dikapitalisasi");
+        Baris("1-006", "SalesOrder", orderId).Credit.Should().Be(260_000);
+        NilaiStokJadi(produk).Should().Be((0m, 0L));
+
+        Baris("1-006", "WorkOrder", woId).Debit.Should().Be(
+            Baris("1-006", "SalesOrder", orderId).Credit,
+            "stok yang terjual habis harus meninggalkan saldo nol di akun persediaan produk jadi");
+    }
+
+    [Fact]
+    public async Task HppPerUnitTidakBulat_TetapSeimbangDanSamaDenganNilaiStok()
+    {
+        var bahan = BahanBaru("Bahan Pembulatan", 100_000);
+        var produk = ProdukBaru("Roti Pembulatan");
+
+        // 260.000 / 6 unit = 43.333,33 -> biaya per unit 43.333, nilai stok 259.998.
+        var (woId, hpp) = await ProduksiAsync(produk, bahan, goodUnits: 6);
+        hpp.Should().Be(43_333);
+
+        Baris("1-006", "WorkOrder", woId).Debit.Should().Be(259_998);
+        Baris("5-006", "WorkOrder", woId).Debit.Should().Be(2,
+            "selisih pembulatan biaya per unit dibukukan, bukan dibiarkan menggantung");
+        NilaiStokJadi(produk).Should().Be((6m, 259_998L));
+
+        var debit = Convert.ToInt64(_db.Scalar(
+            "SELECT COALESCE(SUM(jl.DebitAmount), 0) FROM JournalLines jl " +
+            "JOIN JournalEntries je ON je.Id = jl.JournalEntryId " +
+            $"WHERE je.SourceDocumentType = 'WorkOrder' AND je.SourceDocumentId = {woId};"));
+        var kredit = Convert.ToInt64(_db.Scalar(
+            "SELECT COALESCE(SUM(jl.CreditAmount), 0) FROM JournalLines jl " +
+            "JOIN JournalEntries je ON je.Id = jl.JournalEntryId " +
+            $"WHERE je.SourceDocumentType = 'WorkOrder' AND je.SourceDocumentId = {woId};"));
+        debit.Should().Be(kredit);
+    }
+
     [Fact]
     public async Task Retur_MengembalikanStokDenganHppSaatTerjual_BukanResepHariIni()
     {
         var bahan = BahanBaru("Bahan HPP Retur", 100_000);
         var produk = ProdukBaru("Roti HPP Retur");
-        var hpp = await ProduksiAsync(produk, bahan, goodUnits: 5);
+        var (_, hpp) = await ProduksiAsync(produk, bahan, goodUnits: 5);
         var orderId = await PesananLunasAsync(produk, quantity: 2, total: 300_000);
 
         // Harga bahan naik setelah penjualan: retur tidak boleh memakai harga baru.
@@ -262,6 +345,11 @@ public class AccountingClosureTests
         hasil.Success.Should().BeTrue(hasil.ErrorMessage);
 
         var receiptId = Convert.ToInt32(_db.Scalar("SELECT Id FROM GoodsReceipts ORDER BY Id DESC LIMIT 1;"));
+        _db.Count("StockMovements", $"SourceType = 'GoodsReceipt' AND SourceId = {receiptId}")
+            .Should().Be(2, "setiap mutasi penerimaan harus menunjuk struk penerimaan yang sama dengan jurnal");
+        _db.Count("StockMovements",
+                $"SourceId = {receiptId} AND LocationId = {Dapur} AND IngredientId = {bahanDapur} AND Quantity = 2")
+            .Should().Be(1, "lokasi mutasi harus sama dengan lokasi tujuan baris penerimaan");
         Baris("1-004", "GoodsReceipt", receiptId).Debit.Should().Be(100_000,
             "bahan yang langsung masuk dapur didebit ke persediaan dapur");
         Baris("1-003", "GoodsReceipt", receiptId).Debit.Should().Be(150_000);

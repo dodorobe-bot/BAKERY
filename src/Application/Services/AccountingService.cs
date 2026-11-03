@@ -28,6 +28,7 @@ public class AccountingService
     private const string BebanOperasionalKode = "5-002";
     private const string BebanGajiKode = "5-003";
     private const string BebanProdukRusakKode = "5-004";
+    private const string BebanSelisihPersediaanKode = "5-006";
 
     public AccountingService(IJournalRepository journals, IAccountRepository accounts)
     {
@@ -167,14 +168,9 @@ public class AccountingService
     }
 
     /// <summary>
-    /// Penyelesaian SPK: Cr Persediaan Dapur atas seluruh bahan terpakai,
-    /// Dr Persediaan Produk Jadi untuk bagian yang lolos dan Dr Beban Produk Rusak untuk scrap.
-    /// </summary>
-    /// <summary>
-    /// Penyelesaian SPK. Bahan yang lolos modalisasi ke stok produk jadi, bahan yang hilang
-    /// langsung jadi beban, sedangkan tenaga kerja dan overhead dibebankan ke kas pada hari itu
-    /// (keputusan bisnis: tidak dikapitalisasi ke persediaan, tetapi tetap dihitung dalam HPP
-    /// per unit untuk margin).
+    /// Penyelesaian SPK. Bahan yang lolos, tenaga kerja, dan overhead semuanya dikapitalisasi
+    /// ke stok produk jadi supaya saldo 1-006 sama dengan nilai stok yang dipakai menu
+    /// Inventaris dan HPP penjualan. Bahan yang hilang langsung menjadi beban produk rusak.
     /// </summary>
     public async Task<JournalEntry?> BuildProductionCompletionAsync(
         int workOrderId, string? orderNumber, long totalMaterialCost, long scrapLossCost,
@@ -189,7 +185,6 @@ public class AccountingService
         long scrap = goodUnits <= 0
             ? totalMaterialCost
             : Math.Clamp(scrapLossCost, 0, totalMaterialCost);
-        long finishedGoodsCost = totalMaterialCost - scrap;
 
         var lines = new List<JournalLine>();
 
@@ -198,18 +193,47 @@ public class AccountingService
             var dapur = await AccountIdAsync(PersediaanDapurKode);
             lines.Add(new() { AccountId = dapur, CreditAmount = totalMaterialCost });
 
-            if (finishedGoodsCost > 0)
-                lines.Add(new() { AccountId = await AccountIdAsync(PersediaanJadiKode), DebitAmount = finishedGoodsCost });
             if (scrap > 0)
                 lines.Add(new() { AccountId = await AccountIdAsync(BebanProdukRusakKode), DebitAmount = scrap });
         }
 
         var kas = await AccountIdAsync(KasKode);
-        if (laborCost > 0)
-            lines.Add(new() { AccountId = await AccountIdAsync(BebanGajiKode), DebitAmount = laborCost });
-        if (overheadCost > 0)
-            lines.Add(new() { AccountId = await AccountIdAsync(BebanOperasionalKode), DebitAmount = overheadCost });
         long biayaTunai = laborCost + overheadCost;
+
+        if (goodUnits <= 0)
+        {
+            // Tidak ada unit yang bisa menopang biaya tenaga kerja/overhead: keduanya beban
+            // periode berjalan, bukan aset persediaan.
+            if (laborCost > 0)
+                lines.Add(new() { AccountId = await AccountIdAsync(BebanGajiKode), DebitAmount = laborCost });
+            if (overheadCost > 0)
+                lines.Add(new() { AccountId = await AccountIdAsync(BebanOperasionalKode), DebitAmount = overheadCost });
+        }
+        else
+        {
+            // Nilai yang menempel pada stok harus persis sama dengan yang ditulis
+            // FinishedGoodsLedger (harga pokok per unit × unit baik), bukan hanya bahan.
+            // Tanpa ini jurnal mendebit 1-006 lebih kecil daripada nilai stok, sehingga akun
+            // 1-006 bisa bersaldo negatif begitu barangnya terjual.
+            long unitCost = ProductionCostRules.CostPerGoodUnit(
+                totalMaterialCost, laborCost, overheadCost, scrap, goodUnits);
+            long inventoryValue = unitCost * goodUnits;
+            long capitalized = Math.Max(0, totalMaterialCost - scrap) + biayaTunai;
+
+            if (inventoryValue > 0)
+                lines.Add(new() { AccountId = await AccountIdAsync(PersediaanJadiKode), DebitAmount = inventoryValue });
+
+            // Biaya rata-rata per unit adalah bilangan bulat, jadi sisa pembulatan (maksimal
+            // setengah sen per unit) tidak bisa ikut tersimpan di stok. Selisihnya dibukukan
+            // ke beban selisih persediaan agar jurnal tetap seimbang dan saldo 1-006 sama
+            // dengan nilai stok yang dihitung dari harga rata-rata.
+            long rounding = capitalized - inventoryValue;
+            if (rounding > 0)
+                lines.Add(new() { AccountId = await AccountIdAsync(BebanSelisihPersediaanKode), DebitAmount = rounding });
+            else if (rounding < 0)
+                lines.Add(new() { AccountId = await AccountIdAsync(BebanSelisihPersediaanKode), CreditAmount = -rounding });
+        }
+
         if (biayaTunai > 0)
             lines.Add(new() { AccountId = kas, CreditAmount = biayaTunai });
 

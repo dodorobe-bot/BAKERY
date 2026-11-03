@@ -144,4 +144,50 @@ public sealed class PurchaseCancelApiTests : IClassFixture<PlaywrightFixture>
         batalLagi.StatusCode.Should().Be(HttpStatusCode.BadRequest,
             "membatalkan dua kali bukan operasi yang diam-diam berhasil");
     }
+
+    [Fact]
+    public async Task Po_MenolakSatuanYangBerbedaDenganMasterBahan()
+    {
+        var http = await AppLogin.AuthorizedClientAsync(_fixture.BaseUrl);
+        var penanda = Guid.NewGuid().ToString("N")[..8];
+
+        var pemasok = await http.PostAsync("/api/suppliers", Json(new { name = $"Pemasok Satuan {penanda}" }));
+        pemasok.StatusCode.Should().Be(HttpStatusCode.OK);
+        var pemasokId = (await JsonAsync(pemasok)).RootElement.GetProperty("id").GetInt32();
+
+        var bahan = await http.PostAsync("/api/ingredients", Json(new
+        {
+            name = $"Bahan Satuan {penanda}",
+            unit = "kg",
+            pricePerUnit = 1_000_000,
+            currentStock = 0,
+            minStockAlert = 0,
+            isActive = true,
+        }));
+        bahan.StatusCode.Should().Be(HttpStatusCode.Created);
+        var bahanId = (await JsonAsync(bahan)).RootElement.GetProperty("id").GetInt32();
+
+        // Stok tidak dikonversi antar satuan, jadi PO "pcs" untuk bahan bersatuan "kg" akan
+        // mencampur dua arti angka pada baris stok yang sama.
+        var po = await http.PostAsync("/api/purchases", Json(new
+        {
+            supplierId = pemasokId,
+            expectedDate = (string?)null,
+            notes = "Uji satuan",
+            lines = new[] { new { ingredientId = bahanId, orderedQty = 1m, unitCostMinorUnits = 1_000_000, unit = "pcs" } },
+        }));
+        po.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var pesan = await po.Content.ReadAsStringAsync();
+        pesan.Should().Contain("kg").And.Contain("pcs");
+
+        var asing = await http.PostAsync("/api/purchases", Json(new
+        {
+            supplierId = pemasokId,
+            expectedDate = (string?)null,
+            notes = "Uji bahan asing",
+            lines = new[] { new { ingredientId = 999_999, orderedQty = 1m, unitCostMinorUnits = 1_000_000, unit = "kg" } },
+        }));
+        asing.StatusCode.Should().Be(HttpStatusCode.BadRequest,
+            "baris PO yang menunjuk bahan tak dikenal tidak boleh tersimpan");
+    }
 }

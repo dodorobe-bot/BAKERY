@@ -58,16 +58,22 @@ public static class BackupRetention
             if ((sekarangUtc - e.CreatedAtUtc).TotalDays <= policy.HariSimpanSemua)
                 simpan.Add(e.Path);
 
-        SimpanPeriode(entries, simpan, policy.HariHarian, e => e.CreatedAtUtc.ToLocalTime().Date);
-        SimpanPeriode(entries, simpan, policy.MingguMingguan,
+        // Pilihan periode dan pagar minimum memakai salinan terverifikasi lebih dulu. Tanpa
+        // ini, berkas rusak yang kebetulan paling baru bisa memakai jatah periode/jumlah
+        // minimum, sementara salinan sehat yang lebih tua justru dihapus. OrderBy stabil:
+        // di dalam tiap kelompok urutannya tetap terbaru lebih dulu.
+        var urutPilih = entries.OrderByDescending(e => e.Terverifikasi).ToList();
+
+        SimpanPeriode(urutPilih, simpan, policy.HariHarian, e => e.CreatedAtUtc.ToLocalTime().Date);
+        SimpanPeriode(urutPilih, simpan, policy.MingguMingguan,
             e => AwalMinggu(e.CreatedAtUtc.ToLocalTime().Date));
-        SimpanPeriode(entries, simpan, policy.BulanBulanan,
+        SimpanPeriode(urutPilih, simpan, policy.BulanBulanan,
             e => new DateTime(e.CreatedAtUtc.ToLocalTime().Year, e.CreatedAtUtc.ToLocalTime().Month, 1));
 
         // Pagar terakhir: jangan pernah menyisakan kurang dari batas minimum, walau semua
         // jendela sudah menipis. Yang ditambahkan adalah salinan terbaru berikutnya.
         if (simpan.Count < policy.MinimalSalinan)
-            foreach (var e in entries.Where(e => !simpan.Contains(e.Path)))
+            foreach (var e in urutPilih.Where(e => !simpan.Contains(e.Path)))
             {
                 if (simpan.Count >= policy.MinimalSalinan) break;
                 simpan.Add(e.Path);
@@ -106,14 +112,14 @@ public static class BackupRetention
             dihapus.Select(Path.GetFileName).Where(n => n is not null).Select(n => n!).ToList());
     }
 
-    /// <summary>Menyimpan satu salinan tertua per periode, sebanyak batas periode yang diminta.</summary>
+    /// <summary>Menyimpan satu salinan termuda per periode, sebanyak batas periode yang diminta.</summary>
     private static void SimpanPeriode(
         IReadOnlyList<BackupEntry> entries, HashSet<string> simpan, int batas, Func<BackupEntry, DateTime> periode)
     {
         if (batas <= 0) return;
         var terpakai = new HashSet<DateTime>();
-        // entries sudah urut terbaru lebih dulu: salinan pertama yang ditemui untuk sebuah
-        // periode adalah yang termuda di periode itu, jadi yang paling berguna disimpan.
+        // entries sudah urut pilihan (sehat lebih dulu, lalu terbaru lebih dulu): salinan
+        // pertama yang ditemui untuk sebuah periode adalah yang paling berguna disimpan.
         foreach (var e in entries)
         {
             if (terpakai.Count >= batas) break;

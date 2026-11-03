@@ -36,6 +36,7 @@ public sealed class DatabaseIntegrity
             CekNomorDokumenUnik(conn),
             CekPenghitungDokumen(conn),
             CekStokNegatif(conn),
+            CekNilaiPersediaanJadi(conn),
         ];
     }
 
@@ -175,6 +176,38 @@ public sealed class DatabaseIntegrity
                 : $"{negatif.Count} baris negatif: {Rangkai(negatif)}");
     }
 
+    /// <summary>
+    /// Nilai stok produk jadi yang dipakai menu Inventaris (jumlah × biaya rata-rata) harus sama
+    /// dengan saldo akun 1-006. Keduanya dihitung dari sumber berbeda — satu dari mutasi stok,
+    /// satu dari jurnal — jadi selisih berarti HPP penjualan dan laporan laba rugi tidak lagi
+    /// mencerminkan barang yang benar-benar ada.
+    /// </summary>
+    private static IntegrityCheck CekNilaiPersediaanJadi(SqliteConnection conn)
+    {
+        var saldo = Angka(conn, @"
+            SELECT COALESCE(SUM(jl.DebitAmount - jl.CreditAmount), 0)
+              FROM JournalLines jl
+              JOIN Accounts a ON a.Id = jl.AccountId
+              JOIN JournalEntries je ON je.Id = jl.JournalEntryId
+             WHERE a.Code = '1-006' AND je.Status IN ('Posted','Reversed');");
+        var nilaiStok = Angka(conn,
+            "SELECT COALESCE(SUM(CAST(ROUND(Quantity * AverageCostMinorUnits) AS INTEGER)), 0) " +
+            "FROM FinishedGoodsStock;");
+
+        // Biaya rata-rata disimpan sebagai bilangan bulat per unit, jadi setiap mutasi bisa
+        // menyisakan pembulatan di bawah satu sen. Selisih sebesar itu bukan kerusakan.
+        const long toleransi = 100;
+        var selisih = saldo - nilaiStok;
+        var lolos = Math.Abs(selisih) <= toleransi;
+
+        return baru("nilai stok produk jadi sama dengan saldo 1-006", lolos,
+            lolos
+                ? $"saldo 1-006 = {saldo}, nilai stok = {nilaiStok}, selisih {selisih} (toleransi {toleransi} sen)."
+                : $"saldo 1-006 = {saldo}, nilai stok = {nilaiStok}, selisih {selisih} sen melebihi toleransi " +
+                  $"{toleransi}. Produksi sebelum perbaikan kapitalisasi mencatat tenaga kerja/overhead " +
+                  "sebagai beban tanpa menambah nilai persediaan; periksa jurnal WorkOrder lama.");
+    }
+
     private static IntegrityCheck baru(string name, bool passed, string detail)
         => new(name, passed, detail);
 
@@ -198,6 +231,9 @@ public sealed class DatabaseIntegrity
         var nilai = cmd.ExecuteScalar();
         return nilai is null or DBNull ? "0" : Convert.ToString(nilai, System.Globalization.CultureInfo.InvariantCulture)!;
     }
+
+    private static long Angka(SqliteConnection conn, string sql) =>
+        long.Parse(Skalar(conn, sql), System.Globalization.CultureInfo.InvariantCulture);
 
     private static List<string> Baris(SqliteConnection conn, string sql)
     {

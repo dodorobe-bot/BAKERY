@@ -517,6 +517,113 @@ public sealed class Batch7ApiTests : IClassFixture<PlaywrightFixture>
     }
 
     [Fact]
+    public async Task KotakTugasKasir_TidakMembocorkanPesananKasirLain()
+    {
+        var owner = await OwnerAsync();
+        var produk = await BuatProdukAsync(owner, 1_200_000);
+        var (_, _, tokenA) = await BuatPenggunaAsync(owner, "Pegawai");
+        var (_, _, tokenB) = await BuatPenggunaAsync(owner, "Pegawai");
+        using var kasirA = Klien(owner, tokenA);
+        using var kasirB = Klien(owner, tokenB);
+
+        object Pesanan(string nama) => new
+        {
+            customerName = nama,
+            description = "Uji cakupan kotak tugas",
+            // Tanggal jauh di depan tetapi paling awal, supaya kedua pesanan uji tetap berada
+            // di dalam batas tampil kotak tugas walaupun basis data uji sudah berisi pesanan lain.
+            pickupDate = "2030-01-01T10:00:00",
+            totalAmount = 1_200_000,
+            downPayment = 0,
+            productTemplateId = produk,
+            quantity = 1,
+        };
+
+        var namaA = $"Tugas A {Guid.NewGuid():N}"[..24];
+        var namaB = $"Tugas B {Guid.NewGuid():N}"[..24];
+        using var pesananA = await kasirA.PostAsJsonAsync("/api/orders", Pesanan(namaA));
+        using var pesananB = await kasirB.PostAsJsonAsync("/api/orders", Pesanan(namaB));
+        pesananA.StatusCode.Should().Be(HttpStatusCode.Created, await pesananA.Content.ReadAsStringAsync());
+        pesananB.StatusCode.Should().Be(HttpStatusCode.Created, await pesananB.Content.ReadAsStringAsync());
+        var idA = JsonDocument.Parse(await pesananA.Content.ReadAsStringAsync())
+            .RootElement.GetProperty("id").GetInt32();
+        var idB = JsonDocument.Parse(await pesananB.Content.ReadAsStringAsync())
+            .RootElement.GetProperty("id").GetInt32();
+
+        using var tugasA = JsonDocument.Parse(await kasirA.GetStringAsync("/api/tasks"));
+        var tautanA = tugasA.RootElement.GetProperty("item").EnumerateArray()
+            .Where(i => i.GetProperty("jenis").GetString() is "pengambilan" or "piutang")
+            .Select(i => i.GetProperty("tautanId").GetInt32())
+            .ToList();
+        tautanA.Should().Contain(idA, "pekerjaan kasir sendiri tetap muncul");
+        tautanA.Should().NotContain(idB,
+            "kotak tugas tidak boleh menjadi jalan pintas melihat pesanan kasir lain");
+        tugasA.RootElement.GetProperty("perJenis").GetProperty("pengambilan").GetInt32().Should().Be(1,
+            "hitungan per jenis mengikuti cakupan yang sama dengan daftar barisnya");
+
+        using var tugasOwner = JsonDocument.Parse(await owner.GetStringAsync("/api/tasks"));
+        var tautanOwner = tugasOwner.RootElement.GetProperty("item").EnumerateArray()
+            .Where(i => i.GetProperty("jenis").GetString() is "pengambilan" or "piutang")
+            .Select(i => i.GetProperty("tautanId").GetInt32())
+            .ToList();
+        tautanOwner.Should().Contain(idA).And.Contain(idB,
+            "Owner melihat pekerjaan seluruh kasir");
+    }
+
+    [Fact]
+    public async Task DaftarPiutang_HanyaPesananBersisaDanBisaBerhalaman()
+    {
+        var owner = await OwnerAsync();
+
+        object Pesanan(string nama, long dibayar) => new
+        {
+            customerName = nama,
+            description = "Uji daftar piutang keuangan",
+            pickupDate = "2029-12-31T10:00:00",
+            totalAmount = 1_200_000,
+            downPayment = dibayar,
+        };
+
+        var namaLunas = $"Lunas {Guid.NewGuid():N}"[..24];
+        var namaSisa = $"Sisa {Guid.NewGuid():N}"[..24];
+        var namaSisa2 = $"Sisa2 {Guid.NewGuid():N}"[..24];
+        using var lunas = await owner.PostAsJsonAsync("/api/orders", Pesanan(namaLunas, 1_200_000));
+        using var sisa = await owner.PostAsJsonAsync("/api/orders", Pesanan(namaSisa, 0));
+        using var sisa2 = await owner.PostAsJsonAsync("/api/orders", Pesanan(namaSisa2, 0));
+        lunas.StatusCode.Should().Be(HttpStatusCode.Created, await lunas.Content.ReadAsStringAsync());
+        sisa.StatusCode.Should().Be(HttpStatusCode.Created, await sisa.Content.ReadAsStringAsync());
+        sisa2.StatusCode.Should().Be(HttpStatusCode.Created, await sisa2.Content.ReadAsStringAsync());
+
+        static int Total(HttpResponseMessage r) =>
+            int.Parse(r.Headers.GetValues("X-Total-Count").Single());
+
+        using var semua = await owner.GetAsync("/api/orders?limit=1");
+        using var piutang = await owner.GetAsync("/api/orders?outstanding=true&limit=500");
+        piutang.StatusCode.Should().Be(HttpStatusCode.OK);
+        using var dokPiutang = JsonDocument.Parse(await piutang.Content.ReadAsStringAsync());
+        var baris = dokPiutang.RootElement.EnumerateArray().ToList();
+        baris.Select(o => o.GetProperty("customerNameSnapshot").GetString())
+            .Should().Contain(namaSisa)
+            .And.NotContain(namaLunas, "pesanan yang sudah dibayar penuh bukan piutang");
+
+        Total(piutang).Should().Be(baris.Count,
+            "jumlah total harus sama dengan baris yang dikembalikan saat seluruhnya muat satu halaman");
+        Total(piutang).Should().BeLessThan(Total(semua),
+            "jumlah piutang tidak boleh menyamakan pesanan lunas dengan pesanan bersisa");
+
+        // Halaman kedua tidak boleh mengulang baris halaman pertama.
+        using var hal1 = await owner.GetAsync("/api/orders?outstanding=true&limit=1&offset=0");
+        using var hal2 = await owner.GetAsync("/api/orders?outstanding=true&limit=1&offset=1");
+        using var dok1 = JsonDocument.Parse(await hal1.Content.ReadAsStringAsync());
+        using var dok2 = JsonDocument.Parse(await hal2.Content.ReadAsStringAsync());
+        dok1.RootElement.GetArrayLength().Should().Be(1);
+        var id1 = dok1.RootElement[0].GetProperty("id").GetInt32();
+        var id2 = dok2.RootElement[0].GetProperty("id").GetInt32();
+        id1.Should().NotBe(id2, "offset harus memindahkan halaman, bukan mengulang baris");
+        Total(hal1).Should().Be(Total(piutang));
+    }
+
+    [Fact]
     public async Task KebijakanSandi_DitegakkanServerSaatMembuatDanMeresetAkun()
     {
         var owner = await OwnerAsync();

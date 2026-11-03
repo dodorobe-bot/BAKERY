@@ -145,4 +145,27 @@ public class DatabaseIntegrityTests
         // Connection yang dipakai pemeriksaan menyalakan PRAGMA-nya sendiri, jadi ini ikut terbukti.
         Ambil(hasil, "foreign_keys aktif di koneksi ini").Passed.Should().BeTrue();
     }
+
+    [Fact]
+    public void NilaiStokProdukJadiDanSaldoBukuBesarBerbeda_Tertangkap()
+    {
+        using var db = new TempDatabase();
+        var persediaan = Convert.ToInt32(db.Scalar("SELECT Id FROM Accounts WHERE Code = '1-006';"));
+        var kas = Convert.ToInt32(db.Scalar("SELECT Id FROM Accounts WHERE Code = '1-001';"));
+
+        // Jurnal seimbang, jadi bukan pemeriksaan keseimbangan yang menangkapnya: hanya nilai
+        // stok fisik (nol) yang tidak mendukung saldo persediaan produk jadi.
+        db.Exec("INSERT INTO JournalEntries (Description, TransactionDate, Status) " +
+                "VALUES ('Persediaan tanpa stok', '2030-01-10', 'Posted');");
+        var entryId = Convert.ToInt32(db.Scalar("SELECT last_insert_rowid();"));
+        db.Exec($"INSERT INTO JournalLines (JournalEntryId, AccountId, DebitAmount, CreditAmount) " +
+                $"VALUES ({entryId}, {persediaan}, 500000, 0), ({entryId}, {kas}, 0, 500000);");
+
+        var hasil = Periksa(db);
+        Ambil(hasil, "jurnal posted seimbang").Passed.Should().BeTrue();
+
+        var cek = Ambil(hasil, "nilai stok produk jadi sama dengan saldo 1-006");
+        cek.Passed.Should().BeFalse();
+        cek.Detail.Should().Contain("500000").And.Contain("selisih");
+    }
 }

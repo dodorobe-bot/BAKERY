@@ -256,6 +256,45 @@ public class BackupRestoreTests : IDisposable
     }
 
     [Fact]
+    public void Retensi_JendelaHarianTidakMemberiJatahKeSalinanRusak()
+    {
+        Pesanan("Ibu Retensi Harian");
+        var sehat = _service.CreateBackup(_db.FilePath, _folder.Path, "manual1");
+        var rusak = _service.CreateBackup(_db.FilePath, _folder.Path, "manual2");
+        File.WriteAllBytes(rusak, File.ReadAllBytes(rusak).Take(4096).ToArray());
+
+        // Satu jatah harian: sebelumnya berkas rusak yang paling baru memakai jatah itu.
+        var kebijakan = new RetentionPolicy(0, 1, 0, 0, MinimalSalinan: 1);
+        BackupRetention.Terapkan(_folder.Path, kebijakan);
+
+        File.Exists(rusak).Should().BeFalse("salinan rusak tidak boleh memakai jatah periode harian");
+        File.Exists(sehat).Should().BeTrue("tersisa satu salinan harian dan itu harus yang terbukti sehat");
+    }
+
+    [Fact]
+    public void Retensi_BatasMinimumMengisiDariSalinanTerverifikasiLebihDulu()
+    {
+        Pesanan("Ibu Batas Minimum");
+        var sehatLama = _service.CreateBackup(_db.FilePath, _folder.Path, "manual1");
+        var sehatBaru = _service.CreateBackup(_db.FilePath, _folder.Path, "manual2");
+        for (var i = 3; i <= 5; i++)
+        {
+            var rusak = _service.CreateBackup(_db.FilePath, _folder.Path, $"manual{i}");
+            File.WriteAllBytes(rusak, File.ReadAllBytes(rusak).Take(4096).ToArray());
+        }
+
+        // Semua jendela dimatikan dan batas minimum 3; hanya dua salinan yang sehat.
+        BackupRetention.Terapkan(_folder.Path, new RetentionPolicy(0, 0, 0, 0, MinimalSalinan: 3));
+
+        var sisa = BackupCatalog.Baca(_folder.Path);
+        sisa.Should().HaveCount(3);
+        sisa.Count(e => e.Terverifikasi).Should().Be(2,
+            "pagar minimum harus memakai semua salinan sehat yang tersedia sebelum salinan rusak");
+        File.Exists(sehatLama).Should().BeTrue("salinan sehat lama tidak boleh dihapus demi salinan rusak yang lebih baru");
+        File.Exists(sehatBaru).Should().BeTrue();
+    }
+
+    [Fact]
     public void Kapasitas_TigaTingkatSesuaiBuktiBerkasDanDisk()
     {
         var keluaran = _folder.Path;

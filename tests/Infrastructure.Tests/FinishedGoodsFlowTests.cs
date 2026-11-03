@@ -125,7 +125,7 @@ public class FinishedGoodsFlowTests
     }
 
     [Fact]
-    public async Task JurnalPenyelesaianSPK_MemuatTenagaKerjaDanOverheadSertaSeimbang()
+    public async Task JurnalPenyelesaianSPK_MengkapitalisasiBiayaProduksiDanSeimbang()
     {
         var product = NewProduct("Roti Jurnal");
         var ingredient = await NewIngredientWithKitchenStock("Tepung Jurnal", 10m);
@@ -139,11 +139,16 @@ public class FinishedGoodsFlowTests
         long kredit = entri.Lines.Sum(l => l.CreditAmount);
         debit.Should().Be(kredit, "entri produksi yang tidak seimbang merusak laporan laba rugi");
 
-        var gaji = await AccountIdByCode("5-003");
-        var operasional = await AccountIdByCode("5-002");
+        // 200.000 bahan, 50.000 kerugian, 40.000 tenaga kerja, 20.000 overhead, 3 unit baik.
+        // HPP per unit 70.000; seluruh biaya produksi dikapitalisasi ke persediaan produk jadi
+        // supaya saldo 1-006 sama dengan nilai stok yang dipakai menu Inventaris dan penjualan.
+        var persediaanJadi = await AccountIdByCode("1-006");
+        var dapur = await AccountIdByCode("1-004");
+        var rusak = await AccountIdByCode("5-004");
         var kas = await AccountIdByCode("1-001");
-        entri.Lines.Should().Contain(l => l.AccountId == gaji && l.DebitAmount == 40_000);
-        entri.Lines.Should().Contain(l => l.AccountId == operasional && l.DebitAmount == 20_000);
+        entri.Lines.Should().Contain(l => l.AccountId == persediaanJadi && l.DebitAmount == 210_000);
+        entri.Lines.Should().Contain(l => l.AccountId == dapur && l.CreditAmount == 200_000);
+        entri.Lines.Should().Contain(l => l.AccountId == rusak && l.DebitAmount == 50_000);
         entri.Lines.Should().Contain(l => l.AccountId == kas && l.CreditAmount == 60_000);
     }
 

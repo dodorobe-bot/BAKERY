@@ -98,7 +98,7 @@ public class SalesOrderRepository : ISalesOrderRepository
         return new OutstandingSummary(r.GetInt32(0), r.GetInt64(1));
     }
 
-    public async Task<DeadlineCounts> GetOutstandingBreakdownAsync(DateTime today)
+    public async Task<DeadlineCounts> GetOutstandingBreakdownAsync(DateTime today, int? createdByUserId = null)
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
@@ -106,27 +106,62 @@ public class SalesOrderRepository : ISalesOrderRepository
             SELECT COALESCE(SUM(CASE WHEN o.PickupDate < @hari THEN 1 ELSE 0 END), 0),
                    COALESCE(SUM(CASE WHEN o.PickupDate >= @hari THEN 1 ELSE 0 END), 0)
             FROM SalesOrders o
-            WHERE {NotSettledFilter} AND {RemainingExpr} > 0;";
+            WHERE {NotSettledFilter} AND {RemainingExpr} > 0
+              AND (@userId IS NULL OR o.CreatedByUserId = @userId);";
         cmd.Parameters.AddWithValue("@hari", today.ToString("yyyy-MM-dd"));
+        cmd.Parameters.AddWithValue("@userId", (object?)createdByUserId ?? DBNull.Value);
         using var r = await cmd.ExecuteReaderAsync();
         await r.ReadAsync();
         return new DeadlineCounts(r.GetInt32(0), r.GetInt32(1));
     }
 
-    public Task<IReadOnlyList<SalesOrder>> GetOutstandingOverdueAsync(DateTime today, int limit) =>
-        GetOutstandingPageAsync(today, sebelum: true, limit);
+    public Task<IReadOnlyList<SalesOrder>> GetOutstandingOverdueAsync(
+        DateTime today, int limit, int? createdByUserId = null) =>
+        GetOutstandingPageAsync(today, sebelum: true, limit, createdByUserId);
 
-    public Task<IReadOnlyList<SalesOrder>> GetOutstandingUpcomingAsync(DateTime today, int limit) =>
-        GetOutstandingPageAsync(today, sebelum: false, limit);
+    public Task<IReadOnlyList<SalesOrder>> GetOutstandingUpcomingAsync(
+        DateTime today, int limit, int? createdByUserId = null) =>
+        GetOutstandingPageAsync(today, sebelum: false, limit, createdByUserId);
 
-    private async Task<IReadOnlyList<SalesOrder>> GetOutstandingPageAsync(DateTime today, bool sebelum, int limit)
+    public async Task<int> CountOutstandingAsync(int? createdByUserId = null)
+    {
+        using var conn = _factory.CreateConnection();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT COUNT(*) FROM SalesOrders o
+            WHERE {NotSettledFilter} AND {RemainingExpr} > 0
+              AND (@userId IS NULL OR o.CreatedByUserId = @userId);";
+        cmd.Parameters.AddWithValue("@userId", (object?)createdByUserId ?? DBNull.Value);
+        return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+    }
+
+    public async Task<IReadOnlyList<SalesOrder>> GetOutstandingListAsync(
+        int limit, int offset, int? createdByUserId = null)
+    {
+        using var conn = _factory.CreateConnection();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = OutstandingSql + @"
+            AND (@userId IS NULL OR o.CreatedByUserId = @userId)
+            ORDER BY o.PickupDate ASC, o.Id ASC LIMIT @limit OFFSET @offset;";
+        cmd.Parameters.AddWithValue("@userId", (object?)createdByUserId ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@limit", limit);
+        cmd.Parameters.AddWithValue("@offset", offset);
+        var list = await ReadOrdersAsync(conn, cmd);
+        await AttachPaymentsAsync(conn, list);
+        return list;
+    }
+
+    private async Task<IReadOnlyList<SalesOrder>> GetOutstandingPageAsync(
+        DateTime today, bool sebelum, int limit, int? createdByUserId)
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = OutstandingSql + $@"
             AND o.PickupDate {(sebelum ? "<" : ">=")} @hari
+            AND (@userId IS NULL OR o.CreatedByUserId = @userId)
             ORDER BY o.PickupDate ASC, o.Id ASC LIMIT @limit;";
         cmd.Parameters.AddWithValue("@hari", today.ToString("yyyy-MM-dd"));
+        cmd.Parameters.AddWithValue("@userId", (object?)createdByUserId ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@limit", limit);
         var list = await ReadOrdersAsync(conn, cmd);
         await AttachPaymentsAsync(conn, list);

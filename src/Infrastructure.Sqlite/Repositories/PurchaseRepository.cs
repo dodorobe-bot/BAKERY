@@ -514,10 +514,12 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
                         "Jumlah diterima sudah berubah di perangkat lain. Muat ulang PO lalu ulangi.");
             }
 
-            // 3. Stok fisik + buku mutasi
+            // 3. Stok fisik + buku mutasi. Nomor penerimaan baru ada setelah header disisipkan,
+            // jadi mutasi yang tidak membawa SourceId sendiri diikat ke struk ini; tanpa itu
+            // inventaris bisa bertambah tanpa satu pun baris yang menunjuk dokumen asalnya.
             foreach (var change in stockChanges)
                 await StockLedger.ApplyAsync(conn, tx, change.LocationId, change.IngredientId, change.Delta,
-                    change.Type, change.SourceType, change.SourceId, change.UserId, change.Notes);
+                    change.Type, change.SourceType, change.SourceId ?? receiptId, change.UserId, change.Notes);
 
             // 4. Jurnal Dr Persediaan / Cr Utang Usaha; nomor struk baru diketahui di sini
             if (journal is not null)

@@ -49,8 +49,14 @@ public class TaskInboxService
     /// semuanya. Tanpa penyaringan ini, kotak tugas menjadi jalan pintas membaca data yang
     /// endpoint aslinya sudah ditolak — misalnya jadwal produksi atau nilai PO.
     /// </summary>
-    public async Task<KotakTugas> GetAsync(UserRole role)
+    /// <param name="userId">
+    /// Pemanggil yang sedang masuk. Untuk kasir (Pegawai) ini menjadi pembatas pesanan yang
+    /// ia catat sendiri; peran lain melihat seluruh toko seperti menu aslinya. Nilai kosong
+    /// untuk kasir berarti tidak ada pesanan yang ditampilkan, bukan diam-diam seluruh toko.
+    /// </param>
+    public async Task<KotakTugas> GetAsync(UserRole role, int? userId = null)
     {
+        var milikKasir = role == UserRole.Pegawai ? userId ?? -1 : (int?)null;
         var bolehJual = RolePolicies.Allows(RolePolicies.Sales, role);
         var bolehProduksi = RolePolicies.Allows(RolePolicies.ProductionWrite, role);
         var bolehPersediaan = RolePolicies.Allows(RolePolicies.InventoryRead, role);
@@ -70,17 +76,17 @@ public class TaskInboxService
 
         if (bolehJual)
         {
-            var tenggat = await _orders.GetOutstandingBreakdownAsync(hariIni);
+            var tenggat = await _orders.GetOutstandingBreakdownAsync(hariIni, milikKasir);
             Hitung("piutang", tenggat.Overdue);
             Hitung("pengambilan", tenggat.Upcoming);
 
-            foreach (var o in await _orders.GetOutstandingOverdueAsync(hariIni, BatasTampil))
+            foreach (var o in await _orders.GetOutstandingOverdueAsync(hariIni, BatasTampil, milikKasir))
                 item.Add(new ItemTugas(
                     "piutang", "Piutang terlewat",
                     $"{o.OrderNumber ?? $"#{o.Id}"} · {o.CustomerNameSnapshot} · sisa {Money.Format(o.RemainingAmount())}",
                     o.PickupDate.Date, "receivables", o.Id));
 
-            foreach (var o in await _orders.GetOutstandingUpcomingAsync(hariIni, BatasTampil))
+            foreach (var o in await _orders.GetOutstandingUpcomingAsync(hariIni, BatasTampil, milikKasir))
                 item.Add(new ItemTugas(
                     "pengambilan", "Pesanan menunggu diselesaikan",
                     $"{o.OrderNumber ?? $"#{o.Id}"} · {o.CustomerNameSnapshot} · sisa {Money.Format(o.RemainingAmount())}",
