@@ -1,0 +1,4 @@
+# Bukti byte-per-byte jalur ESC/POS adalah urutan bita, bukan teks. Tanpa penanda ini,
+# mesin dengan core.autocrlf=true mengubah 0x0A menjadi 0x0D 0x0A saat checkout, sehingga
+# berkas bukti tidak lagi sama dengan yang benar-benar diterima printer.
+*.bin binary
