@@ -384,31 +384,34 @@ try {
         Catat-Lewati 'penjaga versi terbit menolak build ulang' 'git tidak ditemukan; tag versi tidak bisa diperiksa'
     } else {
         $tagAda = ((& git -C $root tag --list "v$Version") -join '').Trim() -ne ''
-        if (-not $tagAda) {
-            # Tanpa tag, penjaga build-pro memang tidak menolak; menjalankan uji ini akan
-            # memulai build sungguhan. Itu bukan kegagalan pagar, jadi ditandai SKIP.
-            Catat-Lewati 'penjaga versi terbit menolak build ulang' "tag v$Version belum ada; penjaga tidak akan menolak build ini"
-        } else {
-            $keluarDist = Join-Path $kerja 'keluaran-tolak'
-            # Bukti paket terbit yang sudah ada tidak boleh hilang hanya karena build ditolak.
-            $distTolak = Join-Path $keluarDist 'installer'
-            New-Item -ItemType Directory -Force -Path $distTolak | Out-Null
-            $isiPenanda = '{"skema":99,"asal":"uji-penjaga"}'
-            $penandaBuild = Join-Path $distTolak 'BUILD-INFO.json'
-            $penandaVerif = Join-Path $distTolak 'VERIFY-REPORT.json'
-            [IO.File]::WriteAllText($penandaBuild, $isiPenanda, (New-Object Text.UTF8Encoding($false)))
-            [IO.File]::WriteAllText($penandaVerif, $isiPenanda, (New-Object Text.UTF8Encoding($false)))
-            $logI = Join-Path $logDir '10-penjaga-versi-terbit.log'
-            $r = Jalankan-Anak $buildPro @('-Version', $Version, '-OutRoot', $keluarDist, '-SkipTests', '-SkipMsi', '-SkipVerifikasiPaket') $logI
-            $adaPenjaga = [regex]::IsMatch($r.Teks, '(?m)^\[FAIL\] penjaga versi terbit ')
-            $tidakBuild = -not (Test-Path (Join-Path $keluarDist 'publish-single'))
-            $buktiUtuh = (Test-Path $penandaBuild) -and (Test-Path $penandaVerif) -and
-                ((Get-Content -Raw $penandaBuild) -eq $isiPenanda) -and
-                ((Get-Content -Raw $penandaVerif) -eq $isiPenanda)
-            Catat-Uji 'penjaga versi terbit menolak build ulang' `
-                (($r.Kode -eq 1) -and $adaPenjaga -and $tidakBuild -and $buktiUtuh) `
-                "exit $($r.Kode), penjaga=$adaPenjaga, tanpa publish=$tidakBuild, bukti utuh=$buktiUtuh" $logI
+        $keluarDist = Join-Path $kerja 'keluaran-tolak'
+        # Bukti paket terbit yang sudah ada tidak boleh hilang hanya karena build ditolak.
+        $distTolak = Join-Path $keluarDist 'installer'
+        New-Item -ItemType Directory -Force -Path $distTolak | Out-Null
+        $isiPenanda = '{"skema":99,"asal":"uji-penjaga"}'
+        $penandaBuild = Join-Path $distTolak 'BUILD-INFO.json'
+        $penandaVerif = Join-Path $distTolak 'VERIFY-REPORT.json'
+        [IO.File]::WriteAllText($penandaBuild, $isiPenanda, (New-Object Text.UTF8Encoding($false)))
+        [IO.File]::WriteAllText($penandaVerif, $isiPenanda, (New-Object Text.UTF8Encoding($false)))
+
+        # Penjaga menolak karena tag v<versi> ATAU karena artefak versi itu sudah ada di
+        # folder keluaran. Versi yang sedang dikerjakan belum punya tag, jadi tanpa cabang
+        # ini kontrolnya selalu SKIP tepat pada versi yang akan dirilis — dan penjaga yang
+        # tidak pernah diuji itu sendiri risiko rilisnya.
+        $pemicu = if ($tagAda) { "tag v$Version" } else {
+            New-Item -ItemType File -Force -Path (Join-Path $distTolak "Seruni22Bakery_Setup_v$Version.exe") | Out-Null
+            "artefak v$Version di folder keluaran"
         }
+        $logI = Join-Path $logDir '10-penjaga-versi-terbit.log'
+        $r = Jalankan-Anak $buildPro @('-Version', $Version, '-OutRoot', $keluarDist, '-SkipTests', '-SkipMsi', '-SkipVerifikasiPaket') $logI
+        $adaPenjaga = [regex]::IsMatch($r.Teks, '(?m)^\[FAIL\] penjaga versi terbit ')
+        $tidakBuild = -not (Test-Path (Join-Path $keluarDist 'publish-single'))
+        $buktiUtuh = (Test-Path $penandaBuild) -and (Test-Path $penandaVerif) -and
+            ((Get-Content -Raw $penandaBuild) -eq $isiPenanda) -and
+            ((Get-Content -Raw $penandaVerif) -eq $isiPenanda)
+        Catat-Uji 'penjaga versi terbit menolak build ulang' `
+            (($r.Kode -eq 1) -and $adaPenjaga -and $tidakBuild -and $buktiUtuh) `
+            "exit $($r.Kode), pemicu=$pemicu, penjaga=$adaPenjaga, tanpa publish=$tidakBuild, bukti utuh=$buktiUtuh" $logI
     }
 
     # ── 11. Baseline sesudah sabotase: paket asli masih hijau ──────────────
