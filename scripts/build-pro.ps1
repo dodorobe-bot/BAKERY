@@ -153,7 +153,21 @@ $transcript = Join-Path $logDir "build-pro-$stamp.log"
 try { Start-Transcript -Path $transcript -Force | Out-Null } catch { }
 
 $commit = ((& git -C $repo rev-parse HEAD) -join '').Trim()
-$kotor = @(& git -C $repo status --porcelain)
+
+# Status porcelain: dua karakter status, satu spasi, lalu path (renamed memakai "lama -> baru").
+function Path-DariStatus([string]$baris) {
+    $p = $baris.Substring([Math]::Min(3, $baris.Length))
+    $i = $p.IndexOf(' -> ')
+    if ($i -ge 0) { $p = $p.Substring($i + 4) }
+    return $p.Trim('"').Replace('\', '/')
+}
+
+# Build menulis laporan, checksum, dan manifest di bawah dist\. Kalau ikut dihitung, pagar
+# "pohon kerja bersih" tidak pernah hijau dan pembacanya tidak tahu apakah yang belum di-commit
+# itu kode produk atau hanya artefak build ini sendiri.
+$kotorSemua = @(& git -C $repo status --porcelain)
+$kotorArtefak = @($kotorSemua | Where-Object { (Path-DariStatus $_) -like 'dist/*' })
+$kotor = @($kotorSemua | Where-Object { (Path-DariStatus $_) -notlike 'dist/*' })
 
 # ── Versi: satu sumber, semua salinan harus sepakat ────────────────────────
 $versiCsproj = ([xml](Get-Content -Raw $hostProject)).Project.PropertyGroup.Version |
@@ -207,6 +221,7 @@ function Tulis-Laporan {
         versi        = $Version
         commit       = $commit
         pohonKotor   = $kotor.Count
+        kotorArtefakBuild = $kotorArtefak.Count
         outRoot      = $outRoot
         alatVersi    = Get-VersiAlat
         opsi         = [pscustomobject]@{
@@ -238,9 +253,12 @@ try {
     Write-Host "   keluaran: $outRoot"
     Write-Host "   commit  : $commit"
     if ($kotor.Count -gt 0) {
-        Catat 'pohon kerja bersih' 'WARN' "$($kotor.Count) berkas belum di-commit; laporan tetap mencatat commit $commit"
+        Catat 'pohon kerja bersih' 'WARN' "$($kotor.Count) berkas sumber belum di-commit; laporan tetap mencatat commit $commit"
     } else {
-        Catat 'pohon kerja bersih' 'PASS' "semua perubahan sudah di-commit"
+        $catatanArtefak = if ($kotorArtefak.Count -gt 0) {
+            " (di luar hitungan: $($kotorArtefak.Count) artefak build di dist\ yang baru saja ditulis)"
+        } else { '' }
+        Catat 'pohon kerja bersih' 'PASS' "semua perubahan sumber sudah di-commit$catatanArtefak"
     }
 
     # ── Preflight ──────────────────────────────────────────────────────────
