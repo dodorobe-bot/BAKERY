@@ -4,6 +4,45 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
+## [1.2.13] — 2026-11-03
+
+Status: **NOT READY**. Yang sudah dibuktikan pada 2026-11-03: gerbang verifikasi dijalankan pada
+konfigurasi **Release** dan lulus penuh — **32 langkah, 0 gagal, 0 SKIP**
+(`dist\verify\verify-20261103-172525.json`), **523 tes otomatis lulus, 0 gagal, 0 dilewati**,
+**169 pemeriksaan API** (batch2 63, batch3 56, batch6 21, bug09 29) tanpa kegagalan, dan
+`build-pro.ps1` menghasilkan EXE + MSI dengan **393/393 berkas payload** cocok manifest serta
+validasi paket **19 pemeriksaan, 0 gagal, 0 lewati**.
+
+Isi versi ini adalah perbaikan yang dibangun 2–3 November dan **tidak ada di paket 1.2.12**:
+
+- **Keamanan jaringan.** Host menolak alamat dengar di luar loopback — baik dari `--urls` maupun
+  `Kestrel:Endpoints` — sebelum kunci JWT dan basis data dibuat, sehingga salah ketik konfigurasi
+  tidak membuka port ke jaringan toko dan tidak meninggalkan berkas. LAN hanya atas izin eksplisit
+  `SERUNI_ALLOW_LAN=1`. 20 tes unit + 1 tes proses tingkat biner.
+- **Konsistensi data.** Nilai yang menempel pada stok produk jadi kini sama dengan nilai yang
+  dipakai HPP (sebelumnya 1-006 bisa bersaldo negatif begitu barang terjual); SPK tanpa unit baik
+  membebani gaji/operasional alih-alih menguap ke aset; sisa pembulatan harga rata-rata dibukukan
+  ke beban selisih persediaan.
+- **Backup.** Retensi mengutamakan salinan yang sudah terverifikasi, jadi cadangan rusak yang
+  kebetulan terbaru tidak lagi menghabiskan jatah periode sementara salinan sehat terhapus.
+- **Idempotensi.** Kunci yang tertinggal oleh proses mati di tengah jalan kedaluwarsa setelah
+  30 jam (dihitung di SQL dengan UTC yang sama dengan `ReservedAt`), dan baris selesai dibersihkan
+  setelah 30 hari — pengguna tidak lagi terkena 409 terus-menerus.
+- **Antar muka.** Status perangkat dipakai ulang 15 detik dan dibersihkan saat pengaturan diubah;
+  daftar piutang/utang keuangan dimuat bertahap dengan penanda "hanya baris yang termuat" alih-alih
+  berhenti diam-diam pada 100 baris.
+- **Otomatisasi.** Laporan gerbang JSON mencatat commit, status pohon kotor, opsi, hasil tiap
+  langkah, dan jumlah tes dari log; bukti kegagalan disimpan sebelum folder temp dibersihkan;
+  tiga pagar statis menjaga agar guard loopback tidak terhapus diam-diam dan agar tidak ada skrip
+  membuka port firewall; `sign-paket` memilih versi dari laporan build (dulu mengikuti abjad, bisa
+  menandatangani v1.2.10 saat yang dimaksud v1.2.12); `dotnet test` yang lulus tanpa satu pun tes
+  tercatat kini menggagalkan build; jalur `OutRoot` bertanda junction/symlink ditolak.
+
+Yang **belum** untuk 1.2.13: pasang/peningkatan/copot di Windows Sandbox bersih, cetak ke printer
+thermal 80 mm maupun printer jaringan fisik, pemindai barcode fisik, laci uang, pemasangan oleh
+pemilik di PC kasir, dan uji di Windows 10. Paket **NotSigned**. Skema basis data: **18** — tidak
+ada migrasi baru.
+
 ## [1.2.12] — 2026-11-01
 
 Status: **NOT READY**. Yang sudah dibuktikan: build Release, 489 tes otomatis lulus, gerbang

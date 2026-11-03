@@ -2,10 +2,11 @@
 
 Aplikasi desktop untuk toko dan pabrik roti: penjualan, produksi, pembelian, stok, jurnal keuangan, dan laporan — berjalan **sepenuhnya offline** di satu komputer toko.
 
-- Versi sumber dan paket terbaru: **1.2.12**, skema basis data **18**
-- Status 1.2.12: **NOT READY** — paket dibangun, 489 tes otomatis dan gerbang verifikasi lulus, dan pasang/peningkatan/copot sudah lulus di Windows Sandbox bersih (1.2.9 → 1.2.12, 105/105); alur pemindai lulus simulasi 14/14, tetapi cetak ke printer fisik, pemindai fisik, laci uang, pemasangan oleh pemilik di PC kasir, dan Windows 10 belum diuji, dan paket belum bertanda tangan. Versi 1.2.11 tidak pernah diterbitkan.
+- Versi sumber dan paket terbaru: **1.2.13**, skema basis data **18**
+- Status 1.2.13: **NOT READY** — gerbang verifikasi konfigurasi Release lulus penuh (32 langkah, 0 gagal, 0 SKIP; 523 tes otomatis; 169 pemeriksaan API) dan `build-pro` menghasilkan EXE+MSI dengan 393/393 berkas payload terverifikasi, tetapi pasang/peningkatan/copot di Windows Sandbox belum dijalankan untuk versi ini, cetak ke printer fisik, pemindai fisik, laci uang, dan Windows 10 belum diuji, serta paket belum bertanda tangan.
+- Status 1.2.12: **NOT READY** — paket dibangun 2026-11-01 dan saat itu 489 tes lulus plus pasang/peningkatan/copot di Windows Sandbox bersih (1.2.9 → 1.2.12, 105/105), tetapi paket itu **tidak memuat** perbaikan 2–3 November (pagar loopback, nilai stok jadi, retensi backup, kunci idempotensi, muat bertahap daftar piutang/utang). Versi 1.2.11 tidak pernah diterbitkan.
 - Status 1.2.9: **READY FOR LIMITED PILOT** (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima)
-- Kedua paket **NotSigned** (belum ada sertifikat tanda tangan)
+- Paket **NotSigned** (belum ada sertifikat tanda tangan)
 - Platform: Windows 10/11 x64
 - Riwayat perubahan: [CHANGELOG.md](CHANGELOG.md)
 
