@@ -95,6 +95,27 @@ baru di atas skema 18; EXE menolak kanal MSI, MSI lama menolak turun versi, dan 
 menghapus folder data pengguna. Lihat
 [`docs/paket-bukti-2026-11-03/upgrade-1213-sandbox/README.md`](paket-bukti-2026-11-03/upgrade-1213-sandbox/README.md).
 
+## Publikasi 2026-11-03
+
+- Tag annotated **`v1.2.13`**: objek `ff09aa57eb2fc1e8c901f4989a958f2bea6009fd` menunjuk commit
+  `bbe22e844642918abb2d6ba8ee304bee90a9860d` dan **tidak** mengubah
+  tag `v1.2.9`/`v1.2.10`/`v1.2.12`.
+- `main` dan tag di-push ke `origin` (fast-forward `107559c..bbe22e8`, 14 commit, tanpa force);
+  sesudah `git fetch`, `origin/main` = `HEAD` dan selisih 0/0.
+- **Release GitHub:** <https://github.com/dodorobe-bot/BAKERY/releases/tag/v1.2.13> — judul
+  "Seruni 22 Bakery 1.2.13 — NOT READY", `draft=false`, `prerelease=false`, `createdAt`
+  `2026-11-03T11:25:51Z`, `publishedAt` `2026-11-03T11:36:30Z`. Release ini sekarang menyandang
+  label **Latest**; rilis `v1.2.12` tetap ada dan tidak diubah.
+- Aset terunggah dan **digest SHA-256 yang dihitung GitHub sama dengan hash lokal**:
+  EXE `c1a0af29bd8f5bf9c439cadef3c1d8c891da0c49a3271384192fd682c444ed9d` (42.672.292 bita),
+  MSI `eb3f40fb0fa2fe1fb7e09bee733db524a8b29fb55af367b1bd8d0df1f5afd132` (50.416.132 bita),
+  `SHA256SUMS.txt` `a71dd37d6e24965c37548feb7c4f544b9c64a9c9b3d8ee08557a90c6af435341` (196 bita).
+- Ulang-alih unduhan: `SHA256SUMS.txt` diunduh dari URL publik → **byte-identik** dengan berkas
+  lokal (`cmp` bersih); MSI diunduh penuh dari URL publik → 50.416.132 bita, SHA-256
+  `eb3f40fb…` sama dengan paket hasil build. Halaman rilis menjawab 200 tanpa login.
+- Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
+  diuji" di atas tetap berlaku — label Latest bukan persetujuan produksi.
+
 ## Batas bukti
 
 Peralatan uji berada pada PC dengan RAM 3,7 GB; hasil "lulus" di atas adalah hasil satu mesin.
