@@ -177,7 +177,7 @@ def html_lapisan(total):
             '<div class="lembar">'
             '<div class="kepala"><span>Seruni 22 Bakery &middot; Buku Manual Pengguna</span>'
             "<span>Versi aplikasi 1.2.12</span></div>"
-            '<div class="kaki"><span>Panduan pengoperasian dari masuk hingga Pengaturan Toko &amp; Cabang</span>'
+            '<div class="kaki"><span>Panduan pengoperasian dari pemasangan hingga Pengaturan Toko &amp; Cabang</span>'
             f"<span>Halaman {i} dari {total}</span></div>"
             "</div>"
         )
@@ -204,7 +204,7 @@ sekarang = datetime.now().strftime("D:%Y%m%d%H%M%S")
 keluar.add_metadata({
     "/Title": "Buku Manual Pengguna Seruni 22 Bakery",
     "/Author": "Seruni 22 Bakery",
-    "/Subject": "Panduan pengoperasian aplikasi Seruni 22 Bakery versi 1.2.12, dari masuk hingga Pengaturan Toko & Cabang",
+    "/Subject": "Panduan pengoperasian aplikasi Seruni 22 Bakery versi 1.2.12, dari pemasangan hingga Pengaturan Toko & Cabang",
     "/Keywords": "manual pengguna, Seruni 22 Bakery, 1.2.12, kasir, produksi, keuangan",
     "/Creator": "Seruni 22 Bakery",
     "/Producer": "pypdf",
