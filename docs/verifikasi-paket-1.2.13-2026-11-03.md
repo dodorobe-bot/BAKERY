@@ -124,6 +124,10 @@ menghapus folder data pengguna. Lihat
   di layar Keuangan (`Muat <n> pesanan lagi`, `Muat <n> dokumen lagi`,
   `Tampilkan 100 dokumen berikutnya (<n> tersisa)`, `· hanya baris yang termuat`) dan cache status
   perangkat 15 detik — dicatat di badan rilis, bukan diklaim sebagai isi buku.
+  **Catatan berlakunya:** paragraf ini menggambarkan rilis pada 3 November 11:36. Sore hari yang
+  sama buku dibangun ulang menjadi edisi 1.2.13 dan asetnya diganti, jadi angka 9.316.970 bita /
+  `eec028dc…` / 102 halaman tidak lagi cocok dengan unduhan publik hari ini — lihat subbab
+  "Publikasi aset" di bawah.
 - Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
   diuji" di atas tetap berlaku — label Latest bukan persetujuan produksi.
 
@@ -164,9 +168,25 @@ menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
   padahal `MenitPesananBasi = 30` dipakai sebagai `-30 minutes` di SQL. Sudah dibetulkan menjadi
   30 menit. Tidak ada migrasi baru antara 1.2.12 dan 1.2.13, sehingga bentuk basis data di buku
   tetap benar.
-- Yang **belum** dilakukan: aset rilis `v1.2.13` belum diganti, dan teks rilis yang menyatakan
-  buku ini "disusun untuk versi 1.2.12" belum diubah. Keduanya tindakan publikasi dan menunggu
-  izin eksplisit.
+### Publikasi aset (izin pemilik, 3 November 2026 23:23–23:25 WIB)
+
+- `gh release upload v1.2.13 docs/manual/Seruni22-Buku-Manual-Pengguna.pdf --clobber` keluar 0.
+  Aset pengganti: id numerik **707468203**, nama tetap `Seruni22-Buku-Manual-Pengguna.pdf`,
+  **9.793.167 bita**, digest yang dihitung GitHub `sha256:77b5e042…1dac` — **sama persis**
+  dengan hash berkas lokal. Buku lama 1.2.12 (`eec028dc…`, 102 halaman) tidak ada lagi di rilis.
+  Tiga aset lain tidak tersentuh: EXE `c1a0af29…`, MSI `eb3f40fb…`, `SHA256SUMS.txt` `a71dd37d…`.
+  `--clobber` menghapus lalu membuat ulang aset, jadi label lama ikut hilang. Label dipasang
+  kembali lewat `PATCH /repos/…/releases/assets/707468203` (id **numerik**, bukan id GraphQL
+  `RA_kwDO…` — id GraphQL mengembalikan 404): *Buku Manual Pengguna - edisi 1.2.13 (107 halaman;
+  tangkapan layar dari aplikasi 1.2.12)*.
+- **Unduh tanpa login** (`curl -sSL`, tanpa token, pada `browser_download_url`): HTTP 200,
+  9.793.167 bita, SHA-256 `77b5e042…1dac` — identik dengan berkas di pohon kerja. Bukti
+  pihak yang menerima rilis mendapatkan isi yang sama dengan yang diverifikasi di atas.
+- Yang **belum** diubah: badan rilis `v1.2.13`. Bagian "Aset tambahan — buku manual" masih
+  menyebut 9.316.970 bita, SHA-256 `eec028dc…`, 102 halaman, dan "Buku ini disusun untuk versi
+  1.2.12", sementara daftar ringkasan menyebut 99 halaman. Setelah unggah, pernyataan itu tidak
+  lagi cocok dengan aset yang terpasang. Izin yang diberikan hanya untuk mengunggah aset, jadi
+  sunting badan rilis menunggu persetujuan terpisah.
 
 ## Batas bukti
 
