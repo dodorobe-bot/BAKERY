@@ -20,6 +20,23 @@ function Normalisasi-Jalur([string]$jalur) {
     return ([IO.Path]::GetFullPath($jalur)).TrimEnd('\', '/')
 }
 
+# Jalur yang lolos pemeriksaan awalan masih bisa keluar dari repo lewat junction/symlink.
+# Build menulis dan menghapus banyak berkas, jadi komponen bertanda reparse harus ditolak.
+function Tolak-Reparse([string]$jalur, [string]$nama) {
+    $kandidat = Normalisasi-Jalur $jalur
+    while ($kandidat) {
+        if (Test-Path -LiteralPath $kandidat) {
+            $item = Get-Item -LiteralPath $kandidat -Force
+            if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                throw "$nama '$jalur' ditolak: komponen '$kandidat' adalah tautan/junction. Pakai folder biasa di dalam repo atau temp."
+            }
+        }
+        $induk = Split-Path -Parent $kandidat
+        if (-not $induk -or $induk -eq $kandidat) { break }
+        $kandidat = $induk
+    }
+}
+
 # OutRoot membuat build bisa diarahkan ke folder percobaan tanpa menimpa paket yang
 # sudah terbit. Hanya repo dan folder temp yang diterima: build menghapus dan menulis
 # banyak berkas, jadi folder data pengguna atau akar drive harus ditolak lebih awal.
@@ -31,6 +48,7 @@ $diBawahTemp = $outRoot.StartsWith($tempPenuh + '\', [StringComparison]::Ordinal
 if ($outRoot -eq $repoPenuh -or (-not $diBawahRepo -and -not $diBawahTemp)) {
     throw "OutRoot '$outRoot' ditolak: harus di dalam repo ($repoPenuh) atau folder temp ($tempPenuh)."
 }
+Tolak-Reparse $outRoot "OutRoot"
 
 $frontendDir = Join-Path $repo "frontend"
 $publishDir = Join-Path $outRoot "publish-single"
@@ -89,9 +107,20 @@ if ($versiCsproj -ne $Version) {
 
 if (-not $SkipTests) {
     Write-Host "== Tes otomatis =="
-    Invoke-Alat "Tes otomatis" (Join-Path $logDir "test.log") {
+    $logTes = Join-Path $logDir "test.log"
+    Invoke-Alat "Tes otomatis" $logTes {
         dotnet test "BakeryDesktop.slnx" -c Release -m:1 -nodeReuse:false
     }
+    # dotnet test keluar 0 walaupun tidak ada satu pun tes yang dijalankan (mis. proyek tes
+    # hilang dari solusi). Tanpa angka ini "lulus" hanya berarti proses selesai.
+    $jumlahTes = 0
+    foreach ($m in [regex]::Matches((Get-Content -Path $logTes -Raw), 'Passed!\s+-\s+Failed:\s+\d+,\s+Passed:\s+(\d+)')) {
+        $jumlahTes += [int]$m.Groups[1].Value
+    }
+    if ($jumlahTes -lt 1) {
+        throw "dotnet test keluar 0 tetapi tidak ada tes yang tercatat lulus. Lihat log: $logTes"
+    }
+    Write-Host "   $jumlahTes tes lulus tercatat."
 }
 
 Write-Host "== Build frontend produksi =="

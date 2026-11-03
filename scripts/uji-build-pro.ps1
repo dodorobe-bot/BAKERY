@@ -218,7 +218,7 @@ try {
     Tulis-Sums $sumsPaket @("$hashPalsu *$namaExe", $barisMsi)
     $logA = Join-Path $logDir '02-sums-exe-salah.log'
     $r = Validasi $logA @('-Version', $Version, '-InstallerDir', $paket,
-        '-PublishDir', $publishDir, '-ManifestPath', (Join-Path $kerja 'belum-ada.txt'),
+        '-PublishDir', $publishDir,
         '-JsonPath', $jsonKerja, '-LewatiEkstraksi')
     Catat-Uji 'kontrol A: hash EXE salah terdeteksi' `
         (($r.Kode -eq 1) -and (Jumlah-Gagal $r.Teks) -eq 1 -and (Punya-Gagal $r.Teks 'SHA256SUMS cocok dengan berkas')) `
@@ -343,6 +343,40 @@ try {
         "exit $($r.Kode), $(Jumlah-Gagal $r.Teks) FAIL" $logH
     Tulis-Sums $sumsPaket $sumsNormal
 
+    # ── 9b. Kontrol negatif I: EXE tercantum tetapi tidak ada ──────────────
+    # Dulu validator berhenti dengan pengecualian (Get-Item berkas hilang) dan laporan JSON
+    # tidak pernah ditulis, bukan FAIL yang bisa dibaca.
+    $exeSimpan = Join-Path $kerja 'exe-disimpan.bin'
+    Move-Item (Join-Path $paket $namaExe) $exeSimpan -Force
+    $logI2 = Join-Path $logDir '09b-exe-hilang.log'
+    $r = Validasi $logI2 @('-Version', $Version, '-InstallerDir', $paket,
+        '-PublishDir', $publishDir, '-JsonPath', $jsonKerja, '-LewatiEkstraksi', '-TanpaMsi')
+    Catat-Uji 'kontrol I: EXE hilang terdeteksi tanpa crash' `
+        (($r.Kode -eq 1) -and (Jumlah-Gagal $r.Teks) -eq 2 -and
+         (Punya-Gagal $r.Teks 'artefak EXE tersedia') -and (Punya-Gagal $r.Teks 'SHA256SUMS cocok dengan berkas')) `
+        "exit $($r.Kode), $(Jumlah-Gagal $r.Teks) FAIL" $logI2
+    Move-Item $exeSimpan (Join-Path $paket $namaExe) -Force
+
+    # ── 9c. Kontrol negatif J: manifest yang diminta tidak ada ─────────────
+    # Tanpa penolakan ini, salah ketik -ManifestPath membuat perbandingan payload menjadi
+    # SKIP dan validator tetap keluar 0 seolah paket sudah terbukti.
+    $logJ = Join-Path $logDir '09c-manifest-hilang.log'
+    $r = Validasi $logJ @('-Version', $Version, '-InstallerDir', $paket,
+        '-PublishDir', $publishDir, '-ManifestPath', (Join-Path $kerja 'manifest-tidak-ada.txt'),
+        '-JsonPath', $jsonKerja, '-LewatiEkstraksi')
+    Catat-Uji 'kontrol J: manifest hilang tidak jadi SKIP' `
+        (($r.Kode -eq 1) -and (Jumlah-Gagal $r.Teks) -eq 1 -and (Punya-Gagal $r.Teks 'payload MSI identik dengan manifest')) `
+        "exit $($r.Kode), $(Jumlah-Gagal $r.Teks) FAIL" $logJ
+
+    # ── 9d. Kontrol negatif K: laporan di luar repo/temp ---───────────────
+    # Satu salah ketik -JsonPath tidak boleh membuat folder/berkas di luar cakupan aman.
+    $logK = Join-Path $logDir '09d-jsonpath-luar.log'
+    $r = Validasi $logK @('-Version', $Version, '-InstallerDir', $paket,
+        '-PublishDir', $publishDir, '-JsonPath', 'Q:\seruni-uji-di-luar.json', '-TanpaMsi')
+    $adaTolakan = [regex]::IsMatch($r.Teks, 'JsonPath.*ditolak')
+    Catat-Uji 'kontrol K: JsonPath di luar repo/temp ditolak' `
+        (($r.Kode -eq 1) -and $adaTolakan) "exit $($r.Kode), penolakan=$adaTolakan" $logK
+
     # ── 10. Penjaga versi terbit build-pro menolak tanpa izin ──────────────
     if ($LewatiUjiBuildPro) {
         Catat-Lewati 'penjaga versi terbit menolak build ulang' 'dilewati atas permintaan (-LewatiUjiBuildPro)'
@@ -356,13 +390,24 @@ try {
             Catat-Lewati 'penjaga versi terbit menolak build ulang' "tag v$Version belum ada; penjaga tidak akan menolak build ini"
         } else {
             $keluarDist = Join-Path $kerja 'keluaran-tolak'
+            # Bukti paket terbit yang sudah ada tidak boleh hilang hanya karena build ditolak.
+            $distTolak = Join-Path $keluarDist 'installer'
+            New-Item -ItemType Directory -Force -Path $distTolak | Out-Null
+            $isiPenanda = '{"skema":99,"asal":"uji-penjaga"}'
+            $penandaBuild = Join-Path $distTolak 'BUILD-INFO.json'
+            $penandaVerif = Join-Path $distTolak 'VERIFY-REPORT.json'
+            [IO.File]::WriteAllText($penandaBuild, $isiPenanda, (New-Object Text.UTF8Encoding($false)))
+            [IO.File]::WriteAllText($penandaVerif, $isiPenanda, (New-Object Text.UTF8Encoding($false)))
             $logI = Join-Path $logDir '10-penjaga-versi-terbit.log'
             $r = Jalankan-Anak $buildPro @('-Version', $Version, '-OutRoot', $keluarDist, '-SkipTests', '-SkipMsi', '-SkipVerifikasiPaket') $logI
             $adaPenjaga = [regex]::IsMatch($r.Teks, '(?m)^\[FAIL\] penjaga versi terbit ')
             $tidakBuild = -not (Test-Path (Join-Path $keluarDist 'publish-single'))
+            $buktiUtuh = (Test-Path $penandaBuild) -and (Test-Path $penandaVerif) -and
+                ((Get-Content -Raw $penandaBuild) -eq $isiPenanda) -and
+                ((Get-Content -Raw $penandaVerif) -eq $isiPenanda)
             Catat-Uji 'penjaga versi terbit menolak build ulang' `
-                (($r.Kode -eq 1) -and $adaPenjaga -and $tidakBuild) `
-                "exit $($r.Kode), penjaga=$adaPenjaga, tanpa publish=$tidakBuild" $logI
+                (($r.Kode -eq 1) -and $adaPenjaga -and $tidakBuild -and $buktiUtuh) `
+                "exit $($r.Kode), penjaga=$adaPenjaga, tanpa publish=$tidakBuild, bukti utuh=$buktiUtuh" $logI
         }
     }
 

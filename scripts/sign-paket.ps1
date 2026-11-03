@@ -33,6 +33,18 @@ param(
     [Parameter(ParameterSetName = "Pfx")]
     [SecureString]$PfxPassword,
 
+    # Menampilkan berkas yang akan ditandatangani lalu berhenti. Tidak butuh sertifikat
+    # maupun signtool; dipakai untuk memastikan versi yang dipilih benar sebelum menandatangani.
+    [Parameter(Mandatory = $true, ParameterSetName = "Daftar")]
+    [switch]$DaftarSaja,
+
+    [string]$Version,
+
+    # Diarahkan ke salinan percobaan agar pengujian tidak menyentuh paket terbit.
+    [string]$InstallerDir,
+
+    [string]$PublishDir,
+
     [string]$TimestampUrl = "http://timestamp.digicert.com",
 
     [switch]$TermasukIsi,
@@ -44,10 +56,61 @@ $ErrorActionPreference = "Stop"
 $repo = Split-Path -Parent $PSScriptRoot
 Set-Location $repo
 
-$installerDir = Join-Path $repo "dist\installer"
-$publishDir = Join-Path $repo "dist\publish-single"
+$installerDir = if ($InstallerDir) { (Resolve-Path -LiteralPath $InstallerDir).Path } else { Join-Path $repo "dist\installer" }
+$publishDir = if ($PublishDir) { (Resolve-Path -LiteralPath $PublishDir).Path } else { Join-Path $repo "dist\publish-single" }
 $logDir = Join-Path $repo "dist\build-logs"
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+
+# --- Versi paket yang ditandatangani -------------------------------------------
+# Folder dist\installer bisa memuat paket dari beberapa versi sekaligus. Dulu skrip
+# memilih berkas pertama menurut abjad, sehingga v1.2.10 bisa ditandatangani padahal
+# yang dimaksud v1.2.12. Versi kini diambil dari laporan build, lalu dari proyek host.
+if (-not $Version) {
+    $infoJson = Join-Path $installerDir "BUILD-INFO.json"
+    if (Test-Path $infoJson) {
+        try { $Version = (Get-Content -Raw $infoJson | ConvertFrom-Json).versi } catch { }
+    }
+}
+if (-not $Version) {
+    $hostProject = Join-Path $repo "src\Host.Service\BakeryDesktop.Host.Service.csproj"
+    if (Test-Path $hostProject) {
+        $Version = ([xml](Get-Content -Raw $hostProject)).Project.PropertyGroup.Version |
+            Where-Object { $_ } | Select-Object -First 1
+        if ($Version) { $Version = $Version.Trim() }
+    }
+}
+if (-not $Version) { throw "Versi paket tidak bisa ditentukan. Jalankan dengan -Version x.y.z." }
+if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw "Versi '$Version' bukan bentuk x.y.z." }
+
+# --- Berkas yang ditandatangani ------------------------------------------------
+if (-not $Files -or $Files.Count -eq 0) {
+    $Files = @()
+    $jalurExe = Join-Path $installerDir "Seruni22Bakery_Setup_v$Version.exe"
+    $jalurMsi = Join-Path $installerDir "Seruni22Bakery_v$($Version)_x64.msi"
+    if (Test-Path $jalurExe) { $Files += $jalurExe }
+    if (Test-Path $jalurMsi) { $Files += $jalurMsi }
+    if ($TermasukIsi) {
+        $Files += @(
+            (Join-Path $publishDir "Seruni22Bakery.exe"),
+            (Join-Path $publishDir "Seruni22Bakery.Host.exe")
+        )
+    }
+}
+if ($Files.Count -eq 0) {
+    throw "Tidak ada berkas $Version untuk ditandatangani di $installerDir (diharapkan Seruni22Bakery_Setup_v$Version.exe atau Seruni22Bakery_v${Version}_x64.msi)."
+}
+
+if ($DaftarSaja) {
+    Write-Host "Versi          : $Version"
+    Write-Host "Folder         : $installerDir"
+    Write-Host "Berkas        :"
+    foreach ($f in $Files) {
+        $ada = Test-Path $f
+        Write-Host ("  [{0}] {1}" -f $(if ($ada) { 'ADA' } else { 'HILANG' }), $f)
+        if (-not $ada) { throw "Berkas tidak ditemukan: $f" }
+    }
+    exit 0
+}
 
 # signtool menulis sebagian pesan ke stderr. Dengan $ErrorActionPreference = "Stop",
 # PowerShell 5.1 mengubah baris stderr itu menjadi galat yang menghentikan skrip walau
@@ -128,18 +191,7 @@ else {
 }
 
 # --- Berkas yang ditandatangani ------------------------------------------------
-if (-not $Files -or $Files.Count -eq 0) {
-    $Files = @()
-    $Files += Get-ChildItem $installerDir -Filter "Seruni22Bakery_Setup_v*.exe" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-    $Files += Get-ChildItem $installerDir -Filter "Seruni22Bakery_v*_x64.msi" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-    if ($TermasukIsi) {
-        $Files += @(
-            (Join-Path $publishDir "Seruni22Bakery.exe"),
-            (Join-Path $publishDir "Seruni22Bakery.Host.exe")
-        )
-    }
-}
-if ($Files.Count -eq 0) { throw "Tidak ada berkas untuk ditandatangani." }
+# (dipilih di atas, sebelum sertifikat diperiksa, agar -DaftarSaja tidak butuh sertifikat)
 
 $cap = Get-Date -Format "yyyyMMdd-HHmmss"
 $log = Join-Path $logDir "signing-$cap.log"
@@ -151,6 +203,10 @@ $baris.Add("Signtool       : $signtool")
 $baris.Add("")
 
 $gagal = 0
+# Hasil per berkas dipakai untuk memperbarui checksum dan laporan build: keduanya
+# menunjuk hash lama, sehingga tanpa pembaruan paket yang sudah ditandatangani akan
+# terlihat "tidak cocok" oleh validate-paket.ps1.
+$tanda = [ordered]@{}
 foreach ($f in $Files) {
     if (-not (Test-Path $f)) { throw "Berkas tidak ditemukan: $f" }
     $hashSebelum = (Get-FileHash -Algorithm SHA256 $f).Hash.ToLowerInvariant()
@@ -186,30 +242,92 @@ foreach ($f in $Files) {
     $baris.Add("  Verifikasi   : $(if ($kodeVerifikasi -eq 0) { 'PA: lulus' } else { "PA: keluar $kodeVerifikasi (lihat log)" })")
     $baris.Add("")
 
+    $namaBerkas = Split-Path -Leaf $f
+    $tanda[$namaBerkas] = [pscustomobject]@{
+        Nama   = $namaBerkas
+        Jalur  = (Resolve-Path $f).Path
+        Ukuran = (Get-Item $f).Length
+        Sha256 = $hashSesudah
+        Status = [string]$hasil.Status
+    }
+
     if ($hasil.Status -ne "Valid") { $gagal++ }
+}
+
+$baris.Add("")
+
+# SHA256SUMS harus mengikuti artefak yang sudah berubah isinya. Ditulis hanya untuk
+# EXE+MSI versi ini (sama seperti build-installer/build-msi), memakai akhir baris LF:
+# validator menolak checksum ber-CRLF karena `sha256sum -c` di Git Bash gagal membacanya.
+$sumPath = Join-Path $installerDir "SHA256SUMS.txt"
+$namaArtefak = @(
+    "Seruni22Bakery_Setup_v$Version.exe",
+    "Seruni22Bakery_v$($Version)_x64.msi"
+)
+$barisSum = @()
+foreach ($n in $namaArtefak) {
+    $jalur = Join-Path $installerDir $n
+    if (Test-Path $jalur) {
+        $h = (Get-FileHash -Algorithm SHA256 $jalur).Hash.ToLowerInvariant()
+        $barisSum += "$h *$n"
+    }
+}
+if ($barisSum.Count -gt 0) {
+    [IO.File]::WriteAllText($sumPath, (($barisSum -join "`n") + "`n"), (New-Object Text.UTF8Encoding($false)))
+    Write-Host "SHA256SUMS.txt diperbarui untuk EXE/MSI versi $Version."
+}
+
+# BUILD-INFO.txt (dibuat build-installer) memuat hash dan status tanda tangan lama.
+$buildInfoTxt = Join-Path $installerDir "BUILD-INFO.txt"
+$namaExeSetup = "Seruni22Bakery_Setup_v$Version.exe"
+$statusTanda = if ($gagal -eq 0) { $infoSert } else { "TIDAK LENGKAP: $gagal berkas gagal/tidak valid" }
+if (Test-Path $buildInfoTxt) {
+    $teks = [IO.File]::ReadAllText($buildInfoTxt)
+    if ($tanda.Contains($namaExeSetup)) {
+        $t = $tanda[$namaExeSetup]
+        $teks = [regex]::Replace($teks, '(?m)^SHA-256 setup\s*:.*$', "SHA-256 setup  : $($t.Sha256)")
+        $teks = [regex]::Replace($teks, '(?m)^Ukuran\s*:.*$', "Ukuran         : $($t.Ukuran) byte")
+    }
+    $teks = [regex]::Replace($teks, '(?m)^Tanda tangan\s*:.*$', "Tanda tangan   : $statusTanda")
+    [IO.File]::WriteAllText($buildInfoTxt, $teks, (New-Object Text.UTF8Encoding($false)))
+    Write-Host "BUILD-INFO.txt diperbarui (hash setup + status tanda tangan)."
+}
+
+# BUILD-INFO.json (dibuat build-pro) dipakai validate-paket untuk mencocokkan hash.
+# Tanpa pembaruan, paket yang baru ditandatangani selalu dinyatakan "hash tidak sama".
+$infoJson = Join-Path $installerDir "BUILD-INFO.json"
+if ((Test-Path $infoJson) -and $tanda.Count -gt 0) {
+    try {
+        $info = Get-Content -Path $infoJson -Raw | ConvertFrom-Json
+        $berubah = 0
+        foreach ($a in @($info.artefak)) {
+            if (-not $a) { continue }
+            $t = $tanda[[string]$a.nama]
+            if ($t) {
+                $a.ukuran = $t.Ukuran
+                $a.sha256 = $t.Sha256
+                $a.tandaTangan = $t.Status
+                $berubah++
+            }
+        }
+        if ($berubah -gt 0) {
+            $info | Add-Member -NotePropertyName tandaTangan -NotePropertyValue ([pscustomobject]@{
+                waktu   = (Get-Date).ToString("o")
+                penanda = $infoSert
+                berkas  = @($tanda.Keys)
+            }) -Force
+            [IO.File]::WriteAllText($infoJson, ($info | ConvertTo-Json -Depth 8), (New-Object Text.UTF8Encoding($false)))
+            Write-Host "BUILD-INFO.json diperbarui untuk $berubah artefak bertanda tangan."
+        }
+    } catch {
+        Add-Content -Path $log -Encoding UTF8 -Value "GAGAL  BUILD-INFO.json tidak bisa diperbarui: $($_.Exception.Message)"
+        $gagal++
+    }
 }
 
 $baris.Add("Ringkasan      : $(if ($gagal -eq 0) { 'semua berkas bertanda tangan dan rantainya valid' } else { "$gagal berkas gagal/tidak valid" })")
 # Ditambahkan ke log yang sama: log ini juga memuat keluaran mentah signtool.
 $baris | Add-Content -Path $log -Encoding UTF8
-
-# SHA256SUMS harus mengikuti artefak yang sudah berubah isinya.
-$pasangan = @(
-    @{ Nama = "Seruni22Bakery_Setup_v1.2.6.exe"; Pola = "Seruni22Bakery_Setup_v*.exe" },
-    @{ Nama = "Seruni22Bakery_v1.2.6_x64.msi"; Pola = "Seruni22Bakery_v*_x64.msi" }
-)
-$barisSum = @()
-foreach ($p in $pasangan) {
-    $berkas = Get-ChildItem $installerDir -Filter $p.Pola -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($berkas) {
-        $h = (Get-FileHash -Algorithm SHA256 $berkas.FullName).Hash.ToLowerInvariant()
-        $barisSum += "$h *$($berkas.Name)"
-    }
-}
-if ($barisSum.Count -gt 0) {
-    $barisSum | Set-Content -Path (Join-Path $installerDir "SHA256SUMS.txt") -Encoding ASCII
-    Write-Host "SHA256SUMS.txt diperbarui."
-}
 
 Write-Host ""
 Get-Content $log | Write-Host

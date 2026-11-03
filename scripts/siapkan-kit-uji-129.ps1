@@ -5,7 +5,11 @@
 
 [CmdletBinding()]
 param(
-    [string]$OutputDir = 'C:\tmp\kit-uji-129'
+    [string]$OutputDir = 'C:\tmp\kit-uji-129',
+
+    # Menimpa kit lama harus disengaja: folder kit boleh memuat 'bukti' hasil uji
+    # sebelumnya, dan menghapusnya tanpa izin berarti bukti itu hilang.
+    [switch]$Timpa
 )
 
 $ErrorActionPreference = 'Stop'
@@ -40,7 +44,14 @@ if (Test-Path $OutputDir) {
     if ($asing.Count -gt 0) {
         throw "Folder tujuan berisi berkas asing: $($asing.Name -join ', '). Pilih folder lain atau kosongkan dulu."
     }
-    Remove-Item (Join-Path $OutputDir '*') -Recurse -Force -ErrorAction SilentlyContinue
+    if ($isi.Count -gt 0 -and -not $Timpa) {
+        throw "Folder tujuan sudah berisi kit lama ($($isi.Count) entri, termasuk kemungkinan folder 'bukti'). Pakai -Timpa untuk menimpanya."
+    }
+    # Hapus per entri tanpa menelan galat: kegagalan menghapus (berkas terkunci)
+    # tidak boleh berlanjut menjadi kit campuran tanpa peringatan.
+    foreach ($item in $isi) {
+        Remove-Item -LiteralPath $item.FullName -Recurse -Force
+    }
 }
 New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 

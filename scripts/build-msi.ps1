@@ -24,6 +24,22 @@ function Normalisasi-Jalur([string]$jalur) {
     return ([IO.Path]::GetFullPath($jalur)).TrimEnd('\', '/')
 }
 
+# Jalur yang lolos pemeriksaan awalan masih bisa keluar dari repo lewat junction/symlink.
+function Tolak-Reparse([string]$jalur, [string]$nama) {
+    $kandidat = Normalisasi-Jalur $jalur
+    while ($kandidat) {
+        if (Test-Path -LiteralPath $kandidat) {
+            $item = Get-Item -LiteralPath $kandidat -Force
+            if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                throw "$nama '$jalur' ditolak: komponen '$kandidat' adalah tautan/junction. Pakai folder biasa di dalam repo atau temp."
+            }
+        }
+        $induk = Split-Path -Parent $kandidat
+        if (-not $induk -or $induk -eq $kandidat) { break }
+        $kandidat = $induk
+    }
+}
+
 # Sama seperti build-installer: OutRoot memisahkan build percobaan dari paket terbit.
 $repoPenuh = Normalisasi-Jalur $repo
 $outRoot = if ($OutRoot) { Normalisasi-Jalur $OutRoot } else { Join-Path $repo "dist" }
@@ -33,6 +49,7 @@ $diBawahTemp = $outRoot.StartsWith($tempPenuh + '\', [StringComparison]::Ordinal
 if ($outRoot -eq $repoPenuh -or (-not $diBawahRepo -and -not $diBawahTemp)) {
     throw "OutRoot '$outRoot' ditolak: harus di dalam repo ($repoPenuh) atau folder temp ($tempPenuh)."
 }
+Tolak-Reparse $outRoot "OutRoot"
 
 $publishDir = if ($PublishDir) { Normalisasi-Jalur $PublishDir } else { Join-Path $outRoot "publish-single" }
 $installerDir = Join-Path $outRoot "installer"

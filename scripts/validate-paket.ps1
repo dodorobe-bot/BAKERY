@@ -23,7 +23,7 @@
     powershell -NoProfile -ExecutionPolicy Bypass -File scripts\validate-paket.ps1 -Version 1.2.12
     ... -InstallerDir dist\installer -PublishDir dist\publish-single
     ... -LewatiEkstraksi            (pemeriksaan cepat tanpa membongkar MSI)
-    ... -JsonPath C:\tmp\laporan.json
+    ... -JsonPath $env:TEMP\laporan.json   (harus di dalam repo atau folder temp)
 
   Keluar 1 bila ada pemeriksaan FAIL. SKIP/WARN tidak menggagalkan, tetapi selalu
   dicatat di laporan supaya "tidak diperiksa" tidak pernah terlihat seperti "lulus".
@@ -164,6 +164,17 @@ else { $publishDir = '' }
 if ($ManifestPath) { $ManifestPath = Normalisasi-Jalur $ManifestPath }
 if (-not $JsonPath) { $JsonPath = Join-Path $installerDir 'VERIFY-REPORT.json' }
 
+# Laporan bukti tidak boleh ditulis ke folder sembarang: satu salah ketik parameter bisa
+# membuat berkas di luar repo/temp. Sama seperti pagar -OutRoot di build-pro.
+$jsonPenuh = Normalisasi-Jalur $JsonPath
+$repoPenuh = Normalisasi-Jalur $root
+$tempPenuh = Normalisasi-Jalur ([IO.Path]::GetTempPath())
+if (-not ($jsonPenuh.StartsWith($repoPenuh + '\', [StringComparison]::OrdinalIgnoreCase) -or
+          $jsonPenuh.StartsWith($tempPenuh + '\', [StringComparison]::OrdinalIgnoreCase))) {
+    throw "JsonPath '$JsonPath' ditolak: laporan hanya boleh ditulis di dalam repo ($repoPenuh) atau folder temp ($tempPenuh)."
+}
+$JsonPath = $jsonPenuh
+
 $namaExe = "Seruni22Bakery_Setup_v$Version.exe"
 $namaMsi = "Seruni22Bakery_v$($Version)_x64.msi"
 $jalurExe = Join-Path $installerDir $namaExe
@@ -233,10 +244,10 @@ if (Test-Path $sumPath) {
     } else {
         Gagal 'SHA256SUMS cocok dengan berkas' (Ringkas-Contoh @($tidakCocok))
     }
-    if ($petaSum.ContainsKey($namaExe)) {
+    if ($petaSum.ContainsKey($namaExe) -and $adaExe) {
         $artefak += [pscustomobject]@{ Nama = $namaExe; Ukuran = (Get-Item $jalurExe).Length; Sha256 = $petaSum[$namaExe] }
     }
-    if ($petaSum.ContainsKey($namaMsi)) {
+    if ($petaSum.ContainsKey($namaMsi) -and $adaMsi) {
         $artefak += [pscustomobject]@{ Nama = $namaMsi; Ukuran = (Get-Item $jalurMsi).Length; Sha256 = $petaSum[$namaMsi] }
     }
 } else {
@@ -326,14 +337,23 @@ if ($adaMsi) {
 
 # ── Payload: bandingkan isi MSI dengan manifest publish ────────────────────
 $referensi = @{}
-if ($ManifestPath) { $referensi = Baca-Manifest $ManifestPath }
-elseif ($publishDir -and (Test-Path $publishDir)) { $referensi = Get-PetaBerkas $publishDir }
+if ($ManifestPath) {
+    if (Test-Path $ManifestPath) { $referensi = Baca-Manifest $ManifestPath }
+} elseif ($publishDir -and (Test-Path $publishDir)) {
+    $referensi = Get-PetaBerkas $publishDir
+}
 
 $ringkasPayload = [pscustomobject]@{ Referensi = 0; Terekstrak = 0; Hilang = 0; Berlebih = 0; Beda = 0 }
 if ($TanpaMsi) {
     Lewati 'payload MSI identik dengan manifest' 'dilewati atas permintaan (-TanpaMsi)'
 } elseif ($referensi.Count -eq 0) {
-    Lewati 'payload MSI identik dengan manifest' 'tidak ada folder publish maupun manifest sebagai pembanding'
+    # Manifest yang diminta tetapi tidak terbaca adalah salah ketik parameter, bukan
+    # "tidak ada pembanding": menjadikannya SKIP membuat validator hijau tanpa perbandingan.
+    if ($ManifestPath) {
+        Gagal 'payload MSI identik dengan manifest' "manifest tidak ditemukan atau kosong: $ManifestPath"
+    } else {
+        Lewati 'payload MSI identik dengan manifest' 'tidak ada folder publish maupun manifest sebagai pembanding'
+    }
 } elseif ($referensi.Count -gt 0 -and -not $adaMsi) {
     Gagal 'payload MSI identik dengan manifest' 'MSI tidak tersedia untuk diekstrak'
 } elseif ($LewatiEkstraksi) {

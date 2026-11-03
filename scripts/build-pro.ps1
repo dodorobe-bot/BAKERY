@@ -47,6 +47,23 @@ function Normalisasi-Jalur([string]$jalur) {
     return ([IO.Path]::GetFullPath($jalur)).TrimEnd('\', '/')
 }
 
+# Jalur yang lolos pemeriksaan awalan masih bisa keluar dari repo lewat junction/symlink.
+# Build menulis dan menghapus banyak berkas, jadi komponen bertanda reparse harus ditolak.
+function Tolak-Reparse([string]$jalur, [string]$nama) {
+    $kandidat = Normalisasi-Jalur $jalur
+    while ($kandidat) {
+        if (Test-Path -LiteralPath $kandidat) {
+            $item = Get-Item -LiteralPath $kandidat -Force
+            if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                throw "$nama '$jalur' ditolak: komponen '$kandidat' adalah tautan/junction. Pakai folder biasa di dalam repo atau temp."
+            }
+        }
+        $induk = Split-Path -Parent $kandidat
+        if (-not $induk -or $induk -eq $kandidat) { break }
+        $kandidat = $induk
+    }
+}
+
 $langkah = New-Object System.Collections.ArrayList
 
 function Catat([string]$nama, [string]$status, [string]$detail) {
@@ -114,6 +131,7 @@ $diBawahTemp = $outRoot.StartsWith($tempPenuh + '\', [StringComparison]::Ordinal
 if ($outRoot -eq $repoPenuh -or (-not $diBawahRepo -and -not $diBawahTemp)) {
     throw "OutRoot '$outRoot' ditolak: harus di dalam repo ($repoPenuh) atau folder temp ($tempPenuh)."
 }
+Tolak-Reparse $outRoot "OutRoot"
 
 $installerDir = Join-Path $outRoot 'installer'
 $publishDir = Join-Path $outRoot 'publish-single'
@@ -161,10 +179,9 @@ $jalurExe = Join-Path $installerDir $namaExe
 $jalurMsi = Join-Path $installerDir $namaMsi
 $reportJson = Join-Path $installerDir 'VERIFY-REPORT.json'
 
-# Laporan lama dari build sebelumnya di folder yang sama tidak boleh dipakai validator:
-# hash-nya menunjuk artefak yang sudah diganti. Keduanya dihapus sebelum build apa pun.
-Remove-Item (Join-Path $installerDir 'BUILD-INFO.json') -Force -ErrorAction SilentlyContinue
-Remove-Item $reportJson -Force -ErrorAction SilentlyContinue
+# Bukti lama di folder keluaran belum boleh disentuh: penjaga versi terbit masih harus
+# dievaluasi. Build yang ditolak tidak boleh menghapus atau menimpa laporan paket terbit.
+$buildDimulai = $false
 
 function Tulis-Laporan {
     $artefak = @()
@@ -282,6 +299,13 @@ try {
         Catat 'penjaga versi terbit' 'PASS' "v$Version belum punya tag maupun artefak di folder keluaran"
     }
 
+    # Mulai dari sini build benar-benar menulis artefak. Laporan lama baru boleh dihapus
+    # sekarang: hash-nya menunjuk artefak yang akan diganti, tetapi bila penjaga di atas
+    # menolak, bukti paket terbit harus tetap utuh.
+    $buildDimulai = $true
+    Remove-Item (Join-Path $installerDir 'BUILD-INFO.json') -Force -ErrorAction SilentlyContinue
+    Remove-Item $reportJson -Force -ErrorAction SilentlyContinue
+
     # ── Bangun EXE (tes + frontend + publish + peluncur + Inno) ────────────
     $argInstaller = @('-Version', $Version, '-OutRoot', $outRoot)
     if ($SkipTests) { $argInstaller += '-SkipTests' }
@@ -371,7 +395,10 @@ try {
 }
 catch {
     Catat 'build-pro berhenti' 'FAIL' $_.Exception.Message
-    try { Tulis-Laporan } catch { }
+    # Penolakan sebelum build tidak boleh menimpa laporan paket yang sedang dilindungi.
+    if ($buildDimulai) {
+        try { Tulis-Laporan } catch { }
+    }
 }
 finally {
     try { Stop-Transcript | Out-Null } catch { }
