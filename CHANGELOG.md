@@ -36,12 +36,21 @@ Isi versi ini adalah perbaikan yang dibangun 2–3 November dan **tidak ada di p
   tiga pagar statis menjaga agar guard loopback tidak terhapus diam-diam dan agar tidak ada skrip
   membuka port firewall; `sign-paket` memilih versi dari laporan build (dulu mengikuti abjad, bisa
   menandatangani v1.2.10 saat yang dimaksud v1.2.12); `dotnet test` yang lulus tanpa satu pun tes
-  tercatat kini menggagalkan build; jalur `OutRoot` bertanda junction/symlink ditolak.
+  tercatat kini menggagalkan build; jalur `OutRoot` bertanda junction/symlink ditolak; kontrol
+  negatif "penjaga versi terbit" tidak lagi SKIP pada versi yang belum bertag — ia menanam artefak
+  palsu di `OutRoot` sementara, jadi penjaga itu terbukti tepat saat rilis (14/14, 0 SKIP).
 
-Yang **belum** untuk 1.2.13: pasang/peningkatan/copot di Windows Sandbox bersih, cetak ke printer
-thermal 80 mm maupun printer jaringan fisik, pemindai barcode fisik, laci uang, pemasangan oleh
-pemilik di PC kasir, dan uji di Windows 10. Paket **NotSigned**. Skema basis data: **18** — tidak
-ada migrasi baru.
+Yang sudah dibuktikan setelah itu: **pasang/peningkatan/copot di Windows Sandbox bersih,
+105 pemeriksaan lulus 0 gagal** — jalur 1.2.12 → 1.2.13 dengan sandi, produk, merek dan logo
+tetap utuh, 393/393 berkas payload cocok manifes, bundel lama tersapu, tanpa migrasi baru di
+atas skema 18, ESC/POS raw terbukti byte-per-byte dari biner hasil peningkatan, pagar turun
+versi dan pagar kanal bekerja, dan copot tidak menghapus folder data pengguna
+(`docs\paket-bukti-2026-11-03\upgrade-1213-sandbox\`).
+
+Yang **belum** untuk 1.2.13: cetak ke printer thermal 80 mm maupun printer jaringan fisik,
+pemindai barcode fisik, laci uang, pemotong kertas, peningkatan dari 1.2.9/1.2.10 langsung ke
+1.2.13, pemasangan oleh pemilik di PC kasir, dan uji di Windows 10. Paket **NotSigned**. Skema
+basis data: **18** — tidak ada migrasi baru.
 
 ## [1.2.12] — 2026-11-01
 

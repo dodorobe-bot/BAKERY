@@ -5,10 +5,11 @@ Seruni 22 Bakery 1.2.13. Angka di bawah dibaca ulang dari berkas laporan, bukan 
 
 ## Putusan
 
-**NOT READY.** Gerbang dan automasi lulus penuh pada konfigurasi Release, tetapi pasang /
-peningkatan / copot di Windows Sandbox belum dijalankan untuk versi ini, perangkat fisik
-(printer thermal 80 mm, printer jaringan, pemindai barcode, laci uang) belum diuji, Windows 10
-belum diuji, dan paket belum bertanda tangan.
+**NOT READY.** Gerbang dan automasi lulus penuh pada konfigurasi Release, dan
+pasang / peningkatan / copot di Windows Sandbox bersih sudah lulus 105/105 untuk jalur
+1.2.12 → 1.2.13, tetapi perangkat fisik (printer thermal 80 mm, printer jaringan, pemindai
+barcode, laci uang) belum diuji pada kertas dan perangkat sungguhan, Windows 10 belum diuji,
+dan paket belum bertanda tangan.
 
 ## Artefak
 
@@ -43,6 +44,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-pro.ps1 -Sinkr
 | Publish bebas berkas terlarang | lulus — tidak ada basis data, kunci JWT, kredensial, atau berkas debug | `VERIFY-REPORT.json` |
 | Kontrol negatif automasi (`uji-build-pro.ps1`) | **14/14 lulus, 0 SKIP** — baseline tetap hijau sebelum dan sesudah sabotase | [`docs/paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213.json`](paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213.json) |
 | Kontrol negatif diulang terhadap skrip yang sudah di-commit | **14/14 lulus, 0 SKIP** — hash EXE/MSI setelah run tetap `c1a0af29…`/`eb3f40fb…`, jadi artefak rilis tidak tersentuh sabotase | [`docs/paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213-ulang.json`](paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213-ulang.json) |
+| Pasang/peningkatan/copot di **Windows Sandbox bersih** | **105/105 lulus, 0 gagal** — 1.2.12 → 1.2.13 dengan data utuh, 393/393 berkas, tanpa migrasi baru, pagar turun versi dan kanal terbukti | [`docs/paket-bukti-2026-11-03/upgrade-1213-sandbox/run1/status.txt`](paket-bukti-2026-11-03/upgrade-1213-sandbox/run1/status.txt) |
 
 Kontrol negatif membuktikan validator menolak: hash EXE salah, MSI tak tercantum, manifest payload
 salah, MSI hilang, versi EXE tertukar, kunci di folder publish, laporan menyebut artefak hantu,
@@ -76,16 +78,25 @@ menyentuh struktur.
 
 ## Belum diuji untuk 1.2.13
 
-- Pasang EXE, pasang MSI, **peningkatan 1.2.12 → 1.2.13**, penolakan turun versi, dan copot tanpa
-  menghapus data pengguna, di Windows Sandbox bersih.
-- Cetak ke printer thermal 80 mm dan ke printer jaringan fisik; jalur ESC/POS raw baru terbukti
-  sampai emulator loopback.
+- Cetak ke printer thermal 80 mm dan ke printer jaringan fisik; jalur ESC/POS raw terbukti
+  sampai emulator loopback, termasuk dari biner hasil peningkatan (635 byte diperiksa).
 - Potong kertas, pemindai barcode fisik (hanya lulus simulasi wedge 14/14 pada 1.2.12), laci uang.
 - Pemasangan oleh pemilik di PC kasir sungguhan.
-- Windows 10 x64 (semua uji hari ini di Windows 11 26300).
+- Peningkatan dari **1.2.9 dan 1.2.10** langsung ke 1.2.13; yang diuji baru 1.2.12 → 1.2.13.
+- Windows 10 x64 (Sandbox memakai tamu Windows 11 Enterprise build 26100).
 - Tanda tangan Authenticode: 0 sertifikat terpasang, `signtool verify /pa` akan menolak.
+
+## Sudah terhapus dari daftar "belum"
+
+Pasang/peningkatan/copot di Windows Sandbox bersih **sudah** dijalankan hari ini dan lulus
+105/105: peningkatan senyap 1.2.12 → 1.2.13 dengan sandi, produk, merek, dan logo tetap utuh;
+393/393 berkas payload cocok dengan manifes; bundel frontend lama tersapu; tidak ada migrasi
+baru di atas skema 18; EXE menolak kanal MSI, MSI lama menolak turun versi, dan copot tidak
+menghapus folder data pengguna. Lihat
+[`docs/paket-bukti-2026-11-03/upgrade-1213-sandbox/README.md`](paket-bukti-2026-11-03/upgrade-1213-sandbox/README.md).
 
 ## Batas bukti
 
 Peralatan uji berada pada PC dengan RAM 3,7 GB; hasil "lulus" di atas adalah hasil satu mesin.
-Angka 1.2.12 (`lulus=105` di Sandbox) adalah bukti untuk paket itu, **bukan** untuk 1.2.13.
+Angka 105/105 yang tercatat untuk 1.2.13 berasal dari run sandbox 1.2.12 → 1.2.13 hari ini;
+angka 105/105 milik 1.2.12 (jalur 1.2.9 → 1.2.12) adalah bukti untuk paket itu sendiri.
