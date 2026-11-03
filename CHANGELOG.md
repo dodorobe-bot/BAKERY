@@ -51,6 +51,10 @@ Yang **belum** untuk 1.2.13: cetak ke printer thermal 80 mm maupun printer jarin
 pemindai barcode fisik, laci uang, pemotong kertas, peningkatan dari 1.2.9/1.2.10 langsung ke
 1.2.13, pemasangan oleh pemilik di PC kasir, dan uji di Windows 10. Paket **NotSigned**. Skema
 basis data: **18** — tidak ada migrasi baru.
+Tag: `v1.2.13` — menandai sumber paket, bukan persetujuan rilis. Paket dibangun dari commit
+bersih `5993072`; pohon aplikasi pada tag ini identik dengan commit itu, yang menyusul hanya
+dokumen bukti dan metadata. Hash EXE/MSI ada di tabel artefak
+`docs/verifikasi-paket-1.2.13-2026-11-03.md`.
 
 ## [1.2.12] — 2026-11-01
 
