@@ -54,6 +54,58 @@ public sealed class StartupSecurityTests
         }
     }
 
+    /// <summary>
+    /// Salah ketik alamat dengar tidak boleh menjadi "API terbuka di LAN". Pagar harus
+    /// berhenti sebelum basis data dan kunci JWT dibuat, supaya kegagalan konfigurasi
+    /// tidak meninggalkan berkas setengah jadi.
+    /// </summary>
+    [Fact]
+    public async Task Host_MenolakAlamatLuarLoopbackSebelumMembuatBasisData()
+    {
+        var hostDll = ResolveHostDll(TestHost.RepositoryRoot);
+        var stamp = Guid.NewGuid().ToString("N")[..8];
+        var dbPath = Path.Combine(Path.GetTempPath(), $"seruni-lan-{stamp}.db");
+        var keyPath = Path.Combine(Path.GetTempPath(), $"seruni-lan-{stamp}.key");
+
+        try
+        {
+            var psi = new ProcessStartInfo("dotnet")
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            psi.ArgumentList.Add(hostDll);
+            // Dua sumber alamat: --urls (loopback, lolos) dan Kestrel:Endpoints (wildcard,
+            // harus ditolak). Start harus berhenti sebelum Kestrel mengikat port apa pun.
+            psi.ArgumentList.Add("--urls=http://127.0.0.1:0");
+            psi.ArgumentList.Add("--Kestrel:Endpoints:Http:Url=http://0.0.0.0:0");
+            psi.ArgumentList.Add($"--Database:Path={dbPath}");
+            psi.ArgumentList.Add($"--Jwt:SigningKeyFile={keyPath}");
+
+            using var process = Process.Start(psi)
+                ?? throw new InvalidOperationException("Host uji gagal dijalankan.");
+            var keluaran = process.StandardOutput.ReadToEndAsync();
+            var galat = process.StandardError.ReadToEndAsync();
+            using var batas = new CancellationTokenSource(TimeSpan.FromSeconds(90));
+            await process.WaitForExitAsync(batas.Token);
+            var log = (await keluaran) + (await galat);
+
+            process.ExitCode.Should().NotBe(0, "bind ke 0.0.0.0 harus menggagalkan start");
+            log.Should().Contain("hanya untuk PC ini",
+                $"log harus menjelaskan penolakan. Log:{Environment.NewLine}{log}");
+            File.Exists(dbPath).Should().BeFalse("pagar berjalan sebelum basis data dibuat");
+            File.Exists(keyPath).Should().BeFalse("pagar berjalan sebelum kunci JWT dibuat");
+        }
+        finally
+        {
+            foreach (var suffix in new[] { "", "-wal", "-shm" })
+                TryDelete(dbPath + suffix);
+            TryDelete(keyPath);
+        }
+    }
+
     private static string ResolveHostDll(string root)
     {
         // Sama dengan TestHost: uji memakai konfigurasi build yang sama, bukan selalu Debug.

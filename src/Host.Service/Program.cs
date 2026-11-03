@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -61,6 +62,22 @@ try
     // Perintah cadangan/pemulihan berjalan sebelum host web dan sebelum migrasi lain.
     if (MaintenanceCommands.TryRun(args, dbPath, dataRoot))
         return;
+
+    // ── Pagar jaringan: hanya loopback kecuali sengaja diizinkan ───────────────
+    // Diperiksa sebelum kunci JWT dan basis data dibuat supaya salah konfigurasi
+    // tidak meninggalkan berkas apa pun dan tidak sempat membuka port ke LAN.
+    if (!modeMcp)
+    {
+        NetworkExposureGuard.PastikanLoopback(
+            builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey));
+        foreach (var endpoint in builder.Configuration.GetSection("Kestrel:Endpoints").GetChildren())
+        {
+            var endpointUrl = endpoint["Url"];
+            if (!string.IsNullOrWhiteSpace(endpointUrl))
+                NetworkExposureGuard.PastikanLoopback(endpointUrl);
+        }
+    }
+
     // ── JWT secret: harus sudah resolved sebelum migrasi & sebelum app.Run() ──
     const string jwtSecretPlaceholder = "CHANGE_THIS_SECRET_IN_PRODUCTION_MIN_32_CHARS_LONG";
     const int minPanjangRahasiaJwt = 32;   // HS256: 256 bit. Lebih pendek bisa dipecah offline.
@@ -458,7 +475,7 @@ try
     {
         var roleText = ctx.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
         var role = Enum.TryParse<UserRole>(roleText, out var r) ? r : UserRole.Pegawai;
-        return Results.Ok(await inbox.GetAsync(role));
+        return Results.Ok(await inbox.GetAsync(role, IdPengguna(ctx)));
     }).RequireAuthorization();
 
     // ── Notifikasi internal ────────────────────────────────────────────────────
@@ -511,7 +528,7 @@ try
     // Pemilik/Admin tetap melihat seluruhnya.
     // Halaman daftar pesanan: 100 baris pertama secara bawaan, jumlah seluruhnya lewat
     // X-Total-Count supaya layar tahu ada halaman berikutnya dan bisa memuatnya.
-    app.MapGet("/api/orders", async (ISalesOrderRepository repo, int? limit, int? offset,
+    app.MapGet("/api/orders", async (ISalesOrderRepository repo, int? limit, int? offset, bool? outstanding,
         HttpContext ctx, HttpResponse res) =>
     {
         var roleText = ctx.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
@@ -520,6 +537,14 @@ try
             : null;
         var take = limit is > 0 and <= 500 ? limit.Value : 100;
         var skip = offset is > 0 ? offset.Value : 0;
+        // Layar keuangan hanya membutuhkan pesanan bersisa bayar. Tanpa penyaring ini daftar
+        // piutang berhenti pada 100 pesanan mana pun yang lebih dulu, sehingga total yang
+        // dihitung dari daftar itu tidak sama dengan angka server.
+        if (outstanding == true)
+        {
+            res.Headers["X-Total-Count"] = (await repo.CountOutstandingAsync(pembatas)).ToString();
+            return Results.Ok(await repo.GetOutstandingListAsync(take, skip, pembatas));
+        }
         res.Headers["X-Total-Count"] = (await repo.CountAsync(pembatas)).ToString();
         return Results.Ok(await repo.GetAllAsync(take, pembatas, skip));
     }).RequireAuthorization("sales");
@@ -1364,7 +1389,8 @@ try
         return po == null ? Results.NotFound() : Results.Ok(po);
     }).RequireAuthorization("purchases-receive");
 
-    app.MapPost("/api/purchases", async (CreatePurchaseOrderDto dto, IPurchaseOrderRepository repo, IDocumentSequenceRepository documents, HttpContext ctx) =>
+    app.MapPost("/api/purchases", async (CreatePurchaseOrderDto dto, IPurchaseOrderRepository repo,
+        IIngredientRepository ingredients, IDocumentSequenceRepository documents, HttpContext ctx) =>
     {
         var userId = int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
         // Tanggal dari layar bisa berupa string apa pun; Parse yang melempar akan jadi 500.
@@ -1401,6 +1427,20 @@ try
             .FirstOrDefault(e => e is not null);
         if (lineError is not null)
             return Results.BadRequest(new { errorMessage = lineError });
+
+        // Satuan stok mengikuti master bahan: barang masuk tanpa konversi, jadi PO bersatuan
+        // lain akan mencampur kg dan pcs pada angka stok yang sama. Bahan nonaktif juga tidak
+        // boleh dipesan lagi karena penerimaannya tidak bisa dipakai produksi.
+        foreach (var l in po.Lines)
+        {
+            var bahan = await ingredients.GetByIdAsync(l.IngredientId);
+            if (bahan is null)
+                return Results.BadRequest(new { errorMessage = $"Bahan Id {l.IngredientId} tidak ditemukan." });
+            if (!bahan.IsActive)
+                return Results.BadRequest(new { errorMessage = $"Bahan {bahan.Name} sudah tidak aktif; aktifkan dulu atau pilih bahan lain." });
+            if (!string.Equals(bahan.Unit?.Trim(), l.Unit.Trim(), StringComparison.OrdinalIgnoreCase))
+                return Results.BadRequest(new { errorMessage = $"Satuan {bahan.Name} adalah '{bahan.Unit}', bukan '{l.Unit}'. Stok tidak dikonversi, jadi PO harus memakai satuan bahan." });
+        }
 
         try
         {
