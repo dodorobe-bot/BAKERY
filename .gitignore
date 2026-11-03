@@ -4,6 +4,7 @@ obj/
 dist/publish/
 dist/publish-single/
 dist/build-logs/
+dist/verify/
 dist/installer/*.exe
 dist/installer/*.msi
 frontend/node_modules/

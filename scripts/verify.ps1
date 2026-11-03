@@ -11,17 +11,72 @@
     ... -SkipTests        : lewati dotnet test (mis. baru saja jalan)
     ... -SkipVerify       : lewati skrip verifikasi node
     ... -Configuration Release
+    ... -LaporanJson C:\tmp\laporan.json   (bawaan: dist\verify\verify-<stempel>.json)
+
+  Laporan JSON memuat commit, status pohon kotor, opsi run, dan status setiap langkah,
+  sehingga hasil "lulus" bisa ditelusuri setelah konsolnya hilang.
 #>
 [CmdletBinding()]
 param(
     [string]$Configuration = 'Debug',
     [switch]$SkipTests,
-    [switch]$SkipVerify
+    [switch]$SkipVerify,
+    [string]$LaporanJson = ""
 )
 
 $ErrorActionPreference = 'Continue'
 $root = Split-Path -Parent $PSScriptRoot
 $laporan = New-Object System.Collections.ArrayList
+
+$mulai = Get-Date
+$ringkasTes = $null
+$logTes = ''
+if (-not $LaporanJson) {
+    $LaporanJson = Join-Path $root ("dist\verify\verify-" + (Get-Date -Format 'yyyyMMdd-HHmmss') + ".json")
+}
+$LaporanJson = [IO.Path]::GetFullPath($LaporanJson)
+$repoPenuh = [IO.Path]::GetFullPath($root).TrimEnd('\', '/')
+$tempPenuh = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\', '/')
+if (-not ($LaporanJson.StartsWith($repoPenuh + '\', [StringComparison]::OrdinalIgnoreCase) -or
+          $LaporanJson.StartsWith($tempPenuh + '\', [StringComparison]::OrdinalIgnoreCase))) {
+    Write-Host "LaporanJson '$LaporanJson' ditolak: laporan hanya boleh ditulis di dalam repo atau folder temp."
+    exit 1
+}
+
+function Simpan-Laporan([int]$kode) {
+    try {
+        $commit = ''
+        try { $commit = ((& git -C $root rev-parse HEAD) -join '').Trim() } catch { }
+        $kotor = 0
+        try { $kotor = @(& git -C $root status --porcelain).Count } catch { }
+        $isi = [pscustomobject]@{
+            skema       = 1
+            alat        = 'verify.ps1'
+            waktu       = (Get-Date).ToString('o')
+            durasiDetik = [math]::Round(((Get-Date) - $mulai).TotalSeconds, 1)
+            commit      = $commit
+            pohonKotor  = $kotor
+            konfigurasi = $Configuration
+            opsi        = [pscustomobject]@{
+                skipTests  = [bool]$SkipTests
+                skipVerify = [bool]$SkipVerify
+            }
+            hasil       = $(if ($kode -eq 0) { 'LULUS' } else { 'GAGAL' })
+            kodeKeluar  = $kode
+            tes         = $ringkasTes
+            logTes      = $logTes
+            langkah     = @($laporan)
+        }
+        $folder = Split-Path -Parent $LaporanJson
+        if ($folder) { New-Item -ItemType Directory -Force -Path $folder | Out-Null }
+        [IO.File]::WriteAllText($LaporanJson,
+            (($isi | ConvertTo-Json -Depth 6) + "`n"),
+            (New-Object Text.UTF8Encoding($false)))
+        Write-Host "Laporan pagar: $LaporanJson"
+    } catch {
+        Write-Host "PERINGATAN: laporan pagar gagal ditulis: $($_.Exception.Message)"
+    }
+}
 
 function Catat([string]$nama, [bool]$lulus, [string]$detail) {
     [void]$laporan.Add([pscustomobject]@{
@@ -49,15 +104,38 @@ $buildCode = $LASTEXITCODE
 Catat 'build solusi' ($buildCode -eq 0) "exit $buildCode"
 if ($buildCode -ne 0) {
     Write-Host 'BUILD GAGAL - pagar berhenti di sini.'
+    Simpan-Laporan 1
     exit 1
 }
 
 # ── 2. Tes otomatis ─────────────────────────────────────────────────────────
 if (-not $SkipTests) {
     Write-Host '==> dotnet test'
-    dotnet test $solusi -c $Configuration -m:1 -nodeReuse:false --nologo
+    $logTes = [IO.Path]::ChangeExtension($LaporanJson, '.test.log')
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $logTes) | Out-Null
+    dotnet test $solusi -c $Configuration -m:1 -nodeReuse:false --nologo 2>&1 |
+        Tee-Object -FilePath $logTes
     $testCode = $LASTEXITCODE
-    Catat 'dotnet test (unit + integrasi + UI)' ($testCode -eq 0) "exit $testCode"
+    # "exit 0" saja bisa menutupi proyek tes yang tidak berjalan. Ringkasan per proyek
+    # dijumlahkan supaya laporan memuat jumlah lulus/gagal yang benar-benar dieksekusi.
+    if (Test-Path $logTes) {
+        $isiTes = Get-Content $logTes -Raw
+        $lulus = 0; $gagalTes = 0; $dilewati = 0; $adaRingkas = $false
+        foreach ($m in [regex]::Matches($isiTes,
+            '(?m)(?:Passed!|Failed!|Gagal!)\s*-\s*Failed:\s*(\d+),\s*Passed:\s*(\d+),\s*Skipped:\s*(\d+)')) {
+            $adaRingkas = $true
+            $gagalTes += [int]$m.Groups[1].Value
+            $lulus += [int]$m.Groups[2].Value
+            $dilewati += [int]$m.Groups[3].Value
+        }
+        if ($adaRingkas) {
+            $ringkasTes = [pscustomobject]@{ lulus = $lulus; gagal = $gagalTes; dilewati = $dilewati }
+        }
+    }
+    $detailTes = if ($ringkasTes) {
+        "exit $testCode, lulus $($ringkasTes.lulus), gagal $($ringkasTes.gagal), dilewati $($ringkasTes.dilewati)"
+    } else { "exit $testCode" }
+    Catat 'dotnet test (unit + integrasi + UI)' ($testCode -eq 0) $detailTes
 } else {
     Write-Host '==> dotnet test DILEWATI (-SkipTests)'
 }
@@ -187,6 +265,35 @@ if ($asetDesktop.Count -eq 0) {
         'bundel yang disajikan host harus memuat perbaikan, bukan sumber saja (bundel basi pernah lolos)'
 }
 
+# ── 2e. Pagar jaringan: loopback, tanpa aturan firewall otomatis ───────────
+# Pagar runtime bisa hilang tanpa ketahuan bila hanya diuji sekali. Gerbang ini memastikan
+# pemanggilannya masih ada dan alamat dengar bawaan tetap loopback.
+$programCs = Join-Path $root 'src\Host.Service\Program.cs'
+$isiProgram = if (Test-Path $programCs) { Get-Content $programCs -Raw } else { '' }
+Catat 'host memasang pagar loopback' ($isiProgram -match 'NetworkExposureGuard\.PastikanLoopback') `
+    'start harus menolak alamat dengar di luar loopback sebelum database dibuat'
+
+$appsettings = Join-Path $root 'src\Host.Service\appsettings.json'
+$urlsBawaan = ''
+try { $urlsBawaan = [string](Get-Content $appsettings -Raw | ConvertFrom-Json).Urls } catch { }
+$hostBawaan = ''
+if ($urlsBawaan -match '^[a-z]+://(\[[^\]]+\]|[^:/]+)') { $hostBawaan = $Matches[1].Trim('[', ']') }
+Catat 'alamat dengar bawaan loopback' `
+    ($hostBawaan -in @('localhost', '127.0.0.1', '::1')) `
+    "Urls bawaan: '$urlsBawaan'"
+
+$berkasJaringan = @(Get-ChildItem -Path (Join-Path $root 'scripts') -Filter '*.ps1' -ErrorAction SilentlyContinue |
+    Where-Object { $_.FullName -ne $PSCommandPath })   # jangan mencocokkan teks pagar ini sendiri
+foreach ($jalur in @((Join-Path $root 'build\installer\inno\setup.iss'),
+                     (Join-Path $root 'build\installer\wix\Package.wxs'))) {
+    if (Test-Path $jalur) { $berkasJaringan += Get-Item $jalur }
+}
+$adaAturanFirewall = @($berkasJaringan | Where-Object {
+    (Get-Content $_.FullName -Raw) -match '(?i)(New-NetFirewallRule|netsh\s+advfirewall|firewall\s+add)'
+}).Count -gt 0
+Catat 'tidak ada aturan firewall otomatis' (-not $adaAturanFirewall) `
+    'aplikasi loopback tidak boleh membuka port diam-diam lewat instalasi'
+
 # ── 3. Verifikasi perilaku lewat API pada basis data sementara ──────────────
 $verifikasi = @()
 if (-not $SkipVerify) {
@@ -194,12 +301,14 @@ if (-not $SkipVerify) {
     if (-not (Test-Path $hostDll)) {
         Catat 'host uji tersedia' $false "tidak menemukan $hostDll"
         Write-Host 'HOST UJI TIDAK ADA - pagar berhenti di sini.'
+        Simpan-Laporan 1
         exit 1
     }
     $desktop = Join-Path $root 'desktop'
     if (-not (Test-Path (Join-Path $desktop 'index.html'))) {
         Catat 'bundel frontend tersedia' $false "tidak menemukan $desktop\index.html"
         Write-Host 'BUNDEL FRONTEND TIDAK ADA - pagar berhenti di sini.'
+        Simpan-Laporan 1
         exit 1
     }
 
@@ -283,7 +392,25 @@ if (-not $SkipVerify) {
         if ($total -match 'TOTAL\s+(\d+)\s+pemeriksaan,\s+(\d+)\s+gagal') {
             $ringkas = "pemeriksaan $($Matches[1]), gagal $($Matches[2])"
         }
+        # Rincian pemeriksaan merah harus ikut ke laporan; sebelumnya hanya ada di konsol.
+        $barisMerah = @($total -split "`r?`n" | Where-Object { $_ -match '^GAGAL\s*\|' } |
+            Select-Object -First 5)
+        if ($barisMerah.Count -gt 0) { $ringkas = "$ringkas; $($barisMerah -join ' ; ')" }
         Catat "verifikasi $skenario" ($kode -eq 0) $(if ($ringkas) { $ringkas } else { "exit $kode" })
+
+        # Folder temp dibersihkan di akhir; bukti kegagalan disalin lebih dulu ke folder laporan.
+        if ($kode -ne 0) {
+            $folderBukti = Join-Path (Split-Path -Parent $LaporanJson) 'bukti'
+            New-Item -ItemType Directory -Force -Path $folderBukti | Out-Null
+            $awalan = [IO.Path]::GetFileNameWithoutExtension($LaporanJson)
+            foreach ($berkasBukti in @($out, $galatNode, $stdout, $stderr)) {
+                if (Test-Path $berkasBukti) {
+                    Copy-Item -LiteralPath $berkasBukti -Force -Destination (Join-Path $folderBukti (
+                        "$awalan-" + [IO.Path]::GetFileName($berkasBukti)))
+                }
+            }
+            Write-Host "Bukti kegagalan disimpan: $folderBukti"
+        }
 
         Stop-Process -Id $proses.Id -Force -ErrorAction SilentlyContinue
         Wait-Process -Id $proses.Id -Timeout 10 -ErrorAction SilentlyContinue
@@ -304,10 +431,12 @@ $laporan | Format-Table -AutoSize | Out-String -Width 200 | Write-Host
 $gagal = @($laporan | Where-Object Status -eq 'FAIL')
 if ($gagal.Count -gt 0) {
     Write-Host "PAGER GAGAL: $($gagal.Count) langkah tidak lulus."
+    Simpan-Laporan 1
     exit 1
 }
 $langkah = @($laporan | ForEach-Object { $_.Nama })
 Write-Host "PAGER LULUS: $(($laporan | Measure-Object).Count) langkah lulus ($($langkah -join '; '))."
 if ($SkipTests) { Write-Host 'CATATAN: dotnet test DILEWATI, jadi hasil ini tidak membuktikan tes xUnit.' }
 if ($SkipVerify) { Write-Host 'CATATAN: verifikasi perilaku DILEWATI, jadi hasil ini tidak bukti jalur API.' }
+Simpan-Laporan 0
 exit 0
