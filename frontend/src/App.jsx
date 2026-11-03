@@ -243,7 +243,7 @@ export default function App() {
         // Jurnal per rentang dimuat oleh FinanceView; di sini saldo akun, pesanan, pembelian
         // terbuka (yang benar-benar menjadi utang), dan ringkasan dasbor.
         const [bal, o, po, d] = await Promise.all([
-          api.getJournalBalances(), api.getOrders({ limit: 100 }),
+          api.getJournalBalances(), api.getOrders({ outstanding: true, limit: 500 }),
           api.getPurchases({ status: 'open', limit: 300 }), api.getDashboard(),
         ]);
         return {
@@ -511,13 +511,12 @@ export default function App() {
     }
   };
 
+  // Galat aksi dibiarkan naik ke layar: modal tetap terbuka dengan isian utuh dan pesan
+  // ditampilkan di dalam form. Menangkapnya di sini membuat pengguna kehilangan isian
+  // produksi/pembelian yang panjang hanya karena satu penolakan server.
   const handleCompleteWorkOrder = async (id, payload) => {
-    try {
-      await api.completeWorkOrder(id, payload);
-      await loadData();
-    } catch (err) {
-      alert('Gagal menyimpan: ' + err.message);
-    }
+    await api.completeWorkOrder(id, payload);
+    await loadData();
   };
 
   const handleCreateQualityCheck = async (payload) => {
@@ -542,21 +541,13 @@ export default function App() {
   };
 
   const handleCreateWorkOrder = async (payload) => {
-    try {
-      await api.createWorkOrder(payload);
-      await loadData();
-    } catch (err) {
-      alert('Gagal membuat SPK: ' + err.message);
-    }
+    await api.createWorkOrder(payload);
+    await loadData();
   };
 
   const handleCancelWorkOrder = async (id, reason) => {
-    try {
-      await api.cancelWorkOrder(id, reason);
-      await loadData();
-    } catch (err) {
-      alert('Gagal membatalkan SPK: ' + err.message);
-    }
+    await api.cancelWorkOrder(id, reason);
+    await loadData();
   };
 
   const handleAddPayment = async (orderId, payload) => {
@@ -598,19 +589,41 @@ export default function App() {
   };
 
   const handleCreatePurchase = async (payload) => {
-    try { await api.createPurchase(payload); await loadData(); } catch (err) { alert('Gagal membuat PO: ' + err.message); }
+    await api.createPurchase(payload); await loadData();
   };
   const handleReceivePurchase = async (id, payload) => {
-    try { await api.receivePurchase(id, payload); await loadData(); } catch (err) { alert('Gagal menerima barang: ' + err.message); }
+    await api.receivePurchase(id, payload); await loadData();
   };
   const handleCancelPurchase = async (id) => {
-    try { await api.cancelPurchase(id); await loadData(); } catch (err) { alert('Gagal membatalkan PO: ' + err.message); }
+    await api.cancelPurchase(id); await loadData();
   };
   const handleCreateSupplier = async (payload) => {
-    try { await api.createSupplier(payload); await loadData(); } catch (err) { alert('Gagal membuat pemasok: ' + err.message); }
+    await api.createSupplier(payload); await loadData();
   };
   const handleUpdateSupplier = async (id, payload) => {
-    try { await api.updateSupplier(id, payload); await loadData(); } catch (err) { alert('Gagal memperbarui pemasok: ' + err.message); }
+    await api.updateSupplier(id, payload); await loadData();
+  };
+
+  // Layar keuangan menghitung piutang dan utang dari daftar yang dimuat. Tanpa halaman
+  // berikutnya, angka di kartu berhenti di 100/300 baris pertama dan tampak lebih kecil dari
+  // kenyataan. Kedua pemuat ini melanjutkan dari jumlah baris yang sudah tampil.
+  const handleLoadMoreReceivables = async () => {
+    const halaman = await api.getOrders({ outstanding: true, limit: 500, offset: orders.length });
+    const baru = halaman?.items ?? [];
+    setOrders((lama) => {
+      const ada = new Set((lama ?? []).map((o) => o.id));
+      return [...(lama ?? []), ...baru.filter((o) => !ada.has(o.id))];
+    });
+    setOrderTotal(halaman?.total ?? null);
+  };
+  const handleLoadMorePayables = async () => {
+    const halaman = await api.getPurchases({ status: 'open', limit: 300, offset: purchases.length });
+    const baru = halaman?.items ?? [];
+    setPurchases((lama) => {
+      const ada = new Set((lama ?? []).map((p) => p.id));
+      return [...(lama ?? []), ...baru.filter((p) => !ada.has(p.id))];
+    });
+    setPurchaseTotal(halaman?.total ?? null);
   };
 
   // Pengaturan & hak akses: hasil dikembalikan ke layar (bukan alert) supaya modal/form
@@ -818,10 +831,14 @@ export default function App() {
             onViewChange={setActiveTab}
             balances={balances}
             orders={orders}
+            orderTotal={orderTotal}
             purchases={purchases}
+            purchaseTotal={purchaseTotal}
             summary={dashboardData}
             loading={loading}
             onRefresh={loadData}
+            onLoadMoreOrders={handleLoadMoreReceivables}
+            onLoadMorePurchases={handleLoadMorePayables}
           />
         );
 

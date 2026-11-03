@@ -290,7 +290,9 @@ export const api = {
   // lewat header untuk tombol "Muat lagi". Tanpa ini layar kehilangan pesanan ke-101 dan
   // seterusnya tanpa memberi tahu pengguna.
   getOrders: (opsi = {}) =>
-    api.request(denganParam('/api/orders', { limit: opsi.limit, offset: opsi.offset }), {
+    api.request(denganParam('/api/orders', {
+      limit: opsi.limit, offset: opsi.offset, outstanding: opsi.outstanding ? 'true' : undefined,
+    }), {
       withTotal: true,
       signal: opsi.signal
     }),

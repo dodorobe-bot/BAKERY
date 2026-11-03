@@ -17,7 +17,9 @@ export default function OpnameView({
   const [alasan, setAlasan] = useState('');
   const [pesan, setPesan] = useState('');
   const [galat, setGalat] = useState('');
-  const [kunci, setKunci] = useState(null);
+  // Satu bahan = satu kunci. Kunci bersama membuat "Setel" pada baris A memakai kunci baris B,
+  // sehingga server melihat dua niat berbeda sebagai pengulangan dan menolak yang kedua.
+  const [kunci, setKunci] = useState({});
   const { sedangSimpan, mulai, selesai } = useKunciSimpan();
 
   const currentLocation = aktif.find((l) => l.id === Number(locationId));
@@ -44,14 +46,17 @@ export default function OpnameView({
   const adaSelisih = rows.filter((r) => selisih(r) !== null && selisih(r) !== 0);
   const barisOpname = useBarisBertahap(rows);
 
+  const kunciBaris = (ingredientId) =>
+    kunci[ingredientId] ?? kunciBaru(`opname-${currentLocation?.id}-${ingredientId}`);
+
   const bukaForm = (row) => {
     setPesan(''); setGalat('');
-    setKunci(kunciBaru(`opname-${currentLocation?.id}-${row.ingredientId}`));
+    setKunci((k) => ({ ...k, [row.ingredientId]: kunciBaru(`opname-${currentLocation?.id}-${row.ingredientId}`) }));
     setHitung((h) => ({ ...h, [row.ingredientId]: String(row.systemQty) }));
   };
 
   const setelUlang = (row) => {
-    setKunci(kunciBaru(`opname-${currentLocation?.id}-${row.ingredientId}`));
+    setKunci((k) => { const s = { ...k }; delete s[row.ingredientId]; return s; });
     setHitung((h) => { const s = { ...h }; delete s[row.ingredientId]; return s; });
   };
 
@@ -64,10 +69,11 @@ export default function OpnameView({
         ingredientId: Number(row.ingredientId),
         newQuantity: Number(hitung[row.ingredientId]),
         reason: alasan || 'Pemeriksaan fisik (stock opname)',
-        idempotensi: kunci,
+        idempotensi: kunciBaris(row.ingredientId),
       });
       setPesan(`${row.name}: stok disetel ke ${formatQty(hitung[row.ingredientId])} ${row.unit}.`);
       setHitung((h) => { const s = { ...h }; delete s[row.ingredientId]; return s; });
+      setKunci((k) => { const s = { ...k }; delete s[row.ingredientId]; return s; });
     } catch (err) {
       setGalat(err.message || 'Koreksi stok gagal disimpan.');
     } finally {
@@ -104,7 +110,7 @@ export default function OpnameView({
       {aktif.length > 0 && (
         <>
           <div className="flex flex-wrap items-center gap-3">
-            <select value={locationId} onChange={(e) => { setLocationId(e.target.value); setHitung({}); setPesan(''); }}
+            <select value={locationId} onChange={(e) => { setLocationId(e.target.value); setHitung({}); setKunci({}); setPesan(''); }}
               className="px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500/60">
               {aktif.map((l) => <option key={l.id} value={l.id}>{l.name} ({l.code})</option>)}
             </select>
@@ -159,7 +165,9 @@ export default function OpnameView({
                               type="number" step="any" min="0" disabled={!canWrite}
                               value={hitung[r.ingredientId] ?? ''}
                               onChange={(e) => {
-                                if (!kunci) setKunci(kunciBaru(`opname-${currentLocation?.id}-${r.ingredientId}`));
+                                if (!kunci[r.ingredientId]) {
+                                  setKunci((k) => ({ ...k, [r.ingredientId]: kunciBaru(`opname-${currentLocation?.id}-${r.ingredientId}`) }));
+                                }
                                 setHitung((h) => ({ ...h, [r.ingredientId]: e.target.value }));
                               }}
                               placeholder={String(r.systemQty)}

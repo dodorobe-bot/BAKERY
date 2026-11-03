@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 import { formatDateTime } from '../utils/money';
+import { lupakanStatusPerangkat } from '../utils/statusPerangkat';
 
 const MODE_DRIVER = 'windows-driver';
 const MODE_ESCPOS = 'escpos-raw';
@@ -100,6 +101,9 @@ export default function DeviceView({ snapshot, jobs, loading, onRefresh, onSaveS
         nilai['device.printer.name'] = form.printerName;
       }
       await onSaveSettings(nilai);
+      // Status singkat di layar kasir menandai tujuan cetak; setelah pengaturan berubah,
+      // status lama tidak boleh lolos ke sana walau umur cache-nya belum habis.
+      lupakanStatusPerangkat();
       setPesan({ jenis: 'ok', teks: 'Pengaturan perangkat disimpan dan berlaku untuk sesi berikutnya.' });
     } catch (err) {
       setPesan({ jenis: 'galat', teks: err.message || 'Pengaturan gagal disimpan.' });

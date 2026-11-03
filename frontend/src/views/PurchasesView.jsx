@@ -97,6 +97,10 @@ export default function PurchasesView({
   const { sedangSimpan: poSubmitting, mulai: mulaiPo, selesai: selesaiPo } = useKunciSimpan();
   // Satu kunci per kali membuka form: klik ganda tidak boleh melahirkan dua PO/dua struk terima.
   const [poKunci, setPoKunci] = useState('');
+  // Penolakan server ditampilkan di dalam modal yang bersangkutan; modal tetap terbuka
+  // sehingga nomor PO, harga, dan baris yang sudah diketik tidak hilang.
+  const [poGalat, setPoGalat] = useState('');
+  const [aksiGalat, setAksiGalat] = useState('');
 
   // Receive Modal
   const [receiveModalOpen, setReceiveModalOpen] = useState(false);
@@ -105,6 +109,7 @@ export default function PurchasesView({
   const [receiveNotes, setReceiveNotes] = useState('');
   const { sedangSimpan: receiveSubmitting, mulai: mulaiTerima, selesai: selesaiTerima } = useKunciSimpan();
   const [receiveKunci, setReceiveKunci] = useState('');
+  const [receiveGalat, setReceiveGalat] = useState('');
   const [loadingPoDetail, setLoadingPoDetail] = useState(false);
 
   // Supplier Modal
@@ -113,12 +118,14 @@ export default function PurchasesView({
   const [editingSupplierId, setEditingSupplierId] = useState(null);
   const { sedangSimpan: supplierSubmitting, mulai: mulaiPemasok, selesai: selesaiPemasok } = useKunciSimpan();
   const [supplierKunci, setSupplierKunci] = useState('');
+  const [supplierGalat, setSupplierGalat] = useState('');
 
   // ── PO Modal Handlers ──────────────────────────────────────────────────────
   const openPoModal = () => {
     setPoForm({ supplierId: suppliers[0]?.id ?? '', expectedDate: '', notes: '' });
     setPoLines([{ ingredientId: '', orderedQty: '', unitCostRupiah: '', unit: '' }]);
     setPoKunci(kunciBaru('po-baru'));
+    setPoGalat('');
     setPoModalOpen(true);
   };
 
@@ -131,9 +138,23 @@ export default function PurchasesView({
   const updatePoLine = (idx, field, value) =>
     setPoLines((prev) => prev.map((l, i) => (i === idx ? { ...l, [field]: value } : l)));
 
+  // Satuan PO mengikuti master bahan: stok tidak dikonversi, jadi kolom satuan diisi otomatis
+  // dan tidak bisa diketik bebas. Server juga menolak satuan yang berbeda.
+  const pilihBahanPo = (idx, ingredientId) => {
+    const master = ingredients.find((i) => String(i.id) === String(ingredientId));
+    setPoLines((prev) => prev.map((l, i) => (i === idx
+      ? { ...l, ingredientId, unit: master?.unit || '' }
+      : l)));
+  };
+
+  // Penerimaan barang hanya masuk ke gudang atau dapur; etalase ditolak server.
+  const lokasiTerima = locations.filter((l) => l.type === 'Warehouse' || l.type === 'Kitchen');
+  const lokasiTerimaDefault = (lokasiTerima.find((l) => l.type === 'Warehouse') || lokasiTerima[0])?.id;
+
   const submitPo = async (e) => {
     e.preventDefault();
     if (!mulaiPo()) return;
+    setPoGalat('');
     try {
       const payload = {
         supplierId: parseInt(poForm.supplierId),
@@ -145,12 +166,14 @@ export default function PurchasesView({
             ingredientId: parseInt(l.ingredientId),
             orderedQty: parseFloat(l.orderedQty),
             unitCostMinorUnits: Math.round(parseFloat(l.unitCostRupiah || 0) * 100),
-            unit: l.unit || 'kg',
+            unit: l.unit,
           })),
         idempotensi: poKunci,
       };
       await onCreatePurchase(payload);
       setPoModalOpen(false);
+    } catch (err) {
+      setPoGalat(err.message || 'PO gagal disimpan.');
     } finally {
       selesaiPo();
     }
@@ -162,6 +185,7 @@ export default function PurchasesView({
     setReceiveNotes('');
     setReceiveLines([]);
     setReceiveKunci(kunciBaru(`terima-po-${po.id}`));
+    setReceiveGalat('');
     setLoadingPoDetail(true);
     setReceiveModalOpen(true);
     try {
@@ -177,11 +201,14 @@ export default function PurchasesView({
         unit: l.unit || l.Unit || 'kg',
         unitCostMinorUnits: l.unitCostMinorUnits || l.UnitCostMinorUnits || 0,
         receiveNow: '',
-        locationId: locations[0]?.id ?? 1,
+        locationId: lokasiTerimaDefault ?? '',
         batchNumber: '',
         expiryDate: '',
       }));
       setReceiveLines(lines);
+    } catch (err) {
+      // Modal tanpa baris PO akan mengirim penerimaan kosong; pesannya harus terlihat.
+      setReceiveGalat(err.message || 'Detail PO gagal dimuat. Tutup lalu coba lagi.');
     } finally {
       setLoadingPoDetail(false);
     }
@@ -193,6 +220,7 @@ export default function PurchasesView({
   const submitReceive = async (e) => {
     e.preventDefault();
     if (!mulaiTerima()) return;
+    setReceiveGalat('');
     try {
       const payload = {
         notes: receiveNotes || null,
@@ -211,6 +239,8 @@ export default function PurchasesView({
       };
       await onReceivePurchase(receivingPo.id, payload);
       setReceiveModalOpen(false);
+    } catch (err) {
+      setReceiveGalat(err.message || 'Penerimaan barang gagal disimpan.');
     } finally {
       selesaiTerima();
     }
@@ -221,12 +251,14 @@ export default function PurchasesView({
     setEditingSupplierId(null);
     setSupplierForm({ name: '', contactName: '', phone: '', email: '', address: '', notes: '' });
     setSupplierKunci(kunciBaru('pemasok-baru'));
+    setSupplierGalat('');
     setSupplierModalOpen(true);
   };
 
   const openEditSupplier = (s) => {
     setEditingSupplierId(s.id);
     setSupplierKunci(kunciBaru(`pemasok-${s.id}`));
+    setSupplierGalat('');
     setSupplierForm({
       name: s.name || '',
       contactName: s.contactName || '',
@@ -241,6 +273,7 @@ export default function PurchasesView({
   const submitSupplier = async (e) => {
     e.preventDefault();
     if (!mulaiPemasok()) return;
+    setSupplierGalat('');
     try {
       const payload = {
         name: supplierForm.name,
@@ -257,6 +290,8 @@ export default function PurchasesView({
         await onCreateSupplier(payload);
       }
       setSupplierModalOpen(false);
+    } catch (err) {
+      setSupplierGalat(err.message || 'Data pemasok gagal disimpan.');
     } finally {
       selesaiPemasok();
     }
@@ -264,7 +299,12 @@ export default function PurchasesView({
 
   const confirmCancel = async (po) => {
     if (!window.confirm(`Batalkan PO ${po.poNumber}?`)) return;
-    await onCancelPurchase(po.id);
+    setAksiGalat('');
+    try {
+      await onCancelPurchase(po.id);
+    } catch (err) {
+      setAksiGalat(err.message || 'PO gagal dibatalkan.');
+    }
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -334,6 +374,12 @@ export default function PurchasesView({
               </>
             )}
           </div>
+
+          {aksiGalat && (
+            <div className="mx-4 mt-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">
+              {aksiGalat}
+            </div>
+          )}
 
           {daftarPo.length === 0 ? (
             <div className="p-8 text-center text-slate-500 text-sm">
@@ -581,7 +627,7 @@ export default function PurchasesView({
                         <div className="col-span-4">
                           <select
                             value={line.ingredientId}
-                            onChange={(e) => updatePoLine(idx, 'ingredientId', e.target.value)}
+                            onChange={(e) => pilihBahanPo(idx, e.target.value)}
                             className="w-full px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
                             required
                           >
@@ -610,8 +656,9 @@ export default function PurchasesView({
                             type="text"
                             placeholder="Satuan"
                             value={line.unit}
-                            onChange={(e) => updatePoLine(idx, 'unit', e.target.value)}
-                            className="w-full px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
+                            readOnly
+                            title="Satuan mengikuti master bahan"
+                            className="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-300 focus:outline-none"
                           />
                         </div>
                         <div className="col-span-3">
@@ -639,9 +686,13 @@ export default function PurchasesView({
                       </div>
                     ))}
                   </div>
-                  <p className="text-[10px] text-slate-500 mt-1.5">Kolom: Bahan | Qty | Satuan | Harga per Satuan (Rp)</p>
+                  <p className="text-[10px] text-slate-500 mt-1.5">Kolom: Bahan | Qty | Satuan (otomatis dari bahan) | Harga per Satuan (Rp)</p>
                 </div>
               </div>
+
+              {poGalat && (
+                <div className="mx-4 mb-2 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{poGalat}</div>
+              )}
 
               <div className="p-4 border-t border-slate-800 bg-slate-950/30 flex justify-end gap-3 shrink-0">
                 <button
@@ -734,7 +785,7 @@ export default function PurchasesView({
                               onChange={(e) => updateReceiveLine(idx, 'locationId', e.target.value)}
                               className="w-full px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500/60 transition-colors"
                             >
-                              {locations.map((loc) => (
+                              {lokasiTerima.map((loc) => (
                                 <option key={loc.id} value={loc.id}>
                                   {loc.name}
                                 </option>
@@ -787,6 +838,9 @@ export default function PurchasesView({
                     placeholder="Catatan kondisi barang, dll..."
                   />
                 </div>
+                {receiveGalat && (
+                  <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{receiveGalat}</div>
+                )}
               </div>
 
               <div className="p-4 border-t border-slate-800 bg-slate-950/30 flex justify-end gap-3 shrink-0">
@@ -888,6 +942,10 @@ export default function PurchasesView({
                   placeholder="Catatan khusus..."
                 />
               </div>
+
+              {supplierGalat && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{supplierGalat}</div>
+              )}
 
               <div className="flex justify-end gap-3 pt-2">
                 <button

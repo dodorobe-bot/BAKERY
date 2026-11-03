@@ -26,22 +26,7 @@ import { orderStatusName } from '../utils/enums';
 import { formatMinor, fromMinor, toMinor, formatDate, formatDateTime, tanggalTokoISO } from '../utils/money';
 import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
 import { bolehAksi } from '../utils/kapabilitas';
-
-// Mendaftar printer terpasang bisa lambat (printer jaringan yang tidak menyahut). Status ini
-// hanya untuk menandai tombol cetak, jadi versi singkatnya dipakai ulang selama beberapa detik
-// alih-alih memeriksa ulang setiap kali layar kasir dibuka.
-const UMUR_STATUS_PERANGKAT_MS = 15000;
-let statusPerangkatTerakhir = { waktu: 0, nilai: null };
-
-function statusPerangkatSingkat() {
-  if (statusPerangkatTerakhir.nilai && Date.now() - statusPerangkatTerakhir.waktu < UMUR_STATUS_PERANGKAT_MS) {
-    return Promise.resolve(statusPerangkatTerakhir.nilai);
-  }
-  return api.getDeviceStatus().then((s) => {
-    statusPerangkatTerakhir = { waktu: Date.now(), nilai: s };
-    return s;
-  });
-}
+import { statusPerangkatSingkat } from '../utils/statusPerangkat';
 
 // Lima menu Penjualan berbagi satu layar; `view` memilih bagian yang dibuka lebih dulu dan
 // tab bagian di bawah judul menandai bagian mana yang sedang tampil.

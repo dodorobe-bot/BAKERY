@@ -82,10 +82,14 @@ export default function FinanceView({
   onViewChange,
   balances,
   orders,
+  orderTotal,
   purchases,
+  purchaseTotal,
   summary,
   loading,
   onRefresh,
+  onLoadMoreOrders,
+  onLoadMorePurchases,
 }) {
   const section = SECTION_BY_MENU[view] ?? 'ledger';
   const [range, setRange] = useState({ from: firstOfMonthISO(), to: todayISO() });
@@ -97,6 +101,11 @@ export default function FinanceView({
   const [journalLoading, setJournalLoading] = useState(false);
   const [journalMemuatLagi, setJournalMemuatLagi] = useState(false);
   const [journalAdaLagi, setJournalAdaLagi] = useState(false);
+  // Daftar piutang/utang dimuat bertahap dari server. Tanpa status ini, tombol "Muat lagi"
+  // hanya menampilkan ulang baris yang sudah ada tanpa memberi tahu batas server.
+  const [memuatPiutang, setMemuatPiutang] = useState(false);
+  const [memuatUtang, setMemuatUtang] = useState(false);
+  const [muatLagiGalat, setMuatLagiGalat] = useState('');
   // Ringkasan seluruh rentang dari server (bukan dari entri yang kebetulan termuat) dan saldo
   // akun per akhir rentang untuk buku kas.
   const [ringkasJurnal, setRingkasJurnal] = useState(null);
@@ -322,6 +331,32 @@ export default function FinanceView({
   const barisPiutang = useBarisBertahap(receivables);
   const barisUtang = useBarisBertahap(payables);
 
+  // Jumlah baris di server bisa lebih besar dari yang sudah dimuat. Kartu "sisa bayar" memakai
+  // angka agregat server supaya nominal tidak bergantung pada halaman yang kebetulan termuat;
+  // daftar tetap bisa dilanjutkan lewat tombol "Muat lagi".
+  const jumlahPiutangServer = orderTotal !== null && orderTotal !== undefined ? Number(orderTotal) : receivables.length;
+  const adaPiutangServer = receivables.length < jumlahPiutangServer;
+  const jumlahUtangServer = purchaseTotal !== null && purchaseTotal !== undefined ? Number(purchaseTotal) : payables.length;
+  const adaUtangServer = payables.length < jumlahUtangServer;
+  const sisaPiutang = summary?.piutang != null
+    ? Number(summary.piutang)
+    : receivables.reduce((s, r) => s + r.remaining, 0);
+
+  const muatPiutangLagi = async () => {
+    if (!onLoadMoreOrders) return;
+    setMemuatPiutang(true); setMuatLagiGalat('');
+    try { await onLoadMoreOrders(); }
+    catch (err) { setMuatLagiGalat(err.message || 'Gagal memuat piutang berikutnya.'); }
+    finally { setMemuatPiutang(false); }
+  };
+  const muatUtangLagi = async () => {
+    if (!onLoadMorePurchases) return;
+    setMemuatUtang(true); setMuatLagiGalat('');
+    try { await onLoadMorePurchases(); }
+    catch (err) { setMuatLagiGalat(err.message || 'Gagal memuat utang berikutnya.'); }
+    finally { setMemuatUtang(false); }
+  };
+
   const receivableAccount = findAccount(balances, ACCOUNT_TYPE.ASSET, /piutang/i, '1-002');
   const payableAccount = findAccount(balances, ACCOUNT_TYPE.LIABILITY, /utang/i, '2-002');
   const advanceAccount = findAccount(balances, ACCOUNT_TYPE.LIABILITY, /uang muka/i, '2-001');
@@ -420,7 +455,12 @@ export default function FinanceView({
         </div>
         <div className="flex items-center gap-2.5">
           <button
-            onClick={onRefresh}
+            onClick={async () => {
+              // Jurnal dimuat sendiri dari /api/journal, tidak ikut props. Tanpa versi baru,
+              // tombol muat ulang hanya memperbarui saldo dan daftar, jurnal tetap halaman lama.
+              await onRefresh?.();
+              setVersiData((v) => v + 1);
+            }}
             className="p-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors border border-slate-700/60"
             title="Muat Ulang Data"
           >
@@ -766,9 +806,12 @@ export default function FinanceView({
             <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
               <div className="text-xs font-medium text-slate-400">Sisa bayar pesanan</div>
               <div className="text-xl font-bold text-amber-400 mt-2 font-mono">
-                {formatMinor(receivables.reduce((s, r) => s + r.remaining, 0))}
+                {formatMinor(sisaPiutang)}
               </div>
-              <div className="text-[11px] text-slate-400 mt-1">{receivables.length} pesanan belum lunas</div>
+              <div className="text-[11px] text-slate-400 mt-1">
+                {receivables.length} dari {jumlahPiutangServer} pesanan belum lunas
+                {adaPiutangServer ? ' · muat lagi untuk sisanya' : ''}
+              </div>
             </div>
             <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
               <div className="text-xs font-medium text-slate-400">Jatuh tempo lewat</div>
@@ -777,6 +820,7 @@ export default function FinanceView({
               </div>
               <div className="text-[11px] text-slate-400 mt-1">
                 {receivables.filter((r) => r.overdue).length} pesanan lewat tanggal ambil
+                {adaPiutangServer ? ' · hanya baris yang termuat' : ''}
               </div>
             </div>
             <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
@@ -788,6 +832,10 @@ export default function FinanceView({
               </div>
             </div>
           </div>
+
+          {muatLagiGalat && (
+            <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{muatLagiGalat}</div>
+          )}
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
@@ -833,14 +881,25 @@ export default function FinanceView({
                   </tbody>
                 </table>
               </div>
-              {barisPiutang.adaLagi && (
-                <div className="px-4 py-2.5 border-t border-slate-800 text-center">
-                  <button
-                    onClick={barisPiutang.tampilkanLagi}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
-                  >
-                    Tampilkan 100 baris berikutnya ({barisPiutang.jumlah - barisPiutang.tampil.length} tersisa)
-                  </button>
+              {(barisPiutang.adaLagi || adaPiutangServer) && (
+                <div className="px-4 py-2.5 border-t border-slate-800 text-center flex items-center justify-center gap-2 flex-wrap">
+                  {barisPiutang.adaLagi && (
+                    <button
+                      onClick={barisPiutang.tampilkanLagi}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
+                    >
+                      Tampilkan 100 baris berikutnya ({barisPiutang.jumlah - barisPiutang.tampil.length} tersisa)
+                    </button>
+                  )}
+                  {adaPiutangServer && (
+                    <button
+                      onClick={muatPiutangLagi}
+                      disabled={memuatPiutang}
+                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-colors disabled:opacity-50"
+                    >
+                      {memuatPiutang ? 'Memuat...' : `Muat ${jumlahPiutangServer - receivables.length} pesanan lagi`}
+                    </button>
+                  )}
                 </div>
               )}
               <div className="px-4 py-3 border-t border-slate-800 text-[11px] text-slate-500">
@@ -886,14 +945,25 @@ export default function FinanceView({
                   </tbody>
                 </table>
               </div>
-              {barisUtang.adaLagi && (
-                <div className="px-4 py-2.5 border-t border-slate-800 text-center">
-                  <button
-                    onClick={barisUtang.tampilkanLagi}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
-                  >
-                    Tampilkan 100 dokumen berikutnya ({barisUtang.jumlah - barisUtang.tampil.length} tersisa)
-                  </button>
+              {(barisUtang.adaLagi || adaUtangServer) && (
+                <div className="px-4 py-2.5 border-t border-slate-800 text-center flex items-center justify-center gap-2 flex-wrap">
+                  {barisUtang.adaLagi && (
+                    <button
+                      onClick={barisUtang.tampilkanLagi}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
+                    >
+                      Tampilkan 100 dokumen berikutnya ({barisUtang.jumlah - barisUtang.tampil.length} tersisa)
+                    </button>
+                  )}
+                  {adaUtangServer && (
+                    <button
+                      onClick={muatUtangLagi}
+                      disabled={memuatUtang}
+                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-colors disabled:opacity-50"
+                    >
+                      {memuatUtang ? 'Memuat...' : `Muat ${jumlahUtangServer - payables.length} dokumen lagi`}
+                    </button>
+                  )}
                 </div>
               )}
 

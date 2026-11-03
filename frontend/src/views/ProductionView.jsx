@@ -53,6 +53,12 @@ export default function ProductionView({
   const [cancelReason, setCancelReason] = useState('');
   const [cancelTarget, setCancelTarget] = useState(null);
   const [loadingMaterials, setLoadingMaterials] = useState(false);
+  // Galat aksi disimpan di dalam modalnya masing-masing: modal tetap terbuka dengan isian
+  // utuh, dan pengguna melihat alasan penolakan server alih-alih alert yang menutup form.
+  const [galatSelesai, setGalatSelesai] = useState('');
+  const [galatBaru, setGalatBaru] = useState('');
+  const [galatBatal, setGalatBatal] = useState('');
+  const [galatMateri, setGalatMateri] = useState('');
 
   // New Order Form State
   const [newOrderForm, setNewOrderForm] = useState({
@@ -82,6 +88,8 @@ export default function ProductionView({
 
   const handleOpenComplete = async (wo) => {
     setSelectedOrder(wo);
+    setGalatSelesai('');
+    setGalatMateri('');
     const target = wo.targetQuantity || 100;
 
     // Always fetch full work order to get materials (GetAllAsync does not include materials)
@@ -91,7 +99,10 @@ export default function ProductionView({
       const full = await api.getWorkOrder(wo.id);
       materials = full?.materials || full?.Materials || [];
     } catch (e) {
+      // Resep yang gagal dimuat tidak boleh tampil sebagai "tidak ada bahan": pengguna akan
+      // menyelesaikan SPK tanpa melihat pemakaian sebenarnya. Pesannya ditampilkan di modal.
       materials = [];
+      setGalatMateri(e.message || 'Resep SPK gagal dimuat; pemakaian bahan belum bisa diperiksa.');
     } finally {
       setLoadingMaterials(false);
     }
@@ -136,10 +147,11 @@ export default function ProductionView({
     setScrapData({ ...scrapData, actualIngredients: updated });
   };
 
-  const handleSubmitComplete = (e) => {
+  const handleSubmitComplete = async (e) => {
     e.preventDefault();
     if (!selectedOrder) return;
     if (!mulaiSelesaiSpk()) return;
+    setGalatSelesai('');
     
     const materials = (scrapData.actualIngredients || [])
       .filter(ing => ing.ingredientId)
@@ -169,37 +181,51 @@ export default function ProductionView({
       });
     }
 
-    // Kunci dilepas saat permintaan selesai: modal sudah tertutup, tapi klik kedua yang
-    // datang sebelum browser menanggapi harus tetap tidak mengirim apa pun.
-    Promise.resolve(onCompleteWorkOrder(selectedOrder.id, {
-      actualGoodQty: Number(scrapData.goodUnits) || 0,
-      actualFailedQty: (Number(scrapData.scrapUnits) || 0) + (Number(scrapData.damagedUnits) || 0),
-      materials,
-      scraps,
-      idempotensi: completeKunci
-    })).finally(selesaiSelesaiSpk);
-
-    setCompleteModalOpen(false);
+    try {
+      await onCompleteWorkOrder(selectedOrder.id, {
+        actualGoodQty: Number(scrapData.goodUnits) || 0,
+        actualFailedQty: (Number(scrapData.scrapUnits) || 0) + (Number(scrapData.damagedUnits) || 0),
+        materials,
+        scraps,
+        idempotensi: completeKunci
+      });
+      // Modal baru ditutup setelah server menerima: penolakan tidak menghapus angka hasil
+      // produksi yang sudah diketik dapur.
+      setCompleteModalOpen(false);
+    } catch (err) {
+      setGalatSelesai(err.message || 'Hasil produksi gagal disimpan.');
+    } finally {
+      // Kunci dilepas saat permintaan selesai, jadi klik kedua selama permintaan berjalan
+      // tetap tidak mengirim apa pun.
+      selesaiSelesaiSpk();
+    }
   };
 
   const handleOpenCancel = (wo) => {
     setCancelTarget(wo);
     setCancelReason('');
+    setGalatBatal('');
     setCancelModalOpen(true);
   };
 
   const handleSubmitCancel = async () => {
     if (!cancelTarget) return;
-    await onCancelWorkOrder(cancelTarget.id, cancelReason);
-    setCancelModalOpen(false);
-    setCancelTarget(null);
-    setCancelReason('');
+    setGalatBatal('');
+    try {
+      await onCancelWorkOrder(cancelTarget.id, cancelReason);
+      setCancelModalOpen(false);
+      setCancelTarget(null);
+      setCancelReason('');
+    } catch (err) {
+      setGalatBatal(err.message || 'SPK gagal dibatalkan.');
+    }
   };
 
   const handleSubmitNewOrder = async (e) => {
     e.preventDefault();
     if (!newOrderForm.productTemplateId) return;
     if (!mulaiSpk()) return;
+    setGalatBaru('');
     try {
       await onCreateWorkOrder({
         productTemplateId: parseInt(newOrderForm.productTemplateId),
@@ -210,6 +236,8 @@ export default function ProductionView({
       });
       setNewOrderModalOpen(false);
       setNewOrderForm({ productTemplateId: '', targetQuantity: 100, laborCost: 0, overheadCost: 0 });
+    } catch (err) {
+      setGalatBaru(err.message || 'SPK gagal dibuat.');
     } finally {
       selesaiSpk();
     }
@@ -265,6 +293,7 @@ export default function ProductionView({
             <button
               onClick={() => {
                 setNewOrderKunci(kunciBaru('spk-baru'));
+                setGalatBaru('');
                 setNewOrderModalOpen(true);
               }}
               className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-semibold rounded-xl text-sm shadow-lg shadow-amber-500/20 transition-all"
@@ -552,6 +581,10 @@ export default function ProductionView({
                 </div>
               </div>
 
+              {galatBaru && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{galatBaru}</div>
+              )}
+
               {/* Footer */}
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
@@ -611,6 +644,9 @@ export default function ProductionView({
                   placeholder="Contoh: Bahan baku habis, permintaan dibatalkan pelanggan, dll."
                 />
               </div>
+              {galatBatal && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{galatBatal}</div>
+              )}
               <div className="flex items-center justify-end gap-3">
                 <button
                   type="button"
@@ -662,6 +698,11 @@ export default function ProductionView({
 
             {/* Modal Body */}
             <div className="p-5 overflow-y-auto space-y-6">
+              {galatMateri && (
+                <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-xs">
+                  {galatMateri}
+                </div>
+              )}
               {/* Seksi 1: Perhitungan Stok Dapur Riil */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -811,7 +852,11 @@ export default function ProductionView({
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-slate-800 bg-slate-950/70 flex items-center justify-end gap-3">
+            <div className="p-4 border-t border-slate-800 bg-slate-950/70 flex flex-col gap-3">
+              {galatSelesai && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{galatSelesai}</div>
+              )}
+              <div className="flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setCompleteModalOpen(false)}
@@ -827,6 +872,7 @@ export default function ProductionView({
                 <Check className="w-4 h-4" />
                 <span>Simpan Hasil & Perbarui Stok Gudang</span>
               </button>
+              </div>
             </div>
           </div>
         </div>
