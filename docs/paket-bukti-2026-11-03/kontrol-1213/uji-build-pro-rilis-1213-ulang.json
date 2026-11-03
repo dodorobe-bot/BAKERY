@@ -1,0 +1,98 @@
+{
+    "skema":  1,
+    "alat":  "uji-build-pro.ps1",
+    "waktu":  "2026-11-03T17:52:38.7173035+07:00",
+    "versi":  "1.2.13",
+    "installerDir":  "D:\\bakery-desktop\\dist\\installer",
+    "logDir":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log",
+    "jumlahUji":  14,
+    "lulus":  14,
+    "gagal":  0,
+    "dilewati":  0,
+    "uji":  [
+                {
+                    "Uji":  "baseline paket asli hijau",
+                    "Status":  "PASS",
+                    "Detail":  "exit 0, 0 FAIL, periksa 19, gagal 0, payload 393/393",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\01-dasar-asli.log"
+                },
+                {
+                    "Uji":  "kontrol A: hash EXE salah terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\02-sums-exe-salah.log"
+                },
+                {
+                    "Uji":  "kontrol B: MSI tak tercantum terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\03-sums-msi-hilang.log"
+                },
+                {
+                    "Uji":  "kontrol C: manifest payload salah terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\04-manifest-payload-salah.log"
+                },
+                {
+                    "Uji":  "kontrol D: MSI hilang terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 3 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\05-msi-hilang.log"
+                },
+                {
+                    "Uji":  "kontrol E: versi EXE tertukar terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\06-versi-tertukar.log"
+                },
+                {
+                    "Uji":  "kontrol F: kunci di publish terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\07-publish-kunci.log"
+                },
+                {
+                    "Uji":  "kontrol G: laporan artefak hantu terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\08-laporan-artefak-hantu.log"
+                },
+                {
+                    "Uji":  "kontrol H: nama ber-.. di SHA256SUMS terdeteksi",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\09-sums-nama-berbahaya.log"
+                },
+                {
+                    "Uji":  "kontrol I: EXE hilang terdeteksi tanpa crash",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 2 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\09b-exe-hilang.log"
+                },
+                {
+                    "Uji":  "kontrol J: manifest hilang tidak jadi SKIP",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, 1 FAIL",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\09c-manifest-hilang.log"
+                },
+                {
+                    "Uji":  "kontrol K: JsonPath di luar repo/temp ditolak",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, penolakan=True",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\09d-jsonpath-luar.log"
+                },
+                {
+                    "Uji":  "penjaga versi terbit menolak build ulang",
+                    "Status":  "PASS",
+                    "Detail":  "exit 1, pemicu=artefak v1.2.13 di folder keluaran, penjaga=True, tanpa publish=True, bukti utuh=True",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\10-penjaga-versi-terbit.log"
+                },
+                {
+                    "Uji":  "baseline akhir tetap hijau",
+                    "Status":  "PASS",
+                    "Detail":  "exit 0, 0 FAIL, periksa 19, gagal 0, payload 393/393",
+                    "Log":  "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-uji-8f55238d\\log\\11-dasar-akhir.log"
+                }
+            ]
+}

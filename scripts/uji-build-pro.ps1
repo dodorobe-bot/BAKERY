@@ -14,10 +14,11 @@
   tidak ada membuat perbandingan payload dilewati dan baseline hijau secara palsu.
 
   Selain itu skrip ini membuktikan penjaga versi terbit build-pro.ps1 menolak build ulang
-  versi yang sudah punya tag tanpa -IzinkanTulisUlang. Penjaga itu berhenti sebelum satu
-  perintah build pun dijalankan, jadi uji ini tidak menulis apa pun ke dist\. Bila tag
-  v<versi> belum ada (misalnya tepat sesudah naik versi), penjaga memang tidak akan menolak;
-  uji itu ditandai SKIP, bukan FAIL, supaya tidak menjalankan build sungguhan.
+  versi yang sudah terbit tanpa -IzinkanTulisUlang. Penjaga punya dua pemicu: tag
+  v<versi>, atau artefak versi itu di folder keluaran. Bila tag belum ada, uji menanam
+  artefak palsu di OutRoot sementara — bukan SKIP — karena penjaga justru wajib terbukti
+  tepat pada saat versi baru dirilis. Penjaga berhenti sebelum satu perintah build pun
+  dijalankan, jadi uji ini tetap tidak menulis apa pun ke dist\.
 
   Tidak memasang paket, tidak menandatangani, tidak menyentuh basis data pengguna.
   Semua berkas uji berada di folder temp dan dibersihkan di akhir; hanya log yang disimpan.

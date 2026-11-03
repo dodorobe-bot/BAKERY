@@ -41,7 +41,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-pro.ps1 -Sinkr
 | `validate-paket.ps1` | **19 pemeriksaan, 0 gagal, 0 lewati, 0 peringatan** | `dist/installer/VERIFY-REPORT.json` |
 | Isi payload MSI vs manifest publish | **393/393 berkas** cocok hash dan ukuran | `dist/publish-single.manifest.txt` |
 | Publish bebas berkas terlarang | lulus — tidak ada basis data, kunci JWT, kredensial, atau berkas debug | `VERIFY-REPORT.json` |
-| Kontrol negatif automasi (`uji-build-pro.ps1`) | **14/14 lulus, 0 SKIP** — baseline tetap hijau sebelum dan sesudah sabotase | `C:\tmp\uji-build-pro-rilis-1213.json` |
+| Kontrol negatif automasi (`uji-build-pro.ps1`) | **14/14 lulus, 0 SKIP** — baseline tetap hijau sebelum dan sesudah sabotase | [`docs/paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213.json`](paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213.json) |
+| Kontrol negatif diulang terhadap skrip yang sudah di-commit | **14/14 lulus, 0 SKIP** — hash EXE/MSI setelah run tetap `c1a0af29…`/`eb3f40fb…`, jadi artefak rilis tidak tersentuh sabotase | [`docs/paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213-ulang.json`](paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213-ulang.json) |
 
 Kontrol negatif membuktikan validator menolak: hash EXE salah, MSI tak tercantum, manifest payload
 salah, MSI hilang, versi EXE tertukar, kunci di folder publish, laporan menyebut artefak hantu,
