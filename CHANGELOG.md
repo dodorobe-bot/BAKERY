@@ -26,7 +26,7 @@ Isi versi ini adalah perbaikan yang dibangun 2–3 November dan **tidak ada di p
 - **Backup.** Retensi mengutamakan salinan yang sudah terverifikasi, jadi cadangan rusak yang
   kebetulan terbaru tidak lagi menghabiskan jatah periode sementara salinan sehat terhapus.
 - **Idempotensi.** Kunci yang tertinggal oleh proses mati di tengah jalan kedaluwarsa setelah
-  30 jam (dihitung di SQL dengan UTC yang sama dengan `ReservedAt`), dan baris selesai dibersihkan
+  30 menit (dihitung di SQL dengan UTC yang sama dengan `ReservedAt`), dan baris selesai dibersihkan
   setelah 30 hari — pengguna tidak lagi terkena 409 terus-menerus.
 - **Antar muka.** Status perangkat dipakai ulang 15 detik dan dibersihkan saat pengaturan diubah;
   daftar piutang/utang keuangan dimuat bertahap dengan penanda "hanya baris yang termuat" alih-alih

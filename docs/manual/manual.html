@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Buku Manual Pengguna — Seruni 22 Bakery 1.2.12</title>
+<title>Buku Manual Pengguna — Seruni 22 Bakery 1.2.13</title>
 <style>
   :root {
     --ink: #1a2233;
@@ -219,8 +219,8 @@
   </p>
 
   <div class="cover-meta">
-    <div><b>Versi aplikasi</b>1.2.12</div>
-    <div><b>Tanggal dokumen</b>2 November 2026</div>
+    <div><b>Versi aplikasi</b>1.2.13</div>
+    <div><b>Tanggal dokumen</b>3 November 2026</div>
     <div><b>Bahasa</b>Indonesia</div>
     <div><b>Lingkup</b>31 menu &middot; 6 kelompok</div>
   </div>
@@ -244,11 +244,11 @@
 
   <table>
     <tr><td class="k">Judul dokumen</td><td>Buku Manual Pengguna Seruni 22 Bakery</td></tr>
-    <tr><td class="k">Versi aplikasi</td><td>1.2.12 (Windows, aplikasi desktop dengan basis data lokal)</td></tr>
-    <tr><td class="k">Tanggal</td><td>2 November 2026</td></tr>
+    <tr><td class="k">Versi aplikasi</td><td>1.2.13 (Windows, aplikasi desktop dengan basis data lokal)</td></tr>
+    <tr><td class="k">Tanggal</td><td>3 November 2026</td></tr>
     <tr><td class="k">Pembaca</td><td>Pemilik toko, manajer operasional, kepala dapur, staf kasir</td></tr>
     <tr><td class="k">Lingkup</td><td>Dari pemasangan dan login pertama sampai menu terakhir, Pengaturan Toko &amp; Cabang, ditambah alur kerja antarmenu dan perawatan data</td></tr>
-    <tr><td class="k">Sumber gambar</td><td>Tangkapan layar aplikasi 1.2.12 yang dijalankan dengan basis data sementara berisi data contoh</td></tr>
+    <tr><td class="k">Sumber gambar</td><td>Tangkapan layar aplikasi 1.2.12 yang dijalankan dengan basis data sementara berisi data contoh. Perubahan 1.2.13 menambah tombol dan pesan di dalam layar yang sudah ada, tidak mengubah tata letak yang tampak pada gambar; karena itu kontrol baru 1.2.13 (lihat daftar di bawah) belum terlihat di dalam gambar, tetapi nama dan letaknya ditulis persis seperti di layar</td></tr>
   </table>
 
   <h2>Cara membaca setiap bab</h2>
@@ -264,6 +264,24 @@
     <li><b>Kotak Peringatan</b> berisi tindakan yang sulit dibatalkan atau dapat mengubah stok, uang, dan jurnal.</li>
     <li><b>Alur antar menu</b> menunjukkan menu berikutnya yang wajar dibuka setelah pekerjaan di bab itu selesai.</li>
   </ul>
+
+  <h2>Yang berubah pada versi 1.2.13</h2>
+  <p>
+    Bagi yang sudah memakai buku edisi 1.2.12, tabel ini menyebut hal yang berbeda pada versi
+    1.2.13. Tidak ada menu baru dan tidak ada perubahan bentuk basis data, sehingga data toko
+    lama langsung dipakai tanpa penyesuaian.
+  </p>
+  <table>
+    <tr><th style="width:34%;">Perubahan</th><th>Yang terlihat di layar</th><th style="width:14%;">Dibahas di</th></tr>
+    <tr><td><b>Penolakan server tidak lagi menutup form</b></td><td>Bila SPK, PO, penerimaan barang, atau data pemasok ditolak, pesan galat muncul <b>di dalam form itu sendiri</b> dan isian yang sudah diketik tetap ada. Form baru tertutup setelah server menerima.</td><td>Bab 2, 13, 18, 19</td></tr>
+    <tr><td><b>Piutang dan utang dimuat bertahap</b></td><td>Di <b>Utang &amp; Piutang Usaha</b> muncul tombol <b>Muat <i>n</i> pesanan lagi</b>, <b>Muat <i>n</i> dokumen lagi</b>, dan penanda <b>&middot; hanya baris yang termuat</b> selama sebagian daftar belum ditarik dari server.</td><td>Bab 27</td></tr>
+    <tr><td><b>Biaya tenaga kerja dan overhead masuk ke nilai persediaan</b></td><td>Penyelesaian SPK memindahkan tenaga kerja dan overhead ke akun <b>1-006</b> bersama bahan; selisih pembulatan kecil dibukukan ke <b>5-006</b>, bukan hilang dan bukan membebani gaji/operasional.</td><td>Bab 17, 25</td></tr>
+    <tr><td><b>Cadangan lama dipilih yang sudah terverifikasi</b></td><td>Pembersihan cadangan otomatis menyimpan lebih dulu salinan yang lolos verifikasi, jadi cadangan rusak yang kebetulan terbaru tidak menghabiskan jatah.</td><td>Bab 38</td></tr>
+    <tr><td><b>Kunci pengiriman ulang punya masa berlaku</b></td><td>Kunci yang tertinggal karena aplikasi mati di tengah jalan kedaluwarsa setelah <b>30 menit</b>, sehingga tombol simpan tidak lagi selalu ditolak sebagai duplikat.</td><td>Bab 2, Lampiran D</td></tr>
+    <tr><td><b>Status perangkat kasir dipakai ulang 15 detik</b></td><td>Menjelang pembayaran, printer jaringan yang lambat tidak diperiksa ulang setiap kali layar dibuka; menyimpan pengaturan perangkat langsung membuang status lama.</td><td>Bab 6, 32</td></tr>
+    <tr><td><b>Opname memakai satu kunci per baris bahan</b></td><td>Dua kali menekan <b>Setel</b> pada baris bahan yang berbeda berurutan kini sama-sama tersimpan; sebelumnya yang kedua bisa ditolak sebagai pengulangan.</td><td>Bab 23</td></tr>
+    <tr><td><b>Aplikasi dikunci hanya untuk komputer ini</b></td><td>Permintaan untuk membuka alamat selain <code>127.0.0.1</code>/<code>localhost</code> ditolak pada saat start, sebelum basis data dibuat.</td><td>Bab 0, 39</td></tr>
+  </table>
 
   <div class="callout note">
     <span class="label">Catatan tentang data contoh</span>
@@ -300,67 +318,67 @@
 
   <div class="toc">
     <div class="toc-part">Bagian I &middot; Pengenalan</div>
-    <div class="toc-line"><span class="no">Bab 0</span><span class="t">Memasang dan Menyiapkan Pertama Kali</span><span class="dots"></span><span class="pg" data-pg="bab-0">05</span></div>
-    <div class="toc-line"><span class="no">Bab 1</span><span class="t">Tentang Aplikasi dan Peta Menu</span><span class="dots"></span><span class="pg" data-pg="bab-1">08</span></div>
-    <div class="toc-line"><span class="no">Bab 2</span><span class="t">Masuk dan Mengenal Jendela Kerja</span><span class="dots"></span><span class="pg" data-pg="bab-2">11</span></div>
+    <div class="toc-line"><span class="no">Bab 0</span><span class="t">Memasang dan Menyiapkan Pertama Kali</span><span class="dots"></span><span class="pg" data-pg="bab-0">06</span></div>
+    <div class="toc-line"><span class="no">Bab 1</span><span class="t">Tentang Aplikasi dan Peta Menu</span><span class="dots"></span><span class="pg" data-pg="bab-1">10</span></div>
+    <div class="toc-line"><span class="no">Bab 2</span><span class="t">Masuk dan Mengenal Jendela Kerja</span><span class="dots"></span><span class="pg" data-pg="bab-2">13</span></div>
 
     <div class="toc-part">Bagian II &middot; Ruang Kerja</div>
-    <div class="toc-line"><span class="no">Bab 3</span><span class="t">Dasbor &amp; Indikator Utama</span><span class="dots"></span><span class="pg" data-pg="bab-3">14</span></div>
-    <div class="toc-line"><span class="no">Bab 4</span><span class="t">Kotak Tugas &amp; Persetujuan</span><span class="dots"></span><span class="pg" data-pg="bab-4">16</span></div>
-    <div class="toc-line"><span class="no">Bab 5</span><span class="t">Pemberitahuan &amp; Catatan Aktivitas</span><span class="dots"></span><span class="pg" data-pg="bab-5">18</span></div>
+    <div class="toc-line"><span class="no">Bab 3</span><span class="t">Dasbor &amp; Indikator Utama</span><span class="dots"></span><span class="pg" data-pg="bab-3">17</span></div>
+    <div class="toc-line"><span class="no">Bab 4</span><span class="t">Kotak Tugas &amp; Persetujuan</span><span class="dots"></span><span class="pg" data-pg="bab-4">19</span></div>
+    <div class="toc-line"><span class="no">Bab 5</span><span class="t">Pemberitahuan &amp; Catatan Aktivitas</span><span class="dots"></span><span class="pg" data-pg="bab-5">21</span></div>
 
     <div class="toc-part">Bagian III &middot; Penjualan &amp; Pelanggan</div>
-    <div class="toc-line"><span class="no">Bab 6</span><span class="t">Kasir Penjualan Cepat</span><span class="dots"></span><span class="pg" data-pg="bab-6">20</span></div>
-    <div class="toc-line"><span class="no">Bab 7</span><span class="t">Daftar Pesanan &amp; Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-7">23</span></div>
-    <div class="toc-line"><span class="no">Bab 8</span><span class="t">Pesanan Terjadwal (Pre-Order)</span><span class="dots"></span><span class="pg" data-pg="bab-8">25</span></div>
-    <div class="toc-line"><span class="no">Bab 9</span><span class="t">Data Pelanggan &amp; Klien</span><span class="dots"></span><span class="pg" data-pg="bab-9">27</span></div>
-    <div class="toc-line"><span class="no">Bab 10</span><span class="t">Piutang &amp; Pembayaran</span><span class="dots"></span><span class="pg" data-pg="bab-10">29</span></div>
-    <div class="toc-line"><span class="no">Bab 11</span><span class="t">Retur Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-11">32</span></div>
+    <div class="toc-line"><span class="no">Bab 6</span><span class="t">Kasir Penjualan Cepat</span><span class="dots"></span><span class="pg" data-pg="bab-6">23</span></div>
+    <div class="toc-line"><span class="no">Bab 7</span><span class="t">Daftar Pesanan &amp; Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-7">27</span></div>
+    <div class="toc-line"><span class="no">Bab 8</span><span class="t">Pesanan Terjadwal (Pre-Order)</span><span class="dots"></span><span class="pg" data-pg="bab-8">29</span></div>
+    <div class="toc-line"><span class="no">Bab 9</span><span class="t">Data Pelanggan &amp; Klien</span><span class="dots"></span><span class="pg" data-pg="bab-9">31</span></div>
+    <div class="toc-line"><span class="no">Bab 10</span><span class="t">Piutang &amp; Pembayaran</span><span class="dots"></span><span class="pg" data-pg="bab-10">33</span></div>
+    <div class="toc-line"><span class="no">Bab 11</span><span class="t">Retur Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-11">36</span></div>
 
     <div class="toc-part">Bagian IV &middot; Operasional &amp; Produksi</div>
-    <div class="toc-line"><span class="no">Bab 12</span><span class="t">Perencanaan Jadwal Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-12">34</span></div>
-    <div class="toc-line"><span class="no">Bab 13</span><span class="t">Perintah Kerja (SPK)</span><span class="dots"></span><span class="pg" data-pg="bab-13">36</span></div>
-    <div class="toc-line"><span class="no">Bab 14</span><span class="t">Resep &amp; Daftar Bahan Baku</span><span class="dots"></span><span class="pg" data-pg="bab-14">40</span></div>
-    <div class="toc-line"><span class="no">Bab 15</span><span class="t">Pemakaian Aktual &amp; Hasil</span><span class="dots"></span><span class="pg" data-pg="bab-15">42</span></div>
-    <div class="toc-line"><span class="no">Bab 16</span><span class="t">Pemeriksaan Mutu (QC)</span><span class="dots"></span><span class="pg" data-pg="bab-16">44</span></div>
-    <div class="toc-line"><span class="no">Bab 17</span><span class="t">Harga Pokok Produksi (HPP)</span><span class="dots"></span><span class="pg" data-pg="bab-17">46</span></div>
+    <div class="toc-line"><span class="no">Bab 12</span><span class="t">Perencanaan Jadwal Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-12">38</span></div>
+    <div class="toc-line"><span class="no">Bab 13</span><span class="t">Perintah Kerja (SPK)</span><span class="dots"></span><span class="pg" data-pg="bab-13">40</span></div>
+    <div class="toc-line"><span class="no">Bab 14</span><span class="t">Resep &amp; Daftar Bahan Baku</span><span class="dots"></span><span class="pg" data-pg="bab-14">44</span></div>
+    <div class="toc-line"><span class="no">Bab 15</span><span class="t">Pemakaian Aktual &amp; Hasil</span><span class="dots"></span><span class="pg" data-pg="bab-15">46</span></div>
+    <div class="toc-line"><span class="no">Bab 16</span><span class="t">Pemeriksaan Mutu (QC)</span><span class="dots"></span><span class="pg" data-pg="bab-16">48</span></div>
+    <div class="toc-line"><span class="no">Bab 17</span><span class="t">Harga Pokok Produksi (HPP)</span><span class="dots"></span><span class="pg" data-pg="bab-17">50</span></div>
 
     <div class="toc-part">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
-    <div class="toc-line"><span class="no">Bab 18</span><span class="t">Pembelian &amp; Penerimaan Barang</span><span class="dots"></span><span class="pg" data-pg="bab-18">48</span></div>
-    <div class="toc-line"><span class="no">Bab 19</span><span class="t">Pemasok &amp; Rekanan</span><span class="dots"></span><span class="pg" data-pg="bab-19">52</span></div>
-    <div class="toc-line"><span class="no">Bab 20</span><span class="t">Gudang &amp; Lokasi Rak</span><span class="dots"></span><span class="pg" data-pg="bab-20">54</span></div>
-    <div class="toc-line"><span class="no">Bab 21</span><span class="t">Mutasi Gudang ke Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-21">56</span></div>
-    <div class="toc-line"><span class="no">Bab 22</span><span class="t">Katalog Bahan &amp; Produk Jadi</span><span class="dots"></span><span class="pg" data-pg="bab-22">59</span></div>
-    <div class="toc-line"><span class="no">Bab 23</span><span class="t">Pemeriksaan Fisik (Stok Opname)</span><span class="dots"></span><span class="pg" data-pg="bab-23">61</span></div>
-    <div class="toc-line"><span class="no">Bab 24</span><span class="t">Nomor Batch &amp; Kedaluwarsa</span><span class="dots"></span><span class="pg" data-pg="bab-24">63</span></div>
+    <div class="toc-line"><span class="no">Bab 18</span><span class="t">Pembelian &amp; Penerimaan Barang</span><span class="dots"></span><span class="pg" data-pg="bab-18">52</span></div>
+    <div class="toc-line"><span class="no">Bab 19</span><span class="t">Pemasok &amp; Rekanan</span><span class="dots"></span><span class="pg" data-pg="bab-19">56</span></div>
+    <div class="toc-line"><span class="no">Bab 20</span><span class="t">Gudang &amp; Lokasi Rak</span><span class="dots"></span><span class="pg" data-pg="bab-20">58</span></div>
+    <div class="toc-line"><span class="no">Bab 21</span><span class="t">Mutasi Gudang ke Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-21">60</span></div>
+    <div class="toc-line"><span class="no">Bab 22</span><span class="t">Katalog Bahan &amp; Produk Jadi</span><span class="dots"></span><span class="pg" data-pg="bab-22">63</span></div>
+    <div class="toc-line"><span class="no">Bab 23</span><span class="t">Pemeriksaan Fisik (Stok Opname)</span><span class="dots"></span><span class="pg" data-pg="bab-23">65</span></div>
+    <div class="toc-line"><span class="no">Bab 24</span><span class="t">Nomor Batch &amp; Kedaluwarsa</span><span class="dots"></span><span class="pg" data-pg="bab-24">67</span></div>
 
     <div class="toc-part">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
-    <div class="toc-line"><span class="no">Bab 25</span><span class="t">Buku Besar &amp; Jurnal Umum</span><span class="dots"></span><span class="pg" data-pg="bab-25">65</span></div>
-    <div class="toc-line"><span class="no">Bab 26</span><span class="t">Kas Toko &amp; Rekening Bank</span><span class="dots"></span><span class="pg" data-pg="bab-26">67</span></div>
-    <div class="toc-line"><span class="no">Bab 27</span><span class="t">Utang &amp; Piutang Usaha</span><span class="dots"></span><span class="pg" data-pg="bab-27">69</span></div>
-    <div class="toc-line"><span class="no">Bab 28</span><span class="t">Laporan Keuangan &amp; Laba Rugi</span><span class="dots"></span><span class="pg" data-pg="bab-28">71</span></div>
+    <div class="toc-line"><span class="no">Bab 25</span><span class="t">Buku Besar &amp; Jurnal Umum</span><span class="dots"></span><span class="pg" data-pg="bab-25">69</span></div>
+    <div class="toc-line"><span class="no">Bab 26</span><span class="t">Kas Toko &amp; Rekening Bank</span><span class="dots"></span><span class="pg" data-pg="bab-26">71</span></div>
+    <div class="toc-line"><span class="no">Bab 27</span><span class="t">Utang &amp; Piutang Usaha</span><span class="dots"></span><span class="pg" data-pg="bab-27">73</span></div>
+    <div class="toc-line"><span class="no">Bab 28</span><span class="t">Laporan Keuangan &amp; Laba Rugi</span><span class="dots"></span><span class="pg" data-pg="bab-28">75</span></div>
 
     <div class="toc-part">Bagian VII &middot; Analisis &amp; Pengaturan</div>
-    <div class="toc-line"><span class="no">Bab 29</span><span class="t">Analisis &amp; Tren Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-29">73</span></div>
-    <div class="toc-line"><span class="no">Bab 30</span><span class="t">Jejak Audit &amp; Riwayat Sistem</span><span class="dots"></span><span class="pg" data-pg="bab-30">75</span></div>
-    <div class="toc-line"><span class="no">Bab 31</span><span class="t">Hak Akses &amp; Pegawai</span><span class="dots"></span><span class="pg" data-pg="bab-31">77</span></div>
-    <div class="toc-line"><span class="no">Bab 32</span><span class="t">Perangkat Kasir</span><span class="dots"></span><span class="pg" data-pg="bab-32">80</span></div>
-    <div class="toc-line"><span class="no">Bab 33</span><span class="t">Pengaturan Toko &amp; Cabang</span><span class="dots"></span><span class="pg" data-pg="bab-33">82</span></div>
+    <div class="toc-line"><span class="no">Bab 29</span><span class="t">Analisis &amp; Tren Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-29">77</span></div>
+    <div class="toc-line"><span class="no">Bab 30</span><span class="t">Jejak Audit &amp; Riwayat Sistem</span><span class="dots"></span><span class="pg" data-pg="bab-30">79</span></div>
+    <div class="toc-line"><span class="no">Bab 31</span><span class="t">Hak Akses &amp; Pegawai</span><span class="dots"></span><span class="pg" data-pg="bab-31">81</span></div>
+    <div class="toc-line"><span class="no">Bab 32</span><span class="t">Perangkat Kasir</span><span class="dots"></span><span class="pg" data-pg="bab-32">84</span></div>
+    <div class="toc-line"><span class="no">Bab 33</span><span class="t">Pengaturan Toko &amp; Cabang</span><span class="dots"></span><span class="pg" data-pg="bab-33">86</span></div>
 
     <div class="toc-part">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
-    <div class="toc-line"><span class="no">Bab 34</span><span class="t">Alur Kerja Harian</span><span class="dots"></span><span class="pg" data-pg="bab-34">84</span></div>
-    <div class="toc-line"><span class="no">Bab 35</span><span class="t">Alur Pesanan Khusus dan Pre-Order</span><span class="dots"></span><span class="pg" data-pg="bab-35">86</span></div>
-    <div class="toc-line"><span class="no">Bab 36</span><span class="t">Alur Pengadaan sampai HPP</span><span class="dots"></span><span class="pg" data-pg="bab-36">88</span></div>
-    <div class="toc-line"><span class="no">Bab 37</span><span class="t">Alur Tutup Buku dan Pencadangan</span><span class="dots"></span><span class="pg" data-pg="bab-37">89</span></div>
-    <div class="toc-line"><span class="no">Bab 38</span><span class="t">Merawat dan Memulihkan Data</span><span class="dots"></span><span class="pg" data-pg="bab-38">90</span></div>
-    <div class="toc-line"><span class="no">Bab 39</span><span class="t">Batasan Versi 1.2.12</span><span class="dots"></span><span class="pg" data-pg="bab-39">92</span></div>
+    <div class="toc-line"><span class="no">Bab 34</span><span class="t">Alur Kerja Harian</span><span class="dots"></span><span class="pg" data-pg="bab-34">88</span></div>
+    <div class="toc-line"><span class="no">Bab 35</span><span class="t">Alur Pesanan Khusus dan Pre-Order</span><span class="dots"></span><span class="pg" data-pg="bab-35">90</span></div>
+    <div class="toc-line"><span class="no">Bab 36</span><span class="t">Alur Pengadaan sampai HPP</span><span class="dots"></span><span class="pg" data-pg="bab-36">92</span></div>
+    <div class="toc-line"><span class="no">Bab 37</span><span class="t">Alur Tutup Buku dan Pencadangan</span><span class="dots"></span><span class="pg" data-pg="bab-37">93</span></div>
+    <div class="toc-line"><span class="no">Bab 38</span><span class="t">Merawat dan Memulihkan Data</span><span class="dots"></span><span class="pg" data-pg="bab-38">94</span></div>
+    <div class="toc-line"><span class="no">Bab 39</span><span class="t">Batasan Versi 1.2.13</span><span class="dots"></span><span class="pg" data-pg="bab-39">96</span></div>
 
     <div class="toc-part">Lampiran</div>
-    <div class="toc-line"><span class="no">Lampiran A</span><span class="t">Peta Menu Lengkap</span><span class="dots"></span><span class="pg" data-pg="lamp-a">94</span></div>
-    <div class="toc-line"><span class="no">Lampiran B</span><span class="t">Matriks Peran dan Menu</span><span class="dots"></span><span class="pg" data-pg="lamp-b">96</span></div>
-    <div class="toc-line"><span class="no">Lampiran C</span><span class="t">Arti Status Dokumen</span><span class="dots"></span><span class="pg" data-pg="lamp-c">98</span></div>
-    <div class="toc-line"><span class="no">Lampiran D</span><span class="t">Pesan Kesalahan dan Tindakan</span><span class="dots"></span><span class="pg" data-pg="lamp-d">100</span></div>
-    <div class="toc-line"><span class="no">Lampiran E</span><span class="t">Daftar Gambar</span><span class="dots"></span><span class="pg" data-pg="lamp-e">101</span></div>
+    <div class="toc-line"><span class="no">Lampiran A</span><span class="t">Peta Menu Lengkap</span><span class="dots"></span><span class="pg" data-pg="lamp-a">98</span></div>
+    <div class="toc-line"><span class="no">Lampiran B</span><span class="t">Matriks Peran dan Menu</span><span class="dots"></span><span class="pg" data-pg="lamp-b">100</span></div>
+    <div class="toc-line"><span class="no">Lampiran C</span><span class="t">Arti Status Dokumen</span><span class="dots"></span><span class="pg" data-pg="lamp-c">102</span></div>
+    <div class="toc-line"><span class="no">Lampiran D</span><span class="t">Pesan Kesalahan dan Tindakan</span><span class="dots"></span><span class="pg" data-pg="lamp-d">104</span></div>
+    <div class="toc-line"><span class="no">Lampiran E</span><span class="t">Daftar Gambar</span><span class="dots"></span><span class="pg" data-pg="lamp-e">106</span></div>
   </div>
 
   <div class="callout note" style="margin-top:14pt;">
@@ -402,14 +420,14 @@
 
   <h2>0.1 Sebelum memasang</h2>
   <p>
-    Siapkan PC kasir dan berkas pemasangan versi 1.2.12. Aplikasi berjalan di PC itu sendiri
+    Siapkan PC kasir dan berkas pemasangan versi 1.2.13. Aplikasi berjalan di PC itu sendiri
     dan menyimpan datanya secara lokal; pemakaian harian tidak memerlukan sambungan internet.
   </p>
   <table>
     <tr><th style="width:30%;">Hal</th><th>Yang perlu diketahui</th></tr>
     <tr><td><b>Komputer</b></td><td>Windows 64-bit. Paket sudah membawa runtime .NET 8, jadi tidak perlu memasang .NET terpisah. Pengujian versi ini memakai Windows 11; Windows 10 belum diuji (Bab 39).</td></tr>
     <tr><td><b>Kanal pemasangan</b></td><td>Pilih satu: <b>EXE</b> (per pengguna, tanpa hak administrator) atau <b>MSI</b> (per komputer, memerlukan administrator). Keduanya memakai folder data dan port yang sama sehingga tidak boleh terpasang bersamaan.</td></tr>
-    <tr><td><b>Berkas pemasangan</b></td><td><code>Seruni22Bakery_Setup_v1.2.12.exe</code> untuk kanal EXE. Paket belum ditandatangani Authenticode (Bab 39).</td></tr>
+    <tr><td><b>Berkas pemasangan</b></td><td><code>Seruni22Bakery_Setup_v1.2.13.exe</code> untuk kanal EXE, atau <code>Seruni22Bakery_v1.2.13_x64.msi</code> untuk kanal MSI. Paket belum ditandatangani Authenticode (Bab 39).</td></tr>
     <tr><td><b>Data lama</b></td><td>Bila PC sudah pernah memakai versi sebelumnya, buat cadangan lebih dahulu (Bab 37) dan pasang versi baru dari kanal yang sama.</td></tr>
   </table>
   <div class="callout warn">
@@ -423,7 +441,7 @@
 
   <h2>0.2 Memasang aplikasi</h2>
   <ol class="steps">
-    <li>Klik dua kali berkas <code>Seruni22Bakery_Setup_v1.2.12.exe</code>.</li>
+    <li>Klik dua kali berkas <code>Seruni22Bakery_Setup_v1.2.13.exe</code>.</li>
     <li>Bila Windows menampilkan <b>Windows protected your PC</b>, tekan <b>More info</b> lalu <b>Run anyway</b>. Peringatan ini muncul karena paket belum ditandatangani. Lanjutkan hanya bila berkas berasal dari sumber resmi dan namanya sesuai versi yang diminta.</li>
     <li>Ikuti wizard: tekan <b>Next</b>, biarkan folder pemasangan bawaan, lalu tentukan apakah pintasan Desktop dibuat.</li>
     <li>Tekan <b>Install</b> dan tunggu sampai selesai.</li>
@@ -454,6 +472,21 @@
     <p>
       Menutup jendela peramban tidak menghapus data. Untuk melanjutkan pekerjaan, buka
       pintasan <b>Seruni 22 Bakery</b> lagi; aplikasi akan menyala dan menampilkan layar masuk.
+    </p>
+  </div>
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; aplikasi hanya melayani komputer ini</span>
+    <p>
+      Server lokal sengaja hanya membuka alamat di PC itu sendiri
+      (<code>http://127.0.0.1:5000</code> atau <code>http://localhost:5000</code>). Bila
+      aplikasi diminta listen pada alamat lain &mdash; misalnya lewat parameter
+      <code>--urls</code> atau konfigurasi <code>Kestrel:Endpoints</code> &mdash; start dihentikan
+      dengan pesan <b>"Alamat dengar '&hellip;' ditolak: aplikasi ini hanya untuk PC ini."</b>
+      Penolakan terjadi sebelum kunci dan basis data dibuat, sehingga salah ketik konfigurasi
+      tidak meninggalkan berkas dan tidak sempat membuka port ke jaringan. Memakai aplikasi dari
+      PC lain di jaringan bukan cara kerja produk ini; membukanya secara paksa
+      (<code>SERUNI_ALLOW_LAN=1</code>) hanya untuk keperluan teknis tertentu dan menuntut
+      peninjauan aturan firewall secara manual.
     </p>
   </div>
 
@@ -788,6 +821,46 @@
     Tindakan yang sudah berhasil disimpan tidak hilang ketika Anda keluar.
   </p>
 
+  <h2>2.6 Bila aplikasi menolak tindakan</h2>
+  <p>
+    Server memeriksa setiap penyimpanan: nominal, stok, saldo akun, hak akses, dan kemungkinan
+    pengiriman ganda. Bila menolak, aplikasi menampilkan alasannya. Perlakuannya berbeda menurut
+    jenis tindakan:
+  </p>
+  <ul>
+    <li><b>Menyimpan data dari form atau dialog</b> (SPK, penerimaan barang, pemasok, opname):
+      pesan galat muncul <b>di dalam form tersebut</b> dan form tetap terbuka dengan isian yang
+      sudah diketik. Perbaiki penyebabnya, lalu tekan tombol simpan yang sama sekali lagi.
+      Contoh pesan: <b>SPK gagal dibuat.</b>, <b>Hasil produksi gagal disimpan.</b>,
+      <b>SPK gagal dibatalkan.</b>, <b>PO gagal disimpan.</b>,
+      <b>Penerimaan barang gagal disimpan.</b>, <b>Data pemasok gagal disimpan.</b></li>
+    <li><b>Memuat isian yang dibutuhkan form</b>: bila rincian gagal dimuat, form menampilkan
+      pesan seperti <b>Detail PO gagal dimuat. Tutup lalu coba lagi.</b> atau, saat membuka
+      penyelesaian SPK, peringatan <b>Resep SPK gagal dimuat; pemakaian bahan belum bisa
+      diperiksa.</b> Jangan menyimpan dengan isian yang kosong hanya karena tombolnya tersedia.</li>
+    <li><b>Ekspor berkas</b> (Excel/PDF): kegagalan masih ditampilkan sebagai pop-up peramban
+      dengan awalan <b>Gagal export:</b>. Pop-up ini tidak menyimpan data apa pun; tekan OK dan
+      coba ekspor lagi.</li>
+    <li><b>Pesanan yang masih diproses</b>: menekan simpan dua kali cepat tidak menghasilkan dua
+      dokumen. Aplikasi menjawab <b>Permintaan dengan kunci yang sama masih diproses, tunggu
+      sebentar.</b> Bila proses sebelumnya mati di tengah jalan sehingga kuncinya tertinggal,
+      kunci itu dilepaskan sendiri setelah <b>30 menit</b> &mdash; mulai 1.2.13; pada 1.2.12 kuncinya
+      bisa mengunci selamanya dan pesan yang sama terus muncul. Kunci yang sudah selesai
+      dibersihkan setelah 30 hari, dihitung sejak kunci itu pertama kali dipesan, dan pembersihan
+      berjalan sesaat sebelum aksi tulis berikutnya.</li>
+    <li><b>Kunci dipakai untuk aksi lain</b>: pesan <b>Kunci idempotensi ini sudah dipakai untuk
+      aksi lain.</b> berarti kunci dari percobaan sebelumnya menempel pada jenis aksi yang berbeda.
+      Tutup form, muat ulang datanya, lalu ulangi aksi dari awal.</li>
+  </ul>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Baca pesan penolakan sampai selesai &mdash; di dalamnya biasanya disebut bahan, pesanan,
+      atau akun yang bermasalah. Daftar pesan yang sering muncul beserta tindakannya ada di
+      Lampiran D.
+    </p>
+  </div>
+
   <div class="callout flow">
     <span class="label">Alur antar menu</span>
     <p>Setelah masuk, aplikasi membuka ruang kerja. Mulailah dari dasbor untuk melihat keadaan hari ini.</p>
@@ -1099,11 +1172,32 @@
     <li>Tambahkan <b>Catatan (opsional)</b> bila perlu, lalu tekan <b>Catat Pembayaran</b>.</li>
     <li>Bila printer sudah diatur di menu <b>Perangkat Kasir</b>, struk tercetak otomatis. Bila gagal, aplikasi menampilkan pesan kegagalan dan menyediakan tombol <b>Cetak lewat peramban</b> atau <b>Cetak ulang</b>.</li>
   </ol>
+  <div class="callout note">
+    <span class="label">Catatan &mdash; kegagalan cetak tidak membatalkan pembayaran</span>
+    <p>
+      Pesan <b>Pembayaran tersimpan dan struk otomatis terkirim ke printer.</b> berarti keduanya
+      berhasil. Bila yang muncul <b>Pembayaran tersimpan, tetapi struk gagal dicetak: &hellip;</b>,
+      uang dan status pesanan sudah tercatat; cetak ulang struknya saja, jangan mengulang
+      pembayarannya.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan &mdash; status perangkat dipakai ulang 15 detik</span>
+    <p>
+      Saat layar kasir dibuka, aplikasi memeriksa keadaan printer tetapi memakai hasil pemeriksaan
+      yang berusia sampai <b>15 detik</b>. Printer jaringan yang tidak menyahut tidak lagi membuat
+      layar kasir lambat setiap kali dibuka. Konsekuensinya: tanda pada tombol cetak bisa masih
+      memakai keadaan printer yang beberapa detik lalu diperiksa. Setelah mengganti pengaturan
+      printer, tekan <b>Simpan</b> di menu <b>Perangkat Kasir</b> &mdash; menyimpan pengaturan
+      membuang status lama, jadi layar kasir berikutnya memakai keadaan yang baru. Tombol
+      <b>Perbarui Data</b> memuat ulang angka pesanan, bukan hasil pemeriksaan printer.
+    </p>
+  </div>
 
   <div class="callout warn">
     <span class="label">Peringatan &mdash; metode pembayaran</span>
     <p>
-      Pada versi 1.2.12, daftar metode menampilkan <b>Tunai</b>, <b>Transfer Bank</b>,
+      Pada versi 1.2.13, daftar metode menampilkan <b>Tunai</b>, <b>Transfer Bank</b>,
       <b>QRIS</b>, dan <b>Kartu Debit</b>, tetapi server baru menerima <b>Tunai</b> dan
       <b>Transfer</b>. Memilih QRIS atau Kartu Debit akan ditolak dengan pesan bahwa metode
       harus Tunai atau Transfer. Untuk saat ini, catat pembayaran QRIS atau kartu sebagai
@@ -1381,7 +1475,7 @@
   <div class="callout warn">
     <span class="label">Peringatan &mdash; metode pembayaran</span>
     <p>
-      Sama seperti di kasir, server versi 1.2.12 hanya menerima <b>Tunai</b> dan
+      Sama seperti di kasir, server versi 1.2.13 hanya menerima <b>Tunai</b> dan
       <b>Transfer Bank</b>. Opsi QRIS dan Kartu Debit yang tampil belum diterima. Pilih
       Transfer Bank dan tulis keterangan di Catatan bila uang masuk melalui QRIS atau kartu.
     </p>
@@ -1613,6 +1707,33 @@
       bila ada bahan yang belum diisi atau bila jumlahnya tidak wajar. Jumlah roti bagus
       ditambahkan ke stok <b>Etalase</b>, sedangkan biaya tenaga kerja dan overhead dibukukan
       ke jurnal. Data ini juga menjadi dasar HPP aktual pada Bab 17.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan &mdash; ke mana biaya tenaga kerja dan overhead</span>
+    <p>
+      Pada SPK yang menghasilkan unit baik, biaya tenaga kerja dan overhead tidak lagi habis
+      sebagai beban bulan berjalan. Keduanya ikut <b>dikapitalisasi ke nilai persediaan produk
+      jadi</b>: jurnal memindahkan bahan yang lolos plus tenaga kerja dan overhead ke debit
+      <b>1-006 Persediaan Produk Jadi (Etalase)</b>, dan kredit <b>1-001 Kas &amp; Bank</b>
+      sebesar biaya tunai itu. HPP per unit yang menempel di stok adalah rata-rata
+      (bahan + tenaga kerja + overhead &minus; kerugian) dibagi unit baik, dibulatkan ke sen
+      terdekat. Karena harga pokok per unit berupa bilangan bulat, sisa pembulatan &mdash; paling
+      besar setengah sen per unit &mdash; dibukukan ke <b>5-006 Beban Selisih Persediaan</b> agar
+      jurnal tetap seimbang dan saldo 1-006 sama dengan nilai stok. Bila SPK tidak menghasilkan
+      satu unit baik pun, tenaga kerja dibebankan ke <b>5-003 Beban Gaji</b> dan overhead ke
+      <b>5-002 Beban Operasional</b>, karena tidak ada stok yang bisa menopang biaya itu.
+    </p>
+  </div>
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; penolakan saat menyimpan hasil</span>
+    <p>
+      Bila server menolak (misalnya pemakaian bahan melebihi stok dapur), pesan seperti
+      <b>Hasil produksi gagal disimpan.</b> muncul di bagian bawah dialog dan <b>dialog tidak
+      tertutup</b>: angka yang sudah diketik dapur tetap ada untuk diperbaiki. Sebaliknya, bila
+      rincian bahan gagal dimuat saat dialog dibuka, muncul peringatan
+      <b>Resep SPK gagal dimuat; pemakaian bahan belum bisa diperiksa.</b> di bagian atas dialog.
+      Tutup dan buka lagi dialognya daripada menyimpan tanpa daftar bahan.
     </p>
   </div>
 
@@ -1865,6 +1986,13 @@
     <tr><td><b>HPP standar</b></td><td>Resep &times; harga bahan saat ini. Berguna untuk menetapkan harga jual sebelum produksi.</td></tr>
     <tr><td><b>HPP aktual</b></td><td>Pemakaian bahan aktual, biaya tenaga kerja, dan overhead pada SPK yang sudah selesai. Berguna untuk melihat biaya nyata per unit.</td></tr>
   </table>
+  <p class="small">
+    Sejak 1.2.13, tenaga kerja dan overhead SPK yang menghasilkan unit ikut dibawa sebagai nilai
+    persediaan (didebit ke <b>1-006 Persediaan Produk Jadi (Etalase)</b> bersama bahan), bukan
+    habis sebagai beban bulan berjalan. Rinciannya ada di Bab 13. Karena itu, HPP aktual per unit
+    dan saldo akun 1-006 kini memuat ketiga komponen biaya, dan saldo 1-006 tetap sama dengan
+    nilai stok yang dihitung dari harga rata-rata.
+  </p>
 
   <h2>17.2 Membaca tabel</h2>
   <p>
@@ -1951,6 +2079,27 @@
     </p>
   </div>
 
+  <div class="callout warn">
+    <span class="label">Peringatan &mdash; PO atau penerimaan ditolak server</span>
+    <p>
+      Sejak 1.2.13, penolakan tampil <b>di dalam formulir yang sedang terbuka</b> sehingga
+      nomor PO, harga, dan baris yang sudah diketik tidak hilang. Yang paling sering terjadi:
+    </p>
+    <ul>
+      <li>Yang tampil adalah <b>alasan dari server</b>, misalnya penolakan satuan atau lokasi di
+      bawah. Bila server tidak mengirim alasan, aplikasi menampilkan teks umum
+      <b>PO gagal disimpan.</b> atau <b>Penerimaan barang gagal disimpan.</b></li>
+      <li><b>Satuan &lt;nama bahan&gt; adalah '&lt;satuan master&gt;', bukan '&lt;satuan Anda&gt;'.
+      Stok tidak dikonversi, jadi PO harus memakai satuan bahan.</b> &mdash; perbaiki satuan di
+      master bahan, jangan memaksa angka di PO.</li>
+      <li><b>Bahan baku tidak bisa diterima di &lt;nama lokasi&gt;: pilih gudang atau dapur.</b>
+      &mdash; etalase hanya untuk produk jadi; pilih <b>Gudang Utama Bahan Baku</b> atau
+      <b>Dapur Produksi</b>.</li>
+      <li><b>Detail PO gagal dimuat. Tutup lalu coba lagi.</b> &mdash; dialog terbuka tanpa baris;
+      tutup dan buka lagi dari tombol <b>Terima</b>, jangan menyimpan penerimaan kosong.</li>
+    </ul>
+  </div>
+
   <h2>18.2 Menerima barang</h2>
   <figure>
     <img src="gambar/purchases-receive.png" alt="Dialog Terima Barang">
@@ -2034,6 +2183,8 @@
     <p>
       Nama pemasok yang sudah dipakai PO tidak berubah pada dokumen lama walaupun Anda
       memperbaiki ejaannya. Perubahan berlaku untuk dokumen dan tampilan berikutnya.
+      Bila penamaan ditolak, form pemasok tetap terbuka dengan pesan alasannya di dalam form
+      (umumnya <b>Data pemasok gagal disimpan.</b> atau alasan dari server) &mdash; lihat Bab 2.6.
     </p>
   </div>
   <div class="callout tip">
@@ -2293,6 +2444,17 @@
       setel masing-masing lokasi agar tidak terjadi pemindahan stok yang tidak nyata.
     </p>
   </div>
+  <div class="callout note">
+    <span class="label">Catatan &mdash; menyetel beberapa bahan berurutan</span>
+    <p>
+      Sejak 1.2.13, setiap baris bahan memegang pengirimannya sendiri. Artinya Anda boleh
+      menekan <b>Setel</b> pada baris gula, lalu pada baris tepung, tanpa yang kedua ditolak
+      sebagai pengulangan. Sebelumnya kedua penyetelan itu memakai tanda yang sama sehingga
+      server mengiranya satu niat ganda dan menolak yang kedua. Bila muncul pesan
+      <b>Koreksi stok gagal disimpan.</b>, perbaiki jumlah pada baris itu &mdash; baris lain yang
+      sudah tersimpan tidak ikut berubah.
+    </p>
+  </div>
   <div class="callout tip">
     <span class="label">Tips</span>
     <p>
@@ -2489,7 +2651,7 @@
   <div class="callout warn">
     <span class="label">Peringatan &mdash; rekonsiliasi belum aktif</span>
     <p>
-      Bagian <b>Rekonsiliasi akhir shift</b> masih dinonaktifkan pada versi 1.2.12 karena
+      Bagian <b>Rekonsiliasi akhir shift</b> masih dinonaktifkan pada versi 1.2.13 karena
       belum tersedia jalur penyimpanan rekonsiliasi. Jangan mengandalkan kolom
       <b>Selisih vs kas fisik</b> untuk menutup shift. Hitung kas secara manual dan catat
       selisih yang perlu disesuaikan melalui prosedur toko.
@@ -2558,10 +2720,37 @@
     penerimaan barang yang sudah dicatat pada Bab 18.
   </p>
 
+  <h2>27.3 Daftar panjang dimuat bertahap</h2>
+  <p>
+    Toko dengan banyak pesanan berjalan tidak lagi memuat seluruh daftar sekaligus. Sejak
+    1.2.13 layar ini menampilkan berapa baris yang sedang tampil dan menawarkan dua macam
+    tombol yang <b>berbeda fungsinya</b>:
+  </p>
+  <table>
+    <tr><th style="width:38%;">Yang tampil di layar</th><th>Artinya</th></tr>
+    <tr><td><b>{n} dari {total} pesanan belum lunas</b> pada kartu <b>Sisa bayar pesanan</b>, kadang disusul <b>&middot; muat lagi untuk sisanya</b></td><td>Sebagian pesanan belum ditarik dari server. Nominal rupiah pada kartu ini diambil dari angka agregat server, jadi tidak berubah saat daftar dilengkapi; hanya jumlah baris yang terpotong.</td></tr>
+    <tr><td><b>&middot; hanya baris yang termuat</b> pada kartu <b>Jatuh tempo lewat</b></td><td>Perhitungan umur hanya melihat baris yang sudah ada di layar. Lengkapi daftar lebih dulu sebelum menyimpulkan jumlah yang lewat tanggal ambil.</td></tr>
+    <tr><td><b>Tampilkan 100 baris berikutnya ({n} tersisa)</b> atau <b>Tampilkan 100 dokumen berikutnya ({n} tersisa)</b></td><td>Barisnya sudah ada di komputer ini; tombol ini hanya menampilkan lebih banyak. Cepat dan tidak menghubungi server. Daftar tampil 50 baris pertama.</td></tr>
+    <tr><td><b>Muat {n} pesanan lagi</b> atau <b>Muat {n} dokumen lagi</b></td><td>Menarik halaman berikutnya dari server. Selama proses berjalan, tombol berubah menjadi <b>Memuat...</b> dan tidak dapat ditekan.</td></tr>
+  </table>
+  <p class="small">
+    Muat awal layar ini membawa sampai 500 pesanan belum lunas dan 300 dokumen pembelian
+    terbuka. Urutan yang benar saat daftar masih terpotong: tekan <b>Tampilkan 100 baris
+    berikutnya</b> sampai habis, baru <b>Muat &hellip; lagi</b>.
+  </p>
+  <div class="callout tip">
+    <span class="label">Tips</span>
+    <p>
+      Penanda <b>hanya baris yang termuat</b> bukan kerusakan dan bukan angka yang salah:
+      itu cara aplikasi mengakui bahwa hitungannya belum menyeluruh. Tekan tombol muat sampai
+      penanda itu hilang sebelum memakai angka layar ini untuk menagih atau merekap.
+    </p>
+  </div>
+
   <div class="callout warn">
     <span class="label">Peringatan &mdash; pembayaran pemasok belum aktif</span>
     <p>
-      Tombol <b>Catat pembayaran pemasok</b> masih dinonaktifkan pada versi 1.2.12 karena
+      Tombol <b>Catat pembayaran pemasok</b> masih dinonaktifkan pada versi 1.2.13 karena
       belum ada jalur penyimpanan pembayaran pemasok. Catat pembayaran di luar aplikasi
       sesuai prosedur toko dan simpan buktinya; jangan mengubah data penerimaan untuk
       menandai utang sudah dibayar.
@@ -2908,10 +3097,19 @@
   <div class="callout warn">
     <span class="label">Peringatan &mdash; batas pengujian perangkat</span>
     <p>
-      Pada versi 1.2.12, jalur ESC/POS baru terbukti terhadap emulasi di mesin pengembang dan
+      Pada versi 1.2.13, jalur ESC/POS baru terbukti terhadap emulasi di mesin pengembang dan
       jalur driver baru diuji dengan pencetak virtual, belum pada printer kasir fisik.
       Pemindai juga baru diuji melalui simulasi. Uji printer, pemindai, dan kertas pada
       perangkat toko yang sebenarnya sebelum mengandalkannya saat jam sibuk.
+    </p>
+  </div>
+  <div class="callout note">
+    <span class="label">Catatan &mdash; menyimpan pengaturan membuang status lama</span>
+    <p>
+      Layar kasir memakai ulang hasil pemeriksaan printer sampai 15 detik lamanya (Bab 6).
+      Menyimpan pengaturan di bab ini <b>membuang</b> status itu, jadi layar kasir berikutnya
+      langsung memakai printer yang baru diatur. Pesan konfirmasi yang muncul adalah
+      <b>Pengaturan perangkat disimpan dan berlaku untuk sesi berikutnya.</b>
     </p>
   </div>
   <div class="callout note">
@@ -3292,6 +3490,37 @@
     <li>Catat tanggal cadangan di buku operasional toko.</li>
   </ol>
 
+  <h3>Cadangan lama dibersihkan otomatis &mdash; yang disimpan lebih dulu yang sehat</h3>
+  <p>
+    Folder cadangan dijaga agar tidak tumbuh tanpa batas. Secara bawaan aplikasi menyimpan
+    semua cadangan berusia sampai <b>7 hari</b>, satu cadangan untuk setiap hari selama
+    <b>14 hari</b>, satu per minggu selama <b>8 minggu</b>, dan satu per bulan selama
+    <b>12 bulan</b>, dengan pagar tidak pernah kurang dari <b>3 salinan</b>. Kelima angka itu
+    dapat diubah pada pengaturan dengan kunci <code>backup.retention.*</code>.
+  </p>
+  <p>
+    Yang berubah pada 1.2.13: saat memilih cadangan yang mewakili satu hari, satu minggu, atau
+    satu bulan, aplikasi mendahulukan salinan yang <b>sudah lolos verifikasi</b>. Sebelumnya,
+    berkas yang kebetulan paling baru bisa memakai jatah periode padahal isinya rusak, sementara
+    salinan sehat yang lebih tua justru ikut terhapus. Selain itu:
+  </p>
+  <ul>
+    <li>Cadangan <b>pra-upgrade</b> dan <b>pra-restore</b> tidak pernah dihapus otomatis. Itu
+      satu-satunya jalan kembali ke bentuk basis data lama.</li>
+    <li>Satu salinan <b>terverifikasi terbaru</b> selalu disimpan, walaupun umurnya melewati
+      semua jendela di atas &mdash; misalnya saat toko tutup sebulan.</li>
+    <li>Setiap berkas cadangan yang dihapus dicatat bersama alasannya di
+    <code>retention.log</code> di folder cadangan. Tidak ada penghapusan diam-diam.</li>
+  </ul>
+  <div class="callout warn">
+    <span class="label">Peringatan</span>
+    <p>
+      Pembersihan otomatis hanya berlaku di folder cadangan aplikasi. Itu bukan pengganti
+      salinan di luar PC: bila PC rusak bersama folder cadangnya, tidak ada retensi yang bisa
+      menolong. Lihat Bab 38.3 dan Bab 37.3.
+    </p>
+  </div>
+
   <h2>38.3 Bila data perlu dipulihkan</h2>
   <ol class="steps">
     <li>Hentikan pemakaian aplikasi dan jangan mencatat transaksi baru.</li>
@@ -3332,14 +3561,14 @@
 <section class="chapter" id="bab-39">
   <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
   <div class="chapter-num">BAB 39</div>
-  <h1 class="chapter-title">Batasan Versi 1.2.12</h1>
+  <h1 class="chapter-title">Batasan Versi 1.2.13</h1>
   <p class="chapter-lead">
     Bab ini menyebutkan hal yang belum tersedia atau belum diuji pada versi ini. Tujuannya
     agar Anda tidak mengandalkan fitur yang belum siap saat toko sedang beroperasi.
   </p>
 
   <table>
-    <tr><th style="width:30%;">Hal</th><th>Keadaan pada 1.2.12</th><th style="width:30%;">Yang dapat dilakukan</th></tr>
+    <tr><th style="width:30%;">Hal</th><th>Keadaan pada 1.2.13</th><th style="width:30%;">Yang dapat dilakukan</th></tr>
     <tr>
       <td><b>Tanda tangan aplikasi</b></td>
       <td>Paket pemasangan belum ditandatangani Authenticode.</td>
@@ -3386,6 +3615,16 @@
       <td>Gunakan satu PC kasir utama. Untuk kebutuhan beberapa PC, konsultasikan dengan pengembang.</td>
     </tr>
     <tr>
+      <td><b>Akses dari PC lain</b></td>
+      <td>Sejak 1.2.13 server lokal hanya menjawab dari PC itu sendiri. Alamat dengar lain ditolak saat aplikasi dijalankan, dengan pesan <i>Alamat dengar "&hellip;" ditolak: aplikasi ini hanya untuk PC ini.</i> Membuka jaringan toko memerlukan nilai <code>SERUNI_ALLOW_LAN=1</code> yang sengaja dipasang, dan jalur itu belum diuji untuk pemakaian bersama.</td>
+      <td>Anggap aplikasi hanya dipakai di satu PC. Jangan memasang <code>SERUNI_ALLOW_LAN</code> tanpa pendampingan pengembang.</td>
+    </tr>
+    <tr>
+      <td><b>Peningkatan dari versi lama</b></td>
+      <td>Jalur peningkatan yang diuji untuk paket ini adalah 1.2.12 &rarr; 1.2.13. Lompatan langsung dari 1.2.9 atau 1.2.10 ke 1.2.13 belum diuji pada mesin uji.</td>
+      <td>Naiklah bertahap (misalnya 1.2.10 &rarr; 1.2.12 &rarr; 1.2.13) atau cadangkan basis data lebih dulu, lalu uji satu transaksi percobaan sesudah pemasangan.</td>
+    </tr>
+    <tr>
       <td><b>Pemulihan data</b></td>
       <td>Pemulihan memerlukan langkah teknis di luar aplikasi.</td>
       <td>Ikuti panduan pemulihan dan minta pendampingan bila tidak yakin.</td>
@@ -3409,7 +3648,7 @@
   <div class="callout note">
     <span class="label">Catatan</span>
     <p>
-      Buku ini menjelaskan versi 1.2.12. Bila aplikasi diperbarui, periksa kembali daftar ini
+      Buku ini menjelaskan versi 1.2.13. Bila aplikasi diperbarui, periksa kembali daftar ini
       pada dokumentasi versi yang terpasang. Nomor versi terlihat di <b>Pengaturan Toko &amp;
       Cabang</b> dan pada layar Perangkat Kasir.
     </p>
@@ -3620,6 +3859,30 @@
       <td><b>Tidak ada bahan baku dari resep.</b></td>
       <td>Lengkapi komposisi produk di <b>Resep &amp; Daftar Bahan Baku</b> sebelum menyelesaikan SPK.</td>
     </tr>
+    <tr>
+      <td><b>Permintaan dengan kunci yang sama masih diproses, tunggu sebentar.</b></td>
+      <td>Aksi yang sama sedang berjalan di latar. Tunggu beberapa detik, lalu tekan tombol simpan sekali saja. Jangan memencet berkali-kali. Bila pesan ini muncul terus padahal tidak ada yang berjalan, tutup dan buka kembali aplikasi; pesanan yang tertinggal akan dilepaskan sendiri setelah 30 menit (lihat Bab 2.6).</td>
+    </tr>
+    <tr>
+      <td><b>Kunci idempotensi ini sudah dipakai untuk aksi lain.</b></td>
+      <td>Kunci dari percobaan sebelumnya menempel pada jenis aksi yang berbeda. Tutup form, tekan <b>Perbarui Data</b>, lalu ulangi aksi dari awal. Sampaikan pesan ini beserta waktunya kepada pendamping teknis bila terjadi berulang.</td>
+    </tr>
+    <tr>
+      <td><b>Satuan &lt;bahan&gt; adalah '&lt;satuan master&gt;', bukan '&lt;satuan Anda&gt;'. Stok tidak dikonversi, jadi PO harus memakai satuan bahan.</b></td>
+      <td>Ganti satuan pada baris PO agar sama dengan satuan di master bahan, atau perbaiki satuan master di <b>Daftar Bahan Baku</b> bila memang itu yang dipakai beli. Stok tidak dikonversi otomatis.</td>
+    </tr>
+    <tr>
+      <td><b>Bahan baku tidak bisa diterima di &lt;lokasi&gt;: pilih gudang atau dapur.</b></td>
+      <td>Pilih lokasi penerimaan berupa gudang atau dapur, bukan etalase atau lokasi non-simpan. Jangan mengubah jenis lokasi hanya agar penerimaan lolos.</td>
+    </tr>
+    <tr>
+      <td>Pesan di dalam form seperti <b>PO gagal disimpan.</b> atau <b>Hasil produksi gagal disimpan.</b></td>
+      <td>Baca teks pendampingnya bila ada &mdash; penolakan server kini tampil di dalam form, bukan sebagai pop-up. Perbaiki sebab yang disebutkan, lalu simpan lagi. Bila hanya pesan umum itu yang muncul tanpa keterangan, ulangi sekali dan catat waktunya.</td>
+    </tr>
+    <tr>
+      <td>Pop-up <b>Gagal export: &hellip;</b> saat menekan tombol ekspor.</td>
+      <td>Ekspor masih memakai pop-up peramban. Ulangi dengan rentang tanggal lebih pendek, atau laporkan teks setelah kata <b>Gagal export:</b> kepada pendamping teknis.</td>
+    </tr>
   </table>
 
   <div class="callout warn">
@@ -3687,9 +3950,9 @@
   </table>
 
   <div class="end-note">
-    Buku Manual Pengguna Seruni 22 Bakery &middot; Versi aplikasi 1.2.12 &middot;
-    Dokumen disusun 2 November 2026. Gambar diambil dari aplikasi dengan basis data sementara
-    berisi data contoh.
+    Buku Manual Pengguna Seruni 22 Bakery &middot; Versi aplikasi 1.2.13 &middot;
+    Dokumen disusun 3 November 2026. Gambar diambil dari aplikasi 1.2.12 dengan basis data
+    sementara berisi data contoh.
   </div>
 </section>
 

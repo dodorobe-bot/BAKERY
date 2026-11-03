@@ -17,6 +17,10 @@ Skrip ini memverifikasi hasilnya sendiri: jumlah halaman, penanda bab, keutuhan 
 kesejajaran nomor halaman, kepala/kaki di setiap halaman, dan 41 rujukan gambar. Berkas final
 hanya dipasang setelah semua pemeriksaan lulus.
 
+Versi aplikasi yang tercetak di kepala halaman dan di metadata PDF diambil dari
+<Version> pada src/Host.Service/BakeryDesktop.Host.Service.csproj — sumber yang sama dengan
+penjaga versi di scripts/build-pro.ps1 — lalu dicocokkan dengan judul manual.html.
+
 Catatan mesin: Chrome dijalankan single-process. Pada mesin dengan RAM kecil, mode multi-proses
 kehabisan memori saat mengolah 41 tangkapan layar dan berhenti tanpa menulis PDF.
 """
@@ -60,6 +64,20 @@ def cari_chrome():
 
 CHROME = cari_chrome()
 PDFTOTEXT = Path(os.environ.get("SERUNI_PDFTOTEXT", r"C:\Program Files\Git\mingw64\bin\pdftotext.exe"))
+
+# Versi dibaca dari sumber yang sama dengan penjaga versi di scripts/build-pro.ps1, supaya
+# kepala halaman dan metadata PDF tidak pernah menempelkan versi yang berbeda dari paket.
+CSPROJ = ROOT.parent.parent / "src" / "Host.Service" / "BakeryDesktop.Host.Service.csproj"
+
+
+def baca_versi():
+    cocok = re.search(r"<Version>([^<]+)</Version>", CSPROJ.read_text(encoding="utf-8"))
+    if not cocok:
+        raise SystemExit(f"<Version> tidak ditemukan di {CSPROJ}")
+    return cocok.group(1).strip()
+
+
+VERSI = baca_versi()
 
 
 def cetak(html: Path, pdf: Path, label: str):
@@ -176,7 +194,7 @@ def html_lapisan(total):
         bagian.append(
             '<div class="lembar">'
             '<div class="kepala"><span>Seruni 22 Bakery &middot; Buku Manual Pengguna</span>'
-            "<span>Versi aplikasi 1.2.12</span></div>"
+            f"<span>Versi aplikasi {VERSI}</span></div>"
             '<div class="kaki"><span>Panduan pengoperasian dari pemasangan hingga Pengaturan Toko &amp; Cabang</span>'
             f"<span>Halaman {i} dari {total}</span></div>"
             "</div>"
@@ -204,8 +222,8 @@ sekarang = datetime.now().strftime("D:%Y%m%d%H%M%S")
 keluar.add_metadata({
     "/Title": "Buku Manual Pengguna Seruni 22 Bakery",
     "/Author": "Seruni 22 Bakery",
-    "/Subject": "Panduan pengoperasian aplikasi Seruni 22 Bakery versi 1.2.12, dari pemasangan hingga Pengaturan Toko & Cabang",
-    "/Keywords": "manual pengguna, Seruni 22 Bakery, 1.2.12, kasir, produksi, keuangan",
+    "/Subject": f"Panduan pengoperasian aplikasi Seruni 22 Bakery versi {sys.argv[4]}, dari pemasangan hingga Pengaturan Toko & Cabang",
+    "/Keywords": f"manual pengguna, Seruni 22 Bakery, {sys.argv[4]}, kasir, produksi, keuangan",
     "/Creator": "Seruni 22 Bakery",
     "/Producer": "pypdf",
     "/CreationDate": sekarang,
@@ -217,7 +235,7 @@ with open(sys.argv[3], "wb") as f:
 print(len(dasar.pages), sum(len(p.images) for p in dasar.pages))
 """
     hasil = subprocess.run(
-        [sys.executable, "-c", skrip, str(PDF2), str(LAP_PDF), str(OUT_TMP)],
+        [sys.executable, "-c", skrip, str(PDF2), str(LAP_PDF), str(OUT_TMP), VERSI],
         capture_output=True,
         text=True,
         timeout=300,
@@ -313,6 +331,9 @@ def periksa(akhir, peta, jumlah, gambar):
         masalah.append(f"nomor kaki hilang di halaman: {tanpa_kaki[:12]} ({len(tanpa_kaki)} halaman)")
     if "Halaman 1 dari" in akhir[1]:
         masalah.append("halaman 2 memuat nomor halaman 1")
+    for i in (1, len(akhir) - 1):
+        if f"Versi aplikasi {VERSI}" not in akhir[i]:
+            masalah.append(f"kepala halaman {i + 1} tidak memuat versi {VERSI}")
 
     if gambar < 40:
         masalah.append(f"gambar di PDF hanya {gambar}, 41 tangkapan layar seharusnya ada")
@@ -326,9 +347,19 @@ def periksa(akhir, peta, jumlah, gambar):
     log(f"verifikasi lulus: {jumlah} halaman, {gambar} gambar, penanda halaman stabil, kepala/kaki di semua halaman 2..{jumlah}")
 
 
+def periksa_stempel_naskah():
+    judul = re.search(r"<title>([^<]*)</title>", HTML.read_text(encoding="utf-8"))
+    if not judul or VERSI not in judul.group(1):
+        raise SystemExit(
+            f"judul manual.html tidak memuat versi {VERSI}; stempelkan naskah ke paket yang benar dulu"
+        )
+    log(f"versi paket {VERSI} (dari {CSPROJ.name}); judul naskah cocok")
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
+    periksa_stempel_naskah()
     SCRATCH.mkdir(parents=True, exist_ok=True)
     for sisa in (OUT_TMP, PDF1, PDF2, LAP_HTML, LAP_PDF):
         sisa.unlink(missing_ok=True)

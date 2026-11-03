@@ -127,6 +127,47 @@ menghapus folder data pengguna. Lihat
 - Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
   diuji" di atas tetap berlaku — label Latest bukan persetujuan produksi.
 
+## Buku manual edisi 1.2.13 (dibangun ulang 3 November 2026, 22:06)
+
+Aset yang terpublikasi di atas masih buku berstempel 1.2.12. Naskahnya lalu dibangun ulang
+menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
+
+- `docs/manual/Seruni22-Buku-Manual-Pengguna.pdf`, **9.793.167 bita**, SHA-256
+  `77b5e042d9698f134bc1d99e8094292bfea5c7337d7b809a0eccac8cbcc11dac`, **107 halaman**
+  (edisi 1.2.12: 102 halaman, 9.316.970 bita — nomena yang bertambah murni karena isi baru).
+- Verifikasi mandiri skrip lulus seluruhnya: 45 penanda bab stabil antara cetakan pertama dan
+  akhir, 45 entri daftar isi cocok dengan halaman aktual (diperiksa ulang terpisah:
+  `Bab 0 → 6`, `Bab 39 → 96`, `Lampiran E → 106`), nomor kaki "Halaman n dari 107" di halaman
+  2..107 tanpa nomor di sampul, dan 42 objek gambar dengan rujukan `Gambar 1..41` lengkap.
+- Stempel versi kini **dibaca dari** `<Version>` di
+  `src/Host.Service/BakeryDesktop.Host.Service.csproj` — sumber yang sama dengan penjaga versi di
+  `scripts/build-pro.ps1` — bukan lagi tiga tulisan `1.2.12` yang dihardcode. Kepala halaman
+  tercetak bertuliskan "Versi aplikasi 1.2.13" (diperiksa pada halaman 2 dan halaman terakhir),
+  metadata `/Subject` dan `/Keywords` ikut versi yang sama, dan skrip berhenti lebih dulu bila
+  judul `manual.html` tidak memuat versi paket.
+- Isi baru yang ditulis dari sumber, bukan dari ingatan: tabel "Yang berubah pada versi 1.2.13",
+  subbab 0.3 tentang `NetworkExposureGuard` (pesan verbatim *Alamat dengar "…" ditolak: aplikasi
+  ini hanya untuk PC ini.* dan `SERUNI_ALLOW_LAN=1`), 2.6 tentang penolakan server yang kini
+  tampil di dalam form beserta pesan bawaannya, kedaluwarsa kunci idempotensi **30 menit** dan
+  masa simpan 30 hari (`IdempotencyRepository.cs:11,15`), 1-006/5-006 pada penyelesaian SPK
+  (`AccountingService.cs:195-240`), muat bertahap piutang/utang (`FinanceView.jsx`,
+  `bertahap.js:6,8`), cache status perangkat 15 detik (`statusPerangkat.js:6`), kunci per baris
+  opname, dan retensi cadangan mengutamakan salinan terverifikasi (`BackupRetention.cs:7-19`
+  beserta keputusan pembersihannya di bawahnya).
+  Enam pesan baru masuk Lampiran D; Bab 39 bertambah baris "Akses dari PC lain" dan
+  "Peningkatan dari versi lama".
+- **Tangkap layar masih tangkapan 1.2.12** — ditulis apa adanya di baris "Sumber gambar" dan di
+  kolofon. Kontrol 1.2.13 bersifat kondisional (hanya muncul saat daftar panjang, saat penolakan,
+  atau saat pengaturan perangkat disimpan) sehingga tidak akan terlihat pada data contoh;
+  nama dan letaknya ditulis persis seperti di layar.
+- Koreksan dokumen: `CHANGELOG.md` menyebut kunci idempotensi kedaluwarsa setelah "30 jam",
+  padahal `MenitPesananBasi = 30` dipakai sebagai `-30 minutes` di SQL. Sudah dibetulkan menjadi
+  30 menit. Tidak ada migrasi baru antara 1.2.12 dan 1.2.13, sehingga bentuk basis data di buku
+  tetap benar.
+- Yang **belum** dilakukan: aset rilis `v1.2.13` belum diganti, dan teks rilis yang menyatakan
+  buku ini "disusun untuk versi 1.2.12" belum diubah. Keduanya tindakan publikasi dan menunggu
+  izin eksplisit.
+
 ## Batas bukti
 
 Peralatan uji berada pada PC dengan RAM 3,7 GB; hasil "lulus" di atas adalah hasil satu mesin.
