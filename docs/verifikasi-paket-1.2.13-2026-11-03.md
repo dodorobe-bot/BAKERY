@@ -113,6 +113,17 @@ menghapus folder data pengguna. Lihat
 - Ulang-alih unduhan: `SHA256SUMS.txt` diunduh dari URL publik → **byte-identik** dengan berkas
   lokal (`cmp` bersih); MSI diunduh penuh dari URL publik → 50.416.132 bita, SHA-256
   `eb3f40fb…` sama dengan paket hasil build. Halaman rilis menjawab 200 tanpa login.
+- Aset keempat, buku manual: `Seruni22-Buku-Manual-Pengguna.pdf`, 9.316.970 bita, SHA-256
+  `eec028dc8f08c6ee6e048bdab109ce0f91a8ee070bbd0706a6ddd68b2ec116b0` (digest yang dihitung
+  GitHub sama dengan berkas lokal), 102 halaman. Aset diberi label eksplisit
+  **"Buku Manual Pengguna — disusun untuk versi 1.2.12 (bukan 1.2.13)"** karena stempel versi di
+  sampul, Bab 0 (nama berkas pemasangan `Seruni22Bakery_Setup_v1.2.12.exe`) dan Bab 39
+  "Batasan Versi 1.2.12" masih mengikuti 1.2.12; buku ini **tidak** dibangun ulang untuk 1.2.13.
+  Unduhan ulang dari URL publik byte-identik dengan berkas lokal (`cmp` bersih) dan dibuka
+  sebagai 102 halaman. Perilaku 1.2.13 yang belum tertulis di dalamnya — pagination piutang/utang
+  di layar Keuangan (`Muat <n> pesanan lagi`, `Muat <n> dokumen lagi`,
+  `Tampilkan 100 dokumen berikutnya (<n> tersisa)`, `· hanya baris yang termuat`) dan cache status
+  perangkat 15 detik — dicatat di badan rilis, bukan diklaim sebagai isi buku.
 - Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
   diuji" di atas tetap berlaku — label Latest bukan persetujuan produksi.
 
