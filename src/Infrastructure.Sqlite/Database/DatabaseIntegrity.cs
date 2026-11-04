@@ -37,6 +37,7 @@ public sealed class DatabaseIntegrity
             CekPenghitungDokumen(conn),
             CekStokNegatif(conn),
             CekNilaiPersediaanJadi(conn),
+            CekJurnalStokLayarBahan(conn),
         ];
     }
 
@@ -206,6 +207,40 @@ public sealed class DatabaseIntegrity
                 : $"saldo 1-006 = {saldo}, nilai stok = {nilaiStok}, selisih {selisih} sen melebihi toleransi " +
                   $"{toleransi}. Produksi sebelum perbaikan kapitalisasi mencatat tenaga kerja/overhead " +
                   "sebagai beban tanpa menambah nilai persediaan; periksa jurnal WorkOrder lama.");
+    }
+
+    /// <summary>
+    /// Stok yang diketik di layar Bahan Baku baru membukukan jurnalnya sejak perbaikan ini.
+    /// Bahan yang dibuat sebelumnya punya mutasi bernilai tanpa satu pun entri, sehingga saldo
+    /// akun persediaan lebih kecil daripada barang di rak — dan ketidakcocokan itu tidak bisa
+    /// terlihat dari pemeriksaan lain karena jurnal yang ada semuanya tetap seimbang.
+    /// </summary>
+    private static IntegrityCheck CekJurnalStokLayarBahan(SqliteConnection conn)
+    {
+        var belum = Baris(conn, @"
+            SELECT i.Name || ' = ' || CAST(s.qty AS REAL) || ' ' || i.Unit ||
+                   ', nilai ' || CAST(s.nilai AS INTEGER) || ' sen'
+              FROM (SELECT m.IngredientId, SUM(m.Quantity) AS qty,
+                           SUM(m.Quantity) * i.PricePerUnit AS nilai
+                      FROM StockMovements m
+                      JOIN Ingredients i ON i.Id = m.IngredientId
+                     WHERE m.SourceType = 'IngredientMaster'
+                     GROUP BY m.IngredientId, i.PricePerUnit) s
+              JOIN Ingredients i ON i.Id = s.IngredientId
+             WHERE s.nilai <> 0
+               AND NOT EXISTS (SELECT 1 FROM JournalEntries je
+                                WHERE je.SourceDocumentType = 'IngredientMaster'
+                                  AND je.SourceDocumentId = s.IngredientId);");
+        var total = Skalar(conn,
+            "SELECT COUNT(DISTINCT IngredientId) FROM StockMovements WHERE SourceType = 'IngredientMaster';");
+        return baru("stok layar Bahan Baku punya jurnal", belum.Count == 0,
+            belum.Count == 0
+                ? $"{total} bahan pernah diubah dari layar Bahan Baku, semuanya sudah dibukukan."
+                : $"{belum.Count} dari {total} bahan menumpuk stok tanpa satu pun jurnal: {Rangkai(belum)}. " +
+                  "Saldo akun persediaan kurang sebesar nilai itu. Stok yang diketik dari layar " +
+                  "Bahan Baku kini dibukukan (stok awal melawan Modal, koreksi melawan Beban " +
+                  "Selisih Persediaan); data lama perlu dibukukan sekali lewat opname atau " +
+                  "jurnal manual.");
     }
 
     private static IntegrityCheck baru(string name, bool passed, string detail)

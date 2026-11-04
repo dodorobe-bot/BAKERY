@@ -168,4 +168,35 @@ public class DatabaseIntegrityTests
         cek.Passed.Should().BeFalse();
         cek.Detail.Should().Contain("500000").And.Contain("selisih");
     }
+
+    /// <summary>
+    /// Stok awal yang ditulis layar Bahan Baku tanpa jurnal membuat saldo persediaan kurang
+    /// sementara setiap jurnal tetap seimbang, jadi hanya pemeriksaan yang menanyakan kedua tabel
+    /// itu yang bisa melihatnya. Tanpa sisi merah ini, bahan lama tidak akan pernah terlaporkan.
+    /// </summary>
+    [Fact]
+    public void StokLayarBahanTanpaJurnal_Tertangkap()
+    {
+        using var db = new TempDatabase();
+        db.Exec("INSERT INTO Ingredients (Id, Name, Unit, PricePerUnit, CurrentStock, MinStockAlert, IsActive) " +
+                "VALUES (7, 'Cokelat Compound', 'kg', 300000, 0, 0, 1);");
+        db.Exec("INSERT INTO StockMovements (IngredientId, MovementType, Quantity, LocationId, SourceType, SourceId, Notes, CreatedAt) " +
+                "VALUES (7, 'Restock', 10, 1, 'IngredientMaster', 7, 'Stok awal bahan baku', datetime('now'));");
+
+        var rusak = Ambil(Periksa(db), "stok layar Bahan Baku punya jurnal");
+        rusak.Passed.Should().BeFalse();
+        rusak.Detail.Should().Contain("Cokelat Compound").And.Contain("3000000");
+
+        db.Exec("INSERT INTO JournalEntries (Description, TransactionDate, Status, SourceDocumentType, SourceDocumentId) " +
+                "VALUES ('Stok awal Cokelat Compound (10)', '2030-01-10', 'Posted', 'IngredientMaster', 7);");
+        var entri = Convert.ToInt32(db.Scalar("SELECT last_insert_rowid();"));
+        var persediaan = Convert.ToInt32(db.Scalar("SELECT Id FROM Accounts WHERE Code = '1-003';"));
+        var modal = Convert.ToInt32(db.Scalar("SELECT Id FROM Accounts WHERE Code = '3-001';"));
+        db.Exec($"INSERT INTO JournalLines (JournalEntryId, AccountId, DebitAmount, CreditAmount) " +
+                $"VALUES ({entri}, {persediaan}, 3000000, 0), ({entri}, {modal}, 0, 3000000);");
+
+        var sehat = Ambil(Periksa(db), "stok layar Bahan Baku punya jurnal");
+        sehat.Passed.Should().BeTrue();
+        sehat.Detail.Should().Contain("dibukukan");
+    }
 }

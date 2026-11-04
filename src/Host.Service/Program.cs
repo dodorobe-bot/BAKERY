@@ -816,15 +816,14 @@ try
         if (id is null)
             return BahanKembar();
         var idBahan = id.Value;
-        // Stok awal masuk lewat jalur stok resmi, bukan lewat kolom cache.
+        // Stok awal masuk lewat jalur stok resmi, bukan lewat kolom cache. Jurnalnya ditulis
+        // bersamaan: bahan yang sudah ada di rak tapi tidak pernah membukukan nilainya membuat
+        // saldo persediaan di neraca kurang (pernah 8 bahan, Rp 5,7 juta) tanpa terlihat.
         if (dto.CurrentStock is > 0 and var stokAwal)
         {
             var warehouseId = await stock.GetLocationIdByTypeAsync("Warehouse");
-            await stock.ApplyAsync(new[]
-            {
-                new StockChange(warehouseId, idBahan, stokAwal, MovementType.Restock,
-                    "IngredientMaster", idBahan, userId, "Stok awal bahan baku")
-            });
+            await stock.ApplyIngredientMasterStockAsync(warehouseId, idBahan, stokAwal,
+                stokAwal: true, userId, "Stok awal bahan baku");
         }
         return Results.Created($"/api/ingredients/{idBahan}", new { id = idBahan });
     }).RequireAuthorization("master-data-write");
@@ -862,11 +861,10 @@ try
                 var warehouseId = await stock.GetLocationIdByTypeAsync("Warehouse");
                 try
                 {
-                    await stock.ApplyAsync(new[]
-                    {
-                        new StockChange(warehouseId, id, delta, MovementType.Adjustment,
-                            "IngredientMaster", id, userId, "Penyesuaian dari layar bahan baku")
-                    });
+                    // Bukan penyertaan modal baru: koreksi total di layar diperlakukan seperti
+                    // hasil opname, yakni melawan Beban Selisih Persediaan.
+                    await stock.ApplyIngredientMasterStockAsync(warehouseId, id, delta,
+                        stokAwal: false, userId, "Penyesuaian dari layar bahan baku");
                 }
                 catch (InvalidOperationException ex)
                 {

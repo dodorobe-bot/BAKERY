@@ -277,6 +277,12 @@ public interface ILocationStockRepository
     Task ApplyAsync(IReadOnlyList<StockChange> changes);
     Task TransferStockAsync(int fromLocationId, int toLocationId, int ingredientId, decimal quantity, int? userId, string? notes);
     Task AdjustStockAsync(int locationId, int ingredientId, decimal newQuantity, int? userId, string? reason);
+    /// <summary>
+    /// Mutasi stok dari layar Bahan Baku plus jurnalnya dalam satu transaksi. stokAwal true berarti
+    /// nilai bahan melawan Modal (barang yang sudah ada saat toko mulai dicatat); false berarti
+    /// koreksi yang diperlakukan seperti opname, melawan Beban Selisih Persediaan.
+    /// </summary>
+    Task ApplyIngredientMasterStockAsync(int locationId, int ingredientId, decimal delta, bool stokAwal, int? userId, string? notes);
     /// <summary>Saldo produk jadi per lokasi. locationId null berarti seluruh lokasi.</summary>
     Task<IReadOnlyList<FinishedGoodsStockItem>> GetFinishedGoodsStockAsync(int? locationId = null);
     Task<decimal> GetFinishedGoodsTotalAsync(int productTemplateId);

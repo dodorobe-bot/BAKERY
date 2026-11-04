@@ -378,4 +378,79 @@ public class AccountingClosureTests
         tolak.ErrorMessage.Should().Contain("gudang atau dapur");
         _db.Count("GoodsReceipts", $"PurchaseOrderId = {po2Id}").Should().Be(0);
     }
+
+    private int JurnalLayarBahan(int bahan) =>
+        _db.Count("JournalEntries", $"SourceDocumentType = 'IngredientMaster' AND SourceDocumentId = {bahan}");
+
+    /// <summary>
+    /// Stok awal yang diketik di layar Bahan Baku adalah barang yang sudah ada di rak, tapi
+    /// jalurnya dulu hanya menggerakkan LocationStock. Hasilnya di basis data nyata: 8 bahan
+    /// bernilai Rp 5,7 juta tidak pernah masuk buku besar dan saldo 1-003 tetap negatif, sementara
+    /// seluruh pemeriksaan mandiri tetap hijau karena tidak ada jurnal yang tidak seimbang.
+    /// </summary>
+    [Fact]
+    public async Task StokAwalLayarBahan_MembukukanPersediaanLawanModal()
+    {
+        var bahan = BahanBaru("Bahan Stok Awal", 300_000);
+
+        await _stock.ApplyIngredientMasterStockAsync(Gudang, bahan, 10m, stokAwal: true, Pengguna, "Stok awal bahan baku");
+
+        Baris("1-003", "IngredientMaster", bahan).Should().Be((3_000_000L, 0L),
+            "10 kg dengan harga Rp 3.000 per kg masuk sebagai persediaan gudang");
+        Baris("3-001", "IngredientMaster", bahan).Credit.Should().Be(3_000_000,
+            "pasangannya modal, bukan beban: barangnya tidak dibeli dan tidak dipakai hari itu");
+        Baris("5-006", "IngredientMaster", bahan).Should().Be((0L, 0L),
+            "stok awal tidak boleh muncul sebagai penghematan di laporan laba rugi");
+        JurnalLayarBahan(bahan).Should().Be(1);
+        _db.Count("StockMovements",
+            $"IngredientId = {bahan} AND MovementType = 'Restock' AND SourceType = 'IngredientMaster'")
+            .Should().Be(1);
+    }
+
+    [Fact]
+    public async Task KoreksiStokLayarBahan_MelawanBebanSelisihSepertiOpname()
+    {
+        var bahan = BahanBaru("Bahan Koreksi", 300_000);
+        await _stock.ApplyIngredientMasterStockAsync(Gudang, bahan, 10m, stokAwal: true, Pengguna, "Stok awal bahan baku");
+
+        await _stock.ApplyIngredientMasterStockAsync(Gudang, bahan, -2m, stokAwal: false, Pengguna, "Penyesuaian dari layar bahan baku");
+
+        Baris("1-003", "IngredientMaster", bahan).Should().Be((3_000_000L, 600_000L));
+        Baris("5-006", "IngredientMaster", bahan).Debit.Should().Be(600_000,
+            "koreksi total stok adalah selisih persediaan, sama seperti hasil opname");
+        _db.Count("StockMovements",
+            $"IngredientId = {bahan} AND MovementType = 'Adjustment' AND SourceType = 'IngredientMaster'")
+            .Should().Be(1);
+    }
+
+    [Fact]
+    public async Task LayarBahan_SelisihNol_TidakMenulisMutasiMaupunJurnal()
+    {
+        var bahan = BahanBaru("Bahan Tanpa Selisih", 300_000);
+
+        await _stock.ApplyIngredientMasterStockAsync(Gudang, bahan, 0m, stokAwal: false, Pengguna, "Penyesuaian dari layar bahan baku");
+
+        _db.Count("StockMovements", $"IngredientId = {bahan}").Should().Be(0);
+        JurnalLayarBahan(bahan).Should().Be(0);
+    }
+
+    /// <summary>
+    /// Jurnal ditulis di transaksi mutasi yang sama, jadi penolakan stok tidak boleh menyisakan
+    /// entri yang memotong persediaan untuk barang yang tidak pernah keluar.
+    /// </summary>
+    [Fact]
+    public async Task KoreksiStokLayarBahan_YangMenurunkanStokDiBawahNol_RollbackTermasukJurnal()
+    {
+        var bahan = BahanBaru("Bahan Overdraft", 300_000);
+        await _stock.ApplyIngredientMasterStockAsync(Gudang, bahan, 5m, stokAwal: true, Pengguna, "Stok awal bahan baku");
+        var jurnalSebelum = JurnalLayarBahan(bahan);
+
+        var act = () => _stock.ApplyIngredientMasterStockAsync(
+            Gudang, bahan, -6m, stokAwal: false, Pengguna, "Penyesuaian dari layar bahan baku");
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await _stock.GetTotalStockAsync(bahan)).Should().Be(5m);
+        JurnalLayarBahan(bahan).Should().Be(jurnalSebelum,
+            "mutasi dan jurnal bergerak bersama atau tidak sama sekali");
+    }
 }

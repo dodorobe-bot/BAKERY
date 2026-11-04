@@ -16,6 +16,7 @@ internal static class AccountingPoster
     private const string PersediaanJadiKode = "1-006";
     private const string BebanPokokPenjualanKode = "5-005";
     private const string BebanSelisihPersediaanKode = "5-006";
+    private const string ModalKode = "3-001";
 
     /// <summary>Akun persediaan yang mewakili sebuah lokasi penyimpanan.</summary>
     public static async Task<string> InventoryCodeForLocationAsync(
@@ -145,6 +146,35 @@ internal static class AccountingPoster
             await WriteAsync(conn, tx, BebanSelisihPersediaanKode, persediaan, amount,
                 keterangan, "StockAdjustment", locationId, userId);
     }
+
+    /// <summary>
+    /// Stok yang diketik langsung di layar Bahan Baku. Stok awal bukan pembelian dan bukan beban:
+    /// barangnya sudah ada saat toko mulai dicatat, jadi pasangannya Modal. Memakainya sebagai
+    /// selisih persediaan akan menaikkan laporan laba rugi tanpa ada penjualan. Koreksi setelah
+    /// itu diperlakukan sama seperti opname, yakni melawan Beban Selisih Persediaan.
+    /// </summary>
+    public static async Task WriteIngredientMasterStockAsync(
+        SqliteConnection conn, SqliteTransaction? tx,
+        int locationId, int ingredientId, decimal delta, long amount, bool stokAwal, int? userId)
+    {
+        if (amount <= 0 || delta == 0) return;
+
+        var persediaan = await InventoryCodeForLocationAsync(conn, tx, locationId);
+        var bahan = await IngredientLabelAsync(conn, tx, ingredientId);
+        var lawan = stokAwal ? ModalKode : BebanSelisihPersediaanKode;
+        var keterangan = $"{(stokAwal ? "Stok awal" : "Koreksi stok dari layar bahan baku")} " +
+                         $"{bahan} ({delta:+0.###;-0.###})";
+
+        if (delta > 0)
+            await WriteAsync(conn, tx, persediaan, lawan, amount,
+                keterangan, SumberLayarBahan, ingredientId, userId);
+        else
+            await WriteAsync(conn, tx, lawan, persediaan, amount,
+                keterangan, SumberLayarBahan, ingredientId, userId);
+    }
+
+    /// <summary>Tipe dokumen sumber jurnal untuk mutasi yang diketik di layar Bahan Baku.</summary>
+    public const string SumberLayarBahan = "IngredientMaster";
 
     private static async Task<string> IngredientLabelAsync(
         SqliteConnection conn, SqliteTransaction? tx, int ingredientId)

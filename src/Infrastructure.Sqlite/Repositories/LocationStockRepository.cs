@@ -178,6 +178,29 @@ public class LocationStockRepository : ILocationStockRepository
         });
     }
 
+    /// <summary>
+    /// Stok yang diketik di layar Bahan Baku: stok awal saat menambah bahan, koreksi total saat
+    /// mengubahnya. Dulu jalur ini hanya menggerakkan LocationStock sehingga persediaan di
+    /// neraca tetap nol atau negatif padahal barangnya ada. Nilai dihitung dengan harga yang
+    /// berlaku, sama seperti opname, dan jurnalnya ditulis di transaksi yang sama supaya tidak
+    /// pernah ada mutasi tanpa jurnal.
+    /// </summary>
+    public async Task ApplyIngredientMasterStockAsync(
+        int locationId, int ingredientId, decimal delta, bool stokAwal, int? userId, string? notes)
+    {
+        if (delta == 0) return;
+
+        await WriteAsync(async (conn, tx) =>
+        {
+            var nilai = await StockValueAsync(conn, tx, ingredientId, Math.Abs(delta));
+            await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, delta,
+                stokAwal ? MovementType.Restock : MovementType.Adjustment,
+                AccountingPoster.SumberLayarBahan, ingredientId, userId, notes);
+            await AccountingPoster.WriteIngredientMasterStockAsync(conn, tx, locationId, ingredientId,
+                delta, nilai, stokAwal, userId);
+        });
+    }
+
     public async Task AdjustStockAsync(int locationId, int ingredientId, decimal newQuantity, int? userId, string? reason)
     {
         if (newQuantity < 0)
