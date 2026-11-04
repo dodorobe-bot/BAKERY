@@ -1,4 +1,4 @@
-[MULAI] Clone sekali-pakai dengan core.autocrlf=true (konfigurasi yang merusak bukti): C:\Users\ADMINI~1\AppData\Local\Temp\seruni-checkout-bukti-a53514be
-[MULAI] 247 berkas bukti dibandingkan byte-per-byte dengan blob
+[MULAI] Clone sekali-pakai dengan core.autocrlf=true (konfigurasi yang merusak bukti): C:\Users\ADMINI~1\AppData\Local\Temp\seruni-checkout-bukti-514cadfb
+[MULAI] 251 berkas bukti dibandingkan byte-per-byte dengan blob
 [OK] -text berlaku (contoh docs/paket-bukti-2026-11-01/uji-1212/run-sandbox.ps1)
-[RINGKAS] 264 lulus, 0 gagal, 16 lewati (artefak .exe/.msi tidak dikomit) dari 4 manifest
+[RINGKAS] 268 lulus, 0 gagal, 16 lewati (artefak .exe/.msi tidak dikomit) dari 4 manifest

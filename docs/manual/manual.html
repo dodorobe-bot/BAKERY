@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Buku Manual Pengguna — Seruni 22 Bakery 1.2.13</title>
+<title>Buku Manual Pengguna — Seruni 22 Bakery 1.2.14</title>
 <style>
   :root {
     --ink: #1a2233;
@@ -219,8 +219,8 @@
   </p>
 
   <div class="cover-meta">
-    <div><b>Versi aplikasi</b>1.2.13</div>
-    <div><b>Tanggal dokumen</b>3 November 2026</div>
+    <div><b>Versi aplikasi</b>1.2.14</div>
+    <div><b>Tanggal dokumen</b>4 November 2026</div>
     <div><b>Bahasa</b>Indonesia</div>
     <div><b>Lingkup</b>31 menu &middot; 6 kelompok</div>
   </div>
@@ -244,11 +244,11 @@
 
   <table>
     <tr><td class="k">Judul dokumen</td><td>Buku Manual Pengguna Seruni 22 Bakery</td></tr>
-    <tr><td class="k">Versi aplikasi</td><td>1.2.13 (Windows, aplikasi desktop dengan basis data lokal)</td></tr>
-    <tr><td class="k">Tanggal</td><td>3 November 2026</td></tr>
+    <tr><td class="k">Versi aplikasi</td><td>1.2.14 (Windows, aplikasi desktop dengan basis data lokal)</td></tr>
+    <tr><td class="k">Tanggal</td><td>4 November 2026</td></tr>
     <tr><td class="k">Pembaca</td><td>Pemilik toko, manajer operasional, kepala dapur, staf kasir</td></tr>
     <tr><td class="k">Lingkup</td><td>Dari pemasangan dan login pertama sampai menu terakhir, Pengaturan Toko &amp; Cabang, ditambah alur kerja antarmenu dan perawatan data</td></tr>
-    <tr><td class="k">Sumber gambar</td><td>Tangkapan layar aplikasi 1.2.12 yang dijalankan dengan basis data sementara berisi data contoh. Perubahan 1.2.13 menambah tombol dan pesan di dalam layar yang sudah ada, tidak mengubah tata letak yang tampak pada gambar; karena itu kontrol baru 1.2.13 (lihat daftar di bawah) belum terlihat di dalam gambar, tetapi nama dan letaknya ditulis persis seperti di layar</td></tr>
+    <tr><td class="k">Sumber gambar</td><td>Tangkapan layar aplikasi hasil build dari sumber di mesin pengembang, 4 November 2026, dijalankan dengan basis data sementara berisi data contoh — bukan basis data toko mana pun. Gambar edisi ini sudah memuat perubahan yang dibicarakan di daftar berikut, jadi label tombol dan kolom yang tertulis di layar sama dengan yang dikutip buku. Bila sebuah bab menyebut versi lain secara eksplisit, keterangan itu yang berlaku</td></tr>
   </table>
 
   <h2>Cara membaca setiap bab</h2>
@@ -265,10 +265,26 @@
     <li><b>Alur antar menu</b> menunjukkan menu berikutnya yang wajar dibuka setelah pekerjaan di bab itu selesai.</li>
   </ul>
 
-  <h2>Yang berubah pada versi 1.2.13</h2>
+  <h2>Yang berubah pada versi 1.2.14</h2>
   <p>
-    Bagi yang sudah memakai buku edisi 1.2.12, tabel ini menyebut hal yang berbeda pada versi
-    1.2.13. Tidak ada menu baru dan tidak ada perubahan bentuk basis data, sehingga data toko
+    Bagi yang sudah memakai buku edisi 1.2.13, tabel ini menyebut hal yang berbeda pada versi
+    1.2.14. Tidak ada menu baru dan tidak ada perubahan bentuk basis data (skema tetap
+    <b>18</b>), sehingga data toko lama langsung dipakai tanpa penyesuaian.
+  </p>
+  <table>
+    <tr><th style="width:34%;">Perubahan</th><th>Yang terlihat di layar</th><th style="width:14%;">Dibahas di</th></tr>
+    <tr><td><b>Stok yang diketik di Bahan Baku ikut dibukukan</b></td><td>Angka pada kolom <b>Stok Awal</b> sekarang membuat jurnal stok awal sendiri (Debet <b>1-003 Persediaan Bahan Baku</b>, Kredit <b>3-001 Modal</b>), dan mengubah angkanya kemudian membukukan selisihnya ke <b>5-006 Beban Selisih Persediaan</b>. Sebelumnya kolom itu hanya mengganti angka stok, sehingga saldo persediaan di pembukuan tertinggal dari isi rak.</td><td>Bab 14, 21, 23</td></tr>
+    <tr><td><b>Pemeriksaan mandiri mengenal data warisan</b></td><td><b>Periksa Basis Data</b> punya pemeriksaan baru <b>stok layar Bahan Baku punya jurnal</b>. Bila basis data lama masih punya stok tanpa jurnal, pemeriksaan ini merah dan menyebut nama bahan, jumlah, dan nilainya &mdash; tidak ada angka yang ditambal diam-diam.</td><td>Bab 14, 33, 38</td></tr>
+    <tr><td><b>Jalan penambalan yang disengaja</b></td><td>Satu perintah pemeliharaan baru, <code>--rekonsiliasi-stok-bahan</code>, dijalankan saat aplikasi tertutup. Tanpa <code>--terapkan</code> perintah itu hanya menampilkan daftar; dengan <code>--terapkan</code> ia membuat cadangan <code>pra-rekonsiliasi</code> lebih dulu lalu menulis jurnalnya. Boleh dijalankan berulang tanpa mendobel.</td><td>Bab 14, 38</td></tr>
+    <tr><td><b>Dialog Penyelesaian SPK tidak lagi menyesatkan</b></td><td>Kolom yang dulu bernama <b>Sisa Stok Dapur</b> dipecah menjadi <b>Stok Dapur</b> (stok riil di Dapur Produksi, sama dengan layar <b>Gudang &amp; Lokasi Rak</b>) dan <b>Sisa Setelah Dipakai</b>. Yang terakhir boleh negatif dan tampil merah bila bahan tidak cukup. Keterangan di atas tabel kini berbunyi <i>Sisa dihitung dari stok riil di Dapur Produksi.</i></td><td>Bab 13, 20, 21</td></tr>
+    <tr><td><b>Angka kuantitas memakai desimal Indonesia</b></td><td>Semua kuantitas di dialog itu ditulis sampai tiga digit dengan koma, sehingga takaran ragi <b>0,08 kg</b> tidak terbaca &ldquo;0&rdquo; dan <b>18,244 kg</b> tidak terbaca delapan belas ribu.</td><td>Bab 13, 20</td></tr>
+    <tr><td><b>Buku manual berisi contoh</b></td><td>Setiap menu punya blok <b>Contoh</b> dengan tangkapan layar terisi, ditambah peta urutan pengisian pertama di §0.6.2 untuk toko yang baru mulai.</td><td>Bab 0</td></tr>
+  </table>
+
+  <h2>Yang berubah pada versi 1.2.13 (edisi sebelumnya)</h2>
+  <p>
+    Daftar edisi 1.2.13, dipertahankan supaya yang naik langsung dari 1.2.12 tahu apa yang
+    terlewat. Tidak ada menu baru dan tidak ada perubahan bentuk basis data, sehingga data toko
     lama langsung dipakai tanpa penyesuaian.
   </p>
   <table>
@@ -318,67 +334,67 @@
 
   <div class="toc">
     <div class="toc-part">Bagian I &middot; Pengenalan</div>
-    <div class="toc-line"><span class="no">Bab 0</span><span class="t">Memasang dan Menyiapkan Pertama Kali</span><span class="dots"></span><span class="pg" data-pg="bab-0">06</span></div>
-    <div class="toc-line"><span class="no">Bab 1</span><span class="t">Tentang Aplikasi dan Peta Menu</span><span class="dots"></span><span class="pg" data-pg="bab-1">12</span></div>
-    <div class="toc-line"><span class="no">Bab 2</span><span class="t">Masuk dan Mengenal Jendela Kerja</span><span class="dots"></span><span class="pg" data-pg="bab-2">15</span></div>
+    <div class="toc-line"><span class="no">Bab 0</span><span class="t">Memasang dan Menyiapkan Pertama Kali</span><span class="dots"></span><span class="pg" data-pg="bab-0">07</span></div>
+    <div class="toc-line"><span class="no">Bab 1</span><span class="t">Tentang Aplikasi dan Peta Menu</span><span class="dots"></span><span class="pg" data-pg="bab-1">13</span></div>
+    <div class="toc-line"><span class="no">Bab 2</span><span class="t">Masuk dan Mengenal Jendela Kerja</span><span class="dots"></span><span class="pg" data-pg="bab-2">16</span></div>
 
     <div class="toc-part">Bagian II &middot; Ruang Kerja</div>
-    <div class="toc-line"><span class="no">Bab 3</span><span class="t">Dasbor &amp; Indikator Utama</span><span class="dots"></span><span class="pg" data-pg="bab-3">19</span></div>
-    <div class="toc-line"><span class="no">Bab 4</span><span class="t">Kotak Tugas &amp; Persetujuan</span><span class="dots"></span><span class="pg" data-pg="bab-4">21</span></div>
-    <div class="toc-line"><span class="no">Bab 5</span><span class="t">Pemberitahuan &amp; Catatan Aktivitas</span><span class="dots"></span><span class="pg" data-pg="bab-5">23</span></div>
+    <div class="toc-line"><span class="no">Bab 3</span><span class="t">Dasbor &amp; Indikator Utama</span><span class="dots"></span><span class="pg" data-pg="bab-3">20</span></div>
+    <div class="toc-line"><span class="no">Bab 4</span><span class="t">Kotak Tugas &amp; Persetujuan</span><span class="dots"></span><span class="pg" data-pg="bab-4">22</span></div>
+    <div class="toc-line"><span class="no">Bab 5</span><span class="t">Pemberitahuan &amp; Catatan Aktivitas</span><span class="dots"></span><span class="pg" data-pg="bab-5">24</span></div>
 
     <div class="toc-part">Bagian III &middot; Penjualan &amp; Pelanggan</div>
-    <div class="toc-line"><span class="no">Bab 6</span><span class="t">Kasir Penjualan Cepat</span><span class="dots"></span><span class="pg" data-pg="bab-6">25</span></div>
-    <div class="toc-line"><span class="no">Bab 7</span><span class="t">Daftar Pesanan &amp; Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-7">30</span></div>
-    <div class="toc-line"><span class="no">Bab 8</span><span class="t">Pesanan Terjadwal (Pre-Order)</span><span class="dots"></span><span class="pg" data-pg="bab-8">32</span></div>
-    <div class="toc-line"><span class="no">Bab 9</span><span class="t">Data Pelanggan &amp; Klien</span><span class="dots"></span><span class="pg" data-pg="bab-9">34</span></div>
-    <div class="toc-line"><span class="no">Bab 10</span><span class="t">Piutang &amp; Pembayaran</span><span class="dots"></span><span class="pg" data-pg="bab-10">36</span></div>
-    <div class="toc-line"><span class="no">Bab 11</span><span class="t">Retur Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-11">40</span></div>
+    <div class="toc-line"><span class="no">Bab 6</span><span class="t">Kasir Penjualan Cepat</span><span class="dots"></span><span class="pg" data-pg="bab-6">26</span></div>
+    <div class="toc-line"><span class="no">Bab 7</span><span class="t">Daftar Pesanan &amp; Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-7">31</span></div>
+    <div class="toc-line"><span class="no">Bab 8</span><span class="t">Pesanan Terjadwal (Pre-Order)</span><span class="dots"></span><span class="pg" data-pg="bab-8">33</span></div>
+    <div class="toc-line"><span class="no">Bab 9</span><span class="t">Data Pelanggan &amp; Klien</span><span class="dots"></span><span class="pg" data-pg="bab-9">35</span></div>
+    <div class="toc-line"><span class="no">Bab 10</span><span class="t">Piutang &amp; Pembayaran</span><span class="dots"></span><span class="pg" data-pg="bab-10">37</span></div>
+    <div class="toc-line"><span class="no">Bab 11</span><span class="t">Retur Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-11">41</span></div>
 
     <div class="toc-part">Bagian IV &middot; Operasional &amp; Produksi</div>
-    <div class="toc-line"><span class="no">Bab 12</span><span class="t">Perencanaan Jadwal Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-12">43</span></div>
-    <div class="toc-line"><span class="no">Bab 13</span><span class="t">Perintah Kerja (SPK)</span><span class="dots"></span><span class="pg" data-pg="bab-13">45</span></div>
-    <div class="toc-line"><span class="no">Bab 14</span><span class="t">Resep &amp; Daftar Bahan Baku</span><span class="dots"></span><span class="pg" data-pg="bab-14">52</span></div>
-    <div class="toc-line"><span class="no">Bab 15</span><span class="t">Pemakaian Aktual &amp; Hasil</span><span class="dots"></span><span class="pg" data-pg="bab-15">56</span></div>
-    <div class="toc-line"><span class="no">Bab 16</span><span class="t">Pemeriksaan Mutu (QC)</span><span class="dots"></span><span class="pg" data-pg="bab-16">58</span></div>
-    <div class="toc-line"><span class="no">Bab 17</span><span class="t">Harga Pokok Produksi (HPP)</span><span class="dots"></span><span class="pg" data-pg="bab-17">61</span></div>
+    <div class="toc-line"><span class="no">Bab 12</span><span class="t">Perencanaan Jadwal Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-12">44</span></div>
+    <div class="toc-line"><span class="no">Bab 13</span><span class="t">Perintah Kerja (SPK)</span><span class="dots"></span><span class="pg" data-pg="bab-13">46</span></div>
+    <div class="toc-line"><span class="no">Bab 14</span><span class="t">Resep &amp; Daftar Bahan Baku</span><span class="dots"></span><span class="pg" data-pg="bab-14">53</span></div>
+    <div class="toc-line"><span class="no">Bab 15</span><span class="t">Pemakaian Aktual &amp; Hasil</span><span class="dots"></span><span class="pg" data-pg="bab-15">58</span></div>
+    <div class="toc-line"><span class="no">Bab 16</span><span class="t">Pemeriksaan Mutu (QC)</span><span class="dots"></span><span class="pg" data-pg="bab-16">60</span></div>
+    <div class="toc-line"><span class="no">Bab 17</span><span class="t">Harga Pokok Produksi (HPP)</span><span class="dots"></span><span class="pg" data-pg="bab-17">63</span></div>
 
     <div class="toc-part">Bagian V &middot; Rantai Pasok &amp; Persediaan</div>
-    <div class="toc-line"><span class="no">Bab 18</span><span class="t">Pembelian &amp; Penerimaan Barang</span><span class="dots"></span><span class="pg" data-pg="bab-18">63</span></div>
-    <div class="toc-line"><span class="no">Bab 19</span><span class="t">Pemasok &amp; Rekanan</span><span class="dots"></span><span class="pg" data-pg="bab-19">69</span></div>
-    <div class="toc-line"><span class="no">Bab 20</span><span class="t">Gudang &amp; Lokasi Rak</span><span class="dots"></span><span class="pg" data-pg="bab-20">72</span></div>
-    <div class="toc-line"><span class="no">Bab 21</span><span class="t">Mutasi Gudang ke Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-21">74</span></div>
-    <div class="toc-line"><span class="no">Bab 22</span><span class="t">Katalog Bahan &amp; Produk Jadi</span><span class="dots"></span><span class="pg" data-pg="bab-22">78</span></div>
-    <div class="toc-line"><span class="no">Bab 23</span><span class="t">Pemeriksaan Fisik (Stok Opname)</span><span class="dots"></span><span class="pg" data-pg="bab-23">80</span></div>
-    <div class="toc-line"><span class="no">Bab 24</span><span class="t">Nomor Batch &amp; Kedaluwarsa</span><span class="dots"></span><span class="pg" data-pg="bab-24">83</span></div>
+    <div class="toc-line"><span class="no">Bab 18</span><span class="t">Pembelian &amp; Penerimaan Barang</span><span class="dots"></span><span class="pg" data-pg="bab-18">65</span></div>
+    <div class="toc-line"><span class="no">Bab 19</span><span class="t">Pemasok &amp; Rekanan</span><span class="dots"></span><span class="pg" data-pg="bab-19">71</span></div>
+    <div class="toc-line"><span class="no">Bab 20</span><span class="t">Gudang &amp; Lokasi Rak</span><span class="dots"></span><span class="pg" data-pg="bab-20">74</span></div>
+    <div class="toc-line"><span class="no">Bab 21</span><span class="t">Mutasi Gudang ke Dapur</span><span class="dots"></span><span class="pg" data-pg="bab-21">76</span></div>
+    <div class="toc-line"><span class="no">Bab 22</span><span class="t">Katalog Bahan &amp; Produk Jadi</span><span class="dots"></span><span class="pg" data-pg="bab-22">80</span></div>
+    <div class="toc-line"><span class="no">Bab 23</span><span class="t">Pemeriksaan Fisik (Stok Opname)</span><span class="dots"></span><span class="pg" data-pg="bab-23">82</span></div>
+    <div class="toc-line"><span class="no">Bab 24</span><span class="t">Nomor Batch &amp; Kedaluwarsa</span><span class="dots"></span><span class="pg" data-pg="bab-24">85</span></div>
 
     <div class="toc-part">Bagian VI &middot; Keuangan &amp; Akuntansi</div>
-    <div class="toc-line"><span class="no">Bab 25</span><span class="t">Buku Besar &amp; Jurnal Umum</span><span class="dots"></span><span class="pg" data-pg="bab-25">86</span></div>
-    <div class="toc-line"><span class="no">Bab 26</span><span class="t">Kas Toko &amp; Rekening Bank</span><span class="dots"></span><span class="pg" data-pg="bab-26">88</span></div>
-    <div class="toc-line"><span class="no">Bab 27</span><span class="t">Utang &amp; Piutang Usaha</span><span class="dots"></span><span class="pg" data-pg="bab-27">91</span></div>
-    <div class="toc-line"><span class="no">Bab 28</span><span class="t">Laporan Keuangan &amp; Laba Rugi</span><span class="dots"></span><span class="pg" data-pg="bab-28">93</span></div>
+    <div class="toc-line"><span class="no">Bab 25</span><span class="t">Buku Besar &amp; Jurnal Umum</span><span class="dots"></span><span class="pg" data-pg="bab-25">88</span></div>
+    <div class="toc-line"><span class="no">Bab 26</span><span class="t">Kas Toko &amp; Rekening Bank</span><span class="dots"></span><span class="pg" data-pg="bab-26">90</span></div>
+    <div class="toc-line"><span class="no">Bab 27</span><span class="t">Utang &amp; Piutang Usaha</span><span class="dots"></span><span class="pg" data-pg="bab-27">93</span></div>
+    <div class="toc-line"><span class="no">Bab 28</span><span class="t">Laporan Keuangan &amp; Laba Rugi</span><span class="dots"></span><span class="pg" data-pg="bab-28">95</span></div>
 
     <div class="toc-part">Bagian VII &middot; Analisis &amp; Pengaturan</div>
-    <div class="toc-line"><span class="no">Bab 29</span><span class="t">Analisis &amp; Tren Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-29">95</span></div>
-    <div class="toc-line"><span class="no">Bab 30</span><span class="t">Jejak Audit &amp; Riwayat Sistem</span><span class="dots"></span><span class="pg" data-pg="bab-30">97</span></div>
-    <div class="toc-line"><span class="no">Bab 31</span><span class="t">Hak Akses &amp; Pegawai</span><span class="dots"></span><span class="pg" data-pg="bab-31">99</span></div>
-    <div class="toc-line"><span class="no">Bab 32</span><span class="t">Perangkat Kasir</span><span class="dots"></span><span class="pg" data-pg="bab-32">103</span></div>
-    <div class="toc-line"><span class="no">Bab 33</span><span class="t">Pengaturan Toko &amp; Cabang</span><span class="dots"></span><span class="pg" data-pg="bab-33">105</span></div>
+    <div class="toc-line"><span class="no">Bab 29</span><span class="t">Analisis &amp; Tren Penjualan</span><span class="dots"></span><span class="pg" data-pg="bab-29">97</span></div>
+    <div class="toc-line"><span class="no">Bab 30</span><span class="t">Jejak Audit &amp; Riwayat Sistem</span><span class="dots"></span><span class="pg" data-pg="bab-30">99</span></div>
+    <div class="toc-line"><span class="no">Bab 31</span><span class="t">Hak Akses &amp; Pegawai</span><span class="dots"></span><span class="pg" data-pg="bab-31">101</span></div>
+    <div class="toc-line"><span class="no">Bab 32</span><span class="t">Perangkat Kasir</span><span class="dots"></span><span class="pg" data-pg="bab-32">105</span></div>
+    <div class="toc-line"><span class="no">Bab 33</span><span class="t">Pengaturan Toko &amp; Cabang</span><span class="dots"></span><span class="pg" data-pg="bab-33">107</span></div>
 
     <div class="toc-part">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
-    <div class="toc-line"><span class="no">Bab 34</span><span class="t">Alur Kerja Harian</span><span class="dots"></span><span class="pg" data-pg="bab-34">107</span></div>
-    <div class="toc-line"><span class="no">Bab 35</span><span class="t">Alur Pesanan Khusus dan Pre-Order</span><span class="dots"></span><span class="pg" data-pg="bab-35">109</span></div>
-    <div class="toc-line"><span class="no">Bab 36</span><span class="t">Alur Pengadaan sampai HPP</span><span class="dots"></span><span class="pg" data-pg="bab-36">111</span></div>
-    <div class="toc-line"><span class="no">Bab 37</span><span class="t">Alur Tutup Buku dan Pencadangan</span><span class="dots"></span><span class="pg" data-pg="bab-37">112</span></div>
-    <div class="toc-line"><span class="no">Bab 38</span><span class="t">Merawat dan Memulihkan Data</span><span class="dots"></span><span class="pg" data-pg="bab-38">113</span></div>
-    <div class="toc-line"><span class="no">Bab 39</span><span class="t">Batasan Versi 1.2.13</span><span class="dots"></span><span class="pg" data-pg="bab-39">115</span></div>
+    <div class="toc-line"><span class="no">Bab 34</span><span class="t">Alur Kerja Harian</span><span class="dots"></span><span class="pg" data-pg="bab-34">109</span></div>
+    <div class="toc-line"><span class="no">Bab 35</span><span class="t">Alur Pesanan Khusus dan Pre-Order</span><span class="dots"></span><span class="pg" data-pg="bab-35">111</span></div>
+    <div class="toc-line"><span class="no">Bab 36</span><span class="t">Alur Pengadaan sampai HPP</span><span class="dots"></span><span class="pg" data-pg="bab-36">113</span></div>
+    <div class="toc-line"><span class="no">Bab 37</span><span class="t">Alur Tutup Buku dan Pencadangan</span><span class="dots"></span><span class="pg" data-pg="bab-37">114</span></div>
+    <div class="toc-line"><span class="no">Bab 38</span><span class="t">Merawat dan Memulihkan Data</span><span class="dots"></span><span class="pg" data-pg="bab-38">115</span></div>
+    <div class="toc-line"><span class="no">Bab 39</span><span class="t">Batasan Versi 1.2.14</span><span class="dots"></span><span class="pg" data-pg="bab-39">117</span></div>
 
     <div class="toc-part">Lampiran</div>
-    <div class="toc-line"><span class="no">Lampiran A</span><span class="t">Peta Menu Lengkap</span><span class="dots"></span><span class="pg" data-pg="lamp-a">117</span></div>
-    <div class="toc-line"><span class="no">Lampiran B</span><span class="t">Matriks Peran dan Menu</span><span class="dots"></span><span class="pg" data-pg="lamp-b">119</span></div>
-    <div class="toc-line"><span class="no">Lampiran C</span><span class="t">Arti Status Dokumen</span><span class="dots"></span><span class="pg" data-pg="lamp-c">121</span></div>
-    <div class="toc-line"><span class="no">Lampiran D</span><span class="t">Pesan Kesalahan dan Tindakan</span><span class="dots"></span><span class="pg" data-pg="lamp-d">123</span></div>
-    <div class="toc-line"><span class="no">Lampiran E</span><span class="t">Daftar Gambar</span><span class="dots"></span><span class="pg" data-pg="lamp-e">125</span></div>
+    <div class="toc-line"><span class="no">Lampiran A</span><span class="t">Peta Menu Lengkap</span><span class="dots"></span><span class="pg" data-pg="lamp-a">119</span></div>
+    <div class="toc-line"><span class="no">Lampiran B</span><span class="t">Matriks Peran dan Menu</span><span class="dots"></span><span class="pg" data-pg="lamp-b">121</span></div>
+    <div class="toc-line"><span class="no">Lampiran C</span><span class="t">Arti Status Dokumen</span><span class="dots"></span><span class="pg" data-pg="lamp-c">123</span></div>
+    <div class="toc-line"><span class="no">Lampiran D</span><span class="t">Pesan Kesalahan dan Tindakan</span><span class="dots"></span><span class="pg" data-pg="lamp-d">125</span></div>
+    <div class="toc-line"><span class="no">Lampiran E</span><span class="t">Daftar Gambar</span><span class="dots"></span><span class="pg" data-pg="lamp-e">127</span></div>
   </div>
 
   <div class="callout note" style="margin-top:14pt;">
@@ -420,14 +436,14 @@
 
   <h2>0.1 Sebelum memasang</h2>
   <p>
-    Siapkan PC kasir dan berkas pemasangan versi 1.2.13. Aplikasi berjalan di PC itu sendiri
+    Siapkan PC kasir dan berkas pemasangan versi 1.2.14. Aplikasi berjalan di PC itu sendiri
     dan menyimpan datanya secara lokal; pemakaian harian tidak memerlukan sambungan internet.
   </p>
   <table>
     <tr><th style="width:30%;">Hal</th><th>Yang perlu diketahui</th></tr>
     <tr><td><b>Komputer</b></td><td>Windows 64-bit. Paket sudah membawa runtime .NET 8, jadi tidak perlu memasang .NET terpisah. Pengujian versi ini memakai Windows 11; Windows 10 belum diuji (Bab 39).</td></tr>
     <tr><td><b>Kanal pemasangan</b></td><td>Pilih satu: <b>EXE</b> (per pengguna, tanpa hak administrator) atau <b>MSI</b> (per komputer, memerlukan administrator). Keduanya memakai folder data dan port yang sama sehingga tidak boleh terpasang bersamaan.</td></tr>
-    <tr><td><b>Berkas pemasangan</b></td><td><code>Seruni22Bakery_Setup_v1.2.13.exe</code> untuk kanal EXE, atau <code>Seruni22Bakery_v1.2.13_x64.msi</code> untuk kanal MSI. Paket belum ditandatangani Authenticode (Bab 39).</td></tr>
+    <tr><td><b>Berkas pemasangan</b></td><td><code>Seruni22Bakery_Setup_v1.2.14.exe</code> untuk kanal EXE, atau <code>Seruni22Bakery_v1.2.14_x64.msi</code> untuk kanal MSI. Paket belum ditandatangani Authenticode (Bab 39).</td></tr>
     <tr><td><b>Data lama</b></td><td>Bila PC sudah pernah memakai versi sebelumnya, buat cadangan lebih dahulu (Bab 37) dan pasang versi baru dari kanal yang sama.</td></tr>
   </table>
   <div class="callout warn">
@@ -441,7 +457,7 @@
 
   <h2>0.2 Memasang aplikasi</h2>
   <ol class="steps">
-    <li>Klik dua kali berkas <code>Seruni22Bakery_Setup_v1.2.13.exe</code>.</li>
+    <li>Klik dua kali berkas <code>Seruni22Bakery_Setup_v1.2.14.exe</code>.</li>
     <li>Bila Windows menampilkan <b>Windows protected your PC</b>, tekan <b>More info</b> lalu <b>Run anyway</b>. Peringatan ini muncul karena paket belum ditandatangani. Lanjutkan hanya bila berkas berasal dari sumber resmi dan namanya sesuai versi yang diminta.</li>
     <li>Ikuti wizard: tekan <b>Next</b>, biarkan folder pemasangan bawaan, lalu tentukan apakah pintasan Desktop dibuat.</li>
     <li>Tekan <b>Install</b> dan tunggu sampai selesai.</li>
@@ -2185,16 +2201,26 @@
       Basis data yang terlanjur menumpuk stok dari kolom ini sebelum perbaikan dikenali oleh
       <b>Periksa Basis Data</b>: pemeriksaan <b>stok layar Bahan Baku punya jurnal</b> menjadi
       merah dan menyebut nama bahan, jumlah, serta nilainya. Buku stok lama itu perlu dibukukan
-      sekali &mdash; lewat <b>Pemeriksaan Fisik (Stok Opname)</b> (Bab 23) atau jurnal manual di
-      <b>Buku Besar &amp; Jurnal Umum</b> &mdash; karena aplikasi tidak menambal pembukuan lama
-      dengan sendirinya.
+      sekali, dan ada dua jalan. Jalan pertama: perintah pemeliharaan
+      <code>--rekonsiliasi-stok-bahan</code> yang dijalankan saat aplikasi tertutup &mdash; tanpa
+      tambahan apa pun perintah itu <b>hanya menampilkan</b> daftar bahan beserta nilainya, dan
+      baru menulis setelah <code>--terapkan</code> disebutkan, dengan satu cadangan
+      <code>pra-rekonsiliasi</code> dibuat lebih dulu. Perintah ini menganggap stok lama sebagai
+      penyertaan pemilik (debit <b>1-003</b>, kredit <b>3-001 Modal</b>) dan boleh dijalankan
+      berulang tanpa mendobel jurnal. Jalan kedua, tanpa baris perintah: catat stok fisik yang
+      sebenarnya lewat <b>Pemeriksaan Fisik (Stok Opname)</b> (Bab 23) atau buat jurnal manual di
+      <b>Buku Besar &amp; Jurnal Umum</b> &mdash; pilih ini bila barang lama memang sudah habis,
+      rusak, atau salah ketik, karena penambalan otomatis tidak memeriksa hal itu. Aplikasi tidak
+      menambal pembukuan lama dengan sendirinya.
     </p>
     <p>
-      Status rilis: perilaku di atas ada di sumber setelah paket <b>1.2.13</b> dan belum ikut
-      terpasang pada berkas <code>Seruni22Bakery_Setup_v1.2.13.exe</code>. Pada paket 1.2.13 yang
-      terpasang sekarang, <b>Stok Awal</b> masih hanya menggerakkan stok tanpa membuat jurnal,
-      sehingga cara lama (biarkan kosong atau 0, lalu catat stok fisik lewat opname) tetap
-      berlaku sampai versi berikutnya dikemas.
+      Status rilis: perilaku di atas ada di paket <b>1.2.14</b>
+      (<code>Seruni22Bakery_Setup_v1.2.14.exe</code> / <code>Seruni22Bakery_v1.2.14_x64.msi</code>).
+      Mesin yang masih memasang paket <b>1.2.13</b> belum memilikinya: di sana <b>Stok Awal</b>
+      masih hanya menggerakkan stok tanpa membuat jurnal, dan perintah
+      <code>--rekonsiliasi-stok-bahan</code> belum dikenali. Pasang 1.2.14 lebih dulu sebelum
+      menambal; sampai saat itu, cara lama (biarkan kosong atau 0, lalu catat stok fisik lewat
+      opname) tetap berlaku.
     </p>
   </div>
 
@@ -3314,7 +3340,7 @@
   <div class="callout warn">
     <span class="label">Peringatan &mdash; rekonsiliasi belum aktif</span>
     <p>
-      Bagian <b>Rekonsiliasi akhir shift</b> masih dinonaktifkan pada versi 1.2.13 karena
+      Bagian <b>Rekonsiliasi akhir shift</b> masih dinonaktifkan pada versi 1.2.14 karena
       belum tersedia jalur penyimpanan rekonsiliasi. Jangan mengandalkan kolom
       <b>Selisih vs kas fisik</b> untuk menutup shift. Hitung kas secara manual dan catat
       selisih yang perlu disesuaikan melalui prosedur toko.
@@ -4254,14 +4280,14 @@
 <section class="chapter" id="bab-39">
   <div class="chapter-eyebrow">Bagian VIII &middot; Alur Kerja Terpadu &amp; Perawatan</div>
   <div class="chapter-num">BAB 39</div>
-  <h1 class="chapter-title">Batasan Versi 1.2.13</h1>
+  <h1 class="chapter-title">Batasan Versi 1.2.14</h1>
   <p class="chapter-lead">
     Bab ini menyebutkan hal yang belum tersedia atau belum diuji pada versi ini. Tujuannya
     agar Anda tidak mengandalkan fitur yang belum siap saat toko sedang beroperasi.
   </p>
 
   <table>
-    <tr><th style="width:30%;">Hal</th><th>Keadaan pada 1.2.13</th><th style="width:30%;">Yang dapat dilakukan</th></tr>
+    <tr><th style="width:30%;">Hal</th><th>Keadaan pada 1.2.14</th><th style="width:30%;">Yang dapat dilakukan</th></tr>
     <tr>
       <td><b>Tanda tangan aplikasi</b></td>
       <td>Paket pemasangan belum ditandatangani Authenticode.</td>
@@ -4341,7 +4367,7 @@
   <div class="callout note">
     <span class="label">Catatan</span>
     <p>
-      Buku ini menjelaskan versi 1.2.13. Bila aplikasi diperbarui, periksa kembali daftar ini
+      Buku ini menjelaskan versi 1.2.14. Bila aplikasi diperbarui, periksa kembali daftar ini
       pada dokumentasi versi yang terpasang. Nomor versi terlihat di <b>Pengaturan Toko &amp;
       Cabang</b> dan pada layar Perangkat Kasir.
     </p>
@@ -4643,7 +4669,7 @@
   </table>
 
   <div class="end-note">
-    Buku Manual Pengguna Seruni 22 Bakery &middot; Versi aplikasi 1.2.13 &middot;
+    Buku Manual Pengguna Seruni 22 Bakery &middot; Versi aplikasi 1.2.14 &middot;
     Dokumen disusun 3 November 2026. Gambar diambil dari aplikasi 1.2.12 dengan basis data
     sementara berisi data contoh.
   </div>

@@ -56,20 +56,21 @@ Perintah pemakaiannya:
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uji-checkout-bukti.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uji-checkout-bukti.ps1 -Repo C:\tmp\clone-228
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\uji-checkout-bukti.ps1 -Repo <pohon-lain>
 ```
 
 | Berkas log | Kondisi pohon | Hasil |
 | --- | --- | --- |
 | `kontrol-negatif-head-tanpa-aturan.txt` | HEAD yang belum memuat aturan `docs/paket-bukti-*/** -text` (kontrol negatif) | `69 lulus, 195 gagal, 16 lewati` — **exit 1** |
-| `lulus-head-dengan-aturan.txt` | commit percobaan yang sudah memuat aturan (`-Repo` ke clone sekali-pakai) | `247 berkas` dibandingkan, `-text berlaku`, `264 lulus, 0 gagal, 16 lewati` — **exit 0** |
+| `lulus-head-dengan-aturan.txt` | HEAD yang **sudah** memuat aturan (commit `2b8fa45`) | `251 berkas` dibandingkan, `-text berlaku`, `268 lulus, 0 gagal, 16 lewati` — **exit 0** |
 | `lewat-pohon-tanpa-git.txt` | folder tanpa `.git` | `[LEWAT] ... bukan repositori git` — **exit 2**, dicatat sebagai belum diperiksa |
 
 Angka kontrol negatif adalah cacat terukurnya: **178 dari 247** berkas bukti yang tracked di
-folder `docs/paket-bukti-*` ditulis ulang oleh `git clone` sebelum aturan ada. 195 kegagalan itu
-terbagi atas 178 berkas berubah byte, 16 digest kit yang tidak cocok lagi dengan manifestnya, dan
-1 penjaga `check-attr`. Setelah aturan berlaku, ketiganya nol dan 16/16 digest kit yang tercatat
-di manifest cocok lagi.
+folder `docs/paket-bukti-*` pada saat itu ditulis ulang oleh `git clone` sebelum aturan ada. 195
+kegagalan itu terbagi atas 178 berkas berubah byte, 16 digest kit yang tidak cocok lagi dengan
+manifestnya, dan 1 penjaga `check-attr`. Setelah aturan berlaku, ketiganya nol dan 16/16 digest
+kit yang tercatat di manifest cocok lagi. Run hijau memegang 251 berkas, bukan 247, karena empat
+berkas bukti di folder ini sendiri ikut dihitung setelah aturannya dikomit.
 
 ## 4. Cara membaca hasil pada pohon ini sekarang
 

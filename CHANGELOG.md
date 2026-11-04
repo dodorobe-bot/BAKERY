@@ -8,9 +8,9 @@ Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 
 Status: **NOT READY**. Belum ada paket installer yang memuat isi bagian ini — berkas terakhir yang
 terpasang di mesin toko tetap `Seruni22Bakery_Setup_v1.2.13.exe`. Angka bukti di bawah diambil dari
-`dotnet test BakeryDesktop.slnx -c Release` pada commit `ec6e76c` plus pohon kerja ini:
-**535 tes lulus, 0 gagal, 0 dilewati** (Domain 83, Application 129, Infrastructure 158, UI 165) —
-12 tes lebih banyak dari gerbang 1.2.13.
+`dotnet test BakeryDesktop.slnx -c Release` pada pohon kerja ini (di atas commit `ecaa41c`):
+**544 tes lulus, 0 gagal, 0 dilewati** (Domain 83, Application 129, Infrastructure 164, UI 168) —
+21 tes lebih banyak dari gerbang 1.2.13.
 
 - **Jurnal stok layar Bahan Baku.** Stok yang diketik pada kolom **Stok Awal** di layar Bahan Baku
   sebelumnya mengubah angka stok tanpa pernah membuat jurnal, sehingga saldo `1-003 Persediaan Bahan
@@ -19,8 +19,17 @@ terpasang di mesin toko tetap `Seruni22Bakery_Setup_v1.2.13.exe`. Angka bukti di
   terhadap total stok riil ke `5-006 Beban Selisih Persediaan`; keduanya satu transaksi dengan mutasi
   ledger, dan penolakan validasi menjawab 400. Pemeriksaan mandiri **Periksa Basis Data** mendapat
   pagar baru `stok layar Bahan Baku punya jurnal` yang menandai data warisan yang belum terjamah.
-  Data lama **tidak** ditambal otomatis lewat migrasi — penambalan menunggu persetujuan pemilik
-  (opname atau jurnal manual). 4 tes repository + 1 tes integritas + 4 tes API hidup.
+  Data lama **tidak** ditambal otomatis lewat migrasi — angkanya masuk ke neraca pemilik.
+  4 tes repository + 1 tes integritas + 4 tes API hidup.
+- **Perintah `--rekonsiliasi-stok-bahan`.** Penambalan data warisan yang dimaksud di atas sekarang
+  ada jalurnya, dijalankan sebagai perintah pemeliharaan sebelum host web menyala: tanpa `--terapkan`
+  hanya mencetak daftar bahan, jumlah, dan nilainya (tidak satu baris jurnal pun ditulis, tidak ada
+  cadangan dibuat); dengan `--terapkan` menolak bila aplikasi masih hidup (kode keluar `3`), membuat
+  cadangan `pra-rekonsiliasi`, lalu menulis Dr `1-003 Persediaan Bahan Baku` / Cr `3-001 Modal` dalam
+  satu transaksi. Idempoten: bahan yang sudah berjurnal — dari jalur baru maupun dari penambalan
+  sebelumnya — dilewati. Alternatif tanpa baris perintah tetap tercatat (opname atau jurnal manual).
+  6 tes penambalan di Infrastructure + 3 tes penjaga saklar di UI.Tests; kontrol negatif terbukti
+  merah (2/3) ketika cabang saklar di `MaintenanceCommands.TryRun` dilepas.
 - **Dialog Penyelesaian SPK.** Kolom yang berjudul **Sisa Stok Dapur** sebenarnya menampilkan takaran
   resep, bukan stok dapur, sehingga bisa dibaca sebagai "stok aman" padahal bahan tidak ada di dapur.
   Kolom itu dipecah menjadi **Stok Dapur** (stok riil di Dapur Produksi, sama dengan layar Gudang &
@@ -30,9 +39,29 @@ terpasang di mesin toko tetap `Seruni22Bakery_Setup_v1.2.13.exe`. Angka bukti di
   angka kuantitas memakai pemisah desimal Indonesia sampai tiga digit, sehingga takaran ragi 0,002 kg
   tidak dibulatkan menjadi "0" dan 18,244 kg tidak lagi terbaca delapan belas ribu. 3 tes UI Playwright,
   kontrol negatif 3/3 merah pada kode sebelum perbaikan.
+- **Keter-reproduksian berkas bukti.** `git clone` di mesin dengan `core.autocrlf=true`
+  selama ini **menulis ulang** isi folder `docs/paket-bukti-*`: 178 dari 247 berkas bukti berubah
+  byte, termasuk skrip kit yang SHA-256-nya dicatat di `KIT-SHA256SUMS.txt` (`run-sandbox.ps1` kit
+  1.2.12 tercatat `9fe9e633…`/6930 bita, hasil clone 7120 bita) dan manifestnya sendiri, sehingga
+  `sha256sum -c` menolak nama berkas yang dibaca. Artinya bukti yang dipegang orang lain bukan
+  berkas yang dibuktikan. Aturan `docs/paket-bukti-*/** -text` di `.gitattributes` mematikannya,
+  dan `scripts/uji-checkout-bukti.ps1` — clone sekali-pakai di folder temporer dengan konfigurasi
+  yang merusak itu — memeriksa hasil checkout byte-per-byte terhadap blob lewat
+  `hash-object --no-filters` (sengaja bukan `git status`: status membandingkan setelah filter
+  akhir baris, jadi buta terhadap cacat ini), memastikan `check-attr` benar-benar
+  `text: unset`, lalu mencocokkan tiap digest kit. Kontrol negatif pada HEAD tanpa aturan: **69
+  lulus, 195 gagal, 16 lewati** (keluar 1). Pada HEAD yang sudah memuat aturan (commit
+  `2b8fa45`): **251 berkas** dibandingkan, **268 lulus, 0 gagal, 16 lewati** (keluar 0); pohon
+  tanpa `.git` dilaporkan **BELUM DIPERIKSA** (keluar 2), bukan lulus. Artefak
+  `.exe`/`.msi` tidak dikomit sehingga 16 entri manifest memang tetap dilewati, bukan dihitung lulus.
+  Pagar ini jadi langkah baru `scripts/verify.ps1`; tiga log hasilnya ada di
+  `docs/paket-bukti-2026-11-04/checkout-reproduksian/`.
 - **Buku manual.** Enam belas blok **Contoh** beserta tangkapan layar berisi ditambahkan per menu, peta
   urutan pengisian pertama (§0.6), dan rujukan silang yang sudah usang direnomor (gambar 1..57).
-  PDF 126 halaman, 58 gambar, verifikasi daftar isi lulus.
+  Tabel **Yang berubah pada versi 1.2.14** ditambahkan dan daftar edisi 1.2.13 dipertahankan di
+  bawahnya. PDF dibangun ulang 2026-11-04: **128 halaman, 58 gambar, 45 entri daftar isi cocok
+  sebaris**, kepala/kaki terverifikasi di halaman 2..128, dan versi tercetak diambil dari
+  `<Version>` csproj lalu dicocokkan dengan judul naskah (keduanya 1.2.14).
 
 ## [1.2.13] — 2026-11-03
 
