@@ -424,7 +424,24 @@ if (-not $SkipVerify) {
     Write-Host "Berkas sementara $dir dibersihkan."
 }
 
-# ── 4. Ringkasan ────────────────────────────────────────────────────────────
+# ── 4. Keter-reproduksian berkas bukti ──────────────────────────────────────
+# Bukti di docs/paket-bukti-* dipakai orang lain setelah meng-clone. clone sekali-pakai dibuat
+# dengan core.autocrlf=true supaya cacat "checkout mengubah baris berkas bukti" tidak bisa
+# lolos dari pagar ini; periksa detail di scripts/uji-checkout-bukti.ps1.
+Write-Host '==> scripts/uji-checkout-bukti.ps1'
+$ujiCheckout = Join-Path $PSScriptRoot 'uji-checkout-bukti.ps1'
+$keluarCheckout = @(powershell -NoProfile -ExecutionPolicy Bypass -File $ujiCheckout 2>&1)
+$kodeCheckout = $LASTEXITCODE
+$ringkasCheckout = ($keluarCheckout | Where-Object { "$_" -match '\[RINGKAS\]' } |
+    Select-Object -First 1) -replace '.*\[RINGKAS\]\s*', ''
+$barisGagalCheckout = @($keluarCheckout | Where-Object { "$_" -match '^\[GAGAL\]' } | Select-Object -First 3)
+$detailCheckout = if ($kodeCheckout -eq 2) { 'BELUM DIPERIKSA: pohon bukan repositori git' }
+                  elseif ($barisGagalCheckout.Count -gt 0) { "$ringkasCheckout; $($barisGagalCheckout -join ' ; ')" }
+                  else { $ringkasCheckout }
+Catat 'keter-reproduksian berkas bukti' ($kodeCheckout -eq 0) `
+    $(if ($detailCheckout) { $detailCheckout } else { "exit $kodeCheckout" })
+
+# ── 5. Ringkasan ────────────────────────────────────────────────────────────
 Write-Host ''
 Write-Host '================ HASIL PAGER ================'
 $laporan | Format-Table -AutoSize | Out-String -Width 200 | Write-Host

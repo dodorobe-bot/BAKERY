@@ -3,9 +3,14 @@
 # berkas bukti tidak lagi sama dengan yang benar-benar diterima printer.
 *.bin binary
 
-# Salinan badan rilis GitHub dibaca ulang sebagai berkas byte-per-byte; tanpa -text,
-# core.autocrlf=true mengubah CRLF hasil gh menjadi LF saat komit sehingga digest yang
-# dicatat dokumen tidak cocok lagi dengan isi blob.
-docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md -text
-docs/paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md -text
-docs/paket-bukti-2026-11-04/gerbang-release-pohon-1213.json -text
+# Semua isi folder bukti paket -text, termasuk salinan badan rilis GitHub dan laporan JSON
+# gerbang yang di dalamnya ada digest. Aturan ini menutup tiga celah yang terbukti:
+#   1) badan rilis: gh menghasilkan CRLF; tanpa -text komit menormalkannya ke LF sehingga digest
+#      yang dicatat dokumen tidak cocok lagi dengan isi blob,
+#   2) KIT-SHA256SUMS.txt mencatat SHA-256 skrip kit (run-sandbox.ps1, uji-*.ps1, PANDUAN-KIT.md,
+#      hash-publish-*.txt). Clone 2026-11-04 dengan core.autocrlf=true menghasilkan CRLF sehingga
+#      run-sandbox.ps1 tercatat 9fe9e633... (6930 bita) menjadi 7120 bita dan "sha256sum -c"
+#      menolak namanya karena manifest itu sendiri ikut berpindah baris.
+#   3) dengan -text, clone generasi kedua (autocrlf=true, tanpa langkah manual) mengulang 16/16
+#      digest manifest. Diperiksa ulang oleh scripts/uji-checkout-bukti.ps1.
+docs/paket-bukti-*/** -text
