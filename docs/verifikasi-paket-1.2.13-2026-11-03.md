@@ -31,7 +31,7 @@ Cara membangun ulang:
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-pro.ps1 -SinkronkanBundelDesktop
 ```
 
-## Yang dijalankan hari ini
+## Yang dijalankan 3 November 2026
 
 | Pagar | Hasil | Bukti |
 |---|---|---|
@@ -124,7 +124,7 @@ menyentuh struktur.
 
 ## Sudah terhapus dari daftar "belum"
 
-Pasang/peningkatan/copot di Windows Sandbox bersih **sudah** dijalankan hari ini dan lulus
+Pasang/peningkatan/copot di Windows Sandbox bersih **sudah** dijalankan 3 November dan lulus
 105/105: peningkatan senyap 1.2.12 → 1.2.13 dengan sandi, produk, merek, dan logo tetap utuh;
 393/393 berkas payload cocok dengan manifes; bundel frontend lama tersapu; tidak ada migrasi
 baru di atas skema 18; EXE menolak kanal MSI, MSI lama menolak turun versi, dan copot tidak
@@ -163,7 +163,7 @@ menghapus folder data pengguna. Lihat
   **Berlaku sampai 4 November 2026 06:23 waktu lokal** (GitHub mencatat `2026-11-03T23:22:59Z`):
   paragraf di atas menggambarkan rilis saat pertama terbit. Buku dibangun ulang malam harinya
   (3 November 22:06) dan asetnya baru diganti pagi 4 November, jadi 9.316.970 bita /
-  `eec028dc…` / 102 halaman tidak lagi cocok dengan unduhan publik hari ini — lihat subbab
+  `eec028dc…` / 102 halaman tidak lagi cocok dengan unduhan publik sejak 4 November 06:23 — lihat subbab
   "Publikasi aset" di bawah.
 - Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
   diuji" di atas tetap berlaku — label Latest bukan persetujuan produksi.
@@ -292,13 +292,13 @@ Pemeriksaan sesudah terbit, dibaca ulang dari GitHub: nol kemunculan `30 jam`, `
 [`docs/paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md);
 salinan edisi 07:16 (`82a557d61f7568dd…`, 7.415 bita) tetap di
 [`docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md)
-sebagai riwayat, bukan sebagai keadaan rilis hari ini.
+sebagai riwayat; yang tampil di GitHub sejak 4 November 08:59 adalah edisi 08:59.
 
 Catatan byte: yang disajikan GitHub berakhir dengan CRLF, sedangkan `core.autocrlf=true` pada mesin
 ini menormalkan CRLF→LF saat komit — salinan edisi 07:16 karenanya tersimpan sebagai 7.415 bita LF
 (`82a557d6…`), 65 bita lebih pendek daripada bentuk CRLF yang benar-benar dijawab GitHub. Sejak
-komit ini ketiga berkas bukti (`badan-rilis-v1.2.13-terbit.md` kedua dan
-`gerbang-release-pohon-1213.json`) ditandai `-text` di `.gitattributes`, sehingga isi blob sama
+komit ini ketiga berkas bukti — `badan-rilis-v1.2.13-terbit.md` edisi 07:16 dan edisi 08:59 serta
+`gerbang-release-pohon-1213.json` — ditandai `-text` di `.gitattributes`, sehingga isi blob sama
 persis dengan berkas di pohon kerja dan digest yang dicatat dokumen bisa diperiksa ulang tanpa
 menebak konversi line ending. Cara periksa:
 `git cat-file blob :docs/paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md | sha256sum` →
@@ -308,5 +308,5 @@ tambahan dari pencetak `gh`).
 ## Batas bukti
 
 Peralatan uji berada pada PC dengan RAM 3,7 GB; hasil "lulus" di atas adalah hasil satu mesin.
-Angka 105/105 yang tercatat untuk 1.2.13 berasal dari run sandbox 1.2.12 → 1.2.13 hari ini;
+Angka 105/105 yang tercatat untuk 1.2.13 berasal dari run sandbox 1.2.12 → 1.2.13 pada 3 November;
 angka 105/105 milik 1.2.12 (jalur 1.2.9 → 1.2.12) adalah bukti untuk paket itu sendiri.
