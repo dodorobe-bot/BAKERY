@@ -1,0 +1,15 @@
+<Configuration>
+  <VGpu>Disable</VGpu>
+  <Networking>Disable</Networking>
+  <MemoryInMB>1536</MemoryInMB>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\tmp\kit-uji-1210-1213</HostFolder>
+      <SandboxFolder>C:\share</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\share\uji-1210-1213.ps1</Command>
+  </LogonCommand>
+</Configuration>

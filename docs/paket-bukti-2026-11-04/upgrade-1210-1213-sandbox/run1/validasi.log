@@ -1,0 +1,152 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261104113244
+Username: A0EE082B-98FD-4\WDAGUtilityAccount
+RunAs User: A0EE082B-98FD-4\WDAGUtilityAccount
+Configuration Name: 
+Machine: A0EE082B-98FD-4 (Microsoft Windows NT 10.0.26100.0)
+Host Application: powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\share\uji-1210-1213.ps1
+Process ID: 5540
+PSVersion: 5.1.26100.9711
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9711
+BuildVersion: 10.0.26100.9711
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+11:32:46 | lingkungan | INFO | Microsoft Windows 11 Enterprise build 26100; pengguna A0EE082B-98FD-4\WDAGUtilityAccount; elevated=True; RAM 1535 MB
+11:32:46 | mesin bersih: tanpa runtime .NET bersama | PASS | C:\Program Files\dotnet tidak ada (publish self-contained)
+11:32:47 | mesin bersih: belum ada instalasi Seruni | PASS | tidak ada folder program dan tidak ada entri ARP
+11:32:47 | mesin bersih: tanpa penanda kanal | PASS | HKCU dan HKLM Software\Seruni22Bakery tidak ada
+11:32:48 | salinan MSI 1.2.10 utuh | PASS | 50395652 byte, SHA256 872A3C39FE6F906DD4CED13CA434FDB7351B266147DBBD26E31A4384FFF4B4AF
+11:32:48 | salinan MSI 1.2.13 utuh | PASS | 50416132 byte, SHA256 EB3F40FB0FA2FE1FB7E09BEE733DB524A8B29FB55AF367B1BD8D0DF1F5AFD132
+11:32:49 | salinan EXE 1.2.10 utuh | PASS | 42665720 byte, SHA256 C882B69873CBD7DC51EF58761FE6D38FF2559FBE35141399B7023BCED8CD78C5
+11:32:49 | salinan EXE 1.2.13 utuh | PASS | 42672292 byte, SHA256 C1A0AF29BD8F5BF9C439CADEF3C1D8C891DA0C49A3271384192FD682C444ED9D
+11:32:49 | manifes payload 1.2.13 terbaca | PASS | 393 baris
+11:35:21 | pasang senyap MSI 1.2.10 | PASS | exit 0
+11:35:22 | entri ARP 1.2.10 | PASS | Seruni 22 Bakery 1.2.10
+11:35:22 | versi peluncur 1.2.10 | PASS | 1.2.10
+11:35:23 | aset 1.2.10 terpasang sebelum peningkatan | PASS | aset=index-B8lfbLcy.js, index-CoYZy02P.css
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+11:35:34 | host 1.2.10 menjawab /health | PASS | health 200
+11:35:35 | health melaporkan 1.2.10 | PASS | version=1.2.10
+11:35:37 | login bawaan admin berhasil di 1.2.10 | PASS | token diterima
+11:35:38 | sandi diganti lalu login sandi baru | PASS | login dengan sandi baru berhasil
+11:35:38 | produk uji dibuat di 1.2.10 | PASS | id=1
+11:35:38 | merek disetel di 1.2.10 | PASS | name=Toko Uji Sandbox 1213
+11:35:38 | kunci /api/brand 1.2.10 | INFO | 4 kunci
+11:35:38 | host dihentikan | INFO | Stop-Process
+11:35:41 | basis data pra-peningkatan terbentuk | PASS | uji.db 4096 bita
+11:35:46 | EXE 1.2.13 menolak dipasang selama MSI 1.2.10 ada | PASS | exit 1
+11:35:46 | log EXE menyebut MSI terdeteksi | PASS | alasan kanal tercatat di log
+11:35:46 | tidak ada folder EXE setelah penolakan | PASS | folder tidak dibuat
+11:35:46 | tidak ada entri ARP EXE setelah penolakan | PASS | ARP EXE tidak ada
+11:35:46 | penolakan tidak menulis penanda HKCU | PASS | Channel EXE tidak ditulis
+11:35:47 | MSI 1.2.10 tetap satu-satunya instalasi | PASS | Seruni 22 Bakery 1.2.10 [{F74073DE-74DE-47CB-B9A7-358F0DE5E8FF}]
+11:38:17 | peningkatan senyap MSI 1.2.13 | PASS | exit 0
+11:38:17 | produk 1.2.10 terdeteksi sebagai sasaran peningkatan | PASS | WIX_UPGRADE_DETECTED memuat {F74073DE-74DE-47CB-B9A7-358F0DE5E8FF}
+11:38:17 | log MSI menyatakan sukses | PASS | status 0
+11:38:17 | RemoveExistingProducts dijalankan | PASS | produk lama dibongkar
+11:38:17 | entri ARP 1.2.13 | PASS | Seruni 22 Bakery 1.2.13
+11:38:18 | entri ARP 1.2.10 hilang | PASS | kunci 1.2.10 tidak ada lagi
+11:38:18 | tepat satu entri Seruni sesudah peningkatan | PASS | Seruni 22 Bakery 1.2.13 [{CE68DB95-1278-4892-B835-7F875F0DAB63}]
+11:38:25 | seluruh 393 berkas MSI 1.2.13 identik dengan manifes | PASS | cocok=393 beda=0 hanya-terpasang=0 hanya-paket=0 total=393
+11:38:25 | versi peluncur 1.2.13 | PASS | 1.2.13
+11:38:25 | versi host 1.2.13.0 | PASS | 1.2.13.0
+11:38:25 | Host.dll sama dengan manifes | PASS | hash Host.dll cocok
+11:38:25 | bundel 1.2.13 terpasang, aset lama tersapu | PASS | aset=index-BZfyiTsC.js, index-CUfTbA7B.css
+11:38:25 | penanda kanal HKLM milik MSI | PASS | Channel=msi Version=1.2.13 InstallDir=C:\Program Files\Seruni 22 Bakery\
+11:38:26 | pintasan menunjuk instalasi 1.2.13 | PASS | target C:\Program Files\Seruni 22 Bakery\Seruni22Bakery.exe
+11:38:30 | host hasil peningkatan menjawab /health | PASS | health 200
+11:38:31 | health melaporkan 1.2.13 | PASS | version=1.2.13
+11:38:31 | sandi dari 1.2.10 masih berlaku di 1.2.13 | PASS | login dengan sandi hasil ganti berhasil
+11:38:31 | status wajib-ganti-sandi tidak menyala lagi | PASS | mustChangePassword=False
+11:38:31 | produk dari 1.2.10 terbaca utuh di 1.2.13 | PASS | id=1 name=Roti Uji 1213 harga=15000
+11:38:31 | merek dari 1.2.10 masih tersimpan | PASS | name=Toko Uji Sandbox 1213
+11:38:31 | endpoint /api/brand anonim 4 kunci | PASS | 4 kunci
+11:38:31 | logo bisa dipasang di 1.2.13 hasil peningkatan | PASS | logo kembali sama persis
+11:38:31 | peningkatan periksa-diri basis data: 0 gagal | PASS | 10 pemeriksaan, 0 gagal
+11:38:31 | peningkatan skema terpasang 18 | PASS | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+11:38:45 | emulator ESC/POS loopback siap di port 9100 | PASS | listener aktif
+11:38:46 | pengaturan escpos-raw tersimpan | PASS | mode=escpos-raw
+11:38:46 | cetak uji diterima host hasil peningkatan | PASS | jobId=1
+11:38:46 | emulator menerima byte cetak | PASS | 635 bita
+11:38:46 | struk diawali ESC @ | PASS | 0x1B 0x40
+11:38:46 | nominal contoh struk Rp 30.000 | PASS | baris "2 x Rp 15.000 ... Rp 30.000" ada
+11:38:46 | nominal lama Rp 300 tidak dikirim lagi | PASS | tidak ada "Rp 300"
+11:38:46 | struk diakhiri ESC d 3 | PASS | 0x1B 0x64 0x03
+11:38:46 | tidak ada perintah potong saat cut=0 | PASS | GS V tidak dikirim
+11:38:47 | status perangkat melaporkan mode escpos-raw | PASS | mode=escpos-raw
+11:38:47 | status perangkat melaporkan tujuan tcp | PASS | tujuan=tcp://127.0.0.1:9100
+11:38:47 | riwayat cetak mencatat pekerjaan uji berstatus Printed | PASS | status=Printed kind=Test
+11:38:47 | riwayat cetak mencatat tujuan tcp | PASS | printer=tcp://127.0.0.1:9100
+11:38:47 | host dihentikan | INFO | Stop-Process
+11:38:53 | pilihan escpos-raw bertahan setelah host di-restart | PASS | mode=escpos-raw tujuan=tcp://127.0.0.1:9100
+11:38:53 | host dihentikan | INFO | Stop-Process
+11:38:56 | tidak ada migrasi baru di atas skema 18 | PASS | migrasi dijalankan x0 (diharapkan 0)
+11:38:56 | basis data tetap ada setelah dipakai 1.2.13 | PASS | uji.db 4096 bita
+11:41:06 | MSI 1.2.10 ditolak di atas 1.2.13 | PASS | exit 1603
+11:41:06 | log penolakan menyebut alasan turun versi | PASS | syarat turun versi tercatat
+11:41:06 | versi terpasang tetap 1.2.13 | PASS | 1.2.13
+11:41:16 | copot senyap MSI 1.2.13 | PASS | exit 0
+11:41:19 | folder instalasi MSI hilang | PASS | folder program terhapus
+11:41:19 | pintasan MSI hilang | PASS | Start Menu dan Desktop publik terhapus
+11:41:19 | tidak ada entri ARP tersisa | PASS | daftar program bersih
+11:41:19 | penanda HKLM ikut terhapus | PASS | HKLM Software\Seruni22Bakery hilang
+11:41:19 | data di luar folder program tetap utuh | PASS | uji.db dan uji.key masih ada setelah copot
+11:41:33 | pasang senyap EXE 1.2.13 | PASS | exit 0
+11:41:37 | 393 berkas EXE 1.2.13 identik dengan manifes | PASS | cocok=393 beda=0 hanya-terpasang=4 hanya-paket=0 total=397
+11:41:37 | versi peluncur EXE 1.2.13 | PASS | 1.2.13
+11:41:37 | versi host EXE 1.2.13.0 | PASS | 1.2.13.0
+11:41:37 | penanda kanal HKCU milik EXE | PASS | Channel=exe Version=1.2.13 InstallDir=C:\SeruniExe1213
+11:41:37 | pintasan per-pengguna menunjuk folder uji | PASS | target C:\SeruniExe1213\Seruni22Bakery.exe
+11:41:38 | entri ARP EXE 1.2.13 | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.13
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+11:41:45 | host dari folder EXE menjawab /health | PASS | health 200
+11:41:45 | health EXE melaporkan 1.2.13 | PASS | version=1.2.13
+11:41:45 | SPA EXE memuat bundel 1.2.13 | PASS | status 200
+11:41:45 | login bawaan pada basis data EXE | PASS | token diterima
+11:41:47 | ganti sandi pada basis data EXE | PASS | login dengan sandi baru berhasil
+11:41:47 | EXE periksa-diri basis data: 0 gagal | PASS | 10 pemeriksaan, 0 gagal
+11:41:47 | EXE skema terpasang 18 | PASS | terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan.
+11:41:47 | host dihentikan | INFO | Stop-Process
+11:41:50 | basis data EXE baru menjalankan 18 migrasi | PASS | 18 migrasi
+11:41:53 | EXE 1.2.10 ditolak di atas EXE 1.2.13 | PASS | exit 1
+11:41:53 | log penolakan EXE menyebut pagar versi terhadap 1.2.13 | PASS | alasan versi tercatat
+11:41:53 | EXE 1.2.13 tetap terpasang | PASS | 1.2.13
+11:41:53 | penanda versi HKCU tetap 1.2.13 | PASS | Version=1.2.13
+11:44:13 | MSI 1.2.13 ditolak selama EXE terpasang | PASS | exit 1603
+11:44:14 | log MSI menyebut kanal EXE | PASS | alasan kanal tercatat
+11:44:14 | tidak ada folder MSI setelah penolakan | PASS | folder Program Files tidak dibuat
+11:44:17 | tidak ada entri ARP MSI setelah penolakan | PASS | ARP MSI tidak ada
+11:44:18 | EXE tetap satu-satunya instalasi | PASS | Seruni 22 Bakery (Sistem Toko & Pabrik Roti) 1.2.13 [{5D9D507C-B7C6-4C4B-A6EE-6786A01F909A}_is1]
+11:44:35 | copot senyap EXE 1.2.13 | PASS | exit 0
+11:44:41 | folder EXE hilang | PASS | folder program EXE terhapus
+Add-Content : Stream was not readable.
+At C:\share\uji-1210-1213.ps1:75 char:3
++   Add-Content -Path $status -Value $baris -Encoding UTF8
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (C:\share\bukti\status.txt:String) [Add-Content], ArgumentException
+    + FullyQualifiedErrorId : GetContentWriterArgumentError,Microsoft.PowerShell.Commands.AddContentCommand
+Add-Content : Stream was not readable.
+At C:\share\uji-1210-1213.ps1:75 char:3
++   Add-Content -Path $status -Value $baris -Encoding UTF8
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (C:\share\bukti\status.txt:Stri
+   ng) [Add-Content], ArgumentException
+    + FullyQualifiedErrorId : GetContentWriterArgumentError,Microsoft.PowerShe
+   ll.Commands.AddContentCommand
+
+11:44:41 | pintasan EXE hilang | PASS | pintasan per-pengguna terhapus
+11:44:45 | entri ARP EXE hilang | PASS | ARP EXE terhapus
+11:44:45 | penanda HKCU EXE hilang | PASS | Channel EXE terhapus
+11:44:45 | folder data pengguna tetap ada | PASS | penanda-data.txt masih ada
+11:44:45 | berkas basis data pengguna tetap ada | PASS | seruni22bakery.db penanda masih ada
+11:44:46 | tanpa proses yatim | PASS | tidak ada proses Seruni22Bakery tersisa
+11:44:46 | rekap | PASS | lulus=106 gagal=0 total=106
+**********************
+Windows PowerShell transcript end
+End time: 20261104114446
+**********************

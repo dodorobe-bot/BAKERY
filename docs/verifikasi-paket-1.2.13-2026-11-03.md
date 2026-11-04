@@ -6,9 +6,10 @@ Seruni 22 Bakery 1.2.13. Angka di bawah dibaca ulang dari berkas laporan, bukan 
 ## Putusan
 
 **NOT READY.** Gerbang dan automasi lulus penuh pada konfigurasi Release, dan
-pasang / peningkatan / copot di Windows Sandbox bersih sudah lulus 105/105 untuk jalur
-1.2.12 → 1.2.13, tetapi perangkat fisik (printer thermal 80 mm, printer jaringan, pemindai
-barcode, laci uang) belum diuji pada kertas dan perangkat sungguhan, Windows 10 belum diuji,
+pasang / peningkatan / copot di Windows Sandbox bersih sudah lulus untuk tiga jalur menuju
+1.2.13 — 1.2.12 → 1.2.13 (105/105), 1.2.10 → 1.2.13 (106/106) dan 1.2.9 → 1.2.13 (106/106) —
+tetapi perangkat fisik (printer thermal 80 mm, printer jaringan, pemindai barcode, laci
+uang) belum diuji pada kertas dan perangkat sungguhan, Windows 10 belum diuji,
 dan paket belum bertanda tangan.
 
 ## Artefak
@@ -45,6 +46,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-pro.ps1 -Sinkr
 | Kontrol negatif automasi (`uji-build-pro.ps1`) | **14/14 lulus, 0 SKIP** — baseline tetap hijau sebelum dan sesudah sabotase | [`docs/paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213.json`](paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213.json) |
 | Kontrol negatif diulang terhadap skrip yang sudah di-commit | **14/14 lulus, 0 SKIP** — hash EXE/MSI setelah run tetap `c1a0af29…`/`eb3f40fb…`, jadi artefak rilis tidak tersentuh sabotase | [`docs/paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213-ulang.json`](paket-bukti-2026-11-03/kontrol-1213/uji-build-pro-rilis-1213-ulang.json) |
 | Pasang/peningkatan/copot di **Windows Sandbox bersih** | **105/105 lulus, 0 gagal** — 1.2.12 → 1.2.13 dengan data utuh, 393/393 berkas, tanpa migrasi baru, pagar turun versi dan kanal terbukti | [`docs/paket-bukti-2026-11-03/upgrade-1213-sandbox/run1/status.txt`](paket-bukti-2026-11-03/upgrade-1213-sandbox/run1/status.txt) |
+| Pasang/peningkatan/copot di **Windows Sandbox bersih**, jalur lebih tua | **106/106 lulus, 0 gagal** — 1.2.10 → 1.2.13: `WIX_UPGRADE_DETECTED` memuat ProductCode 1.2.10 `{F74073DE-…}`, 393/393 berkas, bundel 1.2.10 (`index-B8lfbLcy.js`) terbukti ada sebelum peningkatan lalu tersapu, tanpa migrasi baru di atas skema 18, EXE 1.2.10 asli ditolak pagar versinya di atas 1.2.13, ESC/POS dari biner hasil peningkatan identik 631/635 bita dengan tangkapan 1.2.12→1.2.13 (sisa = empat byte cap waktu) | [`docs/paket-bukti-2026-11-04/upgrade-1210-1213-sandbox/run1/status.txt`](paket-bukti-2026-11-04/upgrade-1210-1213-sandbox/run1/status.txt) |
+| Pasang/peningkatan/copot di **Windows Sandbox bersih**, jalur tertua di lapangan | **106/106 lulus, 0 gagal** — 1.2.9 → 1.2.13 dalam satu run: `WIX_UPGRADE_DETECTED` + `MIGRATE` memuat ProductCode 1.2.9 `{7609C8A3-…}`, 393/393 berkas, bundel 1.2.9 (`index-BksMbgv0.js`) terbukti ada sebelum peningkatan lalu tersapu, skema 18 tanpa migrasi baru (1.2.9 sudah memakai 18: `host-129.log` memuat `Migrasi 18 diterapkan.`), EXE 1.2.9 asli ditolak pagar versinya (`Pagar versi: HKCU Version=1.2.13 lebih baru dari paket 1.2.9.`), ESC/POS dari biner hasil peningkatan hanya 2 byte berbeda dari run 1.2.10 (cap waktu) | [`docs/paket-bukti-2026-11-04/upgrade-129-1213-sandbox/run1/status.txt`](paket-bukti-2026-11-04/upgrade-129-1213-sandbox/run1/status.txt) |
 
 Kontrol negatif membuktikan validator menolak: hash EXE salah, MSI tak tercantum, manifest payload
 salah, MSI hilang, versi EXE tertukar, kunci di folder publish, laporan menyebut artefak hantu,
@@ -118,7 +121,9 @@ menyentuh struktur.
   sampai emulator loopback, termasuk dari biner hasil peningkatan (635 byte diperiksa).
 - Potong kertas, pemindai barcode fisik (hanya lulus simulasi wedge 14/14 pada 1.2.12), laci uang.
 - Pemasangan oleh pemilik di PC kasir sungguhan.
-- Peningkatan dari **1.2.9 dan 1.2.10** langsung ke 1.2.13; yang diuji baru 1.2.12 → 1.2.13.
+- Peningkatan dari basis data **skema lama** (mis. 1.2.4/skema 17) langsung ke 1.2.13.
+  Yang sudah terbukti adalah sesama skema 18: 1.2.9 → 1.2.13, 1.2.10 → 1.2.13, dan
+  1.2.12 → 1.2.13, ketiganya berjalan tanpa migrasi baru.
 - Windows 10 x64 (Sandbox memakai tamu Windows 11 Enterprise build 26100).
 - Tanda tangan Authenticode: 0 sertifikat terpasang, `signtool verify /pa` akan menolak.
 
@@ -130,6 +135,30 @@ Pasang/peningkatan/copot di Windows Sandbox bersih **sudah** dijalankan 3 Novemb
 baru di atas skema 18; EXE menolak kanal MSI, MSI lama menolak turun versi, dan copot tidak
 menghapus folder data pengguna. Lihat
 [`docs/paket-bukti-2026-11-03/upgrade-1213-sandbox/README.md`](paket-bukti-2026-11-03/upgrade-1213-sandbox/README.md).
+
+Jalur **1.2.10 → 1.2.13** menyusul 4 November dan lulus 106/106 dalam satu run
+([`docs/paket-bukti-2026-11-04/upgrade-1210-1213-sandbox/README.md`](paket-bukti-2026-11-04/upgrade-1210-1213-sandbox/README.md)).
+Harness untuk jalur ini lebih keras daripada klonan: (a) bundel 1.2.10 diperiksa **sebelum**
+peningkatan supaya klaim "aset lama tersapu" punya dasar, dan (b) penolakan EXE lama memakai
+pagar versi nyata di `setup.iss` tag `v1.2.10`, bukan penanda `HKCU Version=9.9.9` yang
+direkayasa. Catatan jujur: rekap menghitung 106 tetapi `status.txt` memuat 105 baris PASS
+individual — baris `pintasan EXE hilang` hilang saat penulisan append. Pemeriksaan itu tetap
+terbukti lulus di `run1/validasi.log` dan dikuatkan silang oleh `run1/exe-1213-uninstall.log`
+yang mencatat penghapusan kedua pintasan `.lnk`.
+
+Jalur tertua, **1.2.9 → 1.2.13**, menyusul pada hari yang sama dan juga lulus 106/106 dalam
+satu run, kali ini dengan jumlah baris PASS individual yang cocok persis dengan rekap
+([`docs/paket-bukti-2026-11-04/upgrade-129-1213-sandbox/README.md`](paket-bukti-2026-11-04/upgrade-129-1213-sandbox/README.md)).
+Konstanta 1.2.9 dibaca ulang dari paketnya sendiri (`Get-FileHash` dan tabel `Property`,
+`Upgrade`, `File`, `Component`, `Directory` MSI), termasuk nama aset web
+`index-BksMbgv0.js` + `index-CoYZy02P.css` — bukan diambil dari dokumen lama. Bukti
+tambahannya: 1.2.9 memang sudah skema 18, jadi peningkatan ini sah diharapkan nol migrasi,
+dan EXE 1.2.9 benar-benar memuat pagar versi, sehingga penolakan turun versi diuji dengan
+paket lama sungguhan. Tangkapan ESC/POS dari ketiga jalur sama kecuali cap waktu (`cmp -l`
+atas berkas `.bin` yang tersimpan memberi 2 bita beda untuk 1.2.9 vs 1.2.10, 3 bita untuk
+1.2.9 vs run 1.2.12 → 1.2.13, dan 4 bita untuk 1.2.10 vs run itu — semua di dalam baris
+waktu struk `04 November 2026 12:08` / `04 November 2026 11:38` / `03 November 2026 18:06`),
+yang menguatkan bahwa struk berasal dari kode 1.2.13, bukan dari artefak run.
 
 ## Publikasi 2026-11-03
 

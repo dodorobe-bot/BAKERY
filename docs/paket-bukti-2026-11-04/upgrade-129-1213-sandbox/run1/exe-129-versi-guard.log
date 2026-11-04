@@ -1,0 +1,18 @@
+﻿2026-11-04 12:11:57.294   Log opened. (Time zone: UTC+07:00)
+2026-11-04 12:11:57.294   Setup version: Inno Setup version 6.7.3
+2026-11-04 12:11:57.295   Original Setup EXE: C:\share\Seruni22Bakery_Setup_v1.2.9.exe
+2026-11-04 12:11:57.295   Setup command line: /SL5="$B0084,41372965,909312,C:\share\Seruni22Bakery_Setup_v1.2.9.exe" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=C:\share\bukti\exe-129-versi-guard.log /DIR=C:\SeruniExe1213 
+2026-11-04 12:11:57.295   Windows version: 10.0.26100
+2026-11-04 12:11:57.295   Windows architecture: x64 (64-bit)
+2026-11-04 12:11:57.297   Machine types supported by system: x86 x64
+2026-11-04 12:11:57.297   User privileges: Administrative
+2026-11-04 12:11:57.305   Administrative install mode: No
+2026-11-04 12:11:57.307   Install mode root key: HKEY_CURRENT_USER
+2026-11-04 12:11:57.307   64-bit install mode: No
+2026-11-04 12:11:57.307   RedirectionGuard status for current process: Enabled in enforcing mode
+2026-11-04 12:11:57.313   Created protected temporary directory: C:\Users\WDAGUtilityAccount\AppData\Local\Temp\is-QGW6O4WPD5.tmp
+2026-11-04 12:11:57.359   Pagar versi: HKCU Version=1.2.13 lebih baru dari paket 1.2.9.
+2026-11-04 12:11:57.359   InitializeSetup returned False; aborting.
+2026-11-04 12:11:57.359   Got EAbort exception.
+2026-11-04 12:11:57.359   Deinitializing Setup.
+2026-11-04 12:11:57.359   Log closed.

@@ -1,0 +1,18 @@
+@             Toko Uji Sandbox 1213
+           Sistem Manajemen Toko Kue
+          Kantor Sentral & Toko Utama
+              UJI CETAK PERANGKAT
+================================================
+Printer                     tcp://127.0.0.1:9100
+Lebar kertas                    80 mm / 48 kolom
+Waktu                     04 November 2026 11:38
+------------------------------------------------
+Contoh baris transaksi:
+2 x Rp 15.000                          Rp 30.000
+------------------------------------------------
+Jika tulisan ini terbaca utuh tanpa terpotong,
+lebar kertas sudah sesuai dengan printer.
+
+                    SELESAI
+
+d

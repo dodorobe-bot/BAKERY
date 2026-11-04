@@ -46,17 +46,28 @@ Isi versi ini adalah perbaikan yang dibangun 2–3 November dan **tidak ada di p
   negatif "penjaga versi terbit" tidak lagi SKIP pada versi yang belum bertag — ia menanam artefak
   palsu di `OutRoot` sementara, jadi penjaga itu terbukti tepat saat rilis (14/14, 0 SKIP).
 
-Yang sudah dibuktikan setelah itu: **pasang/peningkatan/copot di Windows Sandbox bersih,
-105 pemeriksaan lulus 0 gagal** — jalur 1.2.12 → 1.2.13 dengan sandi, produk, merek dan logo
-tetap utuh, 393/393 berkas payload cocok manifes, bundel lama tersapu, tanpa migrasi baru di
-atas skema 18, ESC/POS raw terbukti byte-per-byte dari biner hasil peningkatan, pagar turun
-versi dan pagar kanal bekerja, dan copot tidak menghapus folder data pengguna
-(`docs\paket-bukti-2026-11-03\upgrade-1213-sandbox\`).
+Yang sudah dibuktikan setelah itu: **pasang/peningkatan/copot di Windows Sandbox bersih** —
+jalur 1.2.12 → 1.2.13 dengan **105 pemeriksaan lulus 0 gagal**
+(`docs\paket-bukti-2026-11-03\upgrade-1213-sandbox\`), jalur 1.2.10 → 1.2.13 dengan
+**106 pemeriksaan lulus 0 gagal**
+(`docs\paket-bukti-2026-11-04\upgrade-1210-1213-sandbox\`), dan jalur tertua yang masih
+beredar di lapangan, 1.2.9 → 1.2.13, juga **106 pemeriksaan lulus 0 gagal**
+(`docs\paket-bukti-2026-11-04\upgrade-129-1213-sandbox\`; satu run, tanpa run gagal
+sebelumnya). Di ketiga jalur: sandi, produk, merek dan logo tetap utuh, 393/393 berkas
+payload cocok manifes, bundel lama tersapu, tanpa migrasi baru di atas skema 18,
+ESC/POS raw terbukti byte-per-byte dari biner hasil peningkatan, pagar turun versi dan pagar
+kanal bekerja, dan copot tidak menghapus folder data pengguna. Tangkapan ESC/POS ketiga run
+sama kecuali digit cap waktu (dihitung ulang dengan `cmp -l` atas berkas `.bin` yang
+tersimpan): 1.2.9 vs 1.2.10 berbeda 2 byte, dan masing-masing vs run 1.2.12 → 1.2.13
+berbeda 3 dan 4 byte — semuanya angka tanggal/jam pada baris waktu struk. Run 1.2.9 dan
+1.2.10 memakai harness yang diperkuat: keberadaan bundel lama
+diperiksa sebelum peningkatan (jadi klaim "aset lama tersapu" punya dasar) dan penolakan EXE
+lama memakai pagar versi nyata di `setup.iss` tag masing-masing — `v1.2.9` sudah memuat
+`BandingkanVersi` — bukan lagi penanda `HKCU Version=9.9.9` yang direkayasa.
 
 Yang **belum** untuk 1.2.13: cetak ke printer thermal 80 mm maupun printer jaringan fisik,
-pemindai barcode fisik, laci uang, pemotong kertas, peningkatan dari 1.2.9/1.2.10 langsung ke
-1.2.13, pemasangan oleh pemilik di PC kasir, dan uji di Windows 10. Paket **NotSigned**. Skema
-basis data: **18** — tidak ada migrasi baru.
+pemindai barcode fisik, laci uang, pemotong kertas, pemasangan oleh pemilik di PC kasir,
+dan uji di Windows 10. Paket **NotSigned**. Skema basis data: **18** — tidak ada migrasi baru.
 Tag: `v1.2.13` — menandai sumber paket, bukan persetujuan rilis. Paket dibangun dari commit
 bersih `5993072`; pohon aplikasi pada tag ini identik dengan commit itu, yang menyusul hanya
 dokumen bukti dan metadata. Hash EXE/MSI ada di tabel artefak
