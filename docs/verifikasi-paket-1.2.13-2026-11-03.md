@@ -63,8 +63,8 @@ laporan paket yang sudah ada.
    HPP; SPK tanpa unit baik membebani gaji/operasional; sisa pembulatan harga rata-rata masuk beban
    selisih persediaan.
 3. **Backup** — retensi mengutamakan salinan yang sudah terverifikasi.
-4. **Idempotensi** — kunci dari proses mati di tengah jalan kedaluwarsa 30 jam (UTC dihitung di
-   SQL); baris selesai dibersihkan setelah 30 hari.
+4. **Idempotensi** — kunci dari proses mati di tengah jalan kedaluwarsa 30 menit (`MenitPesananBasi`
+   di `IdempotencyRepository.cs:11`, dihitung di SQL); baris selesai dibersihkan setelah 30 hari.
 5. **Antar muka** — status perangkat dipakai ulang 15 s dan disegarkan saat pengaturan berubah;
    daftar piutang/utang dimuat bertahap dengan penanda "hanya baris yang termuat".
 6. **Automasi** — laporan JSON tertelusur per run, jumlah tes dibaca dari log, bukti kegagalan
@@ -124,8 +124,8 @@ menghapus folder data pengguna. Lihat
   di layar Keuangan (`Muat <n> pesanan lagi`, `Muat <n> dokumen lagi`,
   `Tampilkan 100 dokumen berikutnya (<n> tersisa)`, `· hanya baris yang termuat`) dan cache status
   perangkat 15 detik — dicatat di badan rilis, bukan diklaim sebagai isi buku.
-  **Catatan berlakunya:** paragraf ini menggambarkan rilis pada 3 November 11:36. Sore hari yang
-  sama buku dibangun ulang menjadi edisi 1.2.13 dan asetnya diganti, jadi angka 9.316.970 bita /
+  **Berlaku sampai 3 November 23:23:** paragraf di atas menggambarkan rilis saat pertama terbit.
+  Sore hari itu buku dibangun ulang menjadi edisi 1.2.13 dan asetnya diganti, jadi 9.316.970 bita /
   `eec028dc…` / 102 halaman tidak lagi cocok dengan unduhan publik hari ini — lihat subbab
   "Publikasi aset" di bawah.
 - Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
@@ -138,7 +138,7 @@ menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
 
 - `docs/manual/Seruni22-Buku-Manual-Pengguna.pdf`, **9.793.167 bita**, SHA-256
   `77b5e042d9698f134bc1d99e8094292bfea5c7337d7b809a0eccac8cbcc11dac`, **107 halaman**
-  (edisi 1.2.12: 102 halaman, 9.316.970 bita — nomena yang bertambah murni karena isi baru).
+  (edisi 1.2.12: 102 halaman, 9.316.970 bita — halaman bertambah murni karena isi baru).
 - Verifikasi mandiri skrip lulus seluruhnya: 45 penanda bab stabil antara cetakan pertama dan
   akhir, 45 entri daftar isi cocok dengan halaman aktual (diperiksa ulang terpisah:
   `Bab 0 → 6`, `Bab 39 → 96`, `Lampiran E → 106`), nomor kaki "Halaman n dari 107" di halaman
@@ -164,10 +164,11 @@ menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
   kolofon. Kontrol 1.2.13 bersifat kondisional (hanya muncul saat daftar panjang, saat penolakan,
   atau saat pengaturan perangkat disimpan) sehingga tidak akan terlihat pada data contoh;
   nama dan letaknya ditulis persis seperti di layar.
-- Koreksan dokumen: `CHANGELOG.md` menyebut kunci idempotensi kedaluwarsa setelah "30 jam",
+- Koreksi dokumen: `CHANGELOG.md` menyebut kunci idempotensi kedaluwarsa setelah "30 jam",
   padahal `MenitPesananBasi = 30` dipakai sebagai `-30 minutes` di SQL. Sudah dibetulkan menjadi
   30 menit. Tidak ada migrasi baru antara 1.2.12 dan 1.2.13, sehingga bentuk basis data di buku
   tetap benar.
+
 ### Publikasi aset (izin pemilik, 3 November 2026 23:23–23:25 WIB)
 
 - `gh release upload v1.2.13 docs/manual/Seruni22-Buku-Manual-Pengguna.pdf --clobber` keluar 0.
@@ -182,11 +183,41 @@ menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
 - **Unduh tanpa login** (`curl -sSL`, tanpa token, pada `browser_download_url`): HTTP 200,
   9.793.167 bita, SHA-256 `77b5e042…1dac` — identik dengan berkas di pohon kerja. Bukti
   pihak yang menerima rilis mendapatkan isi yang sama dengan yang diverifikasi di atas.
-- Yang **belum** diubah: badan rilis `v1.2.13`. Bagian "Aset tambahan — buku manual" masih
-  menyebut 9.316.970 bita, SHA-256 `eec028dc…`, 102 halaman, dan "Buku ini disusun untuk versi
-  1.2.12", sementara daftar ringkasan menyebut 99 halaman. Setelah unggah, pernyataan itu tidak
-  lagi cocok dengan aset yang terpasang. Izin yang diberikan hanya untuk mengunggah aset, jadi
-  sunting badan rilis menunggu persetujuan terpisah.
+- Yang **belum** diubah pada saat itu: badan rilis `v1.2.13` — izin yang diberikan baru unggah
+  aset, jadi suntingan teks publik berikutnya menunggu persetujuan terpisah.
+
+### Suntingan badan rilis (izin pemilik, 4 November 2026 07:16 WIB)
+
+`gh release edit v1.2.13 --notes-file` keluar 0, lalu diulang dengan
+`PATCH /repos/dodorobe-bot/BAKERY/releases/432611731` memakai `--input` berkas JSON (jalur
+`/c/tmp/...` tidak dikenali binari Windows dan `-F "body@berkas"` bukan sintaks gh; `-F`
+memakai `key=@berkas` hanya untuk berkas yang berisi JSON utuh). Isi badan: 7.089 → 7.415 bita,
+66 → 65 baris, `updated_at` `2026-11-04T00:16:26Z`; judul `Seruni 22 Bakery 1.2.13 — NOT READY`,
+`tag_name`, `draft=false`, `prerelease=false`, dan keempat aset beserta label tidak berubah
+(dipindai ulang sesudah sunting). Tiga koreksi, dan hanya tiga:
+
+1. Paragraf **"Aset tambahan — buku manual"** diganti: dulu 9.316.970 bita / `eec028dc…` /
+   102 halaman / "Buku ini disusun untuk versi 1.2.12", sekarang 9.793.167 bita / `77b5e042…` /
+   107 halaman / edisi 1.2.13 dengan cara stempel versi dibaca dari `<Version>` csproj, daftar
+   delta yang sudah tertulis, dan keterangan jujur bahwa **tangkap layar masih 1.2.12** beserta
+   alasannya; edisi lama disebut sebagai "sudah digantikan". Tiga butir "Yang belum tertulis di
+   dalamnya" dihapus karena isinya sekarang memang tertulis di buku; kalimat pengantar blok
+   perintah periksa hash tetap ada ("Periksa dulu sebelum menjalankan:").
+2. Baris "Idempotensi" menyebut kunci kedaluwarsa **30 jam** — salah, sama seperti
+   `CHANGELOG.md` yang sudah dibetulkan. Sumber: `MenitPesananBasi = 30` pada
+   `src/Infrastructure.Sqlite/Repositories/IdempotencyRepository.cs:11`, dipakai sebagai
+   `-30 minutes`. kini **30 menit**. Daftar perbaikan di dokumen ini (butir 4) dan bullet yang
+   sama ikut dibetulkan.
+3. Daftar "Dokumen" menyebut "Manual pengguna (99 halaman, PDF)" menjadi "Manual pengguna edisi
+   1.2.13 (107 halaman, PDF; tangkapan layar dari aplikasi 1.2.12)".
+
+Pemeriksaan sesudah terbit (`gh release view --json body`, dibaca ulang dari GitHub): nol
+kemunculan `9.316.970`, `eec028dc8f08`, `30 jam`, `(99 halaman`, dan "disusun untuk versi
+1.2.12"; `77b5e042` satu kali, `9.793.167` satu kali, "107 halaman" dua kali, blok pagar
+perintah utuh. Salinan badan rilis yang terbit disimpan sebagai bukti di
+[`docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md)
+— 7.415 bita, SHA-256 `82a557d61f7568dd…`, dibaca **kembali dari GitHub** sesudah sunting, bukan
+disalin dari naskah yang dikirim, jadi salinan itu membuktikan apa yang benar-benar tampil.
 
 ## Batas bukti
 
