@@ -1,0 +1,183 @@
+{
+    "skema":  1,
+    "alat":  "verify.ps1",
+    "waktu":  "2026-11-04T08:50:41.1595793+07:00",
+    "durasiDetik":  335.1,
+    "commit":  "b5dd62b4f4d5976716cf59bda05e220a934eb601",
+    "pohonKotor":  0,
+    "konfigurasi":  "Release",
+    "opsi":  {
+                 "skipTests":  false,
+                 "skipVerify":  false
+             },
+    "hasil":  "LULUS",
+    "kodeKeluar":  0,
+    "tes":  {
+                "lulus":  523,
+                "gagal":  0,
+                "dilewati":  0
+            },
+    "logTes":  "D:\\bakery-desktop\\dist\\verify\\verify-20261104-084506.test.log",
+    "langkah":  [
+                    {
+                        "Nama":  "build solusi",
+                        "Status":  "PASS",
+                        "Detail":  "exit 0"
+                    },
+                    {
+                        "Nama":  "dotnet test (unit + integrasi + UI)",
+                        "Status":  "PASS",
+                        "Detail":  "exit 0, lulus 523, gagal 0, dilewati 0"
+                    },
+                    {
+                        "Nama":  "skrip Inno tersedia",
+                        "Status":  "PASS",
+                        "Detail":  "D:\\bakery-desktop\\build\\installer\\inno\\setup.iss"
+                    },
+                    {
+                        "Nama":  "Icons/Run tanpa wscript",
+                        "Status":  "PASS",
+                        "Detail":  "shortcut dan [Run] harus langsung ke program, bukan perantara skrip"
+                    },
+                    {
+                        "Nama":  "Icons/Run tanpa berkas .vbs",
+                        "Status":  "PASS",
+                        "Detail":  "VBScript tidak boleh menjadi peluncur"
+                    },
+                    {
+                        "Nama":  "Icons/Run menunjuk Seruni22Bakery.exe",
+                        "Status":  "PASS",
+                        "Detail":  "peluncur native wajib dirujuk"
+                    },
+                    {
+                        "Nama":  "define MyAppExeName = Seruni22Bakery.exe",
+                        "Status":  "PASS",
+                        "Detail":  "nama peluncur di header skrip Inno"
+                    },
+                    {
+                        "Nama":  "sumber peluncur native tersedia",
+                        "Status":  "PASS",
+                        "Detail":  "D:\\bakery-desktop\\build\\installer\\launcher\\Seruni22BakeryLauncher.cs"
+                    },
+                    {
+                        "Nama":  "build-installer memakai csc untuk peluncur",
+                        "Status":  "PASS",
+                        "Detail":  "peluncur dikompilasi, bukan disalin sebagai .vbs"
+                    },
+                    {
+                        "Nama":  "uji argumen peluncur",
+                        "Status":  "PASS",
+                        "Detail":  "exit 0"
+                    },
+                    {
+                        "Nama":  "paket WiX tanpa wscript/.vbs",
+                        "Status":  "PASS",
+                        "Detail":  "shortcut MSI juga harus menunjuk peluncur native"
+                    },
+                    {
+                        "Nama":  "ekspor memakai jam toko",
+                        "Status":  "PASS",
+                        "Detail":  "tanggal cetak dan nama berkas ekspor harus BusinessTime.Now()"
+                    },
+                    {
+                        "Nama":  "rentang ekspor bawaan memakai tanggal toko",
+                        "Status":  "PASS",
+                        "Detail":  "default rentang ekspor harus BusinessTime.Today()"
+                    },
+                    {
+                        "Nama":  "penomoran dokumen memakai tanggal toko",
+                        "Status":  "PASS",
+                        "Detail":  "nomor pesanan memakai BusinessTime.Now()"
+                    },
+                    {
+                        "Nama":  "penomoran retur memakai tanggal toko",
+                        "Status":  "PASS",
+                        "Detail":  "nomor retur memakai BusinessTime.Now()"
+                    },
+                    {
+                        "Nama":  "nomor SPK/PO memakai tanggal toko",
+                        "Status":  "PASS",
+                        "Detail":  "nomor SPK dan PO memakai BusinessTime.Now()"
+                    },
+                    {
+                        "Nama":  "rekap harian memakai tanggal toko",
+                        "Status":  "PASS",
+                        "Detail":  "rekap per hari tidak boleh memotong tanggal UTC"
+                    },
+                    {
+                        "Nama":  "Kestrel memakai keep-alive panjang",
+                        "Status":  "PASS",
+                        "Detail":  "tanpa batas ini peramban memakai soket yang sudah ditutup server"
+                    },
+                    {
+                        "Nama":  "klien membedakan server mati",
+                        "Status":  "PASS",
+                        "Detail":  "kegagalan jaringan harus diprobes ke /health"
+                    },
+                    {
+                        "Nama":  "layar menunggu server hidup lagi",
+                        "Status":  "PASS",
+                        "Detail":  "banner server mati harus memulihkan diri tanpa klik"
+                    },
+                    {
+                        "Nama":  "bundel desktop memuat penantian server",
+                        "Status":  "PASS",
+                        "Detail":  "bundel yang disajikan host harus memuat perbaikan, bukan sumber saja (bundel basi pernah lolos)"
+                    },
+                    {
+                        "Nama":  "host memasang pagar loopback",
+                        "Status":  "PASS",
+                        "Detail":  "start harus menolak alamat dengar di luar loopback sebelum database dibuat"
+                    },
+                    {
+                        "Nama":  "alamat dengar bawaan loopback",
+                        "Status":  "PASS",
+                        "Detail":  "Urls bawaan: \u0027http://localhost:5000\u0027"
+                    },
+                    {
+                        "Nama":  "tidak ada aturan firewall otomatis",
+                        "Status":  "PASS",
+                        "Detail":  "aplikasi loopback tidak boleh membuka port diam-diam lewat instalasi"
+                    },
+                    {
+                        "Nama":  "host uji untuk verify-batch2.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "siap di http://127.0.0.1:61977"
+                    },
+                    {
+                        "Nama":  "verifikasi verify-batch2.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "pemeriksaan 63, gagal 0"
+                    },
+                    {
+                        "Nama":  "host uji untuk verify-batch3.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "siap di http://127.0.0.1:61988"
+                    },
+                    {
+                        "Nama":  "verifikasi verify-batch3.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "pemeriksaan 56, gagal 0"
+                    },
+                    {
+                        "Nama":  "host uji untuk verify-batch6.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "siap di http://127.0.0.1:62020"
+                    },
+                    {
+                        "Nama":  "verifikasi verify-batch6.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "pemeriksaan 21, gagal 0"
+                    },
+                    {
+                        "Nama":  "host uji untuk verify-bug09.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "siap di http://127.0.0.1:62036"
+                    },
+                    {
+                        "Nama":  "verifikasi verify-bug09.mjs",
+                        "Status":  "PASS",
+                        "Detail":  "pemeriksaan 29, gagal 0"
+                    }
+                ]
+}

@@ -35,7 +35,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-pro.ps1 -Sinkr
 
 | Pagar | Hasil | Bukti |
 |---|---|---|
-| `verify.ps1 -Configuration Release` | **32 langkah PASS, 0 gagal, 0 SKIP**, 239,9 s | `dist/verify/verify-20261103-172525.json` |
+| `verify.ps1 -Configuration Release` | **32 langkah PASS, 0 gagal, 0 SKIP**, 239,9 s | `dist/verify/verify-20261103-172525.json` — lihat "Jejak versi gerbang": run ini berjalan pada pohon berversi **1.2.12** |
 | xUnit unit + integrasi + UI/Playwright | **523 lulus, 0 gagal, 0 dilewati** (dijumlah dari log, bukan dari exit code) | `dist/verify/verify-20261103-172525.test.log` |
 | Verifikasi perilaku lewat API nyata | **169 pemeriksaan, 0 gagal** — batch2 63, batch3 56, batch6 21, bug09 29 — host loopback + DB sementara | tabel `[PASS]` di laporan gerbang |
 | `build-pro.ps1` | **12 langkah, 0 gagal, 0 dilewati, 1 peringatan** (penimpaan atas `-IzinkanTulisUlang`) | `dist/installer/BUILD-INFO.json` |
@@ -51,6 +51,42 @@ salah, MSI hilang, versi EXE tertukar, kunci di folder publish, laporan menyebut
 nama ber-`..` di SHA256SUMS, EXE hilang (tanpa crash), manifest hilang (tidak boleh jadi SKIP), dan
 `JsonPath` di luar repo/temp. Penjaga versi terbit menolak build ulang dan **tidak** menghapus
 laporan paket yang sudah ada.
+
+## Jejak versi gerbang (temuan + koreksi, 4 November 2026)
+
+Laporan gerbang yang selama ini dikutip sebagai bukti 1.2.13 — `verify-20261103-172525.json` —
+ternyata menandai commit `18f47fcb1e1f064eb083a9487b4991dcfdcc4697`, dan pada commit itu
+`src/Host.Service/BakeryDesktop.Host.Service.csproj` masih berbunyi `<Version>1.2.12</Version>`.
+Angkanya benar, **label versinya yang tidak** bisa dibuktikan oleh laporan itu. Rantai waktu lokal
+(UTC+7), semuanya dibaca dari berkas, bukan dari ingatan:
+
+| Waktu | Commit | `<Version>` csproj | Peristiwa |
+|---|---|---|---|
+| 3 Nov 17:24:44 | `18f47fc` | **1.2.12** | commit terakhir sebelum naik versi |
+| 3 Nov 17:25:25 → 17:29:25 | `18f47fc` | 1.2.12 | gerbang Release: LULUS, 32 PASS, 523 tes, 239,9 s, `pohonKotor` 3 |
+| 3 Nov 17:35:48 | `cbeae7d` | **1.2.13** | "Rilis: versi 1.2.13 di tiga sumber" |
+| 3 Nov 17:37:14 | `5993072` | 1.2.13 | commit tempat `build-pro.ps1` berjalan (17:41:45, laporan `versi` 1.2.13, `pohonKotor` 0) |
+| 3 Nov 18:25:51 | `bbe22e8` | 1.2.13 | target tag annotated `v1.2.13` |
+| 4 Nov 08:45:06 → 08:50:41 | `b5dd62b` | **1.2.13** | gerbang Release **ulang** pada pohon berversi 1.2.13 |
+
+Run ulang: hasil **LULUS**, `kodeKeluar` 0, **32 langkah PASS / 0 gagal / 0 SKIP**,
+**523 tes lulus / 0 gagal / 0 dilewati**, pemeriksaan API 63 + 56 + 21 + 29 = **169, 0 gagal**,
+durasi 335,1 s, `pohonKotor` 0, commit `b5dd62b4f4d5976716cf59bda05e220a934eb601`. Angka ini
+**sama persis** dengan run 3 November — yang berubah hanya status buktinya: laporan sekarang
+dibuat pada pohon yang benar-benar bertuliskan 1.2.13. Salinannya ada di
+[`docs/paket-bukti-2026-11-04/gerbang-release-pohon-1213.json`](paket-bukti-2026-11-04/gerbang-release-pohon-1213.json)
+(8.378 bita, SHA-256 `d9f09f4896447d38…`), karena `dist/verify/` diabaikan git
+(`.gitignore:7`) dan laporan di sana tidak menjadi bukti repo.
+
+Dua catatan pelengkap supaya tidak ada angka yang dibaca keliru:
+
+- Run lama mencatat `pohonKotor: 3` (tiga berkas sumber belum di-commit saat gerbang jalan); run
+  ulang `pohonKotor: 0`. Tidak ada langkah yang berubah status di antara keduanya.
+- `build-pro.ps1` mencetak "12 langkah" sedangkan `BUILD-INFO.json` berisi **11** entri `langkah`.
+  Bukan salah catat: langkah ke-12 (`laporan build`, tercatat di `scripts/build-pro.ps1:412`) baru
+  didaftarkan **sesudah** berkas laporan ditulis, jadi ia tidak bisa memuat dirinya sendiri.
+  Hitungan di badan rilis dan tabel di atas (12 langkah, 0 gagal, 1 peringatan) mengikuti
+  ringkasan konsol, dan keduanya benar.
 
 ## Perbaikan yang masuk 1.2.13 (tidak ada di paket 1.2.12)
 
@@ -124,8 +160,9 @@ menghapus folder data pengguna. Lihat
   di layar Keuangan (`Muat <n> pesanan lagi`, `Muat <n> dokumen lagi`,
   `Tampilkan 100 dokumen berikutnya (<n> tersisa)`, `· hanya baris yang termuat`) dan cache status
   perangkat 15 detik — dicatat di badan rilis, bukan diklaim sebagai isi buku.
-  **Berlaku sampai 3 November 23:23:** paragraf di atas menggambarkan rilis saat pertama terbit.
-  Sore hari itu buku dibangun ulang menjadi edisi 1.2.13 dan asetnya diganti, jadi 9.316.970 bita /
+  **Berlaku sampai 4 November 2026 06:23 waktu lokal** (GitHub mencatat `2026-11-03T23:22:59Z`):
+  paragraf di atas menggambarkan rilis saat pertama terbit. Buku dibangun ulang malam harinya
+  (3 November 22:06) dan asetnya baru diganti pagi 4 November, jadi 9.316.970 bita /
   `eec028dc…` / 102 halaman tidak lagi cocok dengan unduhan publik hari ini — lihat subbab
   "Publikasi aset" di bawah.
 - Yang **tidak** berubah karena publikasi ini: paket tetap **NotSigned**, dan daftar "Belum
@@ -169,7 +206,12 @@ menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
   30 menit. Tidak ada migrasi baru antara 1.2.12 dan 1.2.13, sehingga bentuk basis data di buku
   tetap benar.
 
-### Publikasi aset (izin pemilik, 3 November 2026 23:23–23:25 WIB)
+### Publikasi aset (izin pemilik, 4 November 2026 06:23–06:26 WIB)
+
+Waktu pada subbab ini ditulis WIB (UTC+7), waktu mesin tempat perintah dijalankan. GitHub
+mencatatnya sebagai UTC: `created_at` aset `2026-11-03T23:22:59Z` (= 4 Nov 06:22:59) dan
+`updated_at` `2026-11-03T23:25:53Z` (= 06:25:53). Versi sebelumnya dari judul ini menulis
+"3 November 23:23" — itu angka UTC yang disalahlabeli WIB.
 
 - `gh release upload v1.2.13 docs/manual/Seruni22-Buku-Manual-Pengguna.pdf --clobber` keluar 0.
   Aset pengganti: id numerik **707468203**, nama tetap `Seruni22-Buku-Manual-Pengguna.pdf`,
@@ -186,7 +228,7 @@ menjadi edisi 1.2.13 dengan `python docs/manual/cetak_manual.py`; hasil lokal:
 - Yang **belum** diubah pada saat itu: badan rilis `v1.2.13` — izin yang diberikan baru unggah
   aset, jadi suntingan teks publik berikutnya menunggu persetujuan terpisah.
 
-### Suntingan badan rilis (izin pemilik, 4 November 2026 07:16 WIB)
+### Suntingan badan rilis pertama (izin pemilik, 4 November 2026 07:16 WIB)
 
 `gh release edit v1.2.13 --notes-file` keluar 0, lalu diulang dengan
 `PATCH /repos/dodorobe-bot/BAKERY/releases/432611731` memakai `--input` berkas JSON (jalur
@@ -206,7 +248,7 @@ memakai `key=@berkas` hanya untuk berkas yang berisi JSON utuh). Isi badan: 7.08
 2. Baris "Idempotensi" menyebut kunci kedaluwarsa **30 jam** — salah, sama seperti
    `CHANGELOG.md` yang sudah dibetulkan. Sumber: `MenitPesananBasi = 30` pada
    `src/Infrastructure.Sqlite/Repositories/IdempotencyRepository.cs:11`, dipakai sebagai
-   `-30 minutes`. kini **30 menit**. Daftar perbaikan di dokumen ini (butir 4) dan bullet yang
+   `-30 minutes`. Kini **30 menit**. Daftar perbaikan di dokumen ini (butir 4) dan bullet yang
    sama ikut dibetulkan.
 3. Daftar "Dokumen" menyebut "Manual pengguna (99 halaman, PDF)" menjadi "Manual pengguna edisi
    1.2.13 (107 halaman, PDF; tangkapan layar dari aplikasi 1.2.12)".
@@ -218,6 +260,36 @@ perintah utuh. Salinan badan rilis yang terbit disimpan sebagai bukti di
 [`docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md)
 — 7.415 bita, SHA-256 `82a557d61f7568dd…`, dibaca **kembali dari GitHub** sesudah sunting, bukan
 disalin dari naskah yang dikirim, jadi salinan itu membuktikan apa yang benar-benar tampil.
+
+### Suntingan badan rilis kedua (izin pemilik, 4 November 2026 08:59 WIB)
+
+`PATCH /repos/dodorobe-bot/BAKERY/releases/432611731` dengan `--input` berkas JSON keluar 0;
+GitHub mencatat `updated_at` `2026-11-04T01:59:23Z` (= 08:59:23 WIB). Isi badan yang terbit:
+**7.949 bita**, 65 baris isi + satu baris kosong di ekor (pencetak `gh release view -q .body`
+menambahkan satu `newline`; badan yang dikirim 7.883 bita LF), SHA-256 `e011ebe7c45415b1…`.
+Judul `Seruni 22 Bakery 1.2.13 — NOT READY`, `tag_name`, `draft=false`, `prerelease=false`, dan
+keempat aset (id 707468203 / 705373238 / 705373244 / 705373239, ukuran dan label) diperiksa ulang
+sesudah sunting — tidak ada yang berubah.
+
+Dua koreksi, keduanya konsekuensi temuan di subbab "Jejak versi gerbang":
+
+1. Butir pertama "Bukti yang sudah dijalankan" kini menyebutkan **siapa yang menjalankan bukti
+   gerbang pada versi apa**: run 3 November memakai commit `18f47fc` saat csproj masih 1.2.12
+   (versi 1.2.13 baru naik di `cbeae7d`, 3 November pukul 17:35 lokal) dan angka yang sama
+   dibuktikan ulang 4 November pada commit `b5dd62b` dengan `pohonKotor` 0, dirujuk ke
+   `docs/paket-bukti-2026-11-04/gerbang-release-pohon-1213.json`.
+2. Kalimat "Buku ini **edisi 1.2.13** dan terbit 3 November 2026" — tidak tepat, karena buku
+   dibangun 3 November 22:06 tetapi baru menjadi aset rilis 4 November 06:23 — diganti menjadi
+   "(naskah dibangun 3 November 2026 22:06 WIB, diganti sebagai aset rilis 4 November 2026
+   06:23 WIB)".
+
+Pemeriksaan sesudah terbit, dibaca ulang dari GitHub: nol kemunculan `30 jam`, `dan terbit
+3 November 2026`, `9.316.970`, dan `(99 halaman`; `18f47fc`, `cbeae7d`, `b5dd62b`, dan
+`gerbang-release-pohon-1213.json` masing-masing satu kali. Salinan yang terbit disimpan di
+[`docs/paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md);
+salinan edisi 07:16 (`82a557d61f7568dd…`, 7.415 bita) tetap di
+[`docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md)
+sebagai riwayat, bukan sebagai keadaan rilis hari ini.
 
 ## Batas bukti
 

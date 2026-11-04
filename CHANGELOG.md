@@ -6,12 +6,18 @@ Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 
 ## [1.2.13] — 2026-11-03
 
-Status: **NOT READY**. Yang sudah dibuktikan pada 2026-11-03: gerbang verifikasi dijalankan pada
-konfigurasi **Release** dan lulus penuh — **32 langkah, 0 gagal, 0 SKIP**
-(`dist\verify\verify-20261103-172525.json`), **523 tes otomatis lulus, 0 gagal, 0 dilewati**,
-**169 pemeriksaan API** (batch2 63, batch3 56, batch6 21, bug09 29) tanpa kegagalan, dan
+Status: **NOT READY**. Yang sudah dibuktikan: gerbang verifikasi dijalankan pada konfigurasi
+**Release** dan lulus penuh — **32 langkah, 0 gagal, 0 SKIP**, **523 tes otomatis lulus, 0 gagal,
+0 dilewati**, **169 pemeriksaan API** (batch2 63, batch3 56, batch6 21, bug09 29) tanpa kegagalan, dan
 `build-pro.ps1` menghasilkan EXE + MSI dengan **393/393 berkas payload** cocok manifest serta
 validasi paket **19 pemeriksaan, 0 gagal, 0 lewati**.
+
+Acuan bukti gerbang adalah run pada pohon yang **sudah** bertuliskan versi 1.2.13:
+[`docs/paket-bukti-2026-11-04/gerbang-release-pohon-1213.json`](docs/paket-bukti-2026-11-04/gerbang-release-pohon-1213.json)
+— commit `b5dd62b`, `<Version>1.2.13</Version>`, pohon kotor 0, hasil LULUS, keluar 0, 335,1 s. Run
+2026-11-03 (`dist\verify\verify-20261103-172525.json`, 239,9 s) menghasilkan angka yang identik,
+tetapi berjalan pada commit `18f47fc` yang `csproj`-nya masih **1.2.12** — kenaikan versi ke 1.2.13
+terjadi sesudah gerbang itu, jadi run tersebut bukti pra-naik-versi, bukan bukti paket 1.2.13.
 
 Isi versi ini adalah perbaikan yang dibangun 2–3 November dan **tidak ada di paket 1.2.12**:
 
