@@ -1,0 +1,82 @@
+name: Gerbang build + tes
+
+# Pagar kedua. Kebiasaan sebelumnya: seluruh bukti gerbang 1.2.x diambil dari satu PC toko
+# dengan RAM 3,7 GB, sehingga "gerbang lulus" tidak bisa diulang orang lain dan bisa gagal
+# karena mesinnya kehabisan memori, bukan karena kodenya. Pekerjaan di sini sengaja TIDAK
+# membuat installer (butuh Inno Setup + WiX + ISO Sandbox) dan tidak memasang apa pun; ia
+# hanya menjawab "apakah sumber ini masih bisa dibangun, dan apakah 544+ tesnya masih hijau".
+# Bukti pemasangan tetap milik scripts/build-pro.ps1 yang dijalankan di mesin pengembang.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gerbang-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gerbang:
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 10.0.x dipakai karena solution ini berbentuk .slnx (dibangun sebagai net8.0);
+      # 8.0.x ikut supaya target framework-nya punya SDK yang cocok.
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Pasang dependensi frontend
+        working-directory: frontend
+        run: npm ci
+
+      # desktop/ ada di .gitignore dan dibaca oleh host maupun UI.Tests; tanpa langkah ini
+      # tes UI gagal karena host tidak punya apa pun untuk disajikan.
+      - name: Bangun bundel desktop
+        run: |
+          npm run build --prefix frontend
+          New-Item -ItemType Directory -Force -Path desktop | Out-Null
+          Copy-Item -Path frontend/dist/* -Destination desktop -Recurse -Force
+          if (-not (Test-Path desktop/index.html)) { throw 'desktop/index.html tidak dihasilkan' }
+
+      - name: Unduh browser Playwright
+        run: npx --yes playwright@1.47.0 install chromium
+
+      - name: Build Release
+        run: dotnet build BakeryDesktop.slnx -c Release --nologo
+
+      - name: Tes Release
+        run: dotnet test BakeryDesktop.slnx -c Release --no-build --nologo -l "trx;LogFileName=gerbang.trx" --results-directory TestResults
+
+      # Keluaran tes dan laporan gerbang kadang hilang dari konsol; diunggah supaya
+      # kegagalan bisa dibaca setelah job selesai.
+      - name: Unggah log bila ada kegagalan
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-gerbang
+          path: TestResults
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Pagar keter-reproduksian berkas bukti. Ia meng-clone ulang HEAD dengan
+      # core.autocrlf=true, jadi aturannya harus sudah dikomit — dan runner CI selalu
+      # meng-clone dari HEAD, sehingga langkah ini tidak bisa hijau palsu seperti
+      # `git status` di pohon kerja.
+      - name: Keter-reproduksian berkas bukti
+        shell: pwsh
+        run: ./scripts/uji-checkout-bukti.ps1
