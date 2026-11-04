@@ -211,8 +211,27 @@ public sealed class ManualCaptureTests : IClassFixture<PlaywrightFixture>
         await Buka(page, "Pengaturan Toko & Cabang", "Pengaturan Toko & Cabang");
         await Tangkap(page, folder, "settings");
 
+        // Contoh pengisian: dialog kunci diisi nilai lalu direkam, supaya manual bisa
+        // memperlihatkan cara mengisi, bukan hanya formulir kosong.
+        Exception? kegagalanContoh = null;
+        try
+        {
+            await TangkapDialogTerisiAsync(page, folder);
+        }
+        catch (Exception ex)
+        {
+            kegagalanContoh = ex;
+            Console.WriteLine("[manual] contoh pengisian gagal: " + ex.Message);
+        }
+
+        // Angka yang dikutip buku manual dibaca ulang dari API pada saat gambar yang sama direkam.
+        // Manifest tetap ditulis walau ada dialog yang gagal, supaya angka yang sudah terekam tidak hilang.
+        await TulisManifestAsync(http);
+
         var jumlah = Directory.GetFiles(folder, "*.png").Length;
         Console.WriteLine($"[manual] {jumlah} gambar tersimpan di {folder}");
+        if (kegagalanContoh is not null)
+            throw kegagalanContoh;
     }
 
     /// <summary>
@@ -443,16 +462,9 @@ public sealed class ManualCaptureTests : IClassFixture<PlaywrightFixture>
         await SelesaikanSpkAsync(http, spk["Roti Cokelat"], 57, 3,
             "Gosong", "Scrap_Loss", "Suhu oven tidak stabil pada loyang terakhir.");
 
-        await Post(http, "/api/production/quality-checks", new
-        {
-            workOrderId = spk["Roti Tawar Susu"],
-            sampleQuantity = 10,
-            passedQuantity = 10,
-            failedQuantity = 0,
-            appearanceNotes = "Warna kulit roti merata, remah lembut.",
-            tasteNotes = "Rasa susu pas, tidak terlalu manis.",
-            notes = "Layak dijual.",
-        });
+        // Satu SPK dibiarkan belum diperiksa supaya layar QC memperlihatkan dua keadaan sekaligus:
+        // hasil pemeriksaan yang sudah tercatat dan tombol "Periksa SPK" yang aktif untuk SPK
+        // berikutnya (tombol itu disabled selama semua SPK selesai sudah ada nilainya).
         await Post(http, "/api/production/quality-checks", new
         {
             workOrderId = spk["Roti Cokelat"],
@@ -654,6 +666,477 @@ public sealed class ManualCaptureTests : IClassFixture<PlaywrightFixture>
             Path = Path.Combine(folder, nama + ".png"),
             FullPage = false,
         });
+    }
+
+    /// <summary>
+    /// Dialog-dialog kunci diisi contoh nilai lalu direkam. Tidak ada tombol simpan yang ditekan,
+    /// jadi data yang tersimpan tetap hasil seed di atas dan angka pada gambar tetap sama dengan
+    /// angka pada manifest. Setiap medan dicari dari label atau placeholder yang persis sama
+    /// dengan yang tampil di layar; kalau ada yang tidak ketemu, langkah itu dicatat gagal dan
+    /// dilaporkan di akhir, karena manual tidak boleh menggambar layar yang tidak benar-benar terisi.
+    /// Satu langkah yang gagal tidak boleh menghapus gambar langkah lain, tapi tetap membuat tes merah.
+    /// </summary>
+    private static async Task TangkapDialogTerisiAsync(IPage page, string folder)
+    {
+        var hariIni = DateTime.Today;
+        string Tanggal(int geser) => hariIni.AddDays(geser).ToString("yyyy-MM-dd");
+        var gagal = new List<string>();
+
+        // Setiap langkah berdiri sendiri: dialog yang tertinggal ditutup dengan muat ulang dan
+        // ukuran jendela dikembalikan, supaya kegagalan di satu layar tidak menjalar ke layar berikutnya.
+        async Task Langkah(string nama, Func<Task> kerja)
+        {
+            try
+            {
+                await kerja();
+            }
+            catch (Exception ex)
+            {
+                gagal.Add($"{nama}: {ex.Message.Replace("\n", " | ").Split(" | ")[0]}");
+                Console.WriteLine($"[manual] LANGKAH GAGAL '{nama}': {ex.Message}");
+                await TutupDialogAsync(page);
+            }
+            await page.SetViewportSizeAsync(1440, 900);
+        }
+
+        // 1. Kasir — pesanan katalog, total terkunci dari harga katalog × qty, DP sebagian.
+        await Langkah("pos-form-isi", async () =>
+        {
+            await Buka(page, "Kasir Penjualan Cepat", "Kasir Penjualan Cepat");
+            await page.SetViewportSizeAsync(1440, 1250);
+            await KlikAsync(page, "Tambah Transaksi / Pesanan");
+            await IsiAsync(page, "Tambah Transaksi / Pesanan Baru",
+                ("placeholder", "Nama pelanggan atau instansi...", "Bu Rani — Ulang tahun anak"),
+                ("placeholder", "08xx-xxxx-xxxx", "0812-3456-7890"),
+                ("label", "Tanggal Pickup", Tanggal(1)),
+                ("placeholder", "Contoh: 100 roti tawar, 50 croissant coklat...", "10 roti tawar susu untuk arisan"),
+                ("option", "Roti Tawar Susu", "Roti Tawar Susu"),
+                ("label", "Qty", "10"),
+                ("label", "Total (Rp)", "250000"),
+                ("placeholder", "0 jika belum ada DP", "100000"));
+            await Tangkap(page, folder, "pos-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 2. Bahan baku — satuan wajib, harga per satuan dalam Rupiah penuh.
+        await Langkah("bahan-form-isi", async () =>
+        {
+            await Buka(page, "Resep & Daftar Bahan Baku", "Resep & BOM Produk");
+            await KlikAsync(page, "Bahan Baku");
+            await KlikAsync(page, "Tambah Bahan");
+            await IsiAsync(page, "Tambah Bahan Baku",
+                ("placeholder", "cth. Tepung Terigu Cakra", "Bread Crumb Tepung Roti"),
+                ("placeholder", "cth. kg", "kg"),
+                ("placeholder", "cth. Cakra Kembar", "Bogamaster"),
+                ("placeholder", "cth. 13000", "4500"),
+                ("label", "Min. Stok", "2"));
+            await Tangkap(page, folder, "bahan-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 3. Produk + resep — satu baris resep ikut diisi supaya HPP ikut terbentuk.
+        await Langkah("produk-form-isi", async () =>
+        {
+            await Buka(page, "Resep & Daftar Bahan Baku", "Resep & BOM Produk");
+            await KlikAsync(page, "Tambah Produk");
+            await IsiAsync(page, "Tambah Produk",
+                ("placeholder", "cth. Roti Tawar Susu", "Roti Gandum Kernel"),
+                ("option", "Roti", "Roti"),
+                ("placeholder", "Scan atau ketik kode yang tertempel di kemasan", "8991234567890"),
+                ("placeholder", "cth. 15000", "15000"),
+                ("option", "Tepung Terigu Cakra (kg)", "Tepung Terigu Cakra (kg)"),
+                ("placeholder", "Qty", "0.25"));
+            await Tangkap(page, folder, "produk-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 4. Pemasok.
+        await Langkah("supplier-form-isi", async () =>
+        {
+            await Buka(page, "Pemasok & Rekanan", "Daftar Pemasok");
+            await KlikAsync(page, "Tambah Pemasok");
+            await IsiAsync(page, "Tambah Pemasok Baru",
+                ("placeholder", "Nama pemasok...", "Toko Bahan Kue Makmur"),
+                ("placeholder", "Nama PIC...", "Bu Ratna"),
+                ("placeholder", "08xx...", "0812-3456-7890"),
+                ("placeholder", "email@pemasok.com", "order@tbkmakmur.co.id"),
+                ("placeholder", "Alamat lengkap...", "Jl. Melati Raya No. 8, Bekasi"),
+                ("placeholder", "Catatan khusus...", "Kirim setiap Selasa, jatuh tempo 7 hari."));
+            await Tangkap(page, folder, "supplier-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 5. PO — satu baris bahan cukup; dialog sudah membuka satu baris kosong, jadi tidak
+        // perlu menekan "Tambah Bahan" (kalau ditekan, gambar memperlihatkan baris kosong kedua).
+        await Langkah("po-form-isi", async () =>
+        {
+            await Buka(page, "Pembelian & Penerimaan Barang", "Daftar Purchase Order");
+            await KlikAsync(page, "Buat PO Baru");
+            await IsiAsync(page, "Buat Purchase Order Baru",
+                ("option", "PT Dairy Prima", "PT Dairy Prima"),
+                ("label", "Tanggal Expected", Tanggal(2)),
+                ("placeholder", "Catatan tambahan...", "Mentega untuk produksi kroisan minggu depan."),
+                ("option", "Mentega Tawar", "Mentega Tawar"),
+                ("placeholder", "Qty", "20"),
+                ("placeholder", "Satuan", "kg"),
+                ("placeholder", "Harga (Rp)", "30000"));
+            await page.WaitForTimeoutAsync(400);
+            await Tangkap(page, folder, "po-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 6. Penerimaan barang — masuk gudang, lengkap dengan nomor batch dan kedaluwarsa.
+        await Langkah("purchases-receive-isi", async () =>
+        {
+            await Buka(page, "Pembelian & Penerimaan Barang", "Daftar Purchase Order");
+            await KlikBarisAsync(page, "Terima");
+            // Nomor batch contoh mengikuti bahan pada baris PO yang terbuka; kalau yang terbuka
+            // bahan lain, gambar dan teks buku jadi tidak cocok — lebih baik berhenti.
+            if (!(await TeksDialogAsync(page, "Terima Barang")).Contains("Cokelat Compound"))
+                throw new InvalidOperationException(
+                    "Dialog Terima Barang tidak terbuka pada PO Cokelat Compound, jadi nomor batch contoh salah.");
+            await IsiAsync(page, "Terima Barang",
+                ("label", "Terima Sekarang", "20"),
+                ("select", "Lokasi Simpan", "Gudang Utama Bahan Baku"),
+                ("placeholder", "mis. GUL-2026-10-A", "CHK-2603"),
+                ("label", "Kedaluwarsa", Tanggal(90)),
+                ("placeholder", "Catatan kondisi barang, dll...", "Suhu pengiriman baik, kemasan utuh."));
+            await Tangkap(page, folder, "purchases-receive-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 7. Mutasi gudang → dapur.
+        await Langkah("kitchen_transfer-form-isi", async () =>
+        {
+            await Buka(page, "Mutasi Gudang ke Dapur", "Mutasi Gudang → Dapur");
+            await KlikAsync(page, "Buka Formulir Mutasi");
+            await IsiAsync(page, "Formulir Mutasi Bahan",
+                ("select", "Dari lokasi", "WH-MAIN · Gudang Utama Bahan Baku"),
+                ("select", "Ke lokasi", "KIT-DAPUR · Dapur Produksi"),
+                ("select", "Bahan", "Tepung Terigu Cakra (kg)"),
+                ("placeholder", "0", "15"),
+                ("placeholder", "Misal: kebutuhan SPK shift pagi", "Kebutuhan SPK kroisan shift pagi."));
+            await Tangkap(page, folder, "kitchen_transfer-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 8. SPK baru.
+        await Langkah("production_orders-form-isi", async () =>
+        {
+            await Buka(page, "Perintah Kerja (SPK)", "Perintah Kerja (SPK)");
+            await page.SetViewportSizeAsync(1440, 1250);
+            await KlikAsync(page, "Buat SPK Produksi Baru");
+            await IsiAsync(page, "Buat SPK Produksi Baru",
+                ("select", "Produk", "Kroisan Mentega"),
+                ("label", "Target Jumlah (buah)", "40"),
+                ("label", "Biaya Tenaga Kerja (Rp)", "300000"),
+                ("label", "Biaya Overhead (Rp)", "150000"));
+            await Tangkap(page, folder, "production_orders-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 9. Penyelesaian SPK — pemakaian aktual per bahan + scrap.
+        await Langkah("production_orders-complete-isi", async () =>
+        {
+            await Buka(page, "Perintah Kerja (SPK)", "Perintah Kerja (SPK)");
+            await page.SetViewportSizeAsync(1440, 1250);
+            await KlikBarisAsync(page, "Selesaikan");
+            await IsiAsync(page, "Penyelesaian SPK",
+                ("label", "Roti Bagus (Lolos Uji)", "38"),
+                ("label", "Roti Gagal / Bantat", "2"),
+                ("option", "Gosong / oven tidak stabil", "Gosong / oven tidak stabil"),
+                ("label", "Rusak Saat Proses", "0"),
+                ("checkbox", "bisa diolah kembali", "0"));
+            await Tangkap(page, folder, "production_orders-complete-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 10. Pemeriksaan mutu — SPK yang selesai tapi belum ada hasil QC-nya.
+        await Langkah("quality_control-form-isi", async () =>
+        {
+            await Buka(page, "Pemeriksaan Mutu (QC)", "Pemeriksaan Mutu (QC)");
+            await KlikAsync(page, "Periksa SPK");
+            await IsiAsync(page, "Catat Pemeriksaan Mutu",
+                ("selectFirst", "SPK selesai", ""),
+                ("label", "Sampel", "10"),
+                ("label", "Lulus", "9"),
+                ("label", "Gagal", "1"),
+                ("placeholder", "Warna, bentuk, kerataan...", "Satu roti berwarna terlalu gelap di bagian atas."),
+                ("placeholder", "Rasa, tekstur, aroma...", "Rasa dan tekstur sesuai standar."),
+                ("label", "Catatan tambahan", "Sisa unit boleh dijual; satu unit disisihkan."));
+            await Tangkap(page, folder, "quality_control-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 11. Retur penjualan dari pesanan yang sudah lunas.
+        await Langkah("sales_returns-form-isi", async () =>
+        {
+            await Buka(page, "Retur Penjualan", "Retur Penjualan");
+            await KlikAsync(page, "Catat Retur");
+            await IsiAsync(page, "Catat Retur Penjualan",
+                ("selectFirst", "Pesanan lunas", ""),
+                ("label", "Jumlah unit", "2"),
+                ("select", "Metode pengembalian dana", "Tunai"),
+                ("placeholder", "mis. produk tidak sesuai pesanan", "Dua bungkus penyok saat pengantaran."));
+            await Tangkap(page, folder, "sales_returns-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 12. Pelunasan piutang.
+        await Langkah("receivables-form-isi", async () =>
+        {
+            await Buka(page, "Piutang & Pembayaran", "Piutang & Pembayaran");
+            await KlikBarisAsync(page, "Bayar");
+            await IsiAsync(page, "Catat Pembayaran",
+                ("select", "Metode Pembayaran", "Transfer Bank"),
+                ("placeholder", "Keterangan tambahan...", "Pelunasan via transfer, bukti 0032."));
+            await Tangkap(page, folder, "receivables-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 13. Pencatatan lot bahan.
+        await Langkah("batch_expiry-form-isi", async () =>
+        {
+            await Buka(page, "Nomor Batch & Kedaluwarsa", "Nomor Batch & Kedaluwarsa");
+            await KlikAsync(page, "Catat Lot");
+            await IsiAsync(page, "Catat Lot",
+                ("select", "Bahan", "Keju Cheddar (kg)"),
+                ("label", "Nomor batch", "KJU-2603"),
+                ("label", "Tanggal terima", Tanggal(-1)),
+                ("label", "Kedaluwarsa", Tanggal(60)),
+                ("label", "Biaya per satuan (Rp)", "118000"));
+            await Tangkap(page, folder, "batch_expiry-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 14. Pengeluaran kas.
+        await Langkah("cash_expense-form-isi", async () =>
+        {
+            await Buka(page, "Buku Besar & Jurnal Umum", "Buku Besar & Jurnal Umum");
+            await KlikAsync(page, "Catat Pengeluaran Kas");
+            await IsiAsync(page, "Catat Pengeluaran Kas",
+                ("select", "Kategori biaya", "Bahan Baku & Kebutuhan Dapur"),
+                ("label", "Nominal (Rp)", "150000"),
+                ("placeholder", "Misal: beli gas elpiji 3 tabung", "Beli gas elpiji 3 tabung untuk produksi."));
+            await Tangkap(page, folder, "cash_expense-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 15. Pegawai baru.
+        await Langkah("user_management-form-isi", async () =>
+        {
+            await Buka(page, "Hak Akses & Pegawai", "Hak Akses & Pegawai");
+            await KlikAsync(page, "Tambah Pegawai");
+            await IsiAsync(page, "Tambah Pegawai",
+                ("placeholder", "mis. kasir-sore", "devi.kasir"),
+                ("placeholder", "minimal 8 karakter, huruf + angka", "DeviKasir2026"),
+                ("select", "Peran", "Staf Toko / Kasir (Pegawai)"));
+            await Tangkap(page, folder, "user_management-form-isi");
+            await TutupDialogAsync(page);
+        });
+
+        // 16. Opname — isian langsung di tabel. Kolom "Alasan opname" baru muncul setelah ada
+        // selisih, jadi urutannya: cari bahan, tekan Hitung, isi jumlah fisik beda dari saldo
+        // sistem, lalu alasan. Angka fisik dibaca dari placeholder saldo supaya contoh tetap
+        // benar walau seed berubah.
+        await Langkah("stock_opname-isi", async () =>
+        {
+            await Buka(page, "Pemeriksaan Fisik (Stok Opname)", "Pemeriksaan Fisik (Stok Opname)");
+            await page.Locator("main input[placeholder='Cari bahan...']").FillAsync("Cokelat");
+            await page.WaitForTimeoutAsync(400);
+            await KlikBarisAsync(page, "Hitung");
+            await page.WaitForTimeoutAsync(400);
+
+            var fisik = await page.EvaluateAsync<string>("""
+                () => {
+                  const i = document.querySelector("main tbody input[type='number']");
+                  if (!i) return '';
+                  const saldo = Number(i.placeholder);
+                  if (!Number.isFinite(saldo)) return '';
+                  return String(Math.round((saldo - 0.25) * 100) / 100);
+                }
+                """);
+            if (string.IsNullOrWhiteSpace(fisik))
+                throw new InvalidOperationException(
+                    "Baris opname untuk bahan 'Cokelat' tidak muncul di lokasi bawaan.");
+
+            await page.Locator("main tbody input[type='number']").First.FillAsync(fisik);
+            await page.Locator("main input[placeholder='mis. selisih hitung fisik 27 Okt']")
+                .WaitForAsync(new() { Timeout = 10_000 });
+            await page.Locator("main input[placeholder='mis. selisih hitung fisik 27 Okt']")
+                .FillAsync("Selisih hitung fisik opname mingguan.");
+            await page.WaitForTimeoutAsync(400);
+            await Tangkap(page, folder, "stock_opname-isi");
+        });
+
+        if (gagal.Count > 0)
+            throw new InvalidOperationException(
+                $"{gagal.Count} contoh pengisian tidak bisa direkam:\n - " + string.Join("\n - ", gagal));
+    }
+
+    private static Task KlikAsync(IPage page, string teks) =>
+        page.GetByText(teks, new() { Exact = true }).First.ClickAsync();
+
+    /// <summary>Seluruh teks di dalam dialog yang judulnya dimulai dengan <paramref name="judul"/>.</summary>
+    private static Task<string> TeksDialogAsync(IPage page, string judul) =>
+        page.EvaluateAsync<string>("""
+            (args) => {
+              const h = [...document.querySelectorAll('h1,h2,h3,h4')]
+                .find(x => x.textContent.trim().startsWith(args.judul));
+              if (!h) return '';
+              let w = h.parentElement;
+              while (w && w.querySelectorAll('input,select,textarea').length === 0) w = w.parentElement;
+              return (w ? w.innerText : '').replace(/\s+/g, ' ');
+            }
+            """, new { judul });
+
+    private static Task KlikBarisAsync(IPage page, string teks) =>
+        page.Locator($"main button:has-text('{teks}')").First.ClickAsync();
+
+    /// <summary>
+    /// Mengisi satu dialog lewat DOM aplikasi sendiri. Pencocokan memakai teks label/placeholder
+    /// apa adanya, jadi kalau aplikasi mengganti label, rekaman berhenti dengan laporan alih-alih
+    /// diam-diam mengisi kolom yang salah.
+    /// </summary>
+    private static async Task IsiAsync(
+        IPage page, string judul, params (string Cari, string Kunci, string Nilai)[] medan)
+    {
+        // Dialog butuh satu dua tik untuk muncul; tanpa menunggu judulnya, pengisian bisa
+        // berjalan saat layar masih kosong dan laporan jadi "JUDUL TIDAK ADA".
+        try
+        {
+            await page.WaitForFunctionAsync(
+                "(args) => [...document.querySelectorAll('h1,h2,h3,h4')]"
+                + ".some(x => x.textContent.trim().startsWith(args.judul))",
+                new { judul },
+                new() { Timeout = 10_000 });
+        }
+        catch (TimeoutException)
+        {
+            throw new InvalidOperationException(
+                $"Dialog '{judul}' tidak muncul — pancingan sebelumnya mungkin berubah label atau statusnya.");
+        }
+
+        var laporan = await page.EvaluateAsync<string>("""
+            (args) => {
+              const h = [...document.querySelectorAll('h1,h2,h3,h4')]
+                .find(x => x.textContent.trim().startsWith(args.judul));
+              if (!h) return 'JUDUL TIDAK ADA: ' + args.judul;
+              let w = h.parentElement;
+              while (w && w.querySelectorAll('input,select,textarea').length === 0) w = w.parentElement;
+              const akar = w || document;
+              const label = (e) => {
+                const l = e.closest('label')
+                  || (e.previousElementSibling && e.previousElementSibling.tagName === 'LABEL' ? e.previousElementSibling : null)
+                  || (e.parentElement ? e.parentElement.querySelector('label') : null);
+                return (l ? l.textContent : '').replace(/\s+/g, ' ').trim().replace(/[*]/g, '').trim();
+              };
+              const setel = (e, v) => {
+                const proto = e.tagName === 'SELECT' ? HTMLSelectElement.prototype
+                  : e.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+                Object.getOwnPropertyDescriptor(proto, 'value').set.call(e, v);
+                e.dispatchEvent(new Event(e.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
+              };
+              const keluaran = [];
+              for (const m of args.daftar) {
+                let el = null;
+                if (m.cari === 'placeholder')
+                  el = [...akar.querySelectorAll('input,textarea')].find(i => (i.placeholder || '') === m.kunci);
+                else if (m.cari === 'label')
+                  el = [...akar.querySelectorAll('input,select,textarea')].find(i => label(i) === m.kunci);
+                else if (m.cari === 'select' || m.cari === 'selectFirst')
+                  el = [...akar.querySelectorAll('select')].find(s => label(s) === m.kunci);
+                else if (m.cari === 'option')
+                  el = [...akar.querySelectorAll('select')].find(s => [...s.options].some(o => o.textContent.trim() === m.kunci));
+                else if (m.cari === 'checkbox') {
+                  const cb = [...akar.querySelectorAll('input[type=checkbox]')].find(c => label(c).includes(m.kunci));
+                  if (!cb) { keluaran.push('TIDAK ADA: checkbox ' + m.kunci); continue; }
+                  const harus = m.nilai === '1';
+                  if (cb.checked !== harus) cb.click();
+                  keluaran.push('centang "' + m.kunci + '" = ' + cb.checked);
+                  continue;
+                }
+                if (!el) { keluaran.push('TIDAK ADA: ' + m.cari + ' ' + m.kunci); continue; }
+                if (el.tagName === 'SELECT') {
+                  if (m.cari === 'selectFirst') {
+                    const opsi = [...el.options].find(o => o.value !== '');
+                    if (!opsi) { keluaran.push('OPSI TIDAK ADA: ' + m.kunci); continue; }
+                    setel(el, opsi.value);
+                    keluaran.push('pilih "' + label(el) + '" = ' + opsi.textContent.trim());
+                    continue;
+                  }
+                  const opsi = [...el.options].find(o => o.textContent.trim() === m.nilai)
+                    || [...el.options].find(o => o.textContent.trim().includes(m.nilai));
+                  if (!opsi) { keluaran.push('OPSI TIDAK ADA: ' + m.nilai); continue; }
+                  setel(el, opsi.value);
+                  keluaran.push('pilih "' + (label(el) || m.kunci) + '" = ' + opsi.textContent.trim());
+                  continue;
+                }
+                setel(el, m.nilai);
+                keluaran.push('isi "' + (label(el) || el.placeholder || m.kunci) + '" = ' + el.value);
+              }
+              return keluaran.join('\n');
+            }
+            """, new
+        {
+            judul,
+            daftar = medan.Select(m => new { cari = m.Cari, kunci = m.Kunci, nilai = m.Nilai }),
+        });
+
+        Console.WriteLine($"[manual] isi '{judul}':\n{laporan}");
+        if (laporan.Contains("TIDAK ADA"))
+            throw new InvalidOperationException(
+                $"Contoh pengisian tidak cocok dengan layar (dialog '{judul}'):\n{laporan}");
+    }
+
+    /// <summary>
+    /// Baca ulang angka-angka yang sedang tampil di gambar manual. Berkas ini yang menjadi sumber
+    /// kutipan di buku, supaya nominal di teks tidak pernah dikarang dari ingatan.
+    /// </summary>
+    private static async Task TulisManifestAsync(HttpClient http)
+    {
+        var manifest = new Dictionary<string, JsonElement>();
+        foreach (var (nama, path) in new (string, string)[]
+        {
+            ("dashboard", "/api/dashboard"),
+            ("bahan", "/api/ingredients"),
+            ("produk", "/api/products"),
+            ("pemasok", "/api/suppliers"),
+            ("pembelian", "/api/purchases?limit=20"),
+            ("mutasi", "/api/inventory/movements"),
+            ("stokGudang", "/api/inventory/locations/1/stock"),
+            ("stokDapur", "/api/inventory/locations/2/stock"),
+            ("stokEtalase", "/api/inventory/locations/3/stock"),
+            ("produkJadi", "/api/inventory/finished-goods"),
+            ("lot", "/api/inventory/batches"),
+            ("spk", "/api/production/orders"),
+            ("mutu", "/api/production/quality-checks"),
+            ("hpp", "/api/production/cost-summary"),
+            ("pesanan", "/api/orders?limit=20"),
+            ("retur", "/api/returns"),
+            ("jurnal", "/api/journal?limit=40"),
+            ("saldoJurnal", "/api/journal/balances"),
+            ("analisis", "/api/analytics/sales"),
+            ("tugas", "/api/tasks"),
+            ("pemberitahuan", "/api/notifications/summary"),
+            ("pengaturan", "/api/settings"),
+            ("pegawai", "/api/users"),
+            ("periksaDiri", "/api/system/self-check"),
+        })
+        {
+            using var res = await http.GetAsync(path);
+            var teks = await res.Content.ReadAsStringAsync();
+            if (!res.IsSuccessStatusCode)
+                throw new InvalidOperationException($"GET {path} gagal ({(int)res.StatusCode}): {teks}");
+            manifest[nama] = string.IsNullOrWhiteSpace(teks)
+                ? default
+                : JsonSerializer.Deserialize<JsonElement>(teks)!;
+        }
+
+        var jalur = Path.Combine(TestHost.RepositoryRoot, "docs", "manual", "data-contoh.json");
+        await File.WriteAllTextAsync(jalur, JsonSerializer.Serialize(manifest,
+            new JsonSerializerOptions { WriteIndented = true }));
+        Console.WriteLine($"[manual] manifest angka tersimpan di {jalur}");
     }
 
     private sealed record DataContoh(string KasirUsername, string KasirPassword);

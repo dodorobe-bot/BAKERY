@@ -1,0 +1,3913 @@
+{
+  "dashboard": {
+    "kasBalance": -83500000,
+    "piutang": 46300000,
+    "revenue": 35000000,
+    "expense": 118500000,
+    "netProfit": -83500000,
+    "activeOrders": 4,
+    "alerts": [
+      {
+        "type": "pickup",
+        "message": "H-1 Pengambilan: Ibu Ratna \u2014 Arisan Melati (Roti tawar susu 10 bungkus untuk arisan)"
+      },
+      {
+        "type": "payment",
+        "message": "Piutang Terlewat: Warung Bu Tini (Rp 42.000)"
+      }
+    ],
+    "upcomingOrders": [
+      {
+        "id": 1,
+        "orderNumber": "ORD-20261104-0001",
+        "customerName": "Ibu Ratna \u2014 Arisan Melati",
+        "description": "Roti tawar susu 10 bungkus untuk arisan",
+        "pickupDate": "2026-11-05T00:00:00",
+        "status": "Paid"
+      },
+      {
+        "id": 2,
+        "orderNumber": "ORD-20261104-0002",
+        "customerName": "Pak Joko \u2014 Koperasi Sekolah",
+        "description": "Roti cokelat 20 bungkus untuk kantin",
+        "pickupDate": "2026-11-06T00:00:00",
+        "status": "Pending"
+      },
+      {
+        "id": 3,
+        "orderNumber": "ORD-20261104-0003",
+        "customerName": "Dewi \u2014 Pesanan Hajatan",
+        "description": "Roti tawar susu 5 bungkus",
+        "pickupDate": "2026-11-07T00:00:00",
+        "status": "Pending"
+      },
+      {
+        "id": 5,
+        "orderNumber": "ORD-20261104-0005",
+        "customerName": "Sekolah Bina Ceria",
+        "description": "Roti keju 12 bungkus untuk rapat guru",
+        "pickupDate": "2026-11-09T00:00:00",
+        "status": "Pending"
+      }
+    ]
+  },
+  "bahan": [
+    {
+      "id": 7,
+      "legacyId": null,
+      "name": "Cokelat Compound",
+      "brand": "Beryls",
+      "unit": "kg",
+      "pricePerUnit": 6500000,
+      "currentStock": 13.868,
+      "minStockAlert": 2.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8592597\u002B07:00"
+    },
+    {
+      "id": 2,
+      "legacyId": null,
+      "name": "Gula Pasir",
+      "brand": "Gulaku",
+      "unit": "kg",
+      "pricePerUnit": 1600000,
+      "currentStock": 27.354,
+      "minStockAlert": 5.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8196282\u002B07:00"
+    },
+    {
+      "id": 8,
+      "legacyId": null,
+      "name": "Keju Cheddar",
+      "brand": "Prochiz",
+      "unit": "kg",
+      "pricePerUnit": 12000000,
+      "currentStock": 6.0,
+      "minStockAlert": 1.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8634872\u002B07:00"
+    },
+    {
+      "id": 3,
+      "legacyId": null,
+      "name": "Mentega Tawar",
+      "brand": "Anchor",
+      "unit": "kg",
+      "pricePerUnit": 3200000,
+      "currentStock": 53.432,
+      "minStockAlert": 4.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8424974\u002B07:00"
+    },
+    {
+      "id": 4,
+      "legacyId": null,
+      "name": "Ragi Instan",
+      "brand": "Fermipan",
+      "unit": "kg",
+      "pricePerUnit": 9000000,
+      "currentStock": 4.686,
+      "minStockAlert": 0.5,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8463111\u002B07:00"
+    },
+    {
+      "id": 6,
+      "legacyId": null,
+      "name": "Susu Bubuk",
+      "brand": "Indomilk",
+      "unit": "kg",
+      "pricePerUnit": 8500000,
+      "currentStock": 7.51,
+      "minStockAlert": 1.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8545464\u002B07:00"
+    },
+    {
+      "id": 5,
+      "legacyId": null,
+      "name": "Telur Ayam",
+      "brand": "Cisarua",
+      "unit": "kg",
+      "pricePerUnit": 2800000,
+      "currentStock": 19.02,
+      "minStockAlert": 3.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.8504476\u002B07:00"
+    },
+    {
+      "id": 1,
+      "legacyId": null,
+      "name": "Tepung Terigu Cakra",
+      "brand": "Bogasari",
+      "unit": "kg",
+      "pricePerUnit": 1400000,
+      "currentStock": 108.244,
+      "minStockAlert": 15.0,
+      "isActive": true,
+      "updatedAt": "2026-11-04T19:07:36.794021\u002B07:00"
+    }
+  ],
+  "produk": [
+    {
+      "id": 6,
+      "name": "Donat Gula",
+      "category": "Kue",
+      "barcode": "8998264812",
+      "sellingPrice": 700000,
+      "isActive": true,
+      "recipeLines": [
+        {
+          "id": 25,
+          "productTemplateId": 6,
+          "ingredientId": 1,
+          "quantity": 0.08,
+          "ingredient": {
+            "id": 1,
+            "legacyId": null,
+            "name": "Tepung Terigu Cakra",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1400000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 26,
+          "productTemplateId": 6,
+          "ingredientId": 2,
+          "quantity": 0.02,
+          "ingredient": {
+            "id": 2,
+            "legacyId": null,
+            "name": "Gula Pasir",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1600000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 27,
+          "productTemplateId": 6,
+          "ingredientId": 3,
+          "quantity": 0.01,
+          "ingredient": {
+            "id": 3,
+            "legacyId": null,
+            "name": "Mentega Tawar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 3200000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 28,
+          "productTemplateId": 6,
+          "ingredientId": 4,
+          "quantity": 0.003,
+          "ingredient": {
+            "id": 4,
+            "legacyId": null,
+            "name": "Ragi Instan",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 9000000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Kroisan Mentega",
+      "category": "Kue",
+      "barcode": "8998661820",
+      "sellingPrice": 1500000,
+      "isActive": true,
+      "recipeLines": [
+        {
+          "id": 17,
+          "productTemplateId": 4,
+          "ingredientId": 1,
+          "quantity": 0.1,
+          "ingredient": {
+            "id": 1,
+            "legacyId": null,
+            "name": "Tepung Terigu Cakra",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1400000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 19,
+          "productTemplateId": 4,
+          "ingredientId": 2,
+          "quantity": 0.01,
+          "ingredient": {
+            "id": 2,
+            "legacyId": null,
+            "name": "Gula Pasir",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1600000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 18,
+          "productTemplateId": 4,
+          "ingredientId": 3,
+          "quantity": 0.05,
+          "ingredient": {
+            "id": 3,
+            "legacyId": null,
+            "name": "Mentega Tawar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 3200000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 20,
+          "productTemplateId": 4,
+          "ingredientId": 4,
+          "quantity": 0.002,
+          "ingredient": {
+            "id": 4,
+            "legacyId": null,
+            "name": "Ragi Instan",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 9000000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Kue Sus",
+      "category": "Kue",
+      "barcode": "8991989041",
+      "sellingPrice": 800000,
+      "isActive": true,
+      "recipeLines": [
+        {
+          "id": 21,
+          "productTemplateId": 5,
+          "ingredientId": 1,
+          "quantity": 0.05,
+          "ingredient": {
+            "id": 1,
+            "legacyId": null,
+            "name": "Tepung Terigu Cakra",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1400000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 24,
+          "productTemplateId": 5,
+          "ingredientId": 2,
+          "quantity": 0.01,
+          "ingredient": {
+            "id": 2,
+            "legacyId": null,
+            "name": "Gula Pasir",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1600000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 22,
+          "productTemplateId": 5,
+          "ingredientId": 3,
+          "quantity": 0.02,
+          "ingredient": {
+            "id": 3,
+            "legacyId": null,
+            "name": "Mentega Tawar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 3200000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 23,
+          "productTemplateId": 5,
+          "ingredientId": 5,
+          "quantity": 0.03,
+          "ingredient": {
+            "id": 5,
+            "legacyId": null,
+            "name": "Telur Ayam",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 2800000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Roti Cokelat",
+      "category": "Roti",
+      "barcode": "8993215177",
+      "sellingPrice": 1200000,
+      "isActive": true,
+      "recipeLines": [
+        {
+          "id": 7,
+          "productTemplateId": 2,
+          "ingredientId": 1,
+          "quantity": 0.12,
+          "ingredient": {
+            "id": 1,
+            "legacyId": null,
+            "name": "Tepung Terigu Cakra",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1400000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 8,
+          "productTemplateId": 2,
+          "ingredientId": 2,
+          "quantity": 0.02,
+          "ingredient": {
+            "id": 2,
+            "legacyId": null,
+            "name": "Gula Pasir",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1600000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 9,
+          "productTemplateId": 2,
+          "ingredientId": 3,
+          "quantity": 0.01,
+          "ingredient": {
+            "id": 3,
+            "legacyId": null,
+            "name": "Mentega Tawar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 3200000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 10,
+          "productTemplateId": 2,
+          "ingredientId": 4,
+          "quantity": 0.002,
+          "ingredient": {
+            "id": 4,
+            "legacyId": null,
+            "name": "Ragi Instan",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 9000000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 11,
+          "productTemplateId": 2,
+          "ingredientId": 7,
+          "quantity": 0.015,
+          "ingredient": {
+            "id": 7,
+            "legacyId": null,
+            "name": "Cokelat Compound",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 6500000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Roti Keju",
+      "category": "Roti",
+      "barcode": "8993261196",
+      "sellingPrice": 1300000,
+      "isActive": true,
+      "recipeLines": [
+        {
+          "id": 12,
+          "productTemplateId": 3,
+          "ingredientId": 1,
+          "quantity": 0.12,
+          "ingredient": {
+            "id": 1,
+            "legacyId": null,
+            "name": "Tepung Terigu Cakra",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1400000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 13,
+          "productTemplateId": 3,
+          "ingredientId": 2,
+          "quantity": 0.015,
+          "ingredient": {
+            "id": 2,
+            "legacyId": null,
+            "name": "Gula Pasir",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1600000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 14,
+          "productTemplateId": 3,
+          "ingredientId": 3,
+          "quantity": 0.012,
+          "ingredient": {
+            "id": 3,
+            "legacyId": null,
+            "name": "Mentega Tawar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 3200000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 15,
+          "productTemplateId": 3,
+          "ingredientId": 4,
+          "quantity": 0.002,
+          "ingredient": {
+            "id": 4,
+            "legacyId": null,
+            "name": "Ragi Instan",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 9000000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 16,
+          "productTemplateId": 3,
+          "ingredientId": 8,
+          "quantity": 0.02,
+          "ingredient": {
+            "id": 8,
+            "legacyId": null,
+            "name": "Keju Cheddar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 12000000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Roti Tawar Susu",
+      "category": "Roti",
+      "barcode": "8992321143",
+      "sellingPrice": 2500000,
+      "isActive": true,
+      "recipeLines": [
+        {
+          "id": 1,
+          "productTemplateId": 1,
+          "ingredientId": 1,
+          "quantity": 0.3,
+          "ingredient": {
+            "id": 1,
+            "legacyId": null,
+            "name": "Tepung Terigu Cakra",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1400000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 2,
+          "productTemplateId": 1,
+          "ingredientId": 2,
+          "quantity": 0.03,
+          "ingredient": {
+            "id": 2,
+            "legacyId": null,
+            "name": "Gula Pasir",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 1600000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 3,
+          "productTemplateId": 1,
+          "ingredientId": 3,
+          "quantity": 0.02,
+          "ingredient": {
+            "id": 3,
+            "legacyId": null,
+            "name": "Mentega Tawar",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 3200000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 4,
+          "productTemplateId": 1,
+          "ingredientId": 4,
+          "quantity": 0.004,
+          "ingredient": {
+            "id": 4,
+            "legacyId": null,
+            "name": "Ragi Instan",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 9000000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 6,
+          "productTemplateId": 1,
+          "ingredientId": 5,
+          "quantity": 0.02,
+          "ingredient": {
+            "id": 5,
+            "legacyId": null,
+            "name": "Telur Ayam",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 2800000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        },
+        {
+          "id": 5,
+          "productTemplateId": 1,
+          "ingredientId": 6,
+          "quantity": 0.01,
+          "ingredient": {
+            "id": 6,
+            "legacyId": null,
+            "name": "Susu Bubuk",
+            "brand": null,
+            "unit": "kg",
+            "pricePerUnit": 8500000,
+            "currentStock": 0,
+            "minStockAlert": 0,
+            "isActive": true,
+            "updatedAt": null
+          }
+        }
+      ]
+    }
+  ],
+  "pemasok": [
+    {
+      "id": 1,
+      "name": "CV Sumber Bahan Nusantara",
+      "contactName": "Pak Hendra",
+      "phone": "0812-1111-2200",
+      "email": "order@sumberbahan.co.id",
+      "address": "Jl. Raya Bekasi No. 45, Jakarta Timur",
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2026-11-04T12:07:36"
+    },
+    {
+      "id": 2,
+      "name": "PT Dairy Prima",
+      "contactName": "Bu Lestari",
+      "phone": "0813-2222-3300",
+      "email": "sales@dairyprima.co.id",
+      "address": "Kawasan Industri Pulogadung Blok C7",
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2026-11-04T12:07:36"
+    },
+    {
+      "id": 3,
+      "name": "Toko Kemasan Sejahtera",
+      "contactName": "Ko Aan",
+      "phone": "0857-8888-9900",
+      "email": null,
+      "address": "Jl. Pasar Baru No. 12, Jakarta Pusat",
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2026-11-04T12:07:36"
+    }
+  ],
+  "pembelian": [
+    {
+      "id": 3,
+      "poNumber": "PO-20261104-0003",
+      "supplierId": 1,
+      "supplierName": "CV Sumber Bahan Nusantara",
+      "status": 0,
+      "orderDate": "2026-11-04T00:00:00",
+      "expectedDate": "2026-11-07T00:00:00",
+      "notes": "Stok cokelat menipis, pesan sebelum akhir pekan",
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:37",
+      "lines": [
+        {
+          "id": 3,
+          "purchaseOrderId": 3,
+          "ingredientId": 7,
+          "ingredientName": "Cokelat Compound",
+          "orderedQty": 20.0,
+          "receivedQty": 0.0,
+          "unitCostMinorUnits": 6000000,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "poNumber": "PO-20261104-0002",
+      "supplierId": 2,
+      "supplierName": "PT Dairy Prima",
+      "status": 3,
+      "orderDate": "2026-11-04T00:00:00",
+      "expectedDate": "2026-11-03T00:00:00",
+      "notes": "Mentega tawar untuk produksi kroisan",
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:36",
+      "lines": [
+        {
+          "id": 2,
+          "purchaseOrderId": 2,
+          "ingredientId": 3,
+          "ingredientName": "Mentega Tawar",
+          "orderedQty": 30.0,
+          "receivedQty": 30.0,
+          "unitCostMinorUnits": 3000000,
+          "unit": "kg"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "poNumber": "PO-20261104-0001",
+      "supplierId": 1,
+      "supplierName": "CV Sumber Bahan Nusantara",
+      "status": 2,
+      "orderDate": "2026-11-04T00:00:00",
+      "expectedDate": "2026-11-02T00:00:00",
+      "notes": "Pasokan mingguan tepung",
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:36",
+      "lines": [
+        {
+          "id": 1,
+          "purchaseOrderId": 1,
+          "ingredientId": 1,
+          "ingredientName": "Tepung Terigu Cakra",
+          "orderedQty": 50.0,
+          "receivedQty": 30.0,
+          "unitCostMinorUnits": 1350000,
+          "unit": "kg"
+        }
+      ]
+    }
+  ],
+  "mutasi": [
+    {
+      "id": 38,
+      "ingredientId": 7,
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "movementType": "Adjustment",
+      "quantity": 4.75,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "Adjustment",
+      "sourceId": null,
+      "notes": "Selisih hitung fisik opname mingguan (0,25 kg).",
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 37,
+      "ingredientId": 7,
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.882,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 2,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 36,
+      "ingredientId": 4,
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.118,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 2,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 35,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.588,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 2,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 34,
+      "ingredientId": 2,
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -1.176,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 2,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 33,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -7.056,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 2,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 32,
+      "ingredientId": 5,
+      "ingredientName": "Telur Ayam",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.98,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 1,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 31,
+      "ingredientId": 6,
+      "ingredientName": "Susu Bubuk",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.49,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 1,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 30,
+      "ingredientId": 4,
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.196,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 1,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 29,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -0.98,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 1,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 28,
+      "ingredientId": 2,
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -1.47,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 1,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 27,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "movementType": "Deduction",
+      "quantity": -14.7,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "WorkOrder",
+      "sourceId": 1,
+      "notes": null,
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 26,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 30.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "GoodsReceipt",
+      "sourceId": 2,
+      "notes": "Penerimaan PO PO-20261104-0002",
+      "createdAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "id": 25,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 30.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "GoodsReceipt",
+      "sourceId": 1,
+      "notes": "Penerimaan PO PO-20261104-0001",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 24,
+      "ingredientId": 8,
+      "ingredientName": "Keju Cheddar",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 4.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 23,
+      "ingredientId": 8,
+      "ingredientName": "Keju Cheddar",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -4.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 22,
+      "ingredientId": 7,
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 5.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 21,
+      "ingredientId": 7,
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -5.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 20,
+      "ingredientId": 6,
+      "ingredientName": "Susu Bubuk",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 4.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 19,
+      "ingredientId": 6,
+      "ingredientName": "Susu Bubuk",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -4.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 18,
+      "ingredientId": 5,
+      "ingredientName": "Telur Ayam",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 8.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 17,
+      "ingredientId": 5,
+      "ingredientName": "Telur Ayam",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -8.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 16,
+      "ingredientId": 4,
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 2.5,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 15,
+      "ingredientId": 4,
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -2.5,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 14,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 10.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 13,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -10.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 12,
+      "ingredientId": 2,
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 12.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 11,
+      "ingredientId": 2,
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -12.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 10,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": 40.0,
+      "locationId": 2,
+      "locationName": "Dapur Produksi",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 9,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "movementType": "Transfer",
+      "quantity": -40.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "LocationTransfer",
+      "sourceId": 1,
+      "notes": "Persiapan produksi pagi",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 8,
+      "ingredientId": 8,
+      "ingredientName": "Keju Cheddar",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 6.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 8,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 7,
+      "ingredientId": 7,
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 10.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 7,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 6,
+      "ingredientId": 6,
+      "ingredientName": "Susu Bubuk",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 8.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 6,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 5,
+      "ingredientId": 5,
+      "ingredientName": "Telur Ayam",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 20.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 5,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 4,
+      "ingredientId": 4,
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 5.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 4,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 3,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 25.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 3,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 2,
+      "ingredientId": 2,
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 30.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 2,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    },
+    {
+      "id": 1,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "movementType": "Restock",
+      "quantity": 100.0,
+      "locationId": 1,
+      "locationName": "Gudang Utama Bahan Baku",
+      "sourceType": "IngredientMaster",
+      "sourceId": 1,
+      "notes": "Stok awal bahan baku",
+      "createdAt": "2026-11-04T12:07:36Z"
+    }
+  ],
+  "stokGudang": [
+    {
+      "id": 7,
+      "locationId": 1,
+      "ingredientId": 7,
+      "quantity": 9.75,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "minStockAlert": 2.0
+    },
+    {
+      "id": 2,
+      "locationId": 1,
+      "ingredientId": 2,
+      "quantity": 18.0,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "minStockAlert": 5.0
+    },
+    {
+      "id": 8,
+      "locationId": 1,
+      "ingredientId": 8,
+      "quantity": 2.0,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Keju Cheddar",
+      "unit": "kg",
+      "minStockAlert": 1.0
+    },
+    {
+      "id": 3,
+      "locationId": 1,
+      "ingredientId": 3,
+      "quantity": 45.0,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "minStockAlert": 4.0
+    },
+    {
+      "id": 4,
+      "locationId": 1,
+      "ingredientId": 4,
+      "quantity": 2.5,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "minStockAlert": 0.5
+    },
+    {
+      "id": 6,
+      "locationId": 1,
+      "ingredientId": 6,
+      "quantity": 4.0,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Susu Bubuk",
+      "unit": "kg",
+      "minStockAlert": 1.0
+    },
+    {
+      "id": 5,
+      "locationId": 1,
+      "ingredientId": 5,
+      "quantity": 12.0,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Telur Ayam",
+      "unit": "kg",
+      "minStockAlert": 3.0
+    },
+    {
+      "id": 1,
+      "locationId": 1,
+      "ingredientId": 1,
+      "quantity": 90.0,
+      "locationName": "Gudang Utama Bahan Baku",
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "minStockAlert": 15.0
+    }
+  ],
+  "stokDapur": [
+    {
+      "id": 15,
+      "locationId": 2,
+      "ingredientId": 7,
+      "quantity": 4.118,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Cokelat Compound",
+      "unit": "kg",
+      "minStockAlert": 2.0
+    },
+    {
+      "id": 10,
+      "locationId": 2,
+      "ingredientId": 2,
+      "quantity": 9.354,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Gula Pasir",
+      "unit": "kg",
+      "minStockAlert": 5.0
+    },
+    {
+      "id": 16,
+      "locationId": 2,
+      "ingredientId": 8,
+      "quantity": 4.0,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Keju Cheddar",
+      "unit": "kg",
+      "minStockAlert": 1.0
+    },
+    {
+      "id": 11,
+      "locationId": 2,
+      "ingredientId": 3,
+      "quantity": 8.432,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "minStockAlert": 4.0
+    },
+    {
+      "id": 12,
+      "locationId": 2,
+      "ingredientId": 4,
+      "quantity": 2.186,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Ragi Instan",
+      "unit": "kg",
+      "minStockAlert": 0.5
+    },
+    {
+      "id": 14,
+      "locationId": 2,
+      "ingredientId": 6,
+      "quantity": 3.51,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Susu Bubuk",
+      "unit": "kg",
+      "minStockAlert": 1.0
+    },
+    {
+      "id": 13,
+      "locationId": 2,
+      "ingredientId": 5,
+      "quantity": 7.02,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Telur Ayam",
+      "unit": "kg",
+      "minStockAlert": 3.0
+    },
+    {
+      "id": 9,
+      "locationId": 2,
+      "ingredientId": 1,
+      "quantity": 18.244,
+      "locationName": "Dapur Produksi",
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "minStockAlert": 15.0
+    }
+  ],
+  "stokEtalase": [],
+  "produkJadi": [
+    {
+      "locationId": 3,
+      "locationName": "Etalase Toko \u0026 Kasir",
+      "productTemplateId": 2,
+      "productName": "Roti Cokelat",
+      "quantity": 57.0,
+      "updatedAt": "2026-11-04T12:07:37Z"
+    },
+    {
+      "locationId": 3,
+      "locationName": "Etalase Toko \u0026 Kasir",
+      "productTemplateId": 1,
+      "productName": "Roti Tawar Susu",
+      "quantity": 40.0,
+      "updatedAt": "2026-11-04T12:07:37Z"
+    }
+  ],
+  "lot": [
+    {
+      "id": 3,
+      "ingredientId": 8,
+      "ingredientName": "Keju Cheddar",
+      "unit": "kg",
+      "batchNumber": "KJU-2512",
+      "receivedDate": "2026-09-25T00:00:00",
+      "expiryDate": "2026-11-02T00:00:00",
+      "unitCostMinorUnits": 11500000,
+      "daysToExpiry": -2,
+      "status": "kedaluwarsa"
+    },
+    {
+      "id": 2,
+      "ingredientId": 3,
+      "ingredientName": "Mentega Tawar",
+      "unit": "kg",
+      "batchNumber": "MTA-2602",
+      "receivedDate": "2026-11-04T00:00:00",
+      "expiryDate": "2026-12-04T00:00:00",
+      "unitCostMinorUnits": 3000000,
+      "daysToExpiry": 30,
+      "status": "aman"
+    },
+    {
+      "id": 1,
+      "ingredientId": 1,
+      "ingredientName": "Tepung Terigu Cakra",
+      "unit": "kg",
+      "batchNumber": "TEP-2601",
+      "receivedDate": "2026-11-04T00:00:00",
+      "expiryDate": "2027-05-03T00:00:00",
+      "unitCostMinorUnits": 1350000,
+      "daysToExpiry": 180,
+      "status": "aman"
+    }
+  ],
+  "spk": [
+    {
+      "id": 4,
+      "orderNumber": "SPK-20261104-0004",
+      "productTemplateId": 6,
+      "productName": "Donat Gula",
+      "targetQuantity": 40,
+      "actualGoodQty": 0,
+      "actualFailedQty": 0,
+      "status": 3,
+      "totalMaterialCost": 8120000,
+      "laborCost": 260000,
+      "overheadCost": 120000,
+      "startDate": "2026-11-04T12:07:37",
+      "completedDate": null,
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:37",
+      "materials": [],
+      "scraps": []
+    },
+    {
+      "id": 3,
+      "orderNumber": "SPK-20261104-0003",
+      "productTemplateId": 4,
+      "productName": "Kroisan Mentega",
+      "targetQuantity": 40,
+      "actualGoodQty": 0,
+      "actualFailedQty": 0,
+      "status": 0,
+      "totalMaterialCost": 13360000,
+      "laborCost": 300000,
+      "overheadCost": 140000,
+      "startDate": "2026-11-04T12:07:37",
+      "completedDate": null,
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:37",
+      "materials": [],
+      "scraps": []
+    },
+    {
+      "id": 2,
+      "orderNumber": "SPK-20261104-0002",
+      "productTemplateId": 2,
+      "productName": "Roti Cokelat",
+      "targetQuantity": 60,
+      "actualGoodQty": 57,
+      "actualFailedQty": 3,
+      "status": 2,
+      "totalMaterialCost": 20436600,
+      "laborCost": 320000,
+      "overheadCost": 150000,
+      "startDate": "2026-11-04T12:07:37",
+      "completedDate": "2026-11-04T12:07:37",
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:37",
+      "materials": [],
+      "scraps": []
+    },
+    {
+      "id": 1,
+      "orderNumber": "SPK-20261104-0001",
+      "productTemplateId": 1,
+      "productName": "Roti Tawar Susu",
+      "targetQuantity": 50,
+      "actualGoodQty": 48,
+      "actualFailedQty": 2,
+      "status": 2,
+      "totalMaterialCost": 34741000,
+      "laborCost": 350000,
+      "overheadCost": 180000,
+      "startDate": "2026-11-04T12:07:37",
+      "completedDate": "2026-11-04T12:07:37",
+      "createdByUserId": 1,
+      "createdAt": "2026-11-04T12:07:37",
+      "materials": [],
+      "scraps": []
+    }
+  ],
+  "mutu": [
+    {
+      "id": 1,
+      "workOrderId": 2,
+      "orderNumber": "SPK-20261104-0002",
+      "productName": "Roti Cokelat",
+      "sampleQuantity": 10,
+      "passedQuantity": 9,
+      "failedQuantity": 1,
+      "decision": "Failed",
+      "appearanceNotes": "Satu roti berwarna terlalu gelap di bagian atas.",
+      "tasteNotes": "Rasa cokelat konsisten.",
+      "notes": "Satu unit disisihkan, tidak dijual.",
+      "checkedAt": "2026-11-04T05:07:37Z",
+      "checkerUsername": "admin"
+    }
+  ],
+  "hpp": {
+    "products": [
+      {
+        "productId": 6,
+        "name": "Donat Gula",
+        "category": "Kue",
+        "isActive": true,
+        "sellingPriceMinorUnits": 700000,
+        "recipeLineCount": 4,
+        "standardHppMinorUnits": 203000,
+        "standardMarginPercent": 71.00,
+        "completedWorkOrders": 0,
+        "goodUnits": 0,
+        "scrapLossMinorUnits": 0,
+        "actualHppMinorUnits": 0,
+        "varianceMinorUnits": 0,
+        "variancePercent": null,
+        "hasActual": false,
+        "belowStandardCost": false
+      },
+      {
+        "productId": 4,
+        "name": "Kroisan Mentega",
+        "category": "Kue",
+        "isActive": true,
+        "sellingPriceMinorUnits": 1500000,
+        "recipeLineCount": 4,
+        "standardHppMinorUnits": 334000,
+        "standardMarginPercent": 77.733333333333333333333333330,
+        "completedWorkOrders": 0,
+        "goodUnits": 0,
+        "scrapLossMinorUnits": 0,
+        "actualHppMinorUnits": 0,
+        "varianceMinorUnits": 0,
+        "variancePercent": null,
+        "hasActual": false,
+        "belowStandardCost": false
+      },
+      {
+        "productId": 5,
+        "name": "Kue Sus",
+        "category": "Kue",
+        "isActive": true,
+        "sellingPriceMinorUnits": 800000,
+        "recipeLineCount": 4,
+        "standardHppMinorUnits": 234000,
+        "standardMarginPercent": 70.7500,
+        "completedWorkOrders": 0,
+        "goodUnits": 0,
+        "scrapLossMinorUnits": 0,
+        "actualHppMinorUnits": 0,
+        "varianceMinorUnits": 0,
+        "variancePercent": null,
+        "hasActual": false,
+        "belowStandardCost": false
+      },
+      {
+        "productId": 2,
+        "name": "Roti Cokelat",
+        "category": "Roti",
+        "isActive": true,
+        "sellingPriceMinorUnits": 1200000,
+        "recipeLineCount": 5,
+        "standardHppMinorUnits": 347500,
+        "standardMarginPercent": 71.041666666666666666666666670,
+        "completedWorkOrders": 1,
+        "goodUnits": 57,
+        "scrapLossMinorUnits": 1021830,
+        "actualHppMinorUnits": 348856,
+        "varianceMinorUnits": 1356,
+        "variancePercent": 0.4,
+        "hasActual": true,
+        "belowStandardCost": false
+      },
+      {
+        "productId": 3,
+        "name": "Roti Keju",
+        "category": "Roti",
+        "isActive": true,
+        "sellingPriceMinorUnits": 1300000,
+        "recipeLineCount": 5,
+        "standardHppMinorUnits": 488400,
+        "standardMarginPercent": 62.430769230769230769230769230,
+        "completedWorkOrders": 0,
+        "goodUnits": 0,
+        "scrapLossMinorUnits": 0,
+        "actualHppMinorUnits": 0,
+        "varianceMinorUnits": 0,
+        "variancePercent": null,
+        "hasActual": false,
+        "belowStandardCost": false
+      },
+      {
+        "productId": 1,
+        "name": "Roti Tawar Susu",
+        "category": "Roti",
+        "isActive": true,
+        "sellingPriceMinorUnits": 2500000,
+        "recipeLineCount": 6,
+        "standardHppMinorUnits": 709000,
+        "standardMarginPercent": 71.6400,
+        "completedWorkOrders": 1,
+        "goodUnits": 48,
+        "scrapLossMinorUnits": 1389640,
+        "actualHppMinorUnits": 705862,
+        "varianceMinorUnits": -3138,
+        "variancePercent": -0.4,
+        "hasActual": true,
+        "belowStandardCost": false
+      }
+    ],
+    "productCount": 6,
+    "productsWithRecipe": 6,
+    "productsWithoutRecipe": 0,
+    "productsBelowCost": 0,
+    "completedWorkOrders": 2,
+    "goodUnits": 105,
+    "materialCostMinorUnits": 55177600,
+    "laborCostMinorUnits": 670000,
+    "overheadCostMinorUnits": 330000,
+    "scrapLossMinorUnits": 2411470,
+    "weightedActualHppMinorUnits": 512058,
+    "firstCompletedAt": "2026-11-04T12:07:37",
+    "lastCompletedAt": "2026-11-04T12:07:37"
+  },
+  "pesanan": [
+    {
+      "id": 5,
+      "legacyId": null,
+      "orderNumber": "ORD-20261104-0005",
+      "customerId": 5,
+      "productTemplateId": 3,
+      "customerNameSnapshot": "Sekolah Bina Ceria",
+      "phoneSnapshot": "021-7788-9900",
+      "description": "Roti keju 12 bungkus untuk rapat guru",
+      "pickupDate": "2026-11-09T00:00:00",
+      "totalAmount": 15600000,
+      "downPayment": 0,
+      "quantity": 12,
+      "status": 0,
+      "stockDeducted": false,
+      "notes": null,
+      "cancelledAt": null,
+      "cancelReason": null,
+      "createdAt": "2026-11-04T19:07:37.2113773\u002B07:00",
+      "createdByUserId": 1,
+      "payments": []
+    },
+    {
+      "id": 3,
+      "legacyId": null,
+      "orderNumber": "ORD-20261104-0003",
+      "customerId": 3,
+      "productTemplateId": 1,
+      "customerNameSnapshot": "Dewi \u2014 Pesanan Hajatan",
+      "phoneSnapshot": "0857-5678-9013",
+      "description": "Roti tawar susu 5 bungkus",
+      "pickupDate": "2026-11-07T00:00:00",
+      "totalAmount": 12500000,
+      "downPayment": 0,
+      "quantity": 5,
+      "status": 0,
+      "stockDeducted": false,
+      "notes": null,
+      "cancelledAt": null,
+      "cancelReason": null,
+      "createdAt": "2026-11-04T19:07:37.16546\u002B07:00",
+      "createdByUserId": 1,
+      "payments": []
+    },
+    {
+      "id": 4,
+      "legacyId": null,
+      "orderNumber": "ORD-20261104-0004",
+      "customerId": 4,
+      "productTemplateId": 2,
+      "customerNameSnapshot": "Andi \u2014 Kantor Kelurahan",
+      "phoneSnapshot": "0821-6789-0124",
+      "description": "Roti cokelat 3 bungkus",
+      "pickupDate": "2026-11-06T00:00:00",
+      "totalAmount": 3600000,
+      "downPayment": 0,
+      "quantity": 3,
+      "status": 4,
+      "stockDeducted": false,
+      "notes": null,
+      "cancelledAt": "2026-11-04T19:07:37.1852719\u002B07:00",
+      "cancelReason": "Pelanggan membatalkan karena acara diundur.",
+      "createdAt": "2026-11-04T19:07:37.1702283\u002B07:00",
+      "createdByUserId": 1,
+      "payments": []
+    },
+    {
+      "id": 2,
+      "legacyId": null,
+      "orderNumber": "ORD-20261104-0002",
+      "customerId": 2,
+      "productTemplateId": 2,
+      "customerNameSnapshot": "Pak Joko \u2014 Koperasi Sekolah",
+      "phoneSnapshot": "0813-4567-8902",
+      "description": "Roti cokelat 20 bungkus untuk kantin",
+      "pickupDate": "2026-11-06T00:00:00",
+      "totalAmount": 24000000,
+      "downPayment": 10000000,
+      "quantity": 20,
+      "status": 0,
+      "stockDeducted": false,
+      "notes": "Pembayaran awal via Transfer",
+      "cancelledAt": null,
+      "cancelReason": null,
+      "createdAt": "2026-11-04T19:07:37.1449651\u002B07:00",
+      "createdByUserId": 1,
+      "payments": []
+    },
+    {
+      "id": 1,
+      "legacyId": null,
+      "orderNumber": "ORD-20261104-0001",
+      "customerId": 1,
+      "productTemplateId": 1,
+      "customerNameSnapshot": "Ibu Ratna \u2014 Arisan Melati",
+      "phoneSnapshot": "0812-3456-7801",
+      "description": "Roti tawar susu 10 bungkus untuk arisan",
+      "pickupDate": "2026-11-05T00:00:00",
+      "totalAmount": 25000000,
+      "downPayment": 25000000,
+      "quantity": 10,
+      "status": 3,
+      "stockDeducted": true,
+      "notes": "Pembayaran awal via Tunai",
+      "cancelledAt": null,
+      "cancelReason": null,
+      "createdAt": "2026-11-04T19:07:37.1316717\u002B07:00",
+      "createdByUserId": 1,
+      "payments": []
+    },
+    {
+      "id": 6,
+      "legacyId": null,
+      "orderNumber": "ORD-20261104-0006",
+      "customerId": 6,
+      "productTemplateId": 6,
+      "customerNameSnapshot": "Warung Bu Tini",
+      "phoneSnapshot": "0819-7890-1235",
+      "description": "Donat gula 6 bungkus untuk titip jual",
+      "pickupDate": "2026-11-03T00:00:00",
+      "totalAmount": 4200000,
+      "downPayment": 0,
+      "quantity": 6,
+      "status": 0,
+      "stockDeducted": false,
+      "notes": null,
+      "cancelledAt": null,
+      "cancelReason": null,
+      "createdAt": "2026-11-04T19:07:37.2167354\u002B07:00",
+      "createdByUserId": 1,
+      "payments": []
+    }
+  ],
+  "retur": [
+    {
+      "id": 1,
+      "returnNumber": "RTR-20261104-0001",
+      "salesOrderId": 1,
+      "orderNumber": "ORD-20261104-0001",
+      "customerName": "Ibu Ratna \u2014 Arisan Melati",
+      "productTemplateId": 1,
+      "productName": "Roti Tawar Susu",
+      "quantity": 2,
+      "amount": 5000000,
+      "reason": "Dua bungkus kemasan penyok saat pengantaran.",
+      "refundMethod": "Tunai",
+      "returnedAt": "2026-11-04T05:07:37Z",
+      "createdByUsername": "admin"
+    }
+  ],
+  "jurnal": [
+    {
+      "id": 29,
+      "description": "Stok opname Cokelat Compound (kg) (\u002B4.75): Selisih hitung fisik opname mingguan (0,25 kg).",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "StockAdjustment",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.376739\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.3767352\u002B07:00",
+      "lines": [
+        {
+          "id": 63,
+          "journalEntryId": 29,
+          "accountId": 9,
+          "debitAmount": 30875000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 64,
+          "journalEntryId": 29,
+          "accountId": 16,
+          "debitAmount": 0,
+          "creditAmount": 30875000,
+          "notes": null,
+          "account": {
+            "id": 16,
+            "legacyId": null,
+            "code": "5-006",
+            "name": "Beban Selisih Persediaan",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "description": "Biaya: Kantong kertas dan stiker label 1.000 lembar",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "Expense",
+      "sourceDocumentId": null,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.3115971\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.3115937\u002B07:00",
+      "lines": [
+        {
+          "id": 61,
+          "journalEntryId": 28,
+          "accountId": 7,
+          "debitAmount": 27500000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 7,
+            "legacyId": null,
+            "code": "5-002",
+            "name": "Beban Operasional",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 62,
+          "journalEntryId": 28,
+          "accountId": 1,
+          "debitAmount": 0,
+          "creditAmount": 27500000,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Biaya: Listrik, air, dan kebersihan toko bulan ini",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "Expense",
+      "sourceDocumentId": null,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.2388249\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.238822\u002B07:00",
+      "lines": [
+        {
+          "id": 59,
+          "journalEntryId": 27,
+          "accountId": 7,
+          "debitAmount": 85000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 7,
+            "legacyId": null,
+            "code": "5-002",
+            "name": "Beban Operasional",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 60,
+          "journalEntryId": 27,
+          "accountId": 1,
+          "debitAmount": 0,
+          "creditAmount": 85000000,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "description": "Pembalik Harga Pokok Penjualan Retur: RTR-20261104-0001",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "SalesReturn",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.2309599\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.2309578\u002B07:00",
+      "lines": [
+        {
+          "id": 57,
+          "journalEntryId": 26,
+          "accountId": 12,
+          "debitAmount": 1411724,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 12,
+            "legacyId": null,
+            "code": "1-006",
+            "name": "Persediaan Produk Jadi (Etalase)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 58,
+          "journalEntryId": 26,
+          "accountId": 15,
+          "debitAmount": 0,
+          "creditAmount": 1411724,
+          "notes": null,
+          "account": {
+            "id": 15,
+            "legacyId": null,
+            "code": "5-005",
+            "name": "Beban Pokok Penjualan",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "description": "Retur Penjualan RTR-20261104-0001: Ibu Ratna \u2014 Arisan Melati",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "SalesReturn",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.2275039\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.2275008\u002B07:00",
+      "lines": [
+        {
+          "id": 55,
+          "journalEntryId": 25,
+          "accountId": 5,
+          "debitAmount": 5000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 5,
+            "legacyId": null,
+            "code": "4-001",
+            "name": "Pendapatan Penjualan",
+            "type": 3,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 56,
+          "journalEntryId": 25,
+          "accountId": 1,
+          "debitAmount": 0,
+          "creditAmount": 5000000,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "description": "DP Pesanan: Pak Joko \u2014 Koperasi Sekolah",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "SalesOrder",
+      "sourceDocumentId": 2,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.1450782\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": "manual-f30e69d7f90244b78b9a2be2ae23b18f",
+      "createdAt": "2026-11-04T19:07:37.1450764\u002B07:00",
+      "lines": [
+        {
+          "id": 53,
+          "journalEntryId": 24,
+          "accountId": 1,
+          "debitAmount": 10000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 54,
+          "journalEntryId": 24,
+          "accountId": 3,
+          "debitAmount": 0,
+          "creditAmount": 10000000,
+          "notes": null,
+          "account": {
+            "id": 3,
+            "legacyId": null,
+            "code": "2-001",
+            "name": "Uang Muka Pelanggan",
+            "type": 1,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "description": "Harga Pokok Penjualan: ORD-20261104-0001",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "SalesOrder",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.1378081\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.1378052\u002B07:00",
+      "lines": [
+        {
+          "id": 51,
+          "journalEntryId": 23,
+          "accountId": 15,
+          "debitAmount": 7058620,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 15,
+            "legacyId": null,
+            "code": "5-005",
+            "name": "Beban Pokok Penjualan",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 52,
+          "journalEntryId": 23,
+          "accountId": 12,
+          "debitAmount": 0,
+          "creditAmount": 7058620,
+          "notes": null,
+          "account": {
+            "id": 12,
+            "legacyId": null,
+            "code": "1-006",
+            "name": "Persediaan Produk Jadi (Etalase)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Pendapatan Pesanan: Ibu Ratna \u2014 Arisan Melati",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "SalesOrder",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.132979\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.1329774\u002B07:00",
+      "lines": [
+        {
+          "id": 49,
+          "journalEntryId": 22,
+          "accountId": 3,
+          "debitAmount": 25000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 3,
+            "legacyId": null,
+            "code": "2-001",
+            "name": "Uang Muka Pelanggan",
+            "type": 1,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 50,
+          "journalEntryId": 22,
+          "accountId": 5,
+          "debitAmount": 0,
+          "creditAmount": 25000000,
+          "notes": null,
+          "account": {
+            "id": 5,
+            "legacyId": null,
+            "code": "4-001",
+            "name": "Pendapatan Penjualan",
+            "type": 3,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "description": "DP Pesanan: Ibu Ratna \u2014 Arisan Melati",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "SalesOrder",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.1323928\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": "manual-c5fe7a95446d48109d6849afc89109fa",
+      "createdAt": "2026-11-04T19:07:37.1323898\u002B07:00",
+      "lines": [
+        {
+          "id": 47,
+          "journalEntryId": 21,
+          "accountId": 1,
+          "debitAmount": 25000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 48,
+          "journalEntryId": 21,
+          "accountId": 3,
+          "debitAmount": 0,
+          "creditAmount": 25000000,
+          "notes": null,
+          "account": {
+            "id": 3,
+            "legacyId": null,
+            "code": "2-001",
+            "name": "Uang Muka Pelanggan",
+            "type": 1,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "description": "Penyelesaian Produksi SPK: SPK-20261104-0002",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "WorkOrder",
+      "sourceDocumentId": 2,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.0988494\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.0988464\u002B07:00",
+      "lines": [
+        {
+          "id": 42,
+          "journalEntryId": 20,
+          "accountId": 10,
+          "debitAmount": 0,
+          "creditAmount": 20436600,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 43,
+          "journalEntryId": 20,
+          "accountId": 13,
+          "debitAmount": 1021830,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 13,
+            "legacyId": null,
+            "code": "5-004",
+            "name": "Beban Kerugian Produk Rusak",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 44,
+          "journalEntryId": 20,
+          "accountId": 12,
+          "debitAmount": 19884792,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 12,
+            "legacyId": null,
+            "code": "1-006",
+            "name": "Persediaan Produk Jadi (Etalase)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 45,
+          "journalEntryId": 20,
+          "accountId": 16,
+          "debitAmount": 0,
+          "creditAmount": 22,
+          "notes": null,
+          "account": {
+            "id": 16,
+            "legacyId": null,
+            "code": "5-006",
+            "name": "Beban Selisih Persediaan",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 46,
+          "journalEntryId": 20,
+          "accountId": 1,
+          "debitAmount": 0,
+          "creditAmount": 470000,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "description": "Penyelesaian Produksi SPK: SPK-20261104-0001",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "WorkOrder",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.0823751\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.0823703\u002B07:00",
+      "lines": [
+        {
+          "id": 37,
+          "journalEntryId": 19,
+          "accountId": 10,
+          "debitAmount": 0,
+          "creditAmount": 34741000,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 38,
+          "journalEntryId": 19,
+          "accountId": 13,
+          "debitAmount": 1389640,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 13,
+            "legacyId": null,
+            "code": "5-004",
+            "name": "Beban Kerugian Produk Rusak",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 39,
+          "journalEntryId": 19,
+          "accountId": 12,
+          "debitAmount": 33881376,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 12,
+            "legacyId": null,
+            "code": "1-006",
+            "name": "Persediaan Produk Jadi (Etalase)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 40,
+          "journalEntryId": 19,
+          "accountId": 16,
+          "debitAmount": 0,
+          "creditAmount": 16,
+          "notes": null,
+          "account": {
+            "id": 16,
+            "legacyId": null,
+            "code": "5-006",
+            "name": "Beban Selisih Persediaan",
+            "type": 4,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 41,
+          "journalEntryId": 19,
+          "accountId": 1,
+          "debitAmount": 0,
+          "creditAmount": 530000,
+          "notes": null,
+          "account": {
+            "id": 1,
+            "legacyId": null,
+            "code": "1-001",
+            "name": "Kas \u0026 Bank",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "description": "Penerimaan Barang PO: PO-20261104-0002",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "GoodsReceipt",
+      "sourceDocumentId": 2,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:37.0157612\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:37.0157604\u002B07:00",
+      "lines": [
+        {
+          "id": 35,
+          "journalEntryId": 18,
+          "accountId": 9,
+          "debitAmount": 90000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 36,
+          "journalEntryId": 18,
+          "accountId": 14,
+          "debitAmount": 0,
+          "creditAmount": 90000000,
+          "notes": null,
+          "account": {
+            "id": 14,
+            "legacyId": null,
+            "code": "2-002",
+            "name": "Utang Usaha",
+            "type": 1,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Penerimaan Barang PO: PO-20261104-0001",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "GoodsReceipt",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.9776515\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.9776494\u002B07:00",
+      "lines": [
+        {
+          "id": 33,
+          "journalEntryId": 17,
+          "accountId": 9,
+          "debitAmount": 40500000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 34,
+          "journalEntryId": 17,
+          "accountId": 14,
+          "debitAmount": 0,
+          "creditAmount": 40500000,
+          "notes": null,
+          "account": {
+            "id": 14,
+            "legacyId": null,
+            "code": "2-002",
+            "name": "Utang Usaha",
+            "type": 1,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "description": "Transfer stok Keju Cheddar (kg) (4): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.916779\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.9167772\u002B07:00",
+      "lines": [
+        {
+          "id": 31,
+          "journalEntryId": 16,
+          "accountId": 10,
+          "debitAmount": 48000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 32,
+          "journalEntryId": 16,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 48000000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "description": "Transfer stok Cokelat Compound (kg) (5): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.9140581\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.9140555\u002B07:00",
+      "lines": [
+        {
+          "id": 29,
+          "journalEntryId": 15,
+          "accountId": 10,
+          "debitAmount": 32500000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 30,
+          "journalEntryId": 15,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 32500000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "description": "Transfer stok Susu Bubuk (kg) (4): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.9114887\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.9114867\u002B07:00",
+      "lines": [
+        {
+          "id": 27,
+          "journalEntryId": 14,
+          "accountId": 10,
+          "debitAmount": 34000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 28,
+          "journalEntryId": 14,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 34000000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "description": "Transfer stok Telur Ayam (kg) (8): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.9085642\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.908562\u002B07:00",
+      "lines": [
+        {
+          "id": 25,
+          "journalEntryId": 13,
+          "accountId": 10,
+          "debitAmount": 22400000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 26,
+          "journalEntryId": 13,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 22400000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Transfer stok Ragi Instan (kg) (2.5): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.9057585\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.9057555\u002B07:00",
+      "lines": [
+        {
+          "id": 23,
+          "journalEntryId": 12,
+          "accountId": 10,
+          "debitAmount": 22500000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 24,
+          "journalEntryId": 12,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 22500000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "description": "Transfer stok Mentega Tawar (kg) (10): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.9025967\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.9025935\u002B07:00",
+      "lines": [
+        {
+          "id": 21,
+          "journalEntryId": 11,
+          "accountId": 10,
+          "debitAmount": 32000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 22,
+          "journalEntryId": 11,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 32000000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "description": "Transfer stok Gula Pasir (kg) (12): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8993786\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8993765\u002B07:00",
+      "lines": [
+        {
+          "id": 19,
+          "journalEntryId": 10,
+          "accountId": 10,
+          "debitAmount": 19200000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 20,
+          "journalEntryId": 10,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 19200000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "description": "Transfer stok Tepung Terigu Cakra (kg) (40): Persiapan produksi pagi",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "LocationTransfer",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.895818\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8958152\u002B07:00",
+      "lines": [
+        {
+          "id": 17,
+          "journalEntryId": 9,
+          "accountId": 10,
+          "debitAmount": 56000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 10,
+            "legacyId": null,
+            "code": "1-004",
+            "name": "Persediaan Dapur",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 18,
+          "journalEntryId": 9,
+          "accountId": 9,
+          "debitAmount": 0,
+          "creditAmount": 56000000,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "description": "Stok awal Keju Cheddar (kg) (\u002B6)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 8,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8642762\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8642738\u002B07:00",
+      "lines": [
+        {
+          "id": 15,
+          "journalEntryId": 8,
+          "accountId": 9,
+          "debitAmount": 72000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 16,
+          "journalEntryId": 8,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 72000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Stok awal Cokelat Compound (kg) (\u002B10)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 7,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8599902\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.859988\u002B07:00",
+      "lines": [
+        {
+          "id": 13,
+          "journalEntryId": 7,
+          "accountId": 9,
+          "debitAmount": 65000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 14,
+          "journalEntryId": 7,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 65000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Stok awal Susu Bubuk (kg) (\u002B8)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 6,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8558031\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8558\u002B07:00",
+      "lines": [
+        {
+          "id": 11,
+          "journalEntryId": 6,
+          "accountId": 9,
+          "debitAmount": 68000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 12,
+          "journalEntryId": 6,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 68000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Stok awal Telur Ayam (kg) (\u002B20)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 5,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8514106\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8514081\u002B07:00",
+      "lines": [
+        {
+          "id": 9,
+          "journalEntryId": 5,
+          "accountId": 9,
+          "debitAmount": 56000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 10,
+          "journalEntryId": 5,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 56000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Stok awal Ragi Instan (kg) (\u002B5)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 4,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8471102\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8471077\u002B07:00",
+      "lines": [
+        {
+          "id": 7,
+          "journalEntryId": 4,
+          "accountId": 9,
+          "debitAmount": 45000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 8,
+          "journalEntryId": 4,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 45000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Stok awal Mentega Tawar (kg) (\u002B25)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 3,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8434243\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8434218\u002B07:00",
+      "lines": [
+        {
+          "id": 5,
+          "journalEntryId": 3,
+          "accountId": 9,
+          "debitAmount": 80000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 6,
+          "journalEntryId": 3,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 80000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Stok awal Gula Pasir (kg) (\u002B30)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 2,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.8206336\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8206304\u002B07:00",
+      "lines": [
+        {
+          "id": 3,
+          "journalEntryId": 2,
+          "accountId": 9,
+          "debitAmount": 48000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 4,
+          "journalEntryId": 2,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 48000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "description": "Stok awal Tepung Terigu Cakra (kg) (\u002B100)",
+      "transactionDate": "2026-11-04T00:00:00",
+      "sourceDocumentType": "IngredientMaster",
+      "sourceDocumentId": 1,
+      "status": 1,
+      "reversalOfId": null,
+      "postedAt": "2026-11-04T19:07:36.805027\u002B07:00",
+      "postedByUserId": 1,
+      "idempotencyKey": null,
+      "createdAt": "2026-11-04T19:07:36.8049612\u002B07:00",
+      "lines": [
+        {
+          "id": 1,
+          "journalEntryId": 1,
+          "accountId": 9,
+          "debitAmount": 140000000,
+          "creditAmount": 0,
+          "notes": null,
+          "account": {
+            "id": 9,
+            "legacyId": null,
+            "code": "1-003",
+            "name": "Persediaan Bahan Baku (Gudang)",
+            "type": 0,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        },
+        {
+          "id": 2,
+          "journalEntryId": 1,
+          "accountId": 4,
+          "debitAmount": 0,
+          "creditAmount": 140000000,
+          "notes": null,
+          "account": {
+            "id": 4,
+            "legacyId": null,
+            "code": "3-001",
+            "name": "Modal",
+            "type": 2,
+            "parentId": null,
+            "isSystem": false,
+            "isActive": true
+          }
+        }
+      ]
+    }
+  ],
+  "saldoJurnal": [
+    {
+      "accountId": 1,
+      "code": "1-001",
+      "name": "Kas \u0026 Bank",
+      "type": 0,
+      "balance": -83500000
+    },
+    {
+      "accountId": 2,
+      "code": "1-002",
+      "name": "Piutang Usaha",
+      "type": 0,
+      "balance": 0
+    },
+    {
+      "accountId": 9,
+      "code": "1-003",
+      "name": "Persediaan Bahan Baku (Gudang)",
+      "type": 0,
+      "balance": 468775000
+    },
+    {
+      "accountId": 10,
+      "code": "1-004",
+      "name": "Persediaan Dapur",
+      "type": 0,
+      "balance": 211422400
+    },
+    {
+      "accountId": 11,
+      "code": "1-005",
+      "name": "Barang Dalam Proses (WIP)",
+      "type": 0,
+      "balance": 0
+    },
+    {
+      "accountId": 12,
+      "code": "1-006",
+      "name": "Persediaan Produk Jadi (Etalase)",
+      "type": 0,
+      "balance": 48119272
+    },
+    {
+      "accountId": 3,
+      "code": "2-001",
+      "name": "Uang Muka Pelanggan",
+      "type": 1,
+      "balance": 10000000
+    },
+    {
+      "accountId": 14,
+      "code": "2-002",
+      "name": "Utang Usaha",
+      "type": 1,
+      "balance": 130500000
+    },
+    {
+      "accountId": 4,
+      "code": "3-001",
+      "name": "Modal",
+      "type": 2,
+      "balance": 574000000
+    },
+    {
+      "accountId": 5,
+      "code": "4-001",
+      "name": "Pendapatan Penjualan",
+      "type": 3,
+      "balance": 20000000
+    },
+    {
+      "accountId": 6,
+      "code": "5-001",
+      "name": "Beban Bahan Baku (HPP)",
+      "type": 4,
+      "balance": 0
+    },
+    {
+      "accountId": 7,
+      "code": "5-002",
+      "name": "Beban Operasional",
+      "type": 4,
+      "balance": 112500000
+    },
+    {
+      "accountId": 8,
+      "code": "5-003",
+      "name": "Beban Gaji",
+      "type": 4,
+      "balance": 0
+    },
+    {
+      "accountId": 13,
+      "code": "5-004",
+      "name": "Beban Kerugian Produk Rusak",
+      "type": 4,
+      "balance": 2411470
+    },
+    {
+      "accountId": 15,
+      "code": "5-005",
+      "name": "Beban Pokok Penjualan",
+      "type": 4,
+      "balance": 5646896
+    },
+    {
+      "accountId": 16,
+      "code": "5-006",
+      "name": "Beban Selisih Persediaan",
+      "type": 4,
+      "balance": -30875038
+    }
+  ],
+  "analisis": {
+    "dari": "2026-08-07T00:00:00",
+    "sampai": "2026-11-04T00:00:00",
+    "totalPendapatan": 20000000,
+    "totalBeban": 89683328,
+    "labaKotor": -69683328,
+    "totalNilaiPesanan": 81300000,
+    "jumlahPesanan": 5,
+    "jumlahPesananBatal": 1,
+    "unitTerjual": 53,
+    "rataRataNilaiPesanan": 16260000,
+    "harian": [
+      {
+        "tanggal": "2026-11-04T00:00:00",
+        "pendapatan": 20000000,
+        "nilaiPesanan": 81300000,
+        "jumlahPesanan": 5
+      }
+    ],
+    "produk": [
+      {
+        "nama": "Roti Tawar Susu",
+        "jumlahPesanan": 2,
+        "unitTerjual": 15,
+        "nilai": 37500000
+      },
+      {
+        "nama": "Roti Cokelat",
+        "jumlahPesanan": 1,
+        "unitTerjual": 20,
+        "nilai": 24000000
+      },
+      {
+        "nama": "Roti Keju",
+        "jumlahPesanan": 1,
+        "unitTerjual": 12,
+        "nilai": 15600000
+      },
+      {
+        "nama": "Donat Gula",
+        "jumlahPesanan": 1,
+        "unitTerjual": 6,
+        "nilai": 4200000
+      }
+    ],
+    "beban": [
+      {
+        "kode": "5-002",
+        "nama": "Beban Operasional",
+        "nominal": 112500000
+      },
+      {
+        "kode": "5-005",
+        "nama": "Beban Pokok Penjualan",
+        "nominal": 5646896
+      },
+      {
+        "kode": "5-004",
+        "nama": "Beban Kerugian Produk Rusak",
+        "nominal": 2411470
+      },
+      {
+        "kode": "5-006",
+        "nama": "Beban Selisih Persediaan",
+        "nominal": -30875038
+      }
+    ]
+  },
+  "tugas": {
+    "disusunPada": "2026-11-04T12:08:55.4066233Z",
+    "jumlah": 7,
+    "perJenis": {
+      "piutang": 1,
+      "pengambilan": 3,
+      "produksi": 1,
+      "pembelian": 1,
+      "menunggu barang": 1
+    },
+    "item": [
+      {
+        "jenis": "pembelian",
+        "judul": "PO lewat tanggal terima",
+        "detail": "PO-20261104-0001 \u00B7 CV Sumber Bahan Nusantara \u00B7 status diterima sebagian",
+        "tenggat": "2026-11-02T00:00:00",
+        "tab": "purchases",
+        "tautanId": 1
+      },
+      {
+        "jenis": "piutang",
+        "judul": "Piutang terlewat",
+        "detail": "ORD-20261104-0006 \u00B7 Warung Bu Tini \u00B7 sisa Rp 42.000",
+        "tenggat": "2026-11-03T00:00:00",
+        "tab": "receivables",
+        "tautanId": 6
+      },
+      {
+        "jenis": "produksi",
+        "judul": "SPK belum dimulai",
+        "detail": "SPK-20261104-0003 \u00B7 Kroisan Mentega \u00B7 target 40 unit",
+        "tenggat": "2026-11-04T00:00:00",
+        "tab": "production_orders",
+        "tautanId": 3
+      },
+      {
+        "jenis": "pengambilan",
+        "judul": "Pesanan menunggu diselesaikan",
+        "detail": "ORD-20261104-0002 \u00B7 Pak Joko \u2014 Koperasi Sekolah \u00B7 sisa Rp 140.000",
+        "tenggat": "2026-11-06T00:00:00",
+        "tab": "receivables",
+        "tautanId": 2
+      },
+      {
+        "jenis": "pengambilan",
+        "judul": "Pesanan menunggu diselesaikan",
+        "detail": "ORD-20261104-0003 \u00B7 Dewi \u2014 Pesanan Hajatan \u00B7 sisa Rp 125.000",
+        "tenggat": "2026-11-07T00:00:00",
+        "tab": "receivables",
+        "tautanId": 3
+      },
+      {
+        "jenis": "menunggu barang",
+        "judul": "PO belum diterima penuh",
+        "detail": "PO-20261104-0003 \u00B7 CV Sumber Bahan Nusantara \u00B7 status draft",
+        "tenggat": "2026-11-07T00:00:00",
+        "tab": "purchases",
+        "tautanId": 3
+      },
+      {
+        "jenis": "pengambilan",
+        "judul": "Pesanan menunggu diselesaikan",
+        "detail": "ORD-20261104-0005 \u00B7 Sekolah Bina Ceria \u00B7 sisa Rp 156.000",
+        "tenggat": "2026-11-09T00:00:00",
+        "tab": "receivables",
+        "tautanId": 5
+      }
+    ]
+  },
+  "pemberitahuan": {
+    "total": 17,
+    "unread": 17,
+    "criticalUnread": 2
+  },
+  "pengaturan": {
+    "brand_name": "Seruni 22 Bakery",
+    "brand_tagline": "Roti \u0026 kue segar setiap hari",
+    "timezone": "Asia/Jakarta",
+    "currency": "IDR",
+    "app_version": "1.2.13",
+    "outlet_name": "Toko Utama \u2014 Jl. Seruni No. 22",
+    "device.printer.name": "",
+    "device.printer.mode": "windows-driver",
+    "device.paper.width_mm": "80",
+    "device.printer.auto_print": "0",
+    "device.scanner.suffix": "enter"
+  },
+  "pegawai": [
+    {
+      "id": 1,
+      "username": "admin",
+      "role": "Owner",
+      "isActive": true,
+      "mustChangePassword": false,
+      "lastLoginAt": "2026-11-04T19:07:40.4406488\u002B07:00",
+      "lockedUntil": null
+    },
+    {
+      "id": 3,
+      "username": "budi.dapur",
+      "role": "Dapur",
+      "isActive": true,
+      "mustChangePassword": true,
+      "lastLoginAt": null,
+      "lockedUntil": null
+    },
+    {
+      "id": 2,
+      "username": "rani.admin",
+      "role": "Admin",
+      "isActive": true,
+      "mustChangePassword": true,
+      "lastLoginAt": null,
+      "lockedUntil": null
+    },
+    {
+      "id": 4,
+      "username": "sari.kasir",
+      "role": "Pegawai",
+      "isActive": true,
+      "mustChangePassword": true,
+      "lastLoginAt": "2026-11-04T19:07:38.9303112\u002B07:00",
+      "lockedUntil": null
+    }
+  ],
+  "periksaDiri": {
+    "status": "ok",
+    "jumlahPemeriksaan": 11,
+    "jumlahGagal": 0,
+    "databasePath": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\seruni-ui-946055ef.db",
+    "diperiksaPada": "2026-11-04T12:08:55.4525115Z",
+    "checks": [
+      {
+        "name": "foreign_keys aktif di koneksi ini",
+        "passed": true,
+        "detail": "PRAGMA foreign_keys = ON, busy_timeout = 5000 ms. Kunci asing hanya berlaku pada koneksi yang menyalakannya."
+      },
+      {
+        "name": "PRAGMA integrity_check",
+        "passed": true,
+        "detail": "struktur halaman dan indeks konsisten"
+      },
+      {
+        "name": "PRAGMA foreign_key_check",
+        "passed": true,
+        "detail": "tidak ada baris yang menunjuk induk yang hilang"
+      },
+      {
+        "name": "versi skema",
+        "passed": true,
+        "detail": "terpasang 18, skema terbaru yang ikut terkemas 18. semua migrasi sudah dijalankan."
+      },
+      {
+        "name": "jurnal posted seimbang",
+        "passed": true,
+        "detail": "29 entri posted, semuanya seimbang dan punya baris."
+      },
+      {
+        "name": "rujukan dokumen jurnal utuh",
+        "passed": true,
+        "detail": "setiap entri ber-id dokumen sumber menunjuk dokumen yang masih ada"
+      },
+      {
+        "name": "nomor dokumen tidak ada yang kembar",
+        "passed": true,
+        "detail": "setiap nomor dokumen hanya muncul sekali"
+      },
+      {
+        "name": "penghitung dokumen menutupi isinya",
+        "passed": true,
+        "detail": "4 penghitung hari, tidak ada yang tertinggal di belakang."
+      },
+      {
+        "name": "tidak ada stok negatif",
+        "passed": true,
+        "detail": "16 baris stok semuanya nol atau positif"
+      },
+      {
+        "name": "nilai stok produk jadi sama dengan saldo 1-006",
+        "passed": true,
+        "detail": "saldo 1-006 = 48119272, nilai stok = 48119272, selisih 0 (toleransi 100 sen)."
+      },
+      {
+        "name": "stok layar Bahan Baku punya jurnal",
+        "passed": true,
+        "detail": "8 bahan pernah diubah dari layar Bahan Baku, semuanya sudah dibukukan."
+      }
+    ]
+  }
+}

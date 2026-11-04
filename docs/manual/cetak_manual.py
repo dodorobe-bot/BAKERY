@@ -14,8 +14,8 @@ cetak, penanda diganti, lalu dicetak ulang. Kepala/kaki halaman dicetak sebagai 
 terpisah dan digabungkan dengan pypdf, sehingga sampul tetap bersih.
 
 Skrip ini memverifikasi hasilnya sendiri: jumlah halaman, penanda bab, keutuhan daftar isi,
-kesejajaran nomor halaman, kepala/kaki di setiap halaman, dan 41 rujukan gambar. Berkas final
-hanya dipasang setelah semua pemeriksaan lulus.
+kesejajaran nomor halaman, kepala/kaki di setiap halaman, dan seluruh rujukan gambar. Berkas
+final hanya dipasang setelah semua pemeriksaan lulus.
 
 Versi aplikasi yang tercetak di kepala halaman dan di metadata PDF diambil dari
 <Version> pada src/Host.Service/BakeryDesktop.Host.Service.csproj — sumber yang sama dengan
@@ -309,6 +309,16 @@ def periksa_geometri_daftar_isi(pdf, peta):
     log(f"geometri daftar isi: {baris_total} baris, nomor sebaris dengan judul")
 
 
+def caption_naskah():
+    """Nomor caption yang dipakai naskah sumber, supaya verifikasi tidak ikut bertambah tangan."""
+    nomor = {int(m) for m in re.findall(r"<b>Gambar (\d+)\.</b>", HTML.read_text(encoding="utf-8"))}
+    if nomor != set(range(1, len(nomor) + 1)):
+        raise SystemExit(
+            f"caption gambar di manual.html tidak berurut 1..{len(nomor)}: {sorted(nomor)[:60]}"
+        )
+    return nomor
+
+
 def periksa(akhir, peta, jumlah, gambar):
     masalah = []
     peta2 = petakan(akhir)
@@ -335,12 +345,14 @@ def periksa(akhir, peta, jumlah, gambar):
         if f"Versi aplikasi {VERSI}" not in akhir[i]:
             masalah.append(f"kepala halaman {i + 1} tidak memuat versi {VERSI}")
 
-    if gambar < 40:
-        masalah.append(f"gambar di PDF hanya {gambar}, 41 tangkapan layar seharusnya ada")
+    harapan = caption_naskah()
+    if gambar < len(harapan):
+        masalah.append(f"gambar di PDF hanya {gambar}, naskah memuat {len(harapan)} gambar")
 
     nomor = {int(m) for h in akhir for m in re.findall(r"Gambar (\d+)\.", h)}
-    if nomor != set(range(1, 42)):
-        masalah.append(f"rujukan gambar tidak lengkap: {sorted(nomor)}")
+    kurang = sorted(harapan - nomor)
+    if kurang:
+        masalah.append(f"rujukan gambar tidak lengkap: {kurang}")
 
     if masalah:
         raise SystemExit("VERIFIKASI GAGAL:\n- " + "\n- ".join(masalah))
