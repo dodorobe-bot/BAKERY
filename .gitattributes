@@ -2,3 +2,10 @@
 # mesin dengan core.autocrlf=true mengubah 0x0A menjadi 0x0D 0x0A saat checkout, sehingga
 # berkas bukti tidak lagi sama dengan yang benar-benar diterima printer.
 *.bin binary
+
+# Salinan badan rilis GitHub dibaca ulang sebagai berkas byte-per-byte; tanpa -text,
+# core.autocrlf=true mengubah CRLF hasil gh menjadi LF saat komit sehingga digest yang
+# dicatat dokumen tidak cocok lagi dengan isi blob.
+docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md -text
+docs/paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md -text
+docs/paket-bukti-2026-11-04/gerbang-release-pohon-1213.json -text

@@ -260,6 +260,9 @@ perintah utuh. Salinan badan rilis yang terbit disimpan sebagai bukti di
 [`docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md)
 — 7.415 bita, SHA-256 `82a557d61f7568dd…`, dibaca **kembali dari GitHub** sesudah sunting, bukan
 disalin dari naskah yang dikirim, jadi salinan itu membuktikan apa yang benar-benar tampil.
+Ukuran bita pada subbab pertama ini diukur pada teks LF — blob edisi 07:16 adalah 7.415 bita LF,
+setara 7.480 bita dalam bentuk CRLF yang sesungguhnya dijawab GitHub; selisih 65 bita itu tepat
+sebanyak baris dan dijelaskan di subbab berikutnya.
 
 ### Suntingan badan rilis kedua (izin pemilik, 4 November 2026 08:59 WIB)
 
@@ -290,6 +293,17 @@ Pemeriksaan sesudah terbit, dibaca ulang dari GitHub: nol kemunculan `30 jam`, `
 salinan edisi 07:16 (`82a557d61f7568dd…`, 7.415 bita) tetap di
 [`docs/paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md`](paket-bukti-2026-11-03/badan-rilis-v1.2.13-terbit.md)
 sebagai riwayat, bukan sebagai keadaan rilis hari ini.
+
+Catatan byte: yang disajikan GitHub berakhir dengan CRLF, sedangkan `core.autocrlf=true` pada mesin
+ini menormalkan CRLF→LF saat komit — salinan edisi 07:16 karenanya tersimpan sebagai 7.415 bita LF
+(`82a557d6…`), 65 bita lebih pendek daripada bentuk CRLF yang benar-benar dijawab GitHub. Sejak
+komit ini ketiga berkas bukti (`badan-rilis-v1.2.13-terbit.md` kedua dan
+`gerbang-release-pohon-1213.json`) ditandai `-text` di `.gitattributes`, sehingga isi blob sama
+persis dengan berkas di pohon kerja dan digest yang dicatat dokumen bisa diperiksa ulang tanpa
+menebak konversi line ending. Cara periksa:
+`git cat-file blob :docs/paket-bukti-2026-11-04/badan-rilis-v1.2.13-terbit.md | sha256sum` →
+`e011ebe7…`, sama dengan `sha256sum` berkasnya (7.949 bita CRLF; 7.884 bita tanpa `newline`
+tambahan dari pencetak `gh`).
 
 ## Batas bukti
 
