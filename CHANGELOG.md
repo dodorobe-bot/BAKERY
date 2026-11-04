@@ -4,6 +4,36 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
+## [Belum dirilis] — pasca 1.2.13 (2026-11-04)
+
+Status: **NOT READY**. Belum ada paket installer yang memuat isi bagian ini — berkas terakhir yang
+terpasang di mesin toko tetap `Seruni22Bakery_Setup_v1.2.13.exe`. Angka bukti di bawah diambil dari
+`dotnet test BakeryDesktop.slnx -c Release` pada commit `ec6e76c` plus pohon kerja ini:
+**535 tes lulus, 0 gagal, 0 dilewati** (Domain 83, Application 129, Infrastructure 158, UI 165) —
+12 tes lebih banyak dari gerbang 1.2.13.
+
+- **Jurnal stok layar Bahan Baku.** Stok yang diketik pada kolom **Stok Awal** di layar Bahan Baku
+  sebelumnya mengubah angka stok tanpa pernah membuat jurnal, sehingga saldo `1-003 Persediaan Bahan
+  Baku` tertinggal dari kenyataan. Kini POST `/api/ingredients` membukukannya sebagai stok awal
+  (Debet persediaan, Kredit `3-001 Modal`) dan PUT `/api/ingredients/{id}` membukukan selisihnya
+  terhadap total stok riil ke `5-006 Beban Selisih Persediaan`; keduanya satu transaksi dengan mutasi
+  ledger, dan penolakan validasi menjawab 400. Pemeriksaan mandiri **Periksa Basis Data** mendapat
+  pagar baru `stok layar Bahan Baku punya jurnal` yang menandai data warisan yang belum terjamah.
+  Data lama **tidak** ditambal otomatis lewat migrasi — penambalan menunggu persetujuan pemilik
+  (opname atau jurnal manual). 4 tes repository + 1 tes integritas + 4 tes API hidup.
+- **Dialog Penyelesaian SPK.** Kolom yang berjudul **Sisa Stok Dapur** sebenarnya menampilkan takaran
+  resep, bukan stok dapur, sehingga bisa dibaca sebagai "stok aman" padahal bahan tidak ada di dapur.
+  Kolom itu dipecah menjadi **Stok Dapur** (stok riil di Dapur Produksi, sama dengan layar Gudang &
+  Lokasi Rak) dan **Sisa Setelah Dipakai** (stok dapur dikurangi **Dipakai Aktual**; merah dan boleh
+  negatif sebagai tanda penolakan). Bahan yang belum pernah dikirim ke dapur dihitung dari nol, bukan
+  tanda tanya; tanda tanya hanya tampil bila muat stok gagal, dengan keterangan yang eksplisit. Semua
+  angka kuantitas memakai pemisah desimal Indonesia sampai tiga digit, sehingga takaran ragi 0,002 kg
+  tidak dibulatkan menjadi "0" dan 18,244 kg tidak lagi terbaca delapan belas ribu. 3 tes UI Playwright,
+  kontrol negatif 3/3 merah pada kode sebelum perbaikan.
+- **Buku manual.** Enam belas blok **Contoh** beserta tangkapan layar berisi ditambahkan per menu, peta
+  urutan pengisian pertama (§0.6), dan rujukan silang yang sudah usang direnomor (gambar 1..57).
+  PDF 126 halaman, 58 gambar, verifikasi daftar isi lulus.
+
 ## [1.2.13] — 2026-11-03
 
 Status: **NOT READY**. Yang sudah dibuktikan: gerbang verifikasi dijalankan pada konfigurasi
