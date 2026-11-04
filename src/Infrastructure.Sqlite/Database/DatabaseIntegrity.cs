@@ -239,8 +239,8 @@ public sealed class DatabaseIntegrity
                 : $"{belum.Count} dari {total} bahan menumpuk stok tanpa satu pun jurnal: {Rangkai(belum)}. " +
                   "Saldo akun persediaan kurang sebesar nilai itu. Stok yang diketik dari layar " +
                   "Bahan Baku kini dibukukan (stok awal melawan Modal, koreksi melawan Beban " +
-                  "Selisih Persediaan); data lama perlu dibukukan sekali lewat opname atau " +
-                  "jurnal manual.");
+                  "Selisih Persediaan); data lama dibukukan sekali dengan perintah " +
+                  "--rekonsiliasi-stok-bahan atau lewat opname.");
     }
 
     private static IntegrityCheck baru(string name, bool passed, string detail)

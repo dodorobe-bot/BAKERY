@@ -191,3 +191,41 @@ Batas yang perlu diketahui teknisi:
   komputer yang sama tidak bisa membaca basis data tanpa hak administrator.
 - Aplikasi belum ditandatangani secara digital (belum ada sertifikat). Windows SmartScreen
   akan menampilkan peringatan saat pemasangan; itu bukan tanda kerusakan.
+
+## 10. Menambal jurnal stok bahan warisan (`--rekonsiliasi-stok-bahan`)
+
+Layar **Bahan Baku** kini membukukan **Stok Awal** menjadi jurnal. Stok yang sudah diketik dari
+layar itu sebelum perbaikan tidak punya jurnal, sehingga pemeriksaan **stok layar Bahan Baku
+punya jurnal** di **Periksa Basis Data** menampilkan merah dengan daftar bahan, jumlah, dan
+nilainya. Perintah ini menambalnya sekali, sebagai stok awal melawan **3-001 Modal**:
+
+```
+Seruni22Bakery.Host.exe --rekonsiliasi-stok-bahan --Database:Path="C:\Users\<nama>\AppData\Local\Seruni22Bakery\seruni22bakery.db"
+```
+
+Tanpa `--terapkan` perintah hanya **membaca**: ia mencetak daftar bahan yang belum berjurnal
+beserta nilainya, lalu berhenti. Tidak ada satu baris jurnal pun yang ditulis dan tidak ada
+cadangan yang dibuat. Angka itu akan masuk ke neraca, jadi pemilik harus melihat daftar ini
+lebih dulu dan memutuskannya.
+
+Setuju setelah cadangan dibuat, tambahkan `--terapkan`:
+
+```
+Seruni22Bakery.Host.exe --rekonsiliasi-stok-bahan --terapkan --Database:Path="...\seruni22bakery.db"
+```
+
+Urutan jalannya: aplikasi harus benar-benar tertutup (kalau masih ada instance hidup, perintah
+keluar dengan kode `3`), satu cadangan bertanda `pra-rekonsiliasi` dibuat lebih dulu, lalu
+jurnal ditulis dalam satu transaksi. Perintah ini idempoten — bahan yang sudah punya jurnal,
+baik dari jalur baru maupun dari penambalan sebelumnya, dilewati. Setelah selesai, jalankan
+**Periksa Basis Data** dan pastikan pagarnya hijau.
+
+Alternatif tanpa baris perintah: catat stok fisik yang sebenarnya lewat **Pemeriksaan Fisik
+(Stok Opname)** atau buat jurnal manual di **Buku Besar & Jurnal Umum**. Pilih itu bila nilai
+lama memang sudah tidak berlaku (barang habis, rusak, atau salah ketik), karena penambalan
+menganggap stok lama sebagai penyertaan pemilik, bukan sebagai beban.
+
+Perintah ini dikenali oleh host, dan peluncur `Seruni22Bakery.exe` meneruskannya apa adanya.
+Ia mulai ada di paket **1.2.14** — mesin yang masih memasang paket **1.2.13** belum memilikinya,
+jadi pasang 1.2.14 lebih dulu (atau pakai salah satu alternatif tanpa baris perintah di atas).
+
