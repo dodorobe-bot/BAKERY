@@ -41,6 +41,37 @@ const BAGIAN_PRODUKSI = {
   },
 };
 
+// Stok riil Dapur Produksi hanya dibutuhkan modal "Selesaikan", jadi dimuat setiap modal dibuka.
+// Tidak di-cache: mutasi gudang-ke-dapur dan SPK sebelumnya mengubah angka yang sama, dan layar
+// ini justru dipakai untuk memutuskan apakah bahan cukup. SPK mengurangi bahan dari lokasi ini,
+// sehingga "sisa" dihitung dari stoknya yang sebenarnya, bukan dari takaran resep.
+async function muatStokDapur() {
+  try {
+    const lokasi = await api.getLocations();
+    const dapur = (lokasi || []).find((l) => (l.type || l.Type) === 'Kitchen');
+    if (!dapur) return null;
+    const baris = await api.getLocationStock(dapur.id);
+    const peta = {};
+    (baris || []).forEach((s) => {
+      peta[s.ingredientId ?? s.IngredientId] = parseFloat(s.quantity ?? s.Quantity) || 0;
+    });
+    return peta;
+  } catch {
+    return null;
+  }
+}
+
+// Sisa boleh negatif: itulah keadaan yang membuat server menolak menyelesaikan SPK, dan
+// angka merah lebih berguna daripada nol palsu.
+const sisaSesudahDipakai = (stokDapur, dipakai) =>
+  stokDapur === null ? null : Math.round((stokDapur - dipakai) * 1000) / 1000;
+
+// Takaran resep bisa sampai tiga angka di belakang koma (ragi 0,002 kg), jadi pemisah desimal
+// mengikuti konvensi toko dan angkanya tidak dibulatkan sampai dua digit. Tanpa ini layar
+// Indonesia membaca "18.244 kg" sebagai delapan belas ribu dua ratus empat puluh empat.
+const PEMBENTUK_QTY = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 3 });
+const qty = (value) => PEMBENTUK_QTY.format(value);
+
 export default function ProductionView({
   workOrders, onCompleteWorkOrder, onCreateWorkOrder, onCancelWorkOrder, products, loading, onRefresh,
   canWrite = true, canCancel = true, view = 'production_orders', onViewChange,
@@ -59,6 +90,7 @@ export default function ProductionView({
   const [galatBaru, setGalatBaru] = useState('');
   const [galatBatal, setGalatBatal] = useState('');
   const [galatMateri, setGalatMateri] = useState('');
+  const [stokDapurGagal, setStokDapurGagal] = useState(false);
 
   // New Order Form State
   const [newOrderForm, setNewOrderForm] = useState({
@@ -107,22 +139,28 @@ export default function ProductionView({
       setLoadingMaterials(false);
     }
 
+    const stokDapur = await muatStokDapur();
     const actualIngredients = materials.length > 0
-      ? materials.map(m => ({
-          ingredientId: m.ingredientId || m.IngredientId,
-          name: m.ingredientName || m.IngredientName || `Bahan #${m.ingredientId || m.IngredientId}`,
-          initialStock: parseFloat(m.standardQty || m.StandardQty) || 0,
-          actualUsed: parseFloat(m.actualQty || m.ActualQty) || parseFloat(m.standardQty || m.StandardQty) || 0,
-          unit: m.unit || m.Unit || 'kg',
-          unitCost: parseInt(m.unitCost || m.UnitCost) || 0,
-          remaining: parseFloat(m.standardQty || m.StandardQty) || 0
-        }))
+      ? materials.map(m => {
+          const idBahan = m.ingredientId || m.IngredientId;
+          const standar = parseFloat(m.standardQty || m.StandardQty) || 0;
+          // Baris stok yang tidak ada berarti dapur memang tidak memegang bahan itu, jadi nilainya
+          // nol — bukan tanda tanya. Null dipakai hanya kalau stok dapur gagal dimuat sama sekali.
+          const tersedia = stokDapur ? (stokDapur[idBahan] ?? 0) : null;
+          const dipakai = parseFloat(m.actualQty || m.ActualQty) || standar;
+          return {
+            ingredientId: idBahan,
+            name: m.ingredientName || m.IngredientName || `Bahan #${idBahan}`,
+            standardQty: standar,
+            actualUsed: dipakai,
+            unit: m.unit || m.Unit || 'kg',
+            unitCost: parseInt(m.unitCost || m.UnitCost) || 0,
+            kitchenStock: tersedia,
+            remaining: sisaSesudahDipakai(tersedia, dipakai)
+          };
+        })
       : [];
-
-    // Compute remaining for each
-    actualIngredients.forEach(ing => {
-      ing.remaining = Math.max(0, ing.initialStock - ing.actualUsed);
-    });
+    setStokDapurGagal(stokDapur === null && materials.length > 0);
 
     setScrapData({
       goodUnits: Math.floor(target * 0.96),
@@ -142,7 +180,7 @@ export default function ProductionView({
     const updated = [...scrapData.actualIngredients];
     updated[index][field] = parseFloat(value) || 0;
     if (field === 'actualUsed') {
-      updated[index].remaining = Math.max(0, updated[index].initialStock - updated[index].actualUsed);
+      updated[index].remaining = sisaSesudahDipakai(updated[index].kitchenStock, updated[index].actualUsed);
     }
     setScrapData({ ...scrapData, actualIngredients: updated });
   };
@@ -710,7 +748,11 @@ export default function ProductionView({
                     <Scale className="w-4 h-4" />
                     <span>Perhitungan Pemakaian Bahan Baku di Dapur</span>
                   </h4>
-                  <span className="text-[11px] text-slate-400">Sistem otomatis menghitung sisa stok dapur</span>
+                  <span className="text-[11px] text-slate-400">
+                    {stokDapurGagal
+                      ? 'Stok Dapur Produksi gagal dimuat; sisa belum bisa dihitung.'
+                      : 'Sisa dihitung dari stok riil di Dapur Produksi.'}
+                  </span>
                 </div>
 
                 {loadingMaterials ? (
@@ -727,7 +769,8 @@ export default function ProductionView({
                           <th className="py-2.5 px-3">Nama Bahan Baku</th>
                           <th className="py-2.5 px-3 text-center">Standar Resep</th>
                           <th className="py-2.5 px-3 text-center">Dipakai Aktual</th>
-                          <th className="py-2.5 px-3 text-center font-bold text-emerald-400">Sisa Stok Dapur</th>
+                          <th className="py-2.5 px-3 text-center">Stok Dapur</th>
+                          <th className="py-2.5 px-3 text-center font-bold text-emerald-400">Sisa Setelah Dipakai</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/60">
@@ -735,7 +778,7 @@ export default function ProductionView({
                           <tr key={idx} className="hover:bg-slate-800/30">
                             <td className="py-2.5 px-3 font-medium text-slate-200">{item.name}</td>
                             <td className="py-2.5 px-3 text-center text-slate-400">
-                              {item.initialStock} {item.unit}
+                              {qty(item.standardQty)} {item.unit}
                             </td>
                             <td className="py-2.5 px-3 text-center">
                               <input
@@ -747,8 +790,14 @@ export default function ProductionView({
                               />
                               <span className="ml-1 text-[11px] text-slate-500">{item.unit}</span>
                             </td>
-                            <td className="py-2.5 px-3 text-center font-bold text-emerald-400">
-                              {item.remaining} {item.unit}
+                            <td className="py-2.5 px-3 text-center text-slate-300">
+                              {item.kitchenStock === null ? '—' : `${qty(item.kitchenStock)} ${item.unit}`}
+                            </td>
+                            <td className={`py-2.5 px-3 text-center font-bold ${
+                              item.remaining === null ? 'text-slate-500'
+                                : item.remaining < 0 ? 'text-red-400' : 'text-emerald-400'
+                            }`}>
+                              {item.remaining === null ? '—' : `${qty(item.remaining)} ${item.unit}`}
                             </td>
                           </tr>
                         ))}
