@@ -169,7 +169,38 @@ public class ProductTemplateRepository : IProductTemplateRepository
     public async Task DeleteAsync(int id)
     {
         using var conn = _factory.CreateConnection();
-        var cmd = conn.CreateCommand();
+        await conn.OpenAsync();
+
+        // Sama seperti bahan: menonaktifkan produk tidak menghapus stok produk jadinya. Saldo
+        // akun 1-006 tetap memuat nilainya sementara produk itu hilang dari katalog, jadi
+        // neraca dan daftar barang tidak lagi sama. Produk hanya boleh dinonaktifkan setelah
+        // stok jadinya habis.
+        var sisa = new List<string>();
+        string namaProduk = $"produk #{id}";
+        using (var cek = conn.CreateCommand())
+        {
+            cek.CommandText = @"
+                SELECT sl.Name, fgs.Quantity, pt.Name
+                  FROM FinishedGoodsStock fgs
+                  JOIN StorageLocations sl ON sl.Id = fgs.LocationId
+                  JOIN ProductTemplates pt ON pt.Id = fgs.ProductTemplateId
+                 WHERE fgs.ProductTemplateId = @id AND fgs.Quantity <> 0
+                 ORDER BY sl.Name;";
+            cek.Parameters.AddWithValue("@id", id);
+            using var reader = await cek.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                sisa.Add($"{reader.GetString(0)} {reader.GetDecimal(1):0.##} unit");
+                namaProduk = reader.GetString(2);
+            }
+        }
+        if (sisa.Count > 0)
+            throw new InvalidOperationException(
+                $"Produk \"{namaProduk}\" masih punya stok produk jadi: {string.Join(", ", sisa)}. " +
+                "Stok itu tetap dihitung di akun Persediaan Produk Jadi, jadi jual atau keluarkan " +
+                "lebih dulu sebelum produk dinonaktifkan.");
+
+        using var cmd = conn.CreateCommand();
         cmd.CommandText = "UPDATE ProductTemplates SET IsActive = 0 WHERE Id = @id;";
         cmd.Parameters.AddWithValue("@id", id);
         await cmd.ExecuteNonQueryAsync();

@@ -280,7 +280,10 @@ public class ExportService
 
     public async Task<(byte[] data, string contentType, string filename)> ExportStockAsync(string format)
     {
-        var ingredients = await _ingredients.GetAllActiveAsync();
+        // Daftar bahan aktif saja akan menyembunyikan stok yang masih dihitung di neraca
+        // hanya karena master-nya sudah dinonaktifkan; laporan lalu tidak sama dengan layar
+        // Inventaris maupun dengan saldo akun persediaan.
+        var ingredients = await _ingredients.GetAllCountedAsync();
         var namaToko = await NamaTokoAsync();
 
         if (format.Equals("pdf", StringComparison.OrdinalIgnoreCase))
@@ -325,12 +328,11 @@ public class ExportService
                 });
                 foreach (var i in ingredients)
                 {
-                    string status = i.CurrentStock <= i.MinStockAlert ? "KRITIS" : "OK";
                     table.Cell().Element(c => CellStyle(c)).Text(i.Name);
                     table.Cell().Element(c => CellStyle(c)).Text(i.Unit);
                     table.Cell().Element(c => CellStyle(c)).AlignRight().Text(i.CurrentStock.ToString("N2"));
                     table.Cell().Element(c => CellStyle(c)).AlignRight().Text(i.MinStockAlert.ToString("N2"));
-                    table.Cell().Element(c => CellStyle(c)).Text(status);
+                    table.Cell().Element(c => CellStyle(c)).Text(StatusStok(i));
                 }
             });
         })).GeneratePdf();
@@ -354,7 +356,7 @@ public class ExportService
             ws.Cell(row, 3).Value = i.Unit;
             ws.Cell(row, 4).Value = i.CurrentStock;
             ws.Cell(row, 5).Value = i.MinStockAlert;
-            ws.Cell(row, 6).Value = i.CurrentStock <= i.MinStockAlert ? "KRITIS" : "OK";
+            ws.Cell(row, 6).Value = StatusStok(i);
             row++;
         }
         ws.Columns().AdjustToContents();
@@ -362,6 +364,12 @@ public class ExportService
         wb.SaveAs(ms);
         return ms.ToArray();
     }
+
+    // Bahan yang masternya sudah dinonaktifkan tetap bisa muncul di sini: stoknya belum habis
+    // dan nilainya masih menjadi aset, jadi kolom Status harus mengatakannya, bukan menyembunyikan
+    // barisnya.
+    private static string StatusStok(Ingredient i) =>
+        !i.IsActive ? "NONAKTIF" : i.CurrentStock <= i.MinStockAlert ? "KRITIS" : "OK";
 
     // ───────────────────────────────────────────────────────────────────────
     //  PEMBELIAN

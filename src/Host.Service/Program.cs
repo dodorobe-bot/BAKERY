@@ -883,7 +883,16 @@ try
     app.MapDelete("/api/ingredients/{id:int}", async (int id, IIngredientRepository repo, HttpContext ctx) =>
     {
         var bahan = await repo.GetByIdAsync(id);
-        await repo.DeleteAsync(id);
+        try
+        {
+            await repo.DeleteAsync(id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Stok yang tinggal di rak membuat neraca dan daftar bahan tidak lagi menunjuk
+            // barang yang sama, jadi penonaktifan ditolak dan alasannya disampaikan.
+            return Results.BadRequest(new { error = ex.Message });
+        }
         await Jejak.CatatDetilAsync(ctx, "nonaktifkan bahan baku", "Ingredient", id,
             bahan is null ? null : new { nama = bahan.Name, aktif = true },
             new { aktif = false });
@@ -1012,7 +1021,14 @@ try
         // UpdateAsync hanya menulis Name/Category/SellingPrice, jadi IsActive=false yang diatur
         // di sini dulu tidak pernah sampai ke baris database: klien dapat 200 sementara produk
         // tetap muncul di daftar. DeleteAsync memang tugasnya menonaktifkan produk.
-        await repo.DeleteAsync(id);
+        try
+        {
+            await repo.DeleteAsync(id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
         await Jejak.CatatDetilAsync(ctx, "nonaktifkan produk", "ProductTemplate", id,
             new { nama = product.Name, hargaJualMinor = product.SellingPrice, aktif = true },
             new { nama = product.Name, aktif = false });

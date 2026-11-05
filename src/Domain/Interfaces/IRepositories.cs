@@ -33,6 +33,12 @@ public interface IIngredientRepository
 {
     Task<Ingredient?> GetByIdAsync(int id);
     Task<IReadOnlyList<Ingredient>> GetAllActiveAsync();
+    /// <summary>
+    /// Bahan aktif plus bahan nonaktif yang stoknya belum habis. Nilainya masih dihitung di
+    /// akun persediaan, jadi laporan stok wajib memuatnya supaya laporan, layar, dan neraca
+    /// menunjuk barang yang sama.
+    /// </summary>
+    Task<IReadOnlyList<Ingredient>> GetAllCountedAsync();
     Task<IReadOnlyList<Ingredient>> GetBelowMinStockAsync();
     /// <summary>Nama bahan aktif yang sama (abaikan spasi ujung dan huruf besar-kecil).</summary>
     Task<bool> IsNameTakenAsync(string name, int? exceptId = null);

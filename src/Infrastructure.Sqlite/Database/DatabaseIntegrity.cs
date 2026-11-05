@@ -38,6 +38,7 @@ public sealed class DatabaseIntegrity
             CekStokNegatif(conn),
             CekNilaiPersediaanJadi(conn),
             CekJurnalStokLayarBahan(conn),
+            CekStokMasterNonaktif(conn),
         ];
     }
 
@@ -241,6 +242,38 @@ public sealed class DatabaseIntegrity
                   "Bahan Baku kini dibukukan (stok awal melawan Modal, koreksi melawan Beban " +
                   "Selisih Persediaan); data lama dibukukan sekali dengan perintah " +
                   "--rekonsiliasi-stok-bahan atau lewat opname.");
+    }
+
+    /// <summary>
+    /// Menonaktifkan master tidak menghapus stoknya. Selama sisa stok itu ada, nilainya tetap
+    /// menjadi aset di akun persediaan, tetapi masternya sudah hilang dari daftar bahan dan
+    /// katalog produk — sehingga angka di layar, di laporan, dan di neraca tidak lagi mudah
+    /// dibandingkan. Tombol nonaktif kini menolak master yang masih berstok; pemeriksaan ini
+    /// menangkap sisa keadaan itu (misalnya data sebelum pagar terpasang).
+    /// </summary>
+    private static IntegrityCheck CekStokMasterNonaktif(SqliteConnection conn)
+    {
+        var menggantung = Baris(conn, @"
+            SELECT 'Bahan ' || i.Name || ' di ' || sl.Name || ' = ' || printf('%g', ls.Quantity) || ' ' || i.Unit
+              FROM LocationStock ls
+              JOIN Ingredients i ON i.Id = ls.IngredientId
+              JOIN StorageLocations sl ON sl.Id = ls.LocationId
+             WHERE i.IsActive = 0 AND ls.Quantity <> 0
+            UNION ALL
+            SELECT 'Produk ' || pt.Name || ' di ' || sl.Name || ' = ' || printf('%g', fgs.Quantity) || ' unit'
+              FROM FinishedGoodsStock fgs
+              JOIN ProductTemplates pt ON pt.Id = fgs.ProductTemplateId
+              JOIN StorageLocations sl ON sl.Id = fgs.LocationId
+             WHERE pt.IsActive = 0 AND fgs.Quantity <> 0
+            ORDER BY 1;");
+        return baru("stok master nonaktif sudah habis", menggantung.Count == 0,
+            menggantung.Count == 0
+                ? "tidak ada stok yang menggantung di master nonaktif"
+                : $"{menggantung.Count} baris stok masih dihitung di akun persediaan padahal " +
+                  $"masternya sudah dinonaktifkan: {Rangkai(menggantung)}. Habiskan stoknya lewat " +
+                  "Formulir Mutasi Bahan atau Pemeriksaan Fisik (Stok Opname) supaya selisihnya " +
+                  "ikut membukukan jurnal; setelah stok nol, laporan dan neraca menunjuk barang " +
+                  "yang sama.");
     }
 
     private static IntegrityCheck baru(string name, bool passed, string detail)

@@ -238,7 +238,8 @@ public class LocationStockRepository : ILocationStockRepository
 
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-            SELECT fgs.LocationId, sl.Name, fgs.ProductTemplateId, pt.Name, fgs.Quantity, fgs.UpdatedAt
+            SELECT fgs.LocationId, sl.Name, fgs.ProductTemplateId, pt.Name, fgs.Quantity, fgs.UpdatedAt,
+                   pt.IsActive
             FROM FinishedGoodsStock fgs
             JOIN StorageLocations sl ON fgs.LocationId = sl.Id
             JOIN ProductTemplates pt ON fgs.ProductTemplateId = pt.Id
@@ -257,7 +258,8 @@ public class LocationStockRepository : ILocationStockRepository
                 ProductTemplateId = reader.GetInt32(2),
                 ProductName = reader.GetString(3),
                 Quantity = reader.GetDecimal(4),
-                UpdatedAt = DateTime.SpecifyKind(DateTime.Parse(reader.GetString(5)), DateTimeKind.Utc)
+                UpdatedAt = DateTime.SpecifyKind(DateTime.Parse(reader.GetString(5)), DateTimeKind.Utc),
+                ProductIsActive = reader.GetInt32(6) == 1
             });
         }
         return list;

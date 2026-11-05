@@ -35,6 +35,20 @@ public class IngredientRepository : IIngredientRepository
         return list;
     }
 
+    public async Task<IReadOnlyList<Ingredient>> GetAllCountedAsync()
+    {
+        using var conn = _factory.CreateConnection();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT i.*, {StockExpr} AS CurrentStock FROM Ingredients i
+             WHERE i.IsActive = 1 OR {StockExpr} <> 0
+             ORDER BY i.IsActive DESC, i.Name;";
+        using var r = await cmd.ExecuteReaderAsync();
+        var list = new List<Ingredient>();
+        while (r.Read()) list.Add(Map(r));
+        return list;
+    }
+
     public async Task<IReadOnlyList<Ingredient>> GetBelowMinStockAsync()
     {
         using var conn = _factory.CreateConnection();
@@ -126,7 +140,38 @@ public class IngredientRepository : IIngredientRepository
     public async Task DeleteAsync(int id)
     {
         using var conn = _factory.CreateConnection();
-        var cmd = conn.CreateCommand();
+        await conn.OpenAsync();
+
+        // Menonaktifkan bahan tidak menghapus stoknya. Selama stoknya masih ada, nilainya tetap
+        // dihitung di jurnal persediaan dan di layar Inventaris, tetapi bahan itu hilang dari
+        // daftar bahan — jadi laporan dan neraca tidak lagi menunjuk barang yang sama. Karena
+        // itu bahan hanya boleh dinonaktifkan setelah raknya kosong.
+        var sisa = new List<string>();
+        string namaBahan = $"bahan #{id}";
+        using (var cek = conn.CreateCommand())
+        {
+            cek.CommandText = @"
+                SELECT sl.Name, ls.Quantity, i.Name, i.Unit
+                  FROM LocationStock ls
+                  JOIN StorageLocations sl ON sl.Id = ls.LocationId
+                  JOIN Ingredients i ON i.Id = ls.IngredientId
+                 WHERE ls.IngredientId = @id AND ls.Quantity <> 0
+                 ORDER BY sl.Name;";
+            cek.Parameters.AddWithValue("@id", id);
+            using var reader = await cek.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                sisa.Add($"{reader.GetString(0)} {reader.GetDecimal(1):0.##} {reader.GetString(3)}");
+                namaBahan = reader.GetString(2);
+            }
+        }
+        if (sisa.Count > 0)
+            throw new InvalidOperationException(
+                $"Bahan \"{namaBahan}\" masih punya stok: {string.Join(", ", sisa)}. " +
+                "Habiskan lebih dulu lewat Formulir Mutasi Bahan atau Pemeriksaan Fisik (Stok Opname) " +
+                "supaya setiap selisih ikut membukukan jurnalnya, lalu nonaktifkan.");
+
+        using var cmd = conn.CreateCommand();
         cmd.CommandText = "UPDATE Ingredients SET IsActive = 0 WHERE Id = @id;";
         cmd.Parameters.AddWithValue("@id", id);
         await cmd.ExecuteNonQueryAsync();

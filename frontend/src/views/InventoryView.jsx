@@ -184,6 +184,25 @@ export default function InventoryView({
     });
     return map;
   }, [finishedGoods]);
+
+  // Produk yang sudah dinonaktifkan tidak ikut /api/products, padahal stok produk jadinya masih
+  // ada dan masih dihitung di akun Persediaan Produk Jadi. Tanpa baris ini, nilainya terlihat di
+  // neraca tetapi tidak bisa ditemukan di layar mana pun.
+  const produkYatim = useMemo(() => {
+    const dikenal = new Set((products ?? []).map((p) => p.id ?? p.Id));
+    const map = new Map();
+    (finishedGoods ?? []).forEach((row) => {
+      if (dikenal.has(row.productTemplateId)) return;
+      const isi = map.get(row.productTemplateId) ?? {
+        id: row.productTemplateId,
+        name: row.productName ?? `Produk ${row.productTemplateId}`,
+        saldo: [],
+      };
+      isi.saldo.push(row);
+      map.set(row.productTemplateId, isi);
+    });
+    return [...map.values()];
+  }, [products, finishedGoods]);
   const barisMutasi = useBarisBertahap(filteredMovements);
   const barisBahan = useBarisBertahap(activeIngredients);
 
@@ -677,7 +696,7 @@ export default function InventoryView({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
-                  {(products ?? []).length === 0 && (
+                  {(products ?? []).length === 0 && produkYatim.length === 0 && (
                     <tr><td colSpan={5} className="py-6 px-4 text-center text-slate-500">Belum ada produk terdaftar.</td></tr>
                   )}
                   {barisProduk.tampil.map((p) => {
@@ -698,6 +717,26 @@ export default function InventoryView({
                             {saldo.length === 0
                               ? 'belum tercatat'
                               : saldo.map((row) => `${row.locationName} ${formatQty(row.quantity)}`).join(' · ')}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {produkYatim.map((p) => {
+                    const totalYatim = p.saldo.reduce((s, row) => s + Number(row.quantity || 0), 0);
+                    return (
+                      <tr key={`produk-yatim-${p.id}`} className="bg-slate-900/40 hover:bg-slate-800/40">
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-white">{p.name}</div>
+                          <div className="text-[11px] text-slate-500">nonaktif di master</div>
+                        </td>
+                        <td className="py-3 px-4 text-slate-500">-</td>
+                        <td className="py-3 px-4 text-right font-mono text-slate-500">-</td>
+                        <td className="py-3 px-4 text-right font-mono text-slate-500">-</td>
+                        <td className="py-3 px-4 text-right">
+                          <div className="font-mono font-semibold text-white">{formatQty(totalYatim)}</div>
+                          <div className="text-[11px] text-slate-500">
+                            {p.saldo.map((row) => `${row.locationName} ${formatQty(row.quantity)}`).join(' · ')}
                           </div>
                         </td>
                       </tr>

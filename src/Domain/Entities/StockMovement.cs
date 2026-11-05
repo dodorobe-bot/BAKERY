@@ -41,6 +41,8 @@ public class FinishedGoodsStockItem
     public int ProductTemplateId { get; set; }
     public string ProductName { get; set; } = string.Empty;
     public decimal Quantity { get; set; }
+    /// <summary>false bila produknya sudah dinonaktifkan di master tetapi stoknya masih ada.</summary>
+    public bool ProductIsActive { get; set; } = true;
     public DateTime UpdatedAt { get; set; }
 }
 

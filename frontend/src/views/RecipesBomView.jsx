@@ -69,6 +69,7 @@ export default function RecipesBomView({
   const [formBahan, setFormBahan] = useState(emptyBahan());
   const [savingBahan, setSavingBahan] = useState(false);
   const [errorBahan, setErrorBahan] = useState('');
+  const [galatHapus, setGalatHapus] = useState('');
 
   // Filter products by search
   const displayProducts = (products || []).filter((p) => {
@@ -188,10 +189,17 @@ export default function RecipesBomView({
   };
 
   // ── Delete (soft) ──────────────────────────────────────────────────────────────
-  const handleDelete = (product) => {
+  const handleDelete = async (product) => {
     const name = product.name ?? product.Name ?? 'produk ini';
     if (!window.confirm(`Nonaktifkan "${name}"? Produk tidak akan muncul di daftar aktif.`)) return;
-    onDeleteProduct(product.id ?? product.Id);
+    setGalatHapus('');
+    try {
+      await onDeleteProduct(product.id ?? product.Id);
+    } catch (err) {
+      // Server menolak kalau stok produk jadi masih ada; pesan penolakannya harus sampai
+      // ke pengguna, bukan hilang sebagai error yang tidak tertangani.
+      setGalatHapus(err.message || 'Produk tidak bisa dinonaktifkan.');
+    }
   };
 
   // ── Bahan baku ─────────────────────────────────────────────────────────────────
@@ -260,10 +268,15 @@ export default function RecipesBomView({
     }
   };
 
-  const handleHapusBahan = (bahan) => {
+  const handleHapusBahan = async (bahan) => {
     const nama = bahan.name ?? bahan.Name ?? 'bahan ini';
     if (!window.confirm(`Nonaktifkan "${nama}"? Bahan tidak akan muncul di pilihan resep dan pembelian baru.`)) return;
-    onDeleteIngredient(bahan.id ?? bahan.Id);
+    setGalatHapus('');
+    try {
+      await onDeleteIngredient(bahan.id ?? bahan.Id);
+    } catch (err) {
+      setGalatHapus(err.message || 'Bahan tidak bisa dinonaktifkan.');
+    }
   };
 
   return (
@@ -297,6 +310,12 @@ export default function RecipesBomView({
           )}
         </div>
       </div>
+
+      {galatHapus && (
+        <div className="bg-rose-950/60 border border-rose-800 text-rose-200 text-sm rounded-xl px-4 py-3">
+          {galatHapus}
+        </div>
+      )}
 
       {/* Tab produk/resep dan bahan baku: keduanya data induk yang saling menunjuk. */}
       <div className="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 p-1.5 rounded-xl w-fit">
