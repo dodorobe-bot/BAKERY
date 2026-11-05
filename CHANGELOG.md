@@ -108,7 +108,11 @@ peringatan**; pasang/peningkatan/copot **1.2.13 → 1.2.14 di Windows Sandbox be
   0 dilewati** (83+129+164+168 — identik dengan gerbang lokal), dan langkah yang belum pernah berjalan di
   CI, `Keter-reproduksian berkas bukti`, lulus dengan **302 dibandingkan byte-per-byte, 0 gagal,
   20 lewati** (entri `.exe`/`.msi` yang memang tidak dikomit). Langkah `Unggah log bila ada kegagalan`
-  berstatus `skipped` karena berkondisi `if: failure()` — itu rancangan, bukan kelulusan.
+  berstatus `skipped` karena berkondisi `if: failure()` — itu rancangan, bukan kelulusan. Run ketiga
+  [`41948231824`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41948231824) (commit dokumentasi
+  `5b0bbfa`) **juga `success`**: 544 tes lulus untuk kedua kalinya di mesin kedua tanpa perubahan kode,
+  dan pagar keter-reproduksian naik tepat satu berkas (282 diperiksa, 303 lulus, 0 gagal) sehingga
+  berkas bukti CI itu sendiri terverifikasi byte-per-byte di klon baru.
   Rincian: [`docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md`](docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md).
 
 ## [1.2.13] — 2026-11-03

@@ -3,8 +3,8 @@
 Workflow: [`.github/workflows/gerbang.yml`](../../../.github/workflows/gerbang.yml) (`name: Gerbang build + tes`,
 pelari `windows-latest`, pemicu `push` ke `main` + `pull_request` + `workflow_dispatch`).
 Angka di bawah disalin apa adanya dari log yang diunduh GitHub (`gh run view --log`), bukan dari laporan lokal.
-Kedua run memakai mesin cloud yang berbeda dari PC pengembang (RAM pelari Actions jauh lebih besar),
-jadi keduanya tidak membuktikan hal yang sama dengan gerbang lokal — keduanya saling menguatkan.
+Ketiga run memakai mesin cloud yang berbeda dari PC pengembang (RAM pelari Actions jauh lebih besar),
+jadi ketiganya tidak membuktikan hal yang sama dengan gerbang lokal — ketiganya saling menguatkan.
 
 ## Run 1 — MERAH (`41944547594`)
 
@@ -135,6 +135,40 @@ Langkah keter-reproduksian (pertama kali berjalan di CI; run 1 tidak pernah samp
 ```
 
 `20 lewati` adalah entri `.exe`/`.msi` yang memang tidak dikomit — bukan pemeriksaan yang tidak jalan.
+
+## Run 3 — HIJAU (`41948231824`): commit dokumentasi bukti ini
+
+| Medan | Nilai |
+|---|---|
+| Commit | `5b0bbfaba9c651915c9ffeff6ed1dc849a074a47` ("Bukti CI 1.2.14: run 41946780573 hijau, run 41944547594 merah oleh harness") |
+| Pemicu | `push`, dibuat 2026-11-05T01:23:48Z, selesai 2026-11-05T01:27:59Z (4 m 11 s) |
+| Kesimpulan | **`success`** |
+| URL | https://github.com/dodorobe-bot/BAKERY/actions/runs/41948231824 |
+
+Semua 14 langkah sama seperti run 2 (`Unggah log bila ada kegagalan` = `skipped` karena `if: failure()`),
+dengan angka yang menguatkan dua hal berbeda:
+
+```text
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Passed!  - Failed: 0, Passed:  83, Skipped: 0, Total:  83, Duration: 1 s     - BakeryDesktop.Domain.Tests.dll (net8.0)
+Passed!  - Failed: 0, Passed: 129, Skipped: 0, Total: 129, Duration: 4 s      - BakeryDesktop.Application.Tests.dll (net8.0)
+Passed!  - Failed: 0, Passed: 164, Skipped: 0, Total: 164, Duration: 46 s     - BakeryDesktop.Infrastructure.Tests.dll (net8.0)
+Passed!  - Failed: 0, Passed: 168, Skipped: 0, Total: 168, Duration: 2 m 6 s  - BakeryDesktop.UI.Tests.dll (net8.0)
+
+[MULAI] 282 berkas bukti dibandingkan byte-per-byte dengan blob
+[OK] -text berlaku (contoh docs/paket-bukti-2026-11-04/upgrade-1210-1213-sandbox/uji-1210-1213.ps1)
+[RINGKAS] 303 lulus, 0 gagal, 20 lewati (artefak .exe/.msi tidak dikomit) dari 5 manifest
+```
+
+- **544 tes lulus untuk kedua kalinya di mesin kedua**, tanpa satu pun perubahan kode: UI 168 lulus pada
+  dua majelis biner yang berbeda waktu (run 2 3 m 2 s, run 3 2 m 6 s). Ini yang membedakan "hijau" dari
+  "kebetulan hijau".
+- Jumlah berkas bukti naik tepat satu (281 → 282) dan yang lulus naik tepat satu (302 → 303) pada run yang
+  mengomitkan berkas ini sendiri — bukti keter-reproduksian dokumen ini terverifikasi di klon CI yang baru,
+  dengan `core.autocrlf=true`, bukan hanya di klon sekali-pakai lokal.
 
 ## Batas yang harus disebut
 

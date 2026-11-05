@@ -117,7 +117,7 @@ yang berbeda: satu digit pada nama merek uji yang memang saya bedakan antar run
 (`… Sandbox 1213` → `… Sandbox 1214`) dan lima byte cap waktu. Struktur byte struk identik,
 jadi jalur cetak tidak berubah bentuk antara kedua rilis.
 
-## Gerbang CI (mesin kedua) — run 1 merah, run 2 hijau
+## Gerbang CI (mesin kedua) — run 1 merah, run 2 dan run 3 hijau
 
 Workflow [`/.github/workflows/gerbang.yml`](../.github/workflows/gerbang.yml) (`Gerbang build + tes`)
 berjalan di pelari `windows-latest` milik GitHub. Ia **tidak** membangun installer; yang diperiksa
@@ -143,6 +143,13 @@ adalah `npm ci` + bundel desktop, `dotnet build -c Release`, `dotnet test -c Rel
   **302 dibandingkan byte-per-byte, 0 gagal, 20 lewati** dari 5 manifes (20 itu entri `.exe`/`.msi`
   yang memang tidak dikomit). Langkah `Unggah log bila ada kegagalan` berstatus `skipped` karena
   berkondisi `if: failure()` —SKIP, bukan lulus.
+
+- **Run 3 [`41948231824`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41948231824)** pada commit
+  dokumentasi bukti ini (`5b0bbfa`): **`success`** juga, 4 m 11 s. **544 tes lulus untuk kedua kalinya di
+  mesin kedua tanpa satu pun perubahan kode** (UI 168 lulus dalam 2 m 6 s), build Release tetap
+  0 peringatan/0 galat, dan langkah keter-reproduksian naik tepat satu berkas — **282 diperiksa,
+  303 lulus, 0 gagal, 20 lewati** — artinya berkas bukti ini sendiri terbukti tergandakan byte-per-byte
+  di klon CI yang baru, bukan hanya di klon sekali-pakai lokal.
 
 Rincian baris log, tabel langkah, dan batas yang harus disebut ada di
 [`docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md`](paket-bukti-2026-11-05/ci/gerbang-ci-1214.md).
