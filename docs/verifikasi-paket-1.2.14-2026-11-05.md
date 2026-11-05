@@ -9,12 +9,13 @@ Seruni 22 Bakery 1.2.14. Angka di bawah dibaca ulang dari berkas laporan dan dar
 **NOT READY.** Semua yang bisa dibuktikan di mesin pengembang ini sudah dibuktikan dan seluruhnya
 hijau: gerbang Release, 544 tes, 169 pemeriksaan API, `build-pro`, validasi paket 393 berkas,
 kontrol negatif automasi 14/14, dan pasang/peningkatan/copot **1.2.13 → 1.2.14** di Windows Sandbox
-bersih **106/106**. Yang menahan putusan bukan mutu paket, melainkan empat hal yang tidak bisa
+bersih **106/106**. CI juga sudah hijau di mesin kedua (run `41946780573`, commit `1861fb0`:
+544 tes lulus, build Release 0 peringatan/0 galat, keter-reproduksian berkas bukti lulus — lihat
+bagian "Gerbang CI"). Yang menahan putusan bukan mutu paket, melainkan empat hal yang tidak bisa
 dikerjakan dari mesin ini — cetak pada printer kasir fisik, pemindai barcode fisik, laci uang, dan
-uji di Windows 10 — ditambah tanda tangan Authenticode yang sertifikatnya belum ada, bukti hijau CI
-yang belum lahir karena commit CI belum di-push, dan perintah penambalan data warisan
-(`--rekonsiliasi-stok-bahan --terapkan`) yang menunggu persetujuan pemilik karena menyentuh saldo
-neraca.
+uji di Windows 10 — ditambah tanda tangan Authenticode yang sertifikatnya belum ada, dan perintah
+penambalan data warisan (`--rekonsiliasi-stok-bahan --terapkan`) yang menunggu persetujuan pemilik
+karena menyentuh saldo neraca.
 
 **Tidak ada cacat baru yang ditemukan pada siklus ini.** Empat blocker perangkat + Windows 10 itu
 sudah tercatat sejak 1.2.12 dan belum berubah statusnya.
@@ -116,6 +117,36 @@ yang berbeda: satu digit pada nama merek uji yang memang saya bedakan antar run
 (`… Sandbox 1213` → `… Sandbox 1214`) dan lima byte cap waktu. Struktur byte struk identik,
 jadi jalur cetak tidak berubah bentuk antara kedua rilis.
 
+## Gerbang CI (mesin kedua) — run 1 merah, run 2 hijau
+
+Workflow [`/.github/workflows/gerbang.yml`](../.github/workflows/gerbang.yml) (`Gerbang build + tes`)
+berjalan di pelari `windows-latest` milik GitHub. Ia **tidak** membangun installer; yang diperiksa
+adalah `npm ci` + bundel desktop, `dotnet build -c Release`, `dotnet test -c Release`, dan
+`scripts/uji-checkout-bukti.ps1`.
+
+- **Run 1 [`41944547594`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41944547594)** pada commit
+  `96e4389`: **`failure`**. Domain 83, Application 129 dan Infrastructure 164 lulus penuh;
+  UI **163 lulus / 5 gagal / 168 total**, kelimanya di `McpStdioTests`
+  (4 × `JsonReaderException: 'P' is an invalid start of a value`, 1 × `IOException: The pipe is being closed`).
+  Penyebabnya harness, bukan produk: `tests/UI.Tests/Helpers/McpClient.cs` mengunci jalur
+  `bin\Debug\net8.0\Seruni22Bakery.Host.dll`, padahal CI hanya membangun Release, sehingga `dotnet`
+  mencetak "Possible reasons …" ke stdout dan baris itu dibaca sebagai JSON.
+  Langkah `Keter-reproduksian berkas bukti` tidak sempat berjalan di run ini.
+- **Perbaikan (`1861fb0`)**: aturan pencarian host disatukan di `TestHost.ResolveHostDll` (konfigurasi
+  majelis tes lebih dulu, lawannya sebagai pangkal cadangan) dan empat salinan privat di
+  `McpClient.cs`, `ErrorEnvelopeTests.cs`, `StartupSecurityTests.cs` (2×) dan `OrderPaginationUiTests.cs`
+  dihapus. Diuji dua arah di mesin ini sebelum push.
+- **Run 2 [`41946780573`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41946780573)** pada commit
+  `1861fb0`: **`success`**, 6 m 8 s (01:11:22Z → 01:17:30Z). `Build Release` =
+  `Build succeeded. 0 Warning(s) 0 Error(s)`. Tes: 83 + 129 + 164 + 168 = **544 lulus, 0 gagal,
+  0 dilewati** — identik dengan gerbang Release lokal. `Keter-reproduksian berkas bukti` lulus:
+  **302 dibandingkan byte-per-byte, 0 gagal, 20 lewati** dari 5 manifes (20 itu entri `.exe`/`.msi`
+  yang memang tidak dikomit). Langkah `Unggah log bila ada kegagalan` berstatus `skipped` karena
+  berkondisi `if: failure()` —SKIP, bukan lulus.
+
+Rincian baris log, tabel langkah, dan batas yang harus disebut ada di
+[`docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md`](paket-bukti-2026-11-05/ci/gerbang-ci-1214.md).
+
 ## Yang TIDAK dibuktikan (dan bukan kegagalan harness)
 
 | Belum | Kenapa | Siapa yang menutup |
@@ -125,7 +156,7 @@ jadi jalur cetak tidak berubah bentuk antara kedua rilis.
 | Laci uang | tidak ada jalur `ESC p` yang dikirim (sudah diverifikasi sebagai **negatif**), jadi ini keputusan rancangan + perangkat | pemilik setelah printer lulus |
 | Uji di Windows 10 | mesin ini Windows 11; tidak ada VM Windows 10 yang bisa dijalankan dari sesi ini | pemilik / mesin kedua |
 | Tanda tangan Authenticode | tidak ada sertifikat; semua paket dilaporkan apa adanya sebagai `NotSigned` | pemilik (keputusan biaya, tercatat ditunda sejak 1.2.4) |
-| CI hijau | `.github/workflows/uji.yaml` sudah di-commit (`94073a3`) tetapi 4 commit masih di depan `origin/main`; belum ada izin push dari sesi ini | pemilik (push) |
+| Build installer di CI | workflow CI sengaja tidak menjalankan `build-pro.ps1`/Inno/WiX — yang dibuktikannya hanya build Release + tes + keter-reproduksian berkas | pemilik, bila ingin paket ikut terbangkitkan di cloud |
 | Penambalan data warisan di basis data nyata | `--rekonsiliasi-stok-bahan --terapkan` menyentuh saldo neraca pemilik; uji kering (tanpa `--terapkan`) tidak pernah dipakai di DB nyata | persetujuan pemilik |
 
 ## Catatan keterbatasan
@@ -145,5 +176,8 @@ jadi jalur cetak tidak berubah bentuk antara kedua rilis.
   `uji-1213-1214.ps1`, `hash-publish-1214.txt`, `port-kit-1214.py`, `KIT-SHA256SUMS.txt`.
   Kit itu sendiri dirakit di `C:\tmp\kit-uji-1213-1214` (paket `.exe`/`.msi` tidak dikomit).
 - `docs/paket-bukti-2026-11-05/kontrol-1214/uji-build-pro-rilis-1214.json`.
+- `docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md` — salinan baris log GitHub Actions kedua run
+  (`41944547594` merah, `41946780573` hijau). Log mentah CI tidak diunggah sebagai artefak karena
+  langkah unggah berkondisi `if: failure()`; sumber resminya URL run di berkas itu.
 - `dist/verify/verify-20261105-064252.json` + `.test.log`, `dist/installer/BUILD-INFO.json`,
   `dist/installer/VERIFY-REPORT.json`, `dist/installer/SHA256SUMS.txt`.

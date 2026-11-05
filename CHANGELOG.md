@@ -90,9 +90,26 @@ peringatan**; pasang/peningkatan/copot **1.2.13 → 1.2.14 di Windows Sandbox be
   jadi bukti "aset lama tersapu" di jalur ini bertumpu pada bundel JS dan jumlah berkas aset, bukan
   pada lenyapnya nama CSS. Semua konstanta kit dibaca ulang dari disk (hash+ukuran paket, tabel
   `Property`/`File` MSI, manifes publish), bukan diketik dari ingatan.
-- **CI sebagai pagar kedua.** `.github/workflows/uji.yaml` menjalankan gerbang build+tes pada setiap
-  push dan pull request. Alur kerja ini belum punya bukti hijau karena belum ada push ke `origin/main`
-  dari sesi ini; ia dicatat sebagai pagar kedua, bukan sebagai pengganti gerbang lokal.
+- **CI sebagai pagar kedua — merah lalu hijau, dan yang merah bukan produk.**
+  [`.github/workflows/gerbang.yml`](.github/workflows/gerbang.yml) (`Gerbang build + tes`, `windows-latest`)
+  menjalankan `npm ci` + bundel desktop, `dotnet build -c Release`, `dotnet test -c Release` dan
+  `scripts/uji-checkout-bukti.ps1` pada setiap push ke `main` / pull request. **Ia tidak membangun installer**,
+  jadi kedudukannya pagar kedua, bukan pengganti gerbang lokal. Run pertama
+  [`41944547594`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41944547594) di commit `96e4389`
+  **gagal**: Domain 83, Application 129, Infrastructure 164 lulus penuh, tetapi UI 163 lulus / **5 gagal** —
+  kelimanya `McpStdioTests` (`'P' is an invalid start of a value` empat kali, `IOException: The pipe is
+  being closed` sekali). Akarnya harness: `tests/UI.Tests/Helpers/McpClient.cs` mengunci jalur
+  `bin\Debug\net8.0\Seruni22Bakery.Host.dll` sementara CI hanya membangun Release, sehingga `dotnet`
+  mencetak pesannya sendiri ke stdout dan baris itu dibaca sebagai JSON. Perbaikan `1861fb0` menyatukan
+  aturan pencarian host di `TestHost.ResolveHostDll` (konfigurasi majelis tes lebih dulu) dan menghapus
+  empat salinan privat di harness. Run kedua
+  [`41946780573`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41946780573) di `1861fb0`
+  **`success`** dalam 6 m 8 s: `Build succeeded. 0 Warning(s) 0 Error(s)`, **544 tes lulus / 0 gagal /
+  0 dilewati** (83+129+164+168 — identik dengan gerbang lokal), dan langkah yang belum pernah berjalan di
+  CI, `Keter-reproduksian berkas bukti`, lulus dengan **302 dibandingkan byte-per-byte, 0 gagal,
+  20 lewati** (entri `.exe`/`.msi` yang memang tidak dikomit). Langkah `Unggah log bila ada kegagalan`
+  berstatus `skipped` karena berkondisi `if: failure()` — itu rancangan, bukan kelulusan.
+  Rincian: [`docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md`](docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md).
 
 ## [1.2.13] — 2026-11-03
 
