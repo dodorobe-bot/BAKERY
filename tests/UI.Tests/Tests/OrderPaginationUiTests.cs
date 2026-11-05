@@ -111,7 +111,7 @@ public sealed class OrderPaginationUiTests : IClassFixture<PlaywrightFixture>
     private static async Task<(Process Proses, string BaseUrl, string DbPath, string KeyPath)> MulaiHostAsync()
     {
         var root = TestHost.RepositoryRoot;
-        var hostDll = ResolveHostDll(root);
+        var hostDll = TestHost.ResolveHostDll(root);
         var stamp = Guid.NewGuid().ToString("N")[..8];
         var dbPath = Path.Combine(Path.GetTempPath(), $"seruni-paging-{stamp}.db");
         var keyPath = Path.Combine(Path.GetTempPath(), $"seruni-paging-{stamp}.key");
@@ -216,22 +216,6 @@ public sealed class OrderPaginationUiTests : IClassFixture<PlaywrightFixture>
             await Task.Delay(250);
         }
         throw new InvalidOperationException($"Host uji tidak siap di {baseUrl}. Log:{Environment.NewLine}{log}");
-    }
-
-    private static string ResolveHostDll(string root)
-    {
-        var konfigurasiTes = new DirectoryInfo(AppContext.BaseDirectory).Parent?.Name;
-        var urutan = konfigurasiTes is "Debug" or "Release"
-            ? new[] { konfigurasiTes, konfigurasiTes == "Debug" ? "Release" : "Debug" }
-            : new[] { "Debug", "Release" };
-        foreach (var configuration in urutan)
-        {
-            var candidate = Path.Combine(root, "src", "Host.Service", "bin", configuration,
-                "net8.0", "Seruni22Bakery.Host.dll");
-            if (File.Exists(candidate)) return candidate;
-        }
-        throw new InvalidOperationException(
-            $"Seruni22Bakery.Host.dll belum ada. Jalankan: dotnet build BakeryDesktop.slnx (dari {root})");
     }
 
     private static int FreePort()

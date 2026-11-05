@@ -141,11 +141,20 @@ public static class TestHost
     /// <summary>Akar repositori, dipakai tes yang memeriksa berkas yang benar-benar dikirim ke pengguna.</summary>
     public static string RepositoryRoot { get; } = FindRepositoryRoot();
 
-    private static string ResolveHostDll(string root)
+    /// <summary>
+    /// Satu-satunya aturan pencarian host untuk semua harness yang menjalankan
+    /// <c>Seruni22Bakery.Host.dll</c> sebagai proses (TestHost, klien MCP, tes yang membuat host
+    /// sendiri). Aturan ini harus dipakai bersama: CI membangun Release saja, dan setiap pemanggil
+    /// yang memilih sendiri akhirnya menguji biner dari konfigurasi yang tidak sedang diuji.
+    /// </summary>
+    public static string ResolveHostDll(string root)
     {
         // Ambil host dari konfigurasi yang sama dengan majelis tes. Dulu urutannya selalu Debug
         // lebih dulu, sehingga "dotnet test -c Release" diam-diam menguji host Debug yang
         // tertinggal dari build lama — hasil hijau/merahnya bukan tentang kode yang diuji.
+        // Versi yang memakai jalur Debug tetap ada: pada pohon Release-only, "dotnet <dll hilang>"
+        // tidak melempar galat saat Start, ia mencetak "Possible reasons ..." ke stdout sehingga
+        // pembacaan balasan JSON-RPC gagal dengan JsonReaderException yang tampak jauh dari penyebabnya.
         var konfigurasiTes = new DirectoryInfo(AppContext.BaseDirectory).Parent?.Name;
         var urutan = konfigurasiTes is "Debug" or "Release"
             ? new[] { konfigurasiTes, konfigurasiTes == "Debug" ? "Release" : "Debug" }

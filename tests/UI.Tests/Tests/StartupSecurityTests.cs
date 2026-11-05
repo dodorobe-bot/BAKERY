@@ -13,7 +13,7 @@ public sealed class StartupSecurityTests
     [Fact]
     public async Task Host_MenolakJwtSecretKurangDari32Byte()
     {
-        var hostDll = ResolveHostDll(TestHost.RepositoryRoot);
+        var hostDll = TestHost.ResolveHostDll(TestHost.RepositoryRoot);
         var stamp = Guid.NewGuid().ToString("N")[..8];
         var dbPath = Path.Combine(Path.GetTempPath(), $"seruni-jwt-{stamp}.db");
         var keyPath = Path.Combine(Path.GetTempPath(), $"seruni-jwt-{stamp}.key");
@@ -62,7 +62,7 @@ public sealed class StartupSecurityTests
     [Fact]
     public async Task Host_MenolakAlamatLuarLoopbackSebelumMembuatBasisData()
     {
-        var hostDll = ResolveHostDll(TestHost.RepositoryRoot);
+        var hostDll = TestHost.ResolveHostDll(TestHost.RepositoryRoot);
         var stamp = Guid.NewGuid().ToString("N")[..8];
         var dbPath = Path.Combine(Path.GetTempPath(), $"seruni-lan-{stamp}.db");
         var keyPath = Path.Combine(Path.GetTempPath(), $"seruni-lan-{stamp}.key");
@@ -104,23 +104,6 @@ public sealed class StartupSecurityTests
                 TryDelete(dbPath + suffix);
             TryDelete(keyPath);
         }
-    }
-
-    private static string ResolveHostDll(string root)
-    {
-        // Sama dengan TestHost: uji memakai konfigurasi build yang sama, bukan selalu Debug.
-        var konfigurasiTes = new DirectoryInfo(AppContext.BaseDirectory).Parent?.Name;
-        var urutan = konfigurasiTes is "Debug" or "Release"
-            ? new[] { konfigurasiTes, konfigurasiTes == "Debug" ? "Release" : "Debug" }
-            : new[] { "Debug", "Release" };
-        foreach (var configuration in urutan)
-        {
-            var candidate = Path.Combine(root, "src", "Host.Service", "bin", configuration,
-                "net8.0", "Seruni22Bakery.Host.dll");
-            if (File.Exists(candidate)) return candidate;
-        }
-        throw new InvalidOperationException(
-            $"Seruni22Bakery.Host.dll belum ada. Jalankan: dotnet build BakeryDesktop.slnx (dari {root})");
     }
 
     private static void TryDelete(string path)

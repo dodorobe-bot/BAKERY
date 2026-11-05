@@ -30,7 +30,7 @@ public sealed class McpClient : IDisposable
             CreateNoWindow = true,
             StandardOutputEncoding = new UTF8Encoding(false),
         };
-        psi.ArgumentList.Add(Path.Combine(root, "src", "Host.Service", "bin", "Debug", "net8.0", "Seruni22Bakery.Host.dll"));
+        psi.ArgumentList.Add(TestHost.ResolveHostDll(root));
         psi.ArgumentList.Add("--mcp-stdio");
         psi.ArgumentList.Add($"--Database:Path={databasePath}");
         psi.ArgumentList.Add($"--Desktop:StaticFilesPath={Path.Combine(root, "desktop")}");
