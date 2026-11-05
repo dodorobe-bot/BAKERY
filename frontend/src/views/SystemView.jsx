@@ -13,6 +13,7 @@ import {
   HardDrive,
   Copy,
   CheckCircle2,
+  Receipt,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { formatDateTime } from '../utils/money';
@@ -475,7 +476,29 @@ const KUNCI_SUNTING = [
 const nilaiAwal = (settings) => ({
   ...Object.fromEntries(KUNCI_SUNTING.map((k) => [k.key, settings?.[k.key] ?? ''])),
   brand_logo: settings?.brand_logo ?? '',
+  // PPN menentukan tagihan pesanan baru, jadi isian selalu dimulai dari nilai server. Kunci yang
+  // belum ada di basis data memakai bawaan server: PPN tidak aktif dan tarif masih kosong.
+  tax_enabled: settings?.tax_enabled ?? '0',
+  tax_rate_percent: settings?.tax_rate_percent ?? '',
+  tax_inclusive: settings?.tax_inclusive ?? '0',
 });
+
+// Bendera PPN dikirim sebagai teks "0"/"1" dan sebagian nilai lama memakai "true"/"false".
+const ppnHidup = (form) => form.tax_enabled === '1' || String(form.tax_enabled).toLowerCase() === 'true';
+
+function TombolBendera({ aktif, label, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
+        aktif ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-400 hover:text-white border border-slate-800'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
 
 function Pengaturan({ settings, selfCheck, loading, onRefresh, onSaveSettings }) {
   const [form, setForm] = useState(() => nilaiAwal(settings));
@@ -598,6 +621,65 @@ function Pengaturan({ settings, selfCheck, loading, onRefresh, onSaveSettings })
             <p className="text-[10px] text-slate-500 mt-1">
               Perubahan nama, slogan, dan logo berlaku setelah tombol Simpan ditekan, tanpa memasang ulang aplikasi.
             </p>
+          </div>
+
+          <div className="pt-1">
+            <div className="flex items-center gap-2 mb-3">
+              <Receipt className="w-4 h-4 text-amber-400" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Pajak Pertambahan Nilai (PPN)</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl">
+                <span className="text-xs font-semibold text-slate-400">Toko memungut PPN</span>
+                <span className="flex items-center gap-1.5">
+                  <TombolBendera aktif={ppnHidup(form)} label="Ya" onClick={() => setForm({ ...form, tax_enabled: '1' })} />
+                  <TombolBendera aktif={!ppnHidup(form)} label="Tidak" onClick={() => setForm({ ...form, tax_enabled: '0', tax_inclusive: '0' })} />
+                </span>
+              </div>
+
+              {ppnHidup(form) && (
+                <>
+                  <div className="flex items-center justify-between gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl">
+                    <label className="text-xs font-semibold text-slate-400" htmlFor="tax-rate">Tarif PPN (persen)</label>
+                    <input
+                      id="tax-rate"
+                      type="number"
+                      min={0}
+                      max={100}
+                      step="0.1"
+                      value={form.tax_rate_percent}
+                      onChange={(e) => setForm({ ...form, tax_rate_percent: e.target.value })}
+                      placeholder="11"
+                      className="w-28 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white text-right focus:outline-none focus:border-amber-500/60"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl">
+                    <span className="text-xs font-semibold text-slate-400">Harga katalog sudah termasuk PPN</span>
+                    <span className="flex items-center gap-1.5">
+                      <TombolBendera
+                        aktif={form.tax_inclusive === '1' || String(form.tax_inclusive).toLowerCase() === 'true'}
+                        label="Ya"
+                        onClick={() => setForm({ ...form, tax_inclusive: '1' })}
+                      />
+                      <TombolBendera
+                        aktif={!(form.tax_inclusive === '1' || String(form.tax_inclusive).toLowerCase() === 'true')}
+                        label="Tidak"
+                        onClick={() => setForm({ ...form, tax_inclusive: '0' })}
+                      />
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-500">
+                    Tidak termasuk berarti PPN ditambahkan di atas tagihan; termasuk berarti harga yang
+                    dilihat pelanggan sudah memuat PPN dan layarnya hanya memisahkan pajaknya.
+                  </p>
+                </>
+              )}
+
+              <p className="text-[10px] text-slate-500">
+                Tarif ini dipakai pesanan yang dibuat sesudah disimpan; pesanan lama menyimpan tarifnya
+                sendiri sehingga laporannya tidak berubah ketika tarif naik.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] text-slate-400">

@@ -313,6 +313,14 @@ export const api = {
       idempotensi: kunci,
       body: JSON.stringify({ status, cancelReason })
     }),
+  // Penyerahan barang adalah titik pengakuan pendapatan: server menutup pendapatan pesanan ini dan
+  // menagih sisanya sebagai piutang. Sekali jadi tetap jadi, jadi kunci dibuat per klik supaya
+  // klik ganda tidak mengirim dua perintah sementara percobaan setelah 4xx tetap mungkin.
+  deliverOrder: (orderId, kunci) =>
+    api.request(`/api/orders/${orderId}/deliver`, {
+      method: 'POST',
+      idempotensi: kunci
+    }),
   getCustomers: (opsi = {}) =>
     api.request(denganParam('/api/customers', { search: opsi.search, limit: opsi.limit, offset: opsi.offset }),
       { withTotal: true, signal: opsi.signal }),

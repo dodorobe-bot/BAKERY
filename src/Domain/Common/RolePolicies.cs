@@ -12,12 +12,16 @@ namespace Seruni22Bakery.Domain.Common;
 /// - Admin  : kepala operasional/toko, penuh kecuali pengaturan sistem dan hak akses.
 /// - Dapur  : produksi, penerimaan barang, dan koreksi stok; tidak menyentuh uang atau buku.
 /// - Pegawai: kasir/toko, mencatat pesanan dan pembayaran; tidak bisa membatalkan, membuka buku besar,
-///   atau membaca persediaan/pembelian/produksi. Harga jual yang dipakai adalah harga katalog.
+///   atau membaca persediaan/pembelian/produksi. Harga jual yang dipakai adalah harga katalog, dan
+///   memotongnya lewat diskon juga bukan haknya — diskon mengubah harga sama seperti mengubah katalog.
 /// </summary>
 public static class RolePolicies
 {
     public const string Sales = "sales";
     public const string SalesCancel = "sales-cancel";
+    // Diskon memotong tagihan tanpa melewati harga katalog, jadi ia hak mengubah harga —
+    // bukan tombol yang boleh ada di layar kasir.
+    public const string SalesDiscount = "sales-discount";
     public const string SalesReturn = "sales-return";
     public const string FinanceRead = "finance-read";
     public const string FinanceWrite = "finance-write";
@@ -39,6 +43,9 @@ public static class RolePolicies
         {
             [Sales] = [UserRole.Owner, UserRole.Admin, UserRole.Pegawai],
             [SalesCancel] = [UserRole.Owner, UserRole.Admin],
+            // Tanpa pagar ini, larangan "harga bukan masukan bebas untuk kasir" bisa dibelokkan:
+            // harga katalog dibiarkan utuh, lalu tagihannya dipotong lewat diskon.
+            [SalesDiscount] = [UserRole.Owner, UserRole.Admin],
             // Retur mengeluarkan uang dan mengembalikan stok, jadi bukan aksi kasir.
             [SalesReturn] = [UserRole.Owner, UserRole.Admin],
             [SalesExport] = [UserRole.Owner, UserRole.Admin],

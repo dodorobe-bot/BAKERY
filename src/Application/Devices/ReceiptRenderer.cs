@@ -76,15 +76,36 @@ public static class ReceiptRenderer
         foreach (var potong in Bungkus(string.IsNullOrWhiteSpace(order.Description) ? "-" : order.Description, lebar))
             Baris(potong);
 
+        // Rincian nilai barang, diskon, dan PPN dicetak terpisah supaya pelanggan bisa memeriksa
+        // sendiri bahwa yang ditagih sama dengan yang dihitung kasir. Harga per unit diambil dari
+        // nilai katalog, bukan dari total, karena total sudah diubah diskon dan PPN. Pesanan lama
+        // (sebelum kolom ini ada) tidak punya nilai barang, jadi total tagihan yang dipakai agar
+        // struk tetap terbaca utuh dan tidak menampilkan "Nilai Barang Rp 0" yang menyesatkan.
         var jumlah = order.Quantity <= 0 ? 1 : order.Quantity;
-        var satuan = (long)Math.Round(order.TotalAmount / jumlah, MidpointRounding.AwayFromZero);
-        Pasangan($"{FormatJumlah(jumlah)} x {Money.Format(satuan)}", Money.Format(order.TotalAmount));
+        var nilaiBarang = order.SubtotalAmount > 0 ? order.SubtotalAmount : order.TotalAmount;
+        var satuan = (long)Math.Round(nilaiBarang / jumlah, MidpointRounding.AwayFromZero);
+        Pasangan($"{FormatJumlah(jumlah)} x {Money.Format(satuan)}", Money.Format(nilaiBarang));
 
         Garis();
+        Pasangan("Nilai Barang", Money.Format(nilaiBarang));
+        if (order.DiscountAmount > 0) Pasangan("Diskon", $"- {Money.Format(order.DiscountAmount)}");
+        if (order.TaxAmount > 0) Pasangan(LabelPpn(order), Money.Format(order.TaxAmount));
         Pasangan("Total", Money.Format(order.TotalAmount));
         if (order.DownPayment > 0) Pasangan("DP / Uang Muka", Money.Format(order.DownPayment));
+
+        // Uang muka bukan baris pembayaran, jadi DP dan Pembayaran tidak pernah mencetak angka
+        // yang sama dua kali. "Tunai Diterima" hanya muncul bila ada kembalian: angka yang
+        // diserahkan ke kasir lebih besar daripada yang dibukukan, dan keduanya wajib tercetak
+        // supaya pelanggan bisa menghitung kembali uang yang seharusnya masuk ke tangannya.
         var dibayar = order.Payments.Sum(p => p.Amount);
-        if (dibayar > 0) Pasangan("Pembayaran", Money.Format(dibayar));
+        var kembalian = order.Payments.Sum(p => p.ChangeAmount);
+        if (dibayar > 0)
+        {
+            var diserahkan = order.Payments.Sum(p => p.TenderAmount ?? p.Amount);
+            if (kembalian > 0) Pasangan("Tunai Diterima", Money.Format(diserahkan));
+            else Pasangan("Pembayaran", Money.Format(dibayar));
+        }
+        if (kembalian > 0) Pasangan("Kembalian", Money.Format(kembalian));
         Pasangan("Sisa Tagihan", Money.Format(Math.Max(0, order.RemainingAmount())));
         if (order.IsFullyPaid()) Tengah("LUNAS");
         Garis();
@@ -141,6 +162,20 @@ public static class ReceiptRenderer
         Baris();
         Tengah("SELESAI");
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Label PPN memakai tarif yang tersimpan di pesanan, bukan tarif yang sedang aktif di
+    /// Pengaturan, supaya pesanan lama tetap mencetak pajak seperti yang ditagihkan saat itu.
+    /// Mode inklusif diberi tanda karena angkanya tidak menambah total: pajaknya hanya dipisah
+    /// dari harga katalog.
+    /// </summary>
+    private static string LabelPpn(SalesOrder order)
+    {
+        var tarif = order.TaxRatePercent is null
+            ? string.Empty
+            : $" {order.TaxRatePercent.Value.ToString("0.##", CultureInfo.InvariantCulture)}%";
+        return $"PPN{tarif}{(order.TaxInclusive ? " (termasuk)" : string.Empty)}";
     }
 
     private static string FormatJumlah(decimal jumlah) =>

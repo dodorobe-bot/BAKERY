@@ -453,6 +453,87 @@ public class SalesOrderRepository : ISalesOrderRepository
         public long Remaining => TotalAmount - TotalPaid;
     }
 
+    public Task MarkDeliveredWithJournalAsync(
+        int orderId, DateTime deliveredAt, bool expectRevenueRecognition, long expectedTotalPaid,
+        bool expectedStockDeducted, IReadOnlyList<JournalEntry> journals,
+        IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges)
+        => WriteTransaction.RunAsync(_factory, async (conn, tx) =>
+        {
+            // Penyerahan ganda dicegah di sini, bukan di servis: dua layar bisa menekan
+            // "Serahkan" pada pesanan yang sama, dan pendapatan + piutang hanya boleh lahir sekali.
+            var state = await ReadDeliveryStateAsync(conn, tx, orderId)
+                ?? throw new InvalidOperationException("Pesanan tidak ditemukan.");
+            if (state.Status == OrderStatus.Cancelled)
+                throw new InvalidOperationException("Pesanan sudah dibatalkan.");
+            if (state.DeliveredAt is not null)
+                throw new InvalidOperationException("Pesanan ini sudah diserahkan.");
+            if (state.TotalPaid != expectedTotalPaid)
+                throw new InvalidOperationException(
+                    "Pembayaran pesanan ini berubah saat penyerahan dicatat. Muat ulang pesanan lalu ulangi.");
+            if (state.StockDeducted != expectedStockDeducted)
+                throw new InvalidOperationException(
+                    "Stok pesanan ini berubah saat penyerahan dicatat. Muat ulang pesanan lalu ulangi.");
+            if (expectRevenueRecognition && state.RevenueRecognizedAt is not null)
+                throw new InvalidOperationException(
+                    "Pendapatan pesanan ini sudah diakui. Muat ulang pesanan lalu ulangi.");
+
+            var deductingStock = finishedGoodsChanges.Any(c => c.Type == FinishedGoodsMovementType.Sale);
+            foreach (var change in finishedGoodsChanges)
+            {
+                var applied = await FinishedGoodsLedger.ApplyAsync(conn, tx, change.LocationId, change.ProductTemplateId,
+                    change.Delta, change.Type, change.SourceType, orderId, change.UserId, change.Notes,
+                    change.UnitCostMinorUnits);
+                if (change.Type == FinishedGoodsMovementType.Sale)
+                    await AccountingPoster.WriteCostOfGoodsSoldAsync(conn, tx, orderId,
+                        applied.ValueMinorUnits, change.UserId);
+            }
+
+            var mark = conn.CreateCommand();
+            mark.Transaction = tx;
+            mark.CommandText = @"
+                UPDATE SalesOrders
+                   SET DeliveredAt = @d,
+                       RevenueRecognizedAt = CASE WHEN @perluPengakuan = 1 THEN @d ELSE RevenueRecognizedAt END,
+                       StockDeducted = CASE WHEN @potong = 1 THEN 1 ELSE StockDeducted END
+                 WHERE Id = @id AND DeliveredAt IS NULL
+                       AND (@perluPengakuan = 0 OR RevenueRecognizedAt IS NULL);";
+            mark.Parameters.AddWithValue("@d", deliveredAt.ToString("o"));
+            mark.Parameters.AddWithValue("@perluPengakuan", expectRevenueRecognition ? 1 : 0);
+            mark.Parameters.AddWithValue("@potong", deductingStock ? 1 : 0);
+            mark.Parameters.AddWithValue("@id", orderId);
+            if (await mark.ExecuteNonQueryAsync() != 1)
+                throw new InvalidOperationException(
+                    "Pesanan ini sudah diserahkan atau pendapatannya sudah diakui. Muat ulang pesanan lalu ulangi.");
+
+            foreach (var entry in journals)
+                await JournalWriter.WriteAsync(conn, tx, entry);
+        });
+
+    private sealed record DeliveryState(
+        OrderStatus Status, long TotalPaid, bool StockDeducted,
+        DateTime? DeliveredAt, DateTime? RevenueRecognizedAt);
+
+    private static async Task<DeliveryState?> ReadDeliveryStateAsync(
+        SqliteConnection conn, SqliteTransaction tx, int orderId)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            SELECT o.Status, o.StockDeducted, o.DeliveredAt, o.RevenueRecognizedAt,
+                   o.DownPayment + COALESCE((SELECT SUM(p.Amount) FROM SalesPayments p
+                                               WHERE p.SalesOrderId = o.Id), 0)
+            FROM SalesOrders o WHERE o.Id = @id;";
+        cmd.Parameters.AddWithValue("@id", orderId);
+        using var r = await cmd.ExecuteReaderAsync();
+        if (!await r.ReadAsync()) return null;
+        return new DeliveryState(
+            Enum.Parse<OrderStatus>(r.GetString(0)),
+            r.GetInt64(4),
+            r.GetInt32(1) == 1,
+            r.IsDBNull(2) ? null : DateTime.Parse(r.GetString(2)),
+            r.IsDBNull(3) ? null : DateTime.Parse(r.GetString(3)));
+    }
+
     private static async Task<OrderState?> ReadOrderStateAsync(
         SqliteConnection conn, SqliteTransaction tx, int orderId)
     {
@@ -550,9 +631,11 @@ public class SalesOrderRepository : ISalesOrderRepository
         cmd.CommandText = @"
             INSERT INTO SalesOrders
                 (OrderNumber, CustomerId, ProductTemplateId, CustomerNameSnapshot, PhoneSnapshot,
-                 Description, PickupDate, TotalAmount, DownPayment, Quantity, Status, StockDeducted,
-                 Notes, CreatedAt, CreatedByUserId)
-            VALUES (@on, @cid, @pid, @cn, @ph, @desc, @pd, @ta, @dp, @qty, @st, @sd, @notes, @ca, @uid);
+                 Description, PickupDate, SubtotalAmount, DiscountAmount, DiscountPercent,
+                 TaxRatePercent, TaxInclusive, TaxAmount, TotalAmount, DownPayment, Quantity, Status, StockDeducted,
+                 RevenueRecognizedAt, Notes, CreatedAt, CreatedByUserId)
+            VALUES (@on, @cid, @pid, @cn, @ph, @desc, @pd, @sub, @disc, @discp,
+                    @txr, @txi, @txa, @ta, @dp, @qty, @st, @sd, @rra, @notes, @ca, @uid);
             SELECT last_insert_rowid();";
         cmd.Parameters.AddWithValue("@on", order.OrderNumber ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@cid", order.CustomerId ?? (object)DBNull.Value);
@@ -561,11 +644,18 @@ public class SalesOrderRepository : ISalesOrderRepository
         cmd.Parameters.AddWithValue("@ph", order.PhoneSnapshot ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@desc", order.Description);
         cmd.Parameters.AddWithValue("@pd", order.PickupDate.ToString("yyyy-MM-dd"));
+        cmd.Parameters.AddWithValue("@sub", order.SubtotalAmount);
+        cmd.Parameters.AddWithValue("@disc", order.DiscountAmount);
+        cmd.Parameters.AddWithValue("@discp", order.DiscountPercent ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@txr", order.TaxRatePercent ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@txi", order.TaxInclusive ? 1 : 0);
+        cmd.Parameters.AddWithValue("@txa", order.TaxAmount);
         cmd.Parameters.AddWithValue("@ta", order.TotalAmount);
         cmd.Parameters.AddWithValue("@dp", order.DownPayment);
         cmd.Parameters.AddWithValue("@qty", order.Quantity);
         cmd.Parameters.AddWithValue("@st", order.Status.ToString());
         cmd.Parameters.AddWithValue("@sd", order.StockDeducted ? 1 : 0);
+        cmd.Parameters.AddWithValue("@rra", order.RevenueRecognizedAt?.ToString("o") ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@notes", order.Notes ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@ca", order.CreatedAt.ToString("o"));
         cmd.Parameters.AddWithValue("@uid", order.CreatedByUserId ?? (object)DBNull.Value);
@@ -614,12 +704,14 @@ public class SalesOrderRepository : ISalesOrderRepository
         cmd.Transaction = tx;
         cmd.CommandText = @"
             INSERT INTO SalesPayments
-                (SalesOrderId, Amount, PaymentDate, Method, Notes, JournalEntryId,
+                (SalesOrderId, Amount, TenderAmount, ChangeAmount, PaymentDate, Method, Notes, JournalEntryId,
                  CreatedAt, CreatedByUserId, IdempotencyKey)
-            VALUES (@oid, @amt, @pd, @m, @notes, @jeid, @ca, @uid, @ik);
+            VALUES (@oid, @amt, @tender, @change, @pd, @m, @notes, @jeid, @ca, @uid, @ik);
             SELECT last_insert_rowid();";
         cmd.Parameters.AddWithValue("@oid", payment.SalesOrderId);
         cmd.Parameters.AddWithValue("@amt", payment.Amount);
+        cmd.Parameters.AddWithValue("@tender", payment.TenderAmount ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@change", payment.ChangeAmount);
         cmd.Parameters.AddWithValue("@pd", payment.PaymentDate.ToString("yyyy-MM-dd"));
         cmd.Parameters.AddWithValue("@m", payment.Method);
         cmd.Parameters.AddWithValue("@notes", payment.Notes ?? (object)DBNull.Value);
@@ -652,11 +744,19 @@ public class SalesOrderRepository : ISalesOrderRepository
         PhoneSnapshot = r.IsDBNull(r.GetOrdinal("PhoneSnapshot")) ? null : r.GetString(r.GetOrdinal("PhoneSnapshot")),
         Description = r.GetString(r.GetOrdinal("Description")),
         PickupDate = DateTime.Parse(r.GetString(r.GetOrdinal("PickupDate"))),
+        SubtotalAmount = r.GetInt64(r.GetOrdinal("SubtotalAmount")),
+        DiscountPercent = ReadDouble(r, "DiscountPercent"),
+        DiscountAmount = r.GetInt64(r.GetOrdinal("DiscountAmount")),
+        TaxRatePercent = ReadDouble(r, "TaxRatePercent"),
+        TaxInclusive = r.GetInt32(r.GetOrdinal("TaxInclusive")) == 1,
+        TaxAmount = r.GetInt64(r.GetOrdinal("TaxAmount")),
         TotalAmount = r.GetInt64(r.GetOrdinal("TotalAmount")),
         DownPayment = r.GetInt64(r.GetOrdinal("DownPayment")),
         Quantity = Convert.ToDecimal(r.GetValue(r.GetOrdinal("Quantity"))),
         Status = Enum.Parse<OrderStatus>(r.GetString(r.GetOrdinal("Status"))),
         StockDeducted = r.GetInt32(r.GetOrdinal("StockDeducted")) == 1,
+        DeliveredAt = ReadDate(r, "DeliveredAt"),
+        RevenueRecognizedAt = ReadDate(r, "RevenueRecognizedAt"),
         Notes = r.IsDBNull(r.GetOrdinal("Notes")) ? null : r.GetString(r.GetOrdinal("Notes")),
         CancelledAt = r.IsDBNull(r.GetOrdinal("CancelledAt")) ? null : DateTime.Parse(r.GetString(r.GetOrdinal("CancelledAt"))),
         CancelReason = r.IsDBNull(r.GetOrdinal("CancelReason")) ? null : r.GetString(r.GetOrdinal("CancelReason")),
@@ -664,11 +764,27 @@ public class SalesOrderRepository : ISalesOrderRepository
         CreatedByUserId = r.IsDBNull(r.GetOrdinal("CreatedByUserId")) ? null : r.GetInt32(r.GetOrdinal("CreatedByUserId"))
     };
 
+    private static double? ReadDouble(SqliteDataReader r, string column)
+    {
+        var ordinal = r.GetOrdinal(column);
+        // dibaca lewat GetValue: kolom REAL bisa saja berisi INTEGER (misalnya tarif 11 yang
+        // ditulis oleh jalur lama), dan GetDouble menolak perbedaan type storage class.
+        return r.IsDBNull(ordinal) ? null : Convert.ToDouble(r.GetValue(ordinal));
+    }
+
+    private static DateTime? ReadDate(SqliteDataReader r, string column)
+    {
+        var ordinal = r.GetOrdinal(column);
+        return r.IsDBNull(ordinal) ? null : DateTime.Parse(r.GetString(ordinal));
+    }
+
     private static SalesPayment MapPayment(SqliteDataReader r) => new()
     {
         Id = r.GetInt32(r.GetOrdinal("Id")),
         SalesOrderId = r.GetInt32(r.GetOrdinal("SalesOrderId")),
         Amount = r.GetInt64(r.GetOrdinal("Amount")),
+        TenderAmount = r.IsDBNull(r.GetOrdinal("TenderAmount")) ? null : r.GetInt64(r.GetOrdinal("TenderAmount")),
+        ChangeAmount = r.GetInt64(r.GetOrdinal("ChangeAmount")),
         PaymentDate = DateTime.Parse(r.GetString(r.GetOrdinal("PaymentDate"))),
         Method = r.GetString(r.GetOrdinal("Method")),
         Notes = r.IsDBNull(r.GetOrdinal("Notes")) ? null : r.GetString(r.GetOrdinal("Notes")),

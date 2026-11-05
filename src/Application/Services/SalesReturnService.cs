@@ -74,13 +74,24 @@ public class SalesReturnService
 
         // Nilai uang yang dikembalikan ditentukan oleh jumlah unit yang diretur, bukan oleh
         // isian bebas: retur 1 dari 2 unit hanya boleh mengembalikan separuh nilai pesanan.
-        // Retur terakhir memakai sisa nilai apa adanya supaya total retur menutup pesanan tepat.
+        // Retur terakhir memakai sisa nilai apa adanya supaya total retur menutup pesanan tepat,
+        // dan potongan plus pajaknya ikut ditutup dengan cara yang sama — kalau tidak, 4-002 dan
+        // 2-003 menyimpan sisa yang tidak lagi punya pesanan.
         var nilaiSeharusnya = req.Quantity == sisaJumlah
             ? sisaNilai
-            : (long)Math.Round(req.Quantity * order.TotalAmount / order.Quantity, MidpointRounding.AwayFromZero);
+            : SalesPricing.Proporsional(order.TotalAmount, req.Quantity, order.Quantity);
+        var diskonSeharusnya = req.Quantity == sisaJumlah
+            ? order.DiscountAmount - sudah.Discount
+            : SalesPricing.Proporsional(order.DiscountAmount, req.Quantity, order.Quantity);
+        var pajakSeharusnya = req.Quantity == sisaJumlah
+            ? order.TaxAmount - sudah.Tax
+            : SalesPricing.Proporsional(order.TaxAmount, req.Quantity, order.Quantity);
         if (nilaiSeharusnya <= 0 || nilaiSeharusnya > sisaNilai)
             return Result<int>.Fail(ErrorCodes.ValidationFailed,
                 $"Nilai retur melebihi sisa nilai pesanan ({Money.Format(sisaNilai)}).");
+        if (diskonSeharusnya < 0 || pajakSeharusnya < 0)
+            return Result<int>.Fail(ErrorCodes.ValidationFailed,
+                "Diskon atau PPN yang tersisa sudah habis diretur. Muat ulang pesanan lalu ulangi.");
         if (req.Amount != nilaiSeharusnya)
             return Result<int>.Fail(ErrorCodes.ValidationFailed,
                 $"Nilai retur harus mengikuti jumlah yang diretur: {req.Quantity:0.###} unit = {Money.Format(nilaiSeharusnya)}, bukan {Money.Format(req.Amount)}.");
@@ -98,6 +109,8 @@ public class SalesReturnService
             ProductTemplateId = order.ProductTemplateId.Value,
             Quantity = req.Quantity,
             Amount = nilaiSeharusnya,
+            DiscountAmount = diskonSeharusnya,
+            TaxAmount = pajakSeharusnya,
             Reason = req.Reason.Trim(),
             RefundMethod = metode,
             ReturnedAt = DateTime.UtcNow,
@@ -105,7 +118,8 @@ public class SalesReturnService
             CreatedByUserId = req.UserId,
         };
 
-        var journal = await _accounting.BuildSalesReturnAsync(nomor, order.CustomerNameSnapshot, nilaiSeharusnya, req.UserId);
+        var journal = await _accounting.BuildSalesReturnAsync(
+            nomor, order.CustomerNameSnapshot, nilaiSeharusnya, diskonSeharusnya, pajakSeharusnya, req.UserId);
         int displayId = await _stock.GetLocationIdByTypeAsync("Display");
         var changes = new List<FinishedGoodsChange>
         {

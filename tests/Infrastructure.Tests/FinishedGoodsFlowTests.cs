@@ -40,7 +40,8 @@ public class FinishedGoodsFlowTests
             _journals,
             new DocumentSequenceRepository(_factory),
             accounting,
-            new SalesReturnRepository(_factory));
+            new SalesReturnRepository(_factory),
+            new SettingRepository(_factory));
     }
 
     private int NewProduct(string name)

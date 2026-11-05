@@ -118,6 +118,17 @@ public interface ISalesOrderRepository
         SalesOrder order, OrderStatus expectedStatus, bool expectedStockDeducted, long expectedTotalPaid,
         IReadOnlyList<StockChange> stockChanges,
         IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges, IReadOnlyList<JournalEntry> journals);
+
+    /// <summary>
+    /// Penanda "diserahkan" + pengakuan pendapatan + mutasi stok etalase tercatat bersama.
+    /// <paramref name="expectRevenueRecognition"/> true berarti servis sudah menyusun jurnal
+    /// pengakuannya: bila pesanan ternyata sudah diakui atau sudah pernah diserahkan di jalur
+    /// lain, perubahan ditolak supaya pendapatan dan piutang tidak lahir dua kali.
+    /// </summary>
+    Task MarkDeliveredWithJournalAsync(
+        int orderId, DateTime deliveredAt, bool expectRevenueRecognition, long expectedTotalPaid,
+        bool expectedStockDeducted, IReadOnlyList<JournalEntry> journals,
+        IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges);
 }
 
 public interface IAccountRepository
@@ -244,16 +255,21 @@ public interface ISalesReturnRepository
 {
     Task<IReadOnlyList<SalesReturnView>> GetAllAsync(int limit = 200);
     /// <summary>Jumlah dan nilai yang sudah diretur untuk satu pesanan, untuk sisa yang boleh diretur.</summary>
-    Task<(decimal Quantity, long Amount)> GetReturnedTotalsAsync(int salesOrderId);
+    Task<(decimal Quantity, long Amount, long Discount, long Tax)> GetReturnedTotalsAsync(int salesOrderId);
     /// <summary>Retur + jurnal + pengembalian stok produk jadi tercatat bersama atau batal bersama.</summary>
     Task<int> CreateWithJournalAsync(
         SalesReturn ret, JournalEntry? journal, IReadOnlyList<FinishedGoodsChange> finishedGoodsChanges);
 }
 
-/// <summary>Satu kaki mutasi stok. Hanya StockLedger yang boleh mengubah LocationStock.</summary>
+/// <summary>
+/// Satu kaki mutasi stok. Hanya StockLedger yang boleh mengubah LocationStock.
+/// UnitCostMinorUnits dipakai untuk barang masuk yang membawa harganya sendiri (penerimaan PO);
+/// kosong berarti lapisan barunya diberi harga master bahan yang sedang terpasang.
+/// </summary>
 public record StockChange(
     int LocationId, int IngredientId, decimal Delta, MovementType Type,
-    string? SourceType, int? SourceId, int? UserId, string? Notes);
+    string? SourceType, int? SourceId, int? UserId, string? Notes,
+    long? UnitCostMinorUnits = null);
 
 /// <summary>
 /// Satu kaki mutasi produk jadi, pasangannya FinishedGoodsLedger. UnitCostMinorUnits dipakai

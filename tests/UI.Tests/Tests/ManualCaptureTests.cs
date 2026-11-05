@@ -712,7 +712,7 @@ public sealed class ManualCaptureTests : IClassFixture<PlaywrightFixture>
                 ("placeholder", "Contoh: 100 roti tawar, 50 croissant coklat...", "10 roti tawar susu untuk arisan"),
                 ("option", "Roti Tawar Susu", "Roti Tawar Susu"),
                 ("label", "Qty", "10"),
-                ("label", "Total (Rp)", "250000"),
+                ("label", "Nilai Barang (Rp)", "250000"),
                 ("placeholder", "0 jika belum ada DP", "100000"));
             await Tangkap(page, folder, "pos-form-isi");
             await TutupDialogAsync(page);

@@ -169,13 +169,19 @@ public class LocationStockRepository : ILocationStockRepository
         // perpindahan barang sebagai koreksi manual.
         await WriteAsync(async (conn, tx) =>
         {
-            var nilai = await StockValueAsync(conn, tx, ingredientId, quantity);
+            // Lapisan biaya pindah lebih dulu, lalu stok fisiknya. Stok tetap bergerak dalam
+            // satu transaksi, jadi tidak pernah ada barang di dua lokasi atau di tidak ada
+            // lokasi kalau salah satu langkah gagal.
             await StockLedger.ApplyAsync(conn, tx, fromLocationId, ingredientId, -quantity, MovementType.Adjustment,
-                "LocationTransfer", fromLocationId, userId, notes);
+                "LocationTransfer", fromLocationId, userId, notes, urusLapisan: false);
             await StockLedger.ApplyAsync(conn, tx, toLocationId, ingredientId, quantity, MovementType.Adjustment,
-                "LocationTransfer", fromLocationId, userId, notes);
+                "LocationTransfer", fromLocationId, userId, notes, urusLapisan: false);
+            var bahan = await AccountingPoster.IngredientLabelAsync(conn, tx, ingredientId);
+            var nilai = await CostLayerLedger.PindahkanAsync(conn, tx, CostLayerLedger.Bahan, ingredientId,
+                fromLocationId, toLocationId, quantity, bahan, "LocationTransfer", fromLocationId);
             // Kedua kaki bergerak dalam satu transaksi, jadi jurnalnya pun satu entri: nilai
-            // persediaan berpindah antarakun tanpa mengubah total aset.
+            // persediaan berpindah antarakun tanpa mengubah total aset. Harga yang ikut
+            // berpindah adalah harga lapisan aslinya, bukan harga master hari ini.
             await AccountingPoster.WriteTransferAsync(conn, tx, fromLocationId, toLocationId, ingredientId,
                 quantity, nilai, notes, userId);
         });
@@ -184,8 +190,8 @@ public class LocationStockRepository : ILocationStockRepository
     /// <summary>
     /// Stok yang diketik di layar Bahan Baku: stok awal saat menambah bahan, koreksi total saat
     /// mengubahnya. Dulu jalur ini hanya menggerakkan LocationStock sehingga persediaan di
-    /// neraca tetap nol atau negatif padahal barangnya ada. Nilai dihitung dengan harga yang
-    /// berlaku, sama seperti opname, dan jurnalnya ditulis di transaksi yang sama supaya tidak
+    /// neraca tetap nol atau negatif padahal barangnya ada. Nilainya diambil dari lapisan biaya
+    /// yang benar-benar masuk/keluar, dan jurnalnya ditulis di transaksi yang sama supaya tidak
     /// pernah ada mutasi tanpa jurnal.
     /// </summary>
     public async Task ApplyIngredientMasterStockAsync(
@@ -195,8 +201,7 @@ public class LocationStockRepository : ILocationStockRepository
 
         await WriteAsync(async (conn, tx) =>
         {
-            var nilai = await StockValueAsync(conn, tx, ingredientId, Math.Abs(delta));
-            await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, delta,
+            var nilai = await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, delta,
                 stokAwal ? MovementType.Restock : MovementType.Adjustment,
                 AccountingPoster.SumberLayarBahan, ingredientId, userId, notes);
             await AccountingPoster.WriteIngredientMasterStockAsync(conn, tx, locationId, ingredientId,
@@ -223,8 +228,9 @@ public class LocationStockRepository : ILocationStockRepository
             var delta = newQuantity - current;
             if (delta == 0) return;
 
-            var nilai = await StockValueAsync(conn, tx, ingredientId, Math.Abs(delta));
-            await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, delta,
+            // Opname turun: nilainya adalah lapisan tertua yang benar-benar tidak ketemu.
+            // Opname naik: barang tak bernama diberi harga master yang berlaku.
+            var nilai = await StockLedger.ApplyAsync(conn, tx, locationId, ingredientId, delta,
                 MovementType.Adjustment, "Adjustment", null, userId, reason);
             await AccountingPoster.WriteStockAdjustmentAsync(conn, tx, locationId, ingredientId, delta,
                 nilai, reason, userId);
@@ -274,12 +280,15 @@ public class LocationStockRepository : ILocationStockRepository
         return Convert.ToDecimal(await cmd.ExecuteScalarAsync());
     }
 
+    /// <summary>
+    /// Harga pokok per unit yang dibebankan saat pesanan ini keluar — di bawah FIFO angka ini
+    /// adalah rata-rata lapisan yang tersapu penjualan, jadi retur memakai harga barang yang
+    /// sama dan bukan HPP resep hari ini.
+    /// </summary>
     public async Task<long> GetFinishedGoodsSaleUnitCostAsync(int salesOrderId)
     {
         using var conn = _factory.CreateConnection();
         using var cmd = conn.CreateCommand();
-        // Mutasi Sale terakhir adalah biaya yang benar-benar dibebankan saat pesanan ini keluar,
-        // jadi retur mengembalikan nilai yang sama, bukan HPP resep hari ini.
         cmd.CommandText = @"
             SELECT COALESCE((
                 SELECT UnitCostMinorUnits FROM FinishedGoodsMovements
@@ -287,20 +296,6 @@ public class LocationStockRepository : ILocationStockRepository
                  ORDER BY Id DESC LIMIT 1), 0);";
         cmd.Parameters.AddWithValue("@id", salesOrderId);
         return Convert.ToInt64(await cmd.ExecuteScalarAsync() ?? 0L);
-    }
-
-    /// <summary>Nilai persediaan sejumlah kuantitas memakai harga bahan yang berlaku.</summary>
-    private static async Task<long> StockValueAsync(
-        SqliteConnection conn, SqliteTransaction tx, int ingredientId, decimal quantity)
-    {
-        using var cmd = conn.CreateCommand();
-        cmd.Transaction = tx;
-        cmd.CommandText = "SELECT PricePerUnit FROM Ingredients WHERE Id = @id;";
-        cmd.Parameters.AddWithValue("@id", ingredientId);
-        var harga = await cmd.ExecuteScalarAsync();
-        if (harga is null or DBNull)
-            throw new InvalidOperationException($"Bahan Id {ingredientId} tidak ditemukan.");
-        return (long)Math.Round(quantity * Convert.ToInt64(harga), 0, MidpointRounding.AwayFromZero);
     }
 
     // Satu koneksi + satu transaksi untuk setiap operasi tulis agar stok dan ledger tidak pernah separuh jalan.

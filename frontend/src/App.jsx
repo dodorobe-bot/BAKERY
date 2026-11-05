@@ -147,8 +147,10 @@ export default function App() {
     document.title = brand.name;
   }, [brand.name]);
 
-  // Pengaturan lengkap sengaja tidak dimuat di latar belakang: hanya Owner yang boleh membaca
-  // /api/settings. Identitas toko di kepala layar sudah datang dari merek publik (/api/brand).
+  // Pengaturan lengkap sengaja tidak dimuat di latar belakang: hanya peran berwenang yang boleh
+  // membaca /api/settings, dan permintaan yang ditolak 403 akan membuat banner galat di layar mana
+  // pun. Identitas toko di kepala layar sudah datang dari merek publik (/api/brand); tarif PPN ikut
+  // diminta khusus di layar kasir, tempat angkanya dipakai menghitung pratinjau tagihan.
 
   const setData = {
     dashboardData: setDashboardData,
@@ -189,6 +191,12 @@ export default function App() {
     return Object.fromEntries(rows);
   };
 
+  // Tarif PPN dibutuhkan layar kasir untuk menghitung pratinjau tagihan, tetapi hanya peran yang
+  // boleh membuka halaman Pengaturan yang boleh membacanya. Peran lain mengembalikan null supaya
+  // kasir tetap bisa bekerja (pratinjau tanpa baris PPN) daripada layar gagal muat karena 403.
+  const bacaPpn = () =>
+    (bolehAksi(user, 'administration') ? api.getSettings() : Promise.resolve(null));
+
   // Daftar yang tidak saling bergantung diambil bersamaan. Sebelumnya permintaan dijalankan satu
   // per satu, sehingga lama menunggu pindah menu adalah jumlah seluruh permintaan layar itu.
   const ambilDataLayar = async (tab) => {
@@ -201,18 +209,25 @@ export default function App() {
       case 'preorders':
       case 'receivables': {
         // Daftar pelanggan berhalaman: layar hanya perlu sebagian, sisanya lewat pencarian.
-        const [o, c, p] = await Promise.all([
-          api.getOrders({ limit: 100 }), api.getCustomers({ limit: 50 }), api.getProducts(),
+        const [o, c, p, pengaturan] = await Promise.all([
+          api.getOrders({ limit: 100 }), api.getCustomers({ limit: 50 }), api.getProducts(), bacaPpn(),
         ]);
         return {
           orders: o?.items ?? [], orderTotal: o?.total ?? null,
           customers: c?.items ?? [], customerTotal: c?.total ?? null, products: p || [],
+          ...(pengaturan ? { settings: pengaturan } : {}),
         };
       }
 
       case 'customers': {
-        const [c, p] = await Promise.all([api.getCustomers({ limit: 50 }), api.getProducts()]);
-        return { customers: c?.items ?? [], customerTotal: c?.total ?? null, products: p || [] };
+        // Form pesanan juga dibuka dari bagian Pelanggan, jadi tarif PPN ikut dibaca di sini.
+        const [c, p, pengaturan] = await Promise.all([
+          api.getCustomers({ limit: 50 }), api.getProducts(), bacaPpn(),
+        ]);
+        return {
+          customers: c?.items ?? [], customerTotal: c?.total ?? null, products: p || [],
+          ...(pengaturan ? { settings: pengaturan } : {}),
+        };
       }
 
       case 'production_orders':
@@ -551,8 +566,11 @@ export default function App() {
   };
 
   const handleAddPayment = async (orderId, payload) => {
-    await api.addPayment(orderId, payload);
+    // Jawaban server dipakai layar kasir untuk menampilkan kembalian yang benar-benar dibukukan,
+    // bukan selisih yang dihitung ulang di peramban.
+    const hasil = await api.addPayment(orderId, payload);
     await loadData();
+    return hasil;
   };
 
   // Galat dibiarkan naik ke layar: modal tetap terbuka dengan isian yang sudah diketik dan
@@ -800,6 +818,7 @@ export default function App() {
             products={products}
             user={user}
             brand={brand}
+            settings={settings}
             onCreateOrder={handleCreateOrder}
             onAddPayment={handleAddPayment}
             onRefresh={loadData}

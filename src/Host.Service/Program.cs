@@ -600,6 +600,9 @@ try
                     errorMessage = $"Harga jual {produk.Name} belum diisi. Minta Admin mengisi harga katalog lebih dulu."
                 });
 
+            // Yang diuji di sini harga barang, bukan tagihan akhir: TotalAmount permintaan adalah
+            // nilai barang sebelum diskon dan sebelum PPN, sehingga membandingkannya dengan harga
+            // katalog tetap tidak memberi kasir ruang untuk menulis harga sendiri.
             var seharusnya = produk.SellingPrice * req.Quantity;
             if (req.Quantity is > 0 and <= OrderService.MaxOrderQuantity)
             {
@@ -618,6 +621,19 @@ try
                     });
             }
         }
+
+        // Diskon juga perubahan harga, hanya lewat tombol: kalau kasir boleh memotong tagihan,
+        // pagar harga katalog di atas bisa disiasati tanpa mengetik angka apa pun.
+        // Peran yang tidak terbaca ikut ditolak — bukan dianggap pemilik.
+        var peranDiskon = PeranPemanggil(ctx);
+        if ((req.DiscountAmount > 0 || req.DiscountPercent > 0)
+            && (peranDiskon is null || !RolePolicies.Allows(RolePolicies.SalesDiscount, peranDiskon.Value)))
+            return Results.BadRequest(new
+            {
+                errorCode = ErrorCodes.ValidationFailed,
+                errorMessage = "Diskon pesanan diberikan lewat Admin, bukan kasir. "
+                              + "Simpan pesanan tanpa diskon, lalu minta Admin atau pemilik yang memberikan diskonnya."
+            });
 
         var result = await svc.CreateOrderAsync(req);
         if (result.Success)
@@ -652,7 +668,8 @@ try
         // Cakupan kasir sama dengan daftar dan detail pesanan: pesanan kasir lain tidak boleh
         // dilunasi atau diubah statusnya dari akun ini, karena uang dan jejaknya jadi milik orang lain.
         if (await PesananDiLuarCakupanAsync(id, orders, ctx)) return Results.NotFound();
-        var result = await svc.AddPaymentAsync(new AddPaymentRequest(id, dto.Amount, dto.Method, userId, dto.Notes, dto.IdempotencyKey));
+        var result = await svc.AddPaymentAsync(new AddPaymentRequest(
+            id, dto.Amount, dto.Method, userId, dto.Notes, dto.IdempotencyKey, dto.TenderAmount));
         if (result.Success)
         {
             await CatatNotifikasiAmanAsync(notif, () => notif.KirimKePeranAsync(
@@ -662,6 +679,10 @@ try
                     $"Pesanan #{id} menerima {Money.Format(dto.Amount)} lewat {dto.Method}.",
                     "SalesOrder", id, $"transaction.order.paid:{id}:{dto.IdempotencyKey ?? DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}"),
                 DateTime.UtcNow));
+            // Kembalian hanya dikirim ke layar, tidak pernah ke buku besar: yang tercatat tetap
+            // dto.Amount. Tanpanya kasir harus menghitung sendiri uang yang harus dikembalikan.
+            if (dto.TenderAmount > dto.Amount)
+                return Results.Ok(new { changeAmount = dto.TenderAmount!.Value - dto.Amount });
             return Results.Ok();
         }
 
@@ -669,6 +690,37 @@ try
             userId,
             new KirimNotifikasi("transaction.order.payment_failed", NotificationSeverity.Warning,
                 "Pembayaran gagal dicatat", result.ErrorMessage ?? "Pembayaran ditolak.",
+                "SalesOrder", id), DateTime.UtcNow));
+        return Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: 400);
+    }).RequireAuthorization("sales");
+
+    // Pesanan diambil pelanggan adalah titik pendapatan diakui: servis yang menulis tanggalnya,
+    // jadi permintaan cukup mengirim id — tidak ada nilai uang yang bisa diubah dari layar.
+    app.MapPost("/api/orders/{id:int}/deliver", async (int id, OrderService svc,
+        ISalesOrderRepository orders, NotificationService notif, HttpContext ctx) =>
+    {
+        var userId = int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        // Cakupan kasir sama dengan pembayaran: pesanan kasir lain tidak bisa dinyatakan sudah
+        // diserahkan dari akun ini, karena pendapatan dan jejaknya jadi milik orang lain.
+        if (await PesananDiLuarCakupanAsync(id, orders, ctx)) return Results.NotFound();
+
+        var result = await svc.MarkDeliveredAsync(id, userId);
+        if (result.Success)
+        {
+            await CatatNotifikasiAmanAsync(notif, () => notif.KirimKePeranAsync(
+                [UserRole.Owner, UserRole.Admin],
+                new KirimNotifikasi("transaction.order.delivered", NotificationSeverity.Info,
+                    "Pesanan diambil pelanggan",
+                    $"Pesanan #{id} dinyatakan sudah diserahkan oleh pengguna #{userId}.",
+                    "SalesOrder", id, $"transaction.order.delivered:{id}:{DateTime.UtcNow:yyyyMMddHHmmssfff}"),
+                DateTime.UtcNow));
+            return Results.Ok();
+        }
+
+        await CatatNotifikasiAmanAsync(notif, () => notif.KirimKePenggunaAsync(
+            userId,
+            new KirimNotifikasi("transaction.order.deliver_failed", NotificationSeverity.Warning,
+                "Pengambilan pesanan gagal dicatat", result.ErrorMessage ?? "Status pesanan tidak mengizinkan.",
                 "SalesOrder", id), DateTime.UtcNow));
         return Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: 400);
     }).RequireAuthorization("sales");
@@ -1764,8 +1816,10 @@ try
         });
     }).AllowAnonymous();
 
-    // Seluruh pengaturan (termasuk kunci printer, biaya, dan nama outlet) hanya untuk Owner.
-    // Peran lain cukup merek toko dari /api/brand.
+    // Seluruh pengaturan (termasuk kunci printer, biaya, PPN, dan nama outlet) hanya untuk Owner.
+    // Peran lain cukup merek toko dari /api/brand. Daftar isinya datang apa adanya dari AppSettings,
+    // jadi kunci PPN (tax_enabled, tax_rate_percent, tax_inclusive) ikut terbaca di sini begitu
+    // pemilik menyimpannya — layar pengaturan tidak perlu jalan pintas lewat /api/brand.
     app.MapGet("/api/settings", async (ISettingRepository repo) =>
         Results.Ok(await repo.GetAllAsync())).RequireAuthorization("administration");
 
@@ -1777,6 +1831,12 @@ try
         {
             if (StoreBrand.Validate(k, v) is { } galat)
                 return Results.Json(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galat },
+                    statusCode: 400);
+            // Nilai PPN dibaca ulang setiap pesanan dibuat dan ikut menghitung jurnal, jadi tarif
+            // yang tidak sah harus berhenti di sini — bukan tersimpan lalu menghasilkan pajak salah
+            // di seluruh transaksi berikutnya.
+            if (TaxSettings.Validate(k, v) is { } galatPajak)
+                return Results.Json(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galatPajak },
                     statusCode: 400);
         }
 
@@ -2102,8 +2162,8 @@ static IResult BahanKembar() => Results.Conflict(new
     errorMessage = "Nama bahan baku itu sudah dipakai bahan lain. Pakai nama yang membedakan."
 });
 
-// Cakupan pesanan per kasir dipakai oleh daftar, detail, pembayaran, dan ubah status. Pesanan
-// kasir lain dijawab 404 supaya keberadaannya pun tidak terbaca dari akun ini.
+// Cakupan pesanan per kasir dipakai oleh daftar, detail, pembayaran, pengambilan, dan ubah status.
+// Pesanan kasir lain dijawab 404 supaya keberadaannya pun tidak terbaca dari akun ini.
 static async Task<bool> PesananDiLuarCakupanAsync(
     int orderId, ISalesOrderRepository orders, HttpContext ctx)
 {
@@ -2154,7 +2214,9 @@ static IResult HasilPerangkat(string kode, string pesan, int? jobId = null)
 // untuk mempertahankan nilai lama, bukan menimpanya dengan nol.
 record IngredientDto(string? Name, string? Brand, string? Unit, long? PricePerUnit, decimal? CurrentStock, decimal? MinStockAlert);
 record ChangePasswordDto(string CurrentPassword, string NewPassword);
-record AddPaymentDto(long Amount, string Method, string? Notes, string? IdempotencyKey);
+// TenderAmount adalah uang yang diserahkan pelanggan. Boleh tidak dikirim — kalau layar belum
+// mengenalnya, pembayaran dianggap pas dan tidak ada kembalian yang dilaporkan.
+record AddPaymentDto(long Amount, string Method, string? Notes, string? IdempotencyKey, long? TenderAmount = null);
 record UpdateStatusDto(string Status, string? CancelReason);
 record ExpenseDto(string Category, string Description, long Amount);
 record CreateWorkOrderDto(int ProductTemplateId, int TargetQuantity, long LaborCost, long OverheadCost);

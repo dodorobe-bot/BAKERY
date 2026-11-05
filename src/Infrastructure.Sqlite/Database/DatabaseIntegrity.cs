@@ -36,7 +36,9 @@ public sealed class DatabaseIntegrity
             CekNomorDokumenUnik(conn),
             CekPenghitungDokumen(conn),
             CekStokNegatif(conn),
+            CekLapisanBiayaMenutupiStok(conn),
             CekNilaiPersediaanJadi(conn),
+            CekNilaiLapisanBahanSesuaiAkun(conn),
             CekJurnalStokLayarBahan(conn),
             CekStokMasterNonaktif(conn),
         ];
@@ -179,10 +181,63 @@ public sealed class DatabaseIntegrity
     }
 
     /// <summary>
-    /// Nilai stok produk jadi yang dipakai menu Inventaris (jumlah × biaya rata-rata) harus sama
-    /// dengan saldo akun 1-006. Keduanya dihitung dari sumber berbeda — satu dari mutasi stok,
-    /// satu dari jurnal — jadi selisih berarti HPP penjualan dan laporan laba rugi tidak lagi
-    /// mencerminkan barang yang benar-benar ada.
+    /// Jumlah fisik dan nilai lapisan harus bergerak bersama. Stok di rak tanpa lapisan berarti
+    /// tidak ada satu pun harga yang bisa dipakai membukukan HPP atau transfer, dan lapisan yang
+    /// lebih besar dari fisik berarti ada barang yang tercatat tapi tidak ada. Kedua keadaan
+    /// lahir dari jalur tulis yang melewati StockLedger/FinishedGoodsLedger.
+    /// </summary>
+    private static IntegrityCheck CekLapisanBiayaMenutupiStok(SqliteConnection conn)
+    {
+        var bocor = Baris(conn, @"
+            SELECT 'Bahan ' || i.Name || ' di ' || sl.Name || ': fisik ' || printf('%g', ls.Quantity) ||
+                   ', lapisan ' || printf('%g', COALESCE(l.qty, 0))
+              FROM LocationStock ls
+              JOIN Ingredients i ON i.Id = ls.IngredientId
+              JOIN StorageLocations sl ON sl.Id = ls.LocationId
+              LEFT JOIN (SELECT ItemId, LocationId, SUM(Quantity) AS qty FROM StockCostLayers
+                          WHERE ItemKind = 'Ingredient' GROUP BY ItemId, LocationId) l
+                     ON l.ItemId = ls.IngredientId AND l.LocationId = ls.LocationId
+             WHERE ABS(ls.Quantity - COALESCE(l.qty, 0)) > 0.0000001
+            UNION ALL
+            SELECT 'Produk ' || pt.Name || ' di ' || sl.Name || ': fisik ' || printf('%g', fgs.Quantity) ||
+                   ', lapisan ' || printf('%g', COALESCE(l.qty, 0))
+              FROM FinishedGoodsStock fgs
+              JOIN ProductTemplates pt ON pt.Id = fgs.ProductTemplateId
+              JOIN StorageLocations sl ON sl.Id = fgs.LocationId
+              LEFT JOIN (SELECT ItemId, LocationId, SUM(Quantity) AS qty FROM StockCostLayers
+                          WHERE ItemKind = 'FinishedGoods' GROUP BY ItemId, LocationId) l
+                     ON l.ItemId = fgs.ProductTemplateId AND l.LocationId = fgs.LocationId
+             WHERE ABS(fgs.Quantity - COALESCE(l.qty, 0)) > 0.0000001
+            UNION ALL
+            SELECT 'Lapisan yatim ' || l.ItemKind || ' #' || l.ItemId || ' di ' || sl.Name ||
+                   ': lapisan ' || printf('%g', l.qty) || ', stok fisiknya tidak punya baris'
+              FROM (SELECT ItemKind, ItemId, LocationId, SUM(Quantity) AS qty FROM StockCostLayers
+                     GROUP BY ItemKind, ItemId, LocationId) l
+              JOIN StorageLocations sl ON sl.Id = l.LocationId
+             WHERE NOT EXISTS (
+                   SELECT 1 FROM LocationStock ls
+                    WHERE l.ItemKind = 'Ingredient'
+                      AND ls.IngredientId = l.ItemId AND ls.LocationId = l.LocationId)
+               AND NOT EXISTS (
+                   SELECT 1 FROM FinishedGoodsStock fgs
+                    WHERE l.ItemKind = 'FinishedGoods'
+                      AND fgs.ProductTemplateId = l.ItemId AND fgs.LocationId = l.LocationId)
+            ORDER BY 1;");
+        return baru("lapisan biaya menutupi stok fisik", bocor.Count == 0,
+            bocor.Count == 0
+                ? Skalar(conn, "SELECT COUNT(*) FROM StockCostLayers;") +
+                  " lapisan biaya, jumlahnya sama dengan stok di semua lokasi."
+                : $"{bocor.Count} lokasi+barang punya stok dan lapisan yang tidak sama: {Rangkai(bocor)}. " +
+                  "Semua perubahan stok harus lewat layar (Formulir Mutasi Bahan, Pemeriksaan Fisik, " +
+                  "Penerimaan Barang, Produksi, Kasir); suntingan langsung membuat harga barang tidak " +
+                  "bisa dibukukan.");
+    }
+
+    /// <summary>
+    /// Nilai stok produk jadi yang dipakai menu Inventaris harus sama dengan saldo akun 1-006.
+    /// Sejak lapisan biaya ada, pembandingnya adalah total nilai lapisan — bukan jumlah dikali
+    /// biaya rata-rata, yang bergeser beberapa sen tiap mutasi dan tidak pernah bisa menjelaskan
+    /// harga batch yang benar-benar terjual.
     /// </summary>
     private static IntegrityCheck CekNilaiPersediaanJadi(SqliteConnection conn)
     {
@@ -192,11 +247,11 @@ public sealed class DatabaseIntegrity
               JOIN Accounts a ON a.Id = jl.AccountId
               JOIN JournalEntries je ON je.Id = jl.JournalEntryId
              WHERE a.Code = '1-006' AND je.Status IN ('Posted','Reversed');");
-        var nilaiStok = Angka(conn,
-            "SELECT COALESCE(SUM(CAST(ROUND(Quantity * AverageCostMinorUnits) AS INTEGER)), 0) " +
-            "FROM FinishedGoodsStock;");
+        var nilaiStok = Angka(conn, @"
+            SELECT COALESCE(SUM(CAST(ROUND(Quantity * UnitCostMinorUnits) AS INTEGER)), 0)
+              FROM StockCostLayers WHERE ItemKind = 'FinishedGoods';");
 
-        // Biaya rata-rata disimpan sebagai bilangan bulat per unit, jadi setiap mutasi bisa
+        // Biaya per unit disimpan sebagai bilangan bulat, jadi setiap mutasi bisa
         // menyisakan pembulatan di bawah satu sen. Selisih sebesar itu bukan kerusakan.
         const long toleransi = 100;
         var selisih = saldo - nilaiStok;
@@ -204,10 +259,55 @@ public sealed class DatabaseIntegrity
 
         return baru("nilai stok produk jadi sama dengan saldo 1-006", lolos,
             lolos
-                ? $"saldo 1-006 = {saldo}, nilai stok = {nilaiStok}, selisih {selisih} (toleransi {toleransi} sen)."
-                : $"saldo 1-006 = {saldo}, nilai stok = {nilaiStok}, selisih {selisih} sen melebihi toleransi " +
+                ? $"saldo 1-006 = {saldo}, nilai lapisan stok = {nilaiStok}, selisih {selisih} (toleransi {toleransi} sen)."
+                : $"saldo 1-006 = {saldo}, nilai lapisan stok = {nilaiStok}, selisih {selisih} sen melebihi toleransi " +
                   $"{toleransi}. Produksi sebelum perbaikan kapitalisasi mencatat tenaga kerja/overhead " +
                   "sebagai beban tanpa menambah nilai persediaan; periksa jurnal WorkOrder lama.");
+    }
+
+    /// <summary>
+    /// Setiap sen yang tersimpan di lapisan bahan harus punya pasangan di akun persediaan untuk
+    /// lokasi itu (1-003 gudang, 1-004 dapur), dan sebaliknya. Bahan yang ditumpuk di lokasi
+    /// etalase tidak punya akun persediaan bahan, jadi ikut dilaporkan di sini.
+    /// </summary>
+    private static IntegrityCheck CekNilaiLapisanBahanSesuaiAkun(SqliteConnection conn)
+    {
+        var laporan = new List<string>();
+        foreach (var (kode, jenis) in new[] { ("1-003", "Warehouse"), ("1-004", "Kitchen") })
+        {
+            var saldo = Angka(conn, $@"
+                SELECT COALESCE(SUM(jl.DebitAmount - jl.CreditAmount), 0)
+                  FROM JournalLines jl
+                  JOIN Accounts a ON a.Id = jl.AccountId
+                  JOIN JournalEntries je ON je.Id = jl.JournalEntryId
+                 WHERE a.Code = '{kode}' AND je.Status IN ('Posted','Reversed');");
+            var nilai = Angka(conn, $@"
+                SELECT COALESCE(SUM(CAST(ROUND(l.Quantity * l.UnitCostMinorUnits) AS INTEGER)), 0)
+                  FROM StockCostLayers l
+                  JOIN StorageLocations sl ON sl.Id = l.LocationId
+                 WHERE l.ItemKind = 'Ingredient' AND sl.Type = '{jenis}';");
+            var selisih = saldo - nilai;
+            if (selisih != 0)
+                laporan.Add($"akun {kode} bersaldo {saldo} sedangkan lapisan {jenis} bernilai {nilai} " +
+                            $"(selisih {selisih} sen)");
+        }
+
+        var asing = Baris(conn, @"
+            SELECT sl.Name || ' = ' ||
+                   CAST(COALESCE(SUM(CAST(ROUND(l.Quantity * l.UnitCostMinorUnits) AS INTEGER)), 0) AS TEXT) || ' sen'
+              FROM StockCostLayers l
+              JOIN StorageLocations sl ON sl.Id = l.LocationId
+             WHERE l.ItemKind = 'Ingredient' AND sl.Type NOT IN ('Warehouse','Kitchen')
+             GROUP BY sl.Name;");
+        laporan.AddRange(asing.Select(a => $"bahan disimpan di lokasi non-persediaan: {a}"));
+
+        return baru("nilai lapisan bahan sama dengan saldo akun persediaan", laporan.Count == 0,
+            laporan.Count == 0
+                ? "1-003 dan 1-004 persis sama dengan nilai lapisan gudang dan dapur."
+                : $"{string.Join("; ", laporan)}. Saldo neraca tidak lagi menjelaskan barang di rak. " +
+                  "Stok layar Bahan Baku yang belum berjurnal ditambal dengan --rekonsiliasi-stok-bahan; " +
+                  "selisih fisik dibukukan lewat Pemeriksaan Fisik (Stok Opname) supaya lawannya menjadi " +
+                  "Beban Selisih Persediaan.");
     }
 
     /// <summary>

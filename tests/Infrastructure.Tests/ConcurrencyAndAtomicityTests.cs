@@ -41,7 +41,8 @@ public class ConcurrencyAndAtomicityTests
         _accounting = new AccountingService(_journals, new AccountRepository(_factory));
         _orderService = new OrderService(
             _orders, _stock, _journals,
-            new DocumentSequenceRepository(_factory), _accounting, _returns);
+            new DocumentSequenceRepository(_factory), _accounting, _returns,
+            new SettingRepository(_factory));
         _purchases = new PurchaseOrderRepository(_factory);
         _purchaseService = new PurchaseService(_purchases, _stock, _accounting);
         _production = new ProductionRepository(_factory);

@@ -40,7 +40,8 @@ public class OrderCancelReturnTests
         _accounting = new AccountingService(_journals, new AccountRepository(_factory));
         _orderService = new OrderService(
             _orders, _stock, _journals,
-            new DocumentSequenceRepository(_factory), _accounting, _returns);
+            new DocumentSequenceRepository(_factory), _accounting, _returns,
+            new SettingRepository(_factory));
         _returnService = new SalesReturnService(
             _orders, _returns, _stock,
             new DocumentSequenceRepository(_factory), _accounting);

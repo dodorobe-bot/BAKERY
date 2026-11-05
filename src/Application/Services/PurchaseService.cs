@@ -72,7 +72,7 @@ public class PurchaseService
         var stockChanges = receipt.Lines
             .Select(l => new StockChange(
                 l.LocationId, l.IngredientId, l.ReceivedQty, MovementType.Restock,
-                "GoodsReceipt", null, dto.UserId, $"Penerimaan PO {po.PoNumber}"))
+                "GoodsReceipt", null, dto.UserId, $"Penerimaan PO {po.PoNumber}", l.UnitCostMinorUnits))
             .ToList();
 
         // Nilai penerimaan dibulatkan per baris, lalu dijumlahkan: membulatkan total

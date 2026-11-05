@@ -468,6 +468,7 @@ public class ProductionRepository : IProductionRepository
                 }
 
             int kitchenLocationId = await StockLedger.ResolveLocationIdByTypeAsync(conn, tx, "Kitchen");
+            long nilaiBahanAktual = 0;
             foreach (var (ingredientId, quantity, unitCost) in rincian)
             {
                 var mCmd = conn.CreateCommand();
@@ -483,7 +484,9 @@ public class ProductionRepository : IProductionRepository
                     throw new InvalidOperationException(
                         $"Baris bahan #{ingredientId} tidak ditemukan; penyelesaian dibatalkan.");
 
-                await StockLedger.ApplyAsync(
+                // Harga bahan yang keluar diambil dari lapisan FIFO dapur, jadi nilai ini bisa
+                // berbeda dari biaya rencana SPK (harga beli berubah di tengah jalan).
+                nilaiBahanAktual += await StockLedger.ApplyAsync(
                     conn, tx, kitchenLocationId, ingredientId, -quantity,
                     MovementType.Deduction, "WorkOrder", id, woCreatedBy, null);
             }
@@ -518,5 +521,13 @@ public class ProductionRepository : IProductionRepository
             // 7. Jurnal produksi — gagal jurnal berarti seluruh penyelesaian batal
             if (journal is not null)
                 await JournalWriter.WriteAsync(conn, tx, journal);
+
+            // 8. Selisih biaya bahan. Rencana SPK memakai harga yang terpasang saat SPK dibuat,
+            // sedangkan dapur melepaskan lapisan tertua yang harganya bisa lain. Jurnalnya sudah
+            // melepas persediaan sebesar biaya rencana, jadi kekurangan atau kelebihannya
+            // dibukukan di sini: saldo 1-004 selalu sama dengan nilai lapisan dapur yang tersisa,
+            // dan selisihnya kelihatan sebagai Beban Selisih Persediaan, bukan hilang.
+            await AccountingPoster.WriteMaterialVarianceAsync(conn, tx, id,
+                nilaiBahanAktual - totalMaterialCost, woCreatedBy);
         });
 }

@@ -35,6 +35,10 @@ public class SalesReturn
     public int ProductTemplateId { get; set; }
     public decimal Quantity { get; set; }
     public long Amount { get; set; } // minor units
+    /// <summary>Diskon yang ikut dibalik pada retur ini, supaya 4-002 tidak menahan potongan lama.</summary>
+    public long DiscountAmount { get; set; }
+    /// <summary>PPN yang dihapus dari kewajiban karena barangnya kembali.</summary>
+    public long TaxAmount { get; set; }
     public string Reason { get; set; } = string.Empty;
     public string RefundMethod { get; set; } = "Tunai";
     public DateTime ReturnedAt { get; set; } = DateTime.UtcNow;

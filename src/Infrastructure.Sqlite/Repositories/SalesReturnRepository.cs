@@ -44,17 +44,18 @@ public class SalesReturnRepository : ISalesReturnRepository
         return list;
     }
 
-    public async Task<(decimal Quantity, long Amount)> GetReturnedTotalsAsync(int salesOrderId)
+    public async Task<(decimal Quantity, long Amount, long Discount, long Tax)> GetReturnedTotalsAsync(int salesOrderId)
     {
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-            SELECT COALESCE(SUM(Quantity), 0), COALESCE(SUM(Amount), 0)
+            SELECT COALESCE(SUM(Quantity), 0), COALESCE(SUM(Amount), 0),
+                   COALESCE(SUM(DiscountAmount), 0), COALESCE(SUM(TaxAmount), 0)
             FROM SalesReturns WHERE SalesOrderId = @id;";
         cmd.Parameters.AddWithValue("@id", salesOrderId);
         using var r = await cmd.ExecuteReaderAsync();
-        if (!await r.ReadAsync()) return (0, 0);
-        return (Convert.ToDecimal(r.GetValue(0)), r.GetInt64(1));
+        if (!await r.ReadAsync()) return (0, 0, 0, 0);
+        return (Convert.ToDecimal(r.GetValue(0)), r.GetInt64(1), r.GetInt64(2), r.GetInt64(3));
     }
 
     public Task<int> CreateWithJournalAsync(
@@ -81,14 +82,24 @@ public class SalesReturnRepository : ISalesReturnRepository
             if (ret.Amount > sisaNilai)
                 throw new InvalidOperationException(
                     "Nilai retur melebihi sisa nilai pesanan. Muat ulang pesanan lalu ulangi.");
+            // Potongan dan pajak mengikuti nilai yang diretur, dan batasnya diperiksa di dalam
+            // transaksi: dua retur bersamaan tidak boleh membalik PPN lebih besar daripada yang
+            // pernah dipungut pada pesanan itu.
+            var sisaDiskon = state.DiscountAmount - state.ReturnedDiscount;
+            var sisaPajak = state.TaxAmount - state.ReturnedTax;
+            if (ret.DiscountAmount > sisaDiskon || ret.TaxAmount > sisaPajak)
+                throw new InvalidOperationException(
+                    "Diskon atau PPN retur melebihi sisa pesanan. Muat ulang pesanan lalu ulangi.");
 
             var cmd = conn.CreateCommand();
             cmd.Transaction = tx;
             cmd.CommandText = @"
                 INSERT INTO SalesReturns
-                    (ReturnNumber, SalesOrderId, ProductTemplateId, Quantity, Amount, Reason,
+                    (ReturnNumber, SalesOrderId, ProductTemplateId, Quantity, Amount,
+                     DiscountAmount, TaxAmount, Reason,
                      RefundMethod, ReturnedAt, IdempotencyKey, CreatedByUserId, CreatedAt)
-                VALUES (@number, @orderId, @productId, @qty, @amount, @reason,
+                VALUES (@number, @orderId, @productId, @qty, @amount,
+                        @discount, @tax, @reason,
                         @method, @returnedAt, @key, @userId, datetime('now'));
                 SELECT last_insert_rowid();";
             cmd.Parameters.AddWithValue("@number", ret.ReturnNumber);
@@ -96,6 +107,8 @@ public class SalesReturnRepository : ISalesReturnRepository
             cmd.Parameters.AddWithValue("@productId", ret.ProductTemplateId);
             cmd.Parameters.AddWithValue("@qty", ret.Quantity);
             cmd.Parameters.AddWithValue("@amount", ret.Amount);
+            cmd.Parameters.AddWithValue("@discount", ret.DiscountAmount);
+            cmd.Parameters.AddWithValue("@tax", ret.TaxAmount);
             cmd.Parameters.AddWithValue("@reason", ret.Reason);
             cmd.Parameters.AddWithValue("@method", ret.RefundMethod);
             cmd.Parameters.AddWithValue("@returnedAt", ret.ReturnedAt.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -134,7 +147,8 @@ public class SalesReturnRepository : ISalesReturnRepository
 
     private sealed record ReturnState(
         OrderStatus Status, decimal Quantity, long TotalAmount,
-        decimal ReturnedQuantity, long ReturnedAmount);
+        decimal ReturnedQuantity, long ReturnedAmount,
+        long DiscountAmount, long ReturnedDiscount, long TaxAmount, long ReturnedTax);
 
     private static async Task<ReturnState?> ReadOrderReturnStateAsync(
         SqliteConnection conn, SqliteTransaction tx, int orderId)
@@ -144,7 +158,11 @@ public class SalesReturnRepository : ISalesReturnRepository
         cmd.CommandText = @"
             SELECT o.Status, o.Quantity, o.TotalAmount,
                    COALESCE((SELECT SUM(r.Quantity) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0),
-                   COALESCE((SELECT SUM(r.Amount) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0)
+                   COALESCE((SELECT SUM(r.Amount) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0),
+                   o.DiscountAmount,
+                   COALESCE((SELECT SUM(r.DiscountAmount) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0),
+                   o.TaxAmount,
+                   COALESCE((SELECT SUM(r.TaxAmount) FROM SalesReturns r WHERE r.SalesOrderId = o.Id), 0)
             FROM SalesOrders o WHERE o.Id = @id;";
         cmd.Parameters.AddWithValue("@id", orderId);
         using var r = await cmd.ExecuteReaderAsync();
@@ -154,6 +172,10 @@ public class SalesReturnRepository : ISalesReturnRepository
             Convert.ToDecimal(r.GetValue(1)),
             r.GetInt64(2),
             Convert.ToDecimal(r.GetValue(3)),
-            r.GetInt64(4));
+            r.GetInt64(4),
+            r.GetInt64(5),
+            r.GetInt64(6),
+            r.GetInt64(7),
+            r.GetInt64(8));
     }
 }

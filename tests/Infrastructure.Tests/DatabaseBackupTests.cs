@@ -238,10 +238,11 @@ public class DatabaseBackupTests
 
             new DatabaseMigrator(connectionString, cadanganDir).Migrate();
 
-            var cadangan = Directory.GetFiles(cadanganDir, "pre-upgrade-v13-to-v18-*.db");
+            var cadangan = Directory.GetFiles(cadanganDir,
+                $"pre-upgrade-v13-to-v{DatabaseMigrator.LatestEmbeddedVersion()}-*.db");
             cadangan.Should().HaveCount(1);
             DatabaseBackupService.CheckIntegrity(cadangan[0]).Should().Be("ok");
-            DatabaseBackupService.ReadSchemaVersion(path).Should().Be(18);
+            DatabaseBackupService.ReadSchemaVersion(path).Should().Be(DatabaseMigrator.LatestEmbeddedVersion());
 
             using var cek = new SqliteConnection(connectionString);
             cek.Open();

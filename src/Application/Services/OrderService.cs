@@ -11,11 +11,18 @@ public record CreateOrderRequest(
     string? IdempotencyKey = null,
     // Jumlah unit: ditambahkan paling belakang agar permintaan lama tanpa field ini tetap sah
     // dan terbaca sebagai satu unit, sama seperti baris lama di basis data.
-    decimal Quantity = 1);
+    decimal Quantity = 1,
+    // Diskon ditambahkan paling belakang untuk alasan yang sama. TotalAmount di atas berarti
+    // nilai barang (harga × jumlah); total tagihan dihitung server dari diskon + pengaturan PPN.
+    long? DiscountAmount = null,
+    double? DiscountPercent = null);
 
 public record AddPaymentRequest(
     int OrderId, long Amount, string Method, int CreatedByUserId,
-    string? Notes = null, string? IdempotencyKey = null);
+    string? Notes = null, string? IdempotencyKey = null,
+    // Uang yang diserahkan pelanggan. Bila lebih besar dari Amount, selisihnya kembalian yang
+    // keluar dari laci dan tidak pernah masuk ke buku besar.
+    long? TenderAmount = null);
 
 public class OrderService
 {
@@ -32,12 +39,14 @@ public class OrderService
     private readonly IDocumentSequenceRepository _documents;
     private readonly AccountingService _accounting;
     private readonly ISalesReturnRepository _returns;
+    private readonly ISettingRepository _settings;
 
     public OrderService(
         ISalesOrderRepository orders,
         ILocationStockRepository locationStock,
         IJournalRepository journals, IDocumentSequenceRepository documents,
-        AccountingService accounting, ISalesReturnRepository returns)
+        AccountingService accounting, ISalesReturnRepository returns,
+        ISettingRepository settings)
     {
         _orders = orders;
         _locationStock = locationStock;
@@ -45,14 +54,11 @@ public class OrderService
         _documents = documents;
         _accounting = accounting;
         _returns = returns;
+        _settings = settings;
     }
 
     public async Task<Result<int>> CreateOrderAsync(CreateOrderRequest req)
     {
-        var moneyError = ValidateOrderAmounts(req.TotalAmount, req.DownPayment);
-        if (moneyError is not null)
-            return Result<int>.Fail(ErrorCodes.ValidationFailed, moneyError);
-
         if (string.IsNullOrWhiteSpace(req.CustomerName))
             return Result<int>.Fail(ErrorCodes.ValidationFailed, "Nama pelanggan wajib diisi.");
 
@@ -63,6 +69,25 @@ public class OrderService
         if (req.Quantity > MaxOrderQuantity)
             return Result<int>.Fail(ErrorCodes.ValidationFailed,
                 $"Jumlah pesanan melebihi batas {MaxOrderQuantity:N0} unit.");
+
+        var nilaiGalat = MoneyRules.AmountError(req.TotalAmount, "Nilai pesanan");
+        if (nilaiGalat is not null)
+            return Result<int>.Fail(ErrorCodes.ValidationFailed, nilaiGalat);
+
+        var diskonGalat = ValidateDiskon(req);
+        if (diskonGalat is not null)
+            return Result<int>.Fail(ErrorCodes.ValidationFailed, diskonGalat);
+
+        // Tarif pajak bukan masukan kasir: dibaca dari Pengaturan dan disimpan sebagai snapshot
+        // pada pesanan, sehingga perubahan tarif nanti tidak menulis ulang pesanan lama.
+        var pajak = TaxSettings.Dari(await _settings.GetAllAsync());
+        var tarif = pajak.Enabled && pajak.RatePercent > 0 ? pajak.RatePercent : (double?)null;
+        var harga = SalesPricing.Hitung(
+            req.TotalAmount, req.DiscountAmount, req.DiscountPercent, tarif, pajak.Inclusive);
+
+        var moneyError = ValidateOrderAmounts(harga.Total, req.DownPayment);
+        if (moneyError is not null)
+            return Result<int>.Fail(ErrorCodes.ValidationFailed, moneyError);
 
         // Pelanggan ditautkan dan poin loyaltinya ditambahkan di dalam transaksi pesanan
         // (SalesOrderRepository), sehingga pesanan kembar dengan nomor baru tidak menabrak
@@ -77,10 +102,16 @@ public class OrderService
             PhoneSnapshot = req.Phone,
             Description = req.Description,
             PickupDate = req.PickupDate,
-            TotalAmount = req.TotalAmount,
+            SubtotalAmount = harga.Subtotal,
+            DiscountAmount = harga.Discount,
+            DiscountPercent = req.DiscountPercent,
+            TaxRatePercent = tarif,
+            TaxInclusive = pajak.Inclusive,
+            TaxAmount = harga.Tax,
+            TotalAmount = harga.Total,
             DownPayment = req.DownPayment,
             Quantity = req.Quantity,
-            Status = req.DownPayment >= req.TotalAmount ? OrderStatus.Paid : OrderStatus.Pending,
+            Status = req.DownPayment >= harga.Total ? OrderStatus.Paid : OrderStatus.Pending,
             Notes = req.Notes,
             CreatedAt = DateTime.UtcNow,
             CreatedByUserId = req.CreatedByUserId
@@ -94,8 +125,12 @@ public class OrderService
                 null, req.CustomerName, req.DownPayment, req.CreatedByUserId, req.IdempotencyKey));
 
             if (order.Status == OrderStatus.Paid)
+            {
                 journals.Add(await _accounting.BuildRevenueRecognitionAsync(
-                    null, req.CustomerName, req.TotalAmount, req.CreatedByUserId));
+                    null, req.CustomerName, order.TotalAmount, req.DownPayment,
+                    order.DiscountAmount, order.TaxAmount, req.CreatedByUserId));
+                order.RevenueRecognizedAt = DateTime.UtcNow;
+            }
         }
 
         // Pesanan yang langsung lunas saat dibuat tidak pernah lewat perubahan status, jadi
@@ -137,6 +172,23 @@ public class OrderService
                 $"Metode pembayaran harus salah satu dari: {string.Join(", ", MetodeSah)}.");
         metode = MetodeSah.First(m => m.Equals(metode, StringComparison.OrdinalIgnoreCase));
 
+        // Uang yang diserahkan pelanggan hanya ada pada pembayaran tunai. Transfer datang persis
+        // sebesar yang ditransfer, sehingga "kembalian" tidak pernah bisa terjadi di jalur itu.
+        long? kembalian = null;
+        if (req.TenderAmount is { } tender)
+        {
+            if (metode != "Tunai")
+                return Result.Fail(ErrorCodes.ValidationFailed,
+                    "Uang yang diserahkan hanya diisi untuk pembayaran tunai; transfer dibukukan sebesar yang masuk.");
+            var tenderGalat = MoneyRules.AmountError(tender, "Uang yang diserahkan");
+            if (tenderGalat is not null)
+                return Result.Fail(ErrorCodes.ValidationFailed, tenderGalat);
+            if (tender < req.Amount)
+                return Result.Fail(ErrorCodes.ValidationFailed,
+                    $"Uang yang diserahkan {Money.Format(tender)} kurang dari pembayaran {Money.Format(req.Amount)}.");
+            kembalian = tender - req.Amount;
+        }
+
         // Idempotency check
         if (req.IdempotencyKey is not null)
         {
@@ -160,18 +212,28 @@ public class OrderService
 
         var fullyPaid = req.Amount == remaining;
 
+        // Pendapatan diakui sekali saja: saat barang diserahkan atau saat pesanan lunas, mana
+        // yang terjadi lebih dulu. Setelah pengakuan itu uang yang masuk adalah pelunasan
+        // piutang, bukan titipan pelanggan lagi.
+        var sudahDiakui = order.RevenueRecognizedAt is not null || order.DeliveredAt is not null;
+
         var journals = new List<JournalEntry>
         {
-            await _accounting.BuildPaymentAsync(order.Id, order.CustomerNameSnapshot, req.Amount, req.CreatedByUserId)
+            await _accounting.BuildPaymentAsync(
+                order.Id, order.CustomerNameSnapshot, req.Amount, req.CreatedByUserId,
+                melunasiPiutang: sudahDiakui)
         };
-        if (fullyPaid)
+        if (fullyPaid && !sudahDiakui)
             journals.Add(await _accounting.BuildRevenueRecognitionAsync(
-                order.Id, order.CustomerNameSnapshot, order.TotalAmount, req.CreatedByUserId));
+                order.Id, order.CustomerNameSnapshot, order.TotalAmount, order.TotalAmount,
+                order.DiscountAmount, order.TaxAmount, req.CreatedByUserId));
 
         var payment = new SalesPayment
         {
             SalesOrderId = req.OrderId,
             Amount = req.Amount,
+            TenderAmount = req.TenderAmount,
+            ChangeAmount = kembalian ?? 0,
             PaymentDate = BusinessTime.Now(),
             Method = metode,
             Notes = req.Notes,
@@ -306,6 +368,71 @@ public class OrderService
         }
 
         return Result.Ok();
+    }
+
+    /// <summary>
+    /// Penyerahan barang ke pelanggan: titik di mana pendapatan boleh diakui dan sisa tagihan
+    /// berdiri sebagai piutang. Sebelum ini uang pelanggan hanyalah titipan (2-001), walaupun
+    /// pesanannya sudah dibayar penuh.
+    /// </summary>
+    public async Task<Result> MarkDeliveredAsync(int orderId, int userId)
+    {
+        var order = await _orders.GetByIdAsync(orderId);
+        if (order is null)
+            return Result.Fail(ErrorCodes.NotFound, "Pesanan tidak ditemukan.");
+        if (order.Status == OrderStatus.Cancelled)
+            return Result.Fail(ErrorCodes.InvalidOrderStatus, "Pesanan sudah dibatalkan.");
+        if (order.DeliveredAt is not null)
+            return Result.Fail(ErrorCodes.InvalidOrderStatus, "Pesanan ini sudah diserahkan.");
+
+        var perluPengakuan = order.RevenueRecognizedAt is null;
+        var journals = new List<JournalEntry>();
+        if (perluPengakuan)
+            journals.Add(await _accounting.BuildRevenueRecognitionAsync(
+                order.Id, order.CustomerNameSnapshot, order.TotalAmount, order.TotalPaid(),
+                order.DiscountAmount, order.TaxAmount, userId));
+
+        // Barang yang diserahkan memang meninggalkan etalase. Pesanan yang sudah pernah
+        // mengurangi stok (lunas lebih dulu) tidak dipotong dua kali.
+        var changes = new List<FinishedGoodsChange>();
+        if (!order.StockDeducted && order.ProductTemplateId.HasValue)
+        {
+            int displayId = await _locationStock.GetLocationIdByTypeAsync("Display");
+            changes.Add(new FinishedGoodsChange(
+                displayId, order.ProductTemplateId.Value, -order.Quantity,
+                FinishedGoodsMovementType.Sale, "SalesOrder", orderId, userId,
+                $"Penyerahan {order.OrderNumber} ({order.Quantity:0.###} unit)"));
+        }
+
+        try
+        {
+            await _orders.MarkDeliveredWithJournalAsync(
+                orderId, DateTime.UtcNow, perluPengakuan, order.TotalPaid(), order.StockDeducted,
+                journals, changes);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Result.Fail(ErrorCodes.ValidationFailed, ex.Message);
+        }
+
+        return Result.Ok();
+    }
+
+    private static string? ValidateDiskon(CreateOrderRequest req)
+    {
+        if (req.DiscountPercent is < 0 or > 100)
+            return "Persen diskon harus antara 0 dan 100.";
+        if (req.DiscountAmount < 0)
+            return "Nilai diskon tidak boleh negatif.";
+        // Dua diskon sekaligus tidak pernah berarti satu hal: dipakai keduanya akan salah, dan
+        // salah satu dibuang diam-diam membuat kasir mengira diskonnya sudah terpasang.
+        if (req.DiscountPercent > 0 && req.DiscountAmount > 0)
+            return "Pilih salah satu diskon: persen atau nominal rupiah.";
+        if (req.DiscountAmount > MoneyRules.MaxAmountMinorUnits)
+            return $"Diskon melebihi batas {MoneyRules.MaxAmountMinorUnits / 100:N0} rupiah.";
+        if (req.DiscountAmount > req.TotalAmount)
+            return "Diskon melebihi nilai barang yang dipesan.";
+        return null;
     }
 
     private static string? ValidateOrderAmounts(long totalAmount, long downPayment)

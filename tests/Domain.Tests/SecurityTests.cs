@@ -104,6 +104,7 @@ public class RolePoliciesTests
         RolePolicies.Names.Should().BeEquivalentTo(
         [
             RolePolicies.Sales, RolePolicies.SalesCancel, RolePolicies.SalesReturn,
+            RolePolicies.SalesDiscount,
             RolePolicies.FinanceRead, RolePolicies.FinanceWrite,
             RolePolicies.ProductionWrite, RolePolicies.ProductionCancel, RolePolicies.InventoryWrite,
             RolePolicies.InventoryRead, RolePolicies.PurchasesCreate, RolePolicies.PurchasesReceive,

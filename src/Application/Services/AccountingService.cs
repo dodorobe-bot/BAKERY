@@ -18,12 +18,15 @@ public class AccountingService
     private readonly Dictionary<string, int> _accountIdByCode = new();
 
     private const string KasKode = "1-001";
+    private const string PiutangKode = "1-002";
     private const string PersediaanBahanKode = "1-003";
     private const string PersediaanDapurKode = "1-004";
     private const string PersediaanJadiKode = "1-006";
     private const string UangMukaKode = "2-001";
     private const string UtangUsahaKode = "2-002";
+    private const string UtangPpnKode = "2-003";
     private const string PendapatanKode = "4-001";
+    private const string DiskonKode = "4-002";
     private const string BebanBahanKode = "5-001";
     private const string BebanOperasionalKode = "5-002";
     private const string BebanGajiKode = "5-003";
@@ -62,19 +65,22 @@ public class AccountingService
     }
 
     /// <summary>
-    /// Pembayaran berjalan: Dr Kas, Cr Uang Muka.
-    /// Sebelumnya kreditnya masuk Piutang, padahal tidak ada satu pun kaki mendebit Piutang,
-    /// sehingga saldo piutang jadi negatif di neraca saldo.
+    /// Pembayaran berjalan. Selama pendapatan belum diakui, uang titipan pelanggan ditahan di
+    /// 2-001 Uang Muka; setelah barang diserahkan dan piutangnya lahir, pembayaran yang sama
+    /// melunasi 1-002. Kredit ke 2-001 untuk pesanan yang sudah diakui akan membuat uang muka
+    /// menumpuk tanpa pesanan yang menunggu.
     /// </summary>
     public async Task<JournalEntry> BuildPaymentAsync(
-        int orderId, string customerName, long amount, int userId)
+        int orderId, string customerName, long amount, int userId, bool melunasiPiutang = false)
     {
         var kas = await AccountIdAsync(KasKode);
-        var uangMuka = await AccountIdAsync(UangMukaKode);
+        var lawan = await AccountIdAsync(melunasiPiutang ? PiutangKode : UangMukaKode);
 
         return new JournalEntry
         {
-            Description = $"Pembayaran: {customerName}",
+            Description = melunasiPiutang
+                ? $"Pelunasan Piutang: {customerName}"
+                : $"Pembayaran: {customerName}",
             TransactionDate = BusinessTime.Now(),
             SourceDocumentType = "SalesOrder",
             SourceDocumentId = orderId,
@@ -83,17 +89,46 @@ public class AccountingService
             Lines =
             {
                 new() { AccountId = kas, DebitAmount = amount },
-                new() { AccountId = uangMuka, CreditAmount = amount }
+                new() { AccountId = lawan, CreditAmount = amount }
             }
         };
     }
 
-    /// <summary>Pelunasan: Dr Uang Muka, Cr Pendapatan atas seluruh nilai pesanan.</summary>
+    /// <summary>
+    /// Pengakuan pendapatan satu pesanan. Kaki pendebitnya adalah tempat tagihan berdiri:
+    /// uang yang sudah masuk keluar dari 2-001 Uang Muka, sisa yang belum dibayar menjadi
+    /// 1-002 Piutang Usaha. Pendapatan dikredit sebesar nilai sebelum PPN (termasuk diskon yang
+    /// masih melekat), PPN dipisah ke 2-003 karena uang itu bukan milik toko, dan diskon dicatat
+    /// di 4-002 supaya layar masih bisa melihat harga katalog aslinya.
+    /// </summary>
     public async Task<JournalEntry> BuildRevenueRecognitionAsync(
-        int? orderId, string customerName, long totalAmount, int userId)
+        int? orderId, string customerName, long totalAmount, long receivedAmount,
+        long discountAmount, long taxAmount, int userId)
     {
-        var uangMuka = await AccountIdAsync(UangMukaKode);
-        var pendapatan = await AccountIdAsync(PendapatanKode);
+        if (totalAmount <= 0)
+            throw new InvalidOperationException("Nilai pesanan yang diakui pendapatannya harus lebih dari nol.");
+        if (receivedAmount < 0 || receivedAmount > totalAmount)
+            throw new InvalidOperationException(
+                "Uang yang sudah diterima pesanan tidak boleh di luar total tagihannya.");
+        if (discountAmount < 0 || taxAmount < 0)
+            throw new InvalidOperationException("Diskon dan PPN tidak boleh negatif.");
+
+        var piutang = totalAmount - receivedAmount;
+        var lines = new List<JournalLine>();
+        // Pesanan yang diserahkan tanpa uang masuk sama sekali tidak punya sisa uang muka untuk
+        // dibalik, jadi kaki 2-001-nya ditiatkan: seluruh tagihan berdiri sebagai piutang.
+        if (receivedAmount > 0)
+            lines.Add(new() { AccountId = await AccountIdAsync(UangMukaKode), DebitAmount = receivedAmount });
+        if (piutang > 0)
+            lines.Add(new() { AccountId = await AccountIdAsync(PiutangKode), DebitAmount = piutang });
+
+        var pendapatan = totalAmount - taxAmount + discountAmount;
+        lines.Add(new() { AccountId = await AccountIdAsync(PendapatanKode), CreditAmount = pendapatan });
+
+        if (taxAmount > 0)
+            lines.Add(new() { AccountId = await AccountIdAsync(UtangPpnKode), CreditAmount = taxAmount });
+        if (discountAmount > 0)
+            lines.Add(new() { AccountId = await AccountIdAsync(DiskonKode), DebitAmount = discountAmount });
 
         return new JournalEntry
         {
@@ -103,24 +138,39 @@ public class AccountingService
             SourceDocumentId = orderId,
             PostedAt = DateTime.UtcNow,
             PostedByUserId = userId,
-            Lines =
-            {
-                new() { AccountId = uangMuka, DebitAmount = totalAmount },
-                new() { AccountId = pendapatan, CreditAmount = totalAmount }
-            }
+            Lines = lines
         };
     }
 
     /// <summary>
-    /// Retur penjualan: Dr Pendapatan, Cr Kas. Retur hanya dilakukan untuk pesanan yang sudah
-    /// lunas, jadi pendapatannya sudah diakui dan pengembalian dana mengurangi pendapatan —
-    /// bukan uang muka, yang saldonya sudah nol setelah pelunasan.
+    /// Retur penjualan: pendapatan dan PPN-nya ditarik kembali, diskon yang tadinya mengurangi
+    /// pendapatan dibalik, dan uang keluar dari kas. Hanya pesanan yang pendapatannya sudah
+    /// diakui yang bisa diretur, jadi pembalikannya selalu punya lawan.
     /// </summary>
     public async Task<JournalEntry> BuildSalesReturnAsync(
-        string returnNumber, string customerName, long amount, int userId)
+        string returnNumber, string customerName, long refund, long discountAmount, long taxAmount, int userId)
     {
-        var pendapatan = await AccountIdAsync(PendapatanKode);
-        var kas = await AccountIdAsync(KasKode);
+        if (refund <= 0)
+            throw new InvalidOperationException("Nilai retur harus lebih besar dari nol.");
+        if (discountAmount < 0 || taxAmount < 0)
+            throw new InvalidOperationException("Diskon dan PPN retur tidak boleh negatif.");
+
+        // Pendapatan yang dibalik adalah nilai sebelum PPN ditambah diskonnya, jadi selisih
+        // debit-kredit selalu persis sama dengan uang yang kembali ke pelanggan.
+        var pendapatan = refund + discountAmount - taxAmount;
+        if (pendapatan <= 0)
+            throw new InvalidOperationException(
+                "Nilai retur lebih besar daripada pendapatan yang bisa dibalik.");
+
+        var lines = new List<JournalLine>
+        {
+            new() { AccountId = await AccountIdAsync(PendapatanKode), DebitAmount = pendapatan }
+        };
+        if (taxAmount > 0)
+            lines.Add(new() { AccountId = await AccountIdAsync(UtangPpnKode), DebitAmount = taxAmount });
+        if (discountAmount > 0)
+            lines.Add(new() { AccountId = await AccountIdAsync(DiskonKode), CreditAmount = discountAmount });
+        lines.Add(new() { AccountId = await AccountIdAsync(KasKode), CreditAmount = refund });
 
         return new JournalEntry
         {
@@ -129,11 +179,7 @@ public class AccountingService
             SourceDocumentType = "SalesReturn",
             PostedAt = DateTime.UtcNow,
             PostedByUserId = userId,
-            Lines =
-            {
-                new() { AccountId = pendapatan, DebitAmount = amount },
-                new() { AccountId = kas, CreditAmount = amount }
-            }
+            Lines = lines
         };
     }
 

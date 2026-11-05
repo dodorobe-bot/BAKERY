@@ -136,7 +136,8 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
-        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(18);
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;"))
+            .Should().Be(DatabaseMigrator.LatestEmbeddedVersion());
 
         // Migrasi 016: indeks untuk dashboard, analitik, kotak tugas, dan riwayat stok.
         // Migrasi 017 mengganti dua di antaranya dengan indeks penutup dan menambah indeks
@@ -221,6 +222,23 @@ public class DatabaseMigratorTests
         Convert.ToInt32(db.Scalar(
             "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_finishedgoods_movements_source';"))
             .Should().Be(1);
+
+        // Migrasi 019: lapisan biaya FIFO untuk bahan dan produk jadi, plus nilai rupiah tiap
+        // mutasi produk jadi. Tanpa tabel ini, harga pokok mengikuti harga master terakhir
+        // (BUG-032) dan mutasi keluar tidak bisa dijelaskan nilai yang sebenarnya keluar.
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='StockCostLayers';"))
+            .Should().Be(1);
+        var lapisan = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='StockCostLayers';")!;
+        lapisan.Should().Contain("ItemKind IN ('Ingredient','FinishedGoods')")
+            .And.Contain("Quantity >= 0").And.Contain("UnitCostMinorUnits >= 0");
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name IN (
+                'idx_stockcostlayers_fifo', 'idx_stockcostlayers_location');"))
+            .Should().Be(2);
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM pragma_table_info('FinishedGoodsMovements') WHERE name='ValueMinorUnits';"))
+            .Should().Be(1, "mutasi keluar produk jadi harus menyimpan nilai yang benar-benar keluar");
     }
 
     [Fact]
@@ -229,6 +247,8 @@ public class DatabaseMigratorTests
         // Simulasi basis data dari versi aplikasi sebelumnya: migrasi berikutnya harus bisa
         // menutup kekurangan tanpa menyentuh baris yang sudah ada.
         using var db = new TempDatabase();
+        MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
+        MigrationRollback.Run(db, "019_CostLayersForInventory.down.sql");
         MigrationRollback.Run(db, "018_CostOfGoodsAndInventoryJournals.down.sql");
         MigrationRollback.Run(db, "017_CoveringIndexesForLargeData.down.sql");
         MigrationRollback.Run(db, "016_QueryPerformanceIndexes.down.sql");
@@ -237,13 +257,14 @@ public class DatabaseMigratorTests
         MigrationRollback.Run013Down(db);
         MigrationRollback.Run012Down(db);
         MigrationRollback.Run011Down(db);
-        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18);");
+        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20);");
 
         Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(10);
 
         new DatabaseMigrator(db.ConnectionString).Migrate();
 
-        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(18);
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;"))
+            .Should().Be(DatabaseMigrator.LatestEmbeddedVersion());
         db.Scalar("PRAGMA integrity_check;").Should().Be("ok");
         db.Scalar("PRAGMA foreign_key_check;").Should().BeNull();
     }
@@ -253,6 +274,8 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
+        MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
+        MigrationRollback.Run(db, "019_CostLayersForInventory.down.sql");
         MigrationRollback.Run(db, "018_CostOfGoodsAndInventoryJournals.down.sql");
         MigrationRollback.Run(db, "017_CoveringIndexesForLargeData.down.sql");
         MigrationRollback.Run(db, "016_QueryPerformanceIndexes.down.sql");
@@ -297,7 +320,11 @@ public class DatabaseMigratorTests
 
         // Naik lagi ke versi terbaru harus bisa: rollback tidak meninggalkan keadaan yang macet.
         new DatabaseMigrator(db.ConnectionString).Migrate();
-        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(18);
+        Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;"))
+            .Should().Be(DatabaseMigrator.LatestEmbeddedVersion());
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM pragma_table_info('FinishedGoodsMovements') WHERE name='ValueMinorUnits';"))
+            .Should().Be(1, "019 harus jalan ulang setelah rollback, bukan dilewati karena nomornya tersisa");
     }
 
     [Fact]
@@ -435,7 +462,8 @@ public class DatabaseMigratorTests
             try { new DatabaseMigrator(connString, cadanganDir).Migrate(); }
             catch (Exception) { /* hasil akhir migrasi bukan inti uji ini */ }
 
-            var cadangan = Directory.GetFiles(cadanganDir, "pre-upgrade-v0-to-v18-*.db");
+            var cadangan = Directory.GetFiles(cadanganDir,
+                $"pre-upgrade-v0-to-v{DatabaseMigrator.LatestEmbeddedVersion()}-*.db");
             cadangan.Should().HaveCount(1, "tabel pengguna tanpa baris versi tetap harus dicadangkan");
             DatabaseBackupService.ReadSchemaVersion(cadangan[0]).Should().Be(0);
         }

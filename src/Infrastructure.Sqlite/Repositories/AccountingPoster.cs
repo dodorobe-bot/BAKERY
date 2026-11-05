@@ -108,6 +108,31 @@ internal static class AccountingPoster
             $"Pembalik Harga Pokok Penjualan Retur: {nomor}", "SalesReturn", returnId, userId);
     }
 
+    /// <summary>
+    /// Selisih biaya bahan satu SPK. Rencana SPK memakai harga yang terpasang saat SPK dibuat,
+    /// sedangkan dapur melepaskan lapisan tertuanya — harganya bisa berbeda bila harga beli
+    /// berubah di tengah jalan. Positif berarti lapisan yang keluar lebih mahal daripada rencana.
+    /// </summary>
+    public static async Task WriteMaterialVarianceAsync(
+        SqliteConnection conn, SqliteTransaction? tx, int workOrderId, long selisih, int? userId)
+    {
+        if (selisih == 0) return;
+
+        using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = "SELECT OrderNumber FROM WorkOrders WHERE Id = @id;";
+        cmd.Parameters.AddWithValue("@id", workOrderId);
+        var nomor = (string?)await cmd.ExecuteScalarAsync() ?? $"#{workOrderId}";
+
+        var keterangan = $"Selisih biaya bahan FIFO SPK: {nomor}";
+        if (selisih > 0)
+            await WriteAsync(conn, tx, BebanSelisihPersediaanKode, PersediaanDapurKode, selisih,
+                keterangan, "WorkOrder", workOrderId, userId);
+        else
+            await WriteAsync(conn, tx, PersediaanDapurKode, BebanSelisihPersediaanKode, -selisih,
+                keterangan, "WorkOrder", workOrderId, userId);
+    }
+
     /// <summary>Transfer antar lokasi: Dr persediaan tujuan / Cr persediaan asal.</summary>
     public static async Task WriteTransferAsync(
         SqliteConnection conn, SqliteTransaction? tx,
@@ -176,7 +201,8 @@ internal static class AccountingPoster
     /// <summary>Tipe dokumen sumber jurnal untuk mutasi yang diketik di layar Bahan Baku.</summary>
     public const string SumberLayarBahan = "IngredientMaster";
 
-    private static async Task<string> IngredientLabelAsync(
+    /// <summary>Nama bahan beserta satuannya, dipakai keterangan jurnal dan pesan galat lapisan.</summary>
+    public static async Task<string> IngredientLabelAsync(
         SqliteConnection conn, SqliteTransaction? tx, int ingredientId)
     {
         using var cmd = conn.CreateCommand();
