@@ -81,4 +81,9 @@ public class LocationStock
     public string? IngredientName { get; set; }
     public string? Unit { get; set; }
     public decimal MinStockAlert { get; set; }
+
+    // Harga dan status master ikut terbawa supaya layar stok tetap bisa menilai bahan yang
+    // sudah dinonaktifkan: master nonaktif tidak lagi ikut daftar bahan, padahal stoknya nyata.
+    public long IngredientPricePerUnit { get; set; }
+    public bool IngredientIsActive { get; set; } = true;
 }

@@ -78,13 +78,9 @@ export default function InventoryView({
   const currentLocationId = locationId ?? activeLocations[0]?.id ?? null;
   const currentLocation = activeLocations.find((l) => l.id === currentLocationId) ?? null;
 
-  // Stok per lokasi datang dari LocationStock; harga & satuan minimum dari master bahan.
+  // Stok per lokasi datang dari LocationStock; harga & satuan minimum ikut dibawa baris stok,
+  // bukan hanya dari master bahan, karena bahan nonaktif masih menyimpan stok yang nyata.
   const locationRows = stockByLocation?.[currentLocationId] ?? [];
-  const priceById = useMemo(() => {
-    const map = {};
-    (ingredients ?? []).forEach((ing) => { map[ing.id] = ing; });
-    return map;
-  }, [ingredients]);
 
   const totalByIngredient = useMemo(() => {
     const totals = {};
@@ -97,6 +93,27 @@ export default function InventoryView({
   }, [stockByLocation]);
 
   const activeIngredients = (ingredients ?? []).filter((ing) => ing.isActive !== false);
+
+  // Bahan yang sudah nonaktif di master tidak ikut daftar bahan, padahal stoknya masih ada di
+  // lokasi. Barisnya tetap ditawarkan pada mutasi; tanpa ini, sisa stok itu terjebak selamanya.
+  const bahanYatim = useMemo(() => {
+    const dikenal = new Set((ingredients ?? []).map((ing) => ing.id));
+    const map = new Map();
+    Object.values(stockByLocation ?? {}).forEach((rows) => {
+      (rows ?? []).forEach((r) => {
+        if (!dikenal.has(r.ingredientId) && !map.has(r.ingredientId)) {
+          map.set(r.ingredientId, {
+            id: r.ingredientId,
+            name: r.ingredientName ?? `Bahan ${r.ingredientId}`,
+            unit: r.unit ?? '-',
+            inactive: true,
+          });
+        }
+      });
+    });
+    return [...map.values()];
+  }, [ingredients, stockByLocation]);
+  const bahanMutasi = activeIngredients.concat(bahanYatim);
 
   // Satu baris per bahan aktif agar stok nol juga terlihat, bukan hanya baris yang punya record.
   const stockRows = useMemo(() => {
@@ -126,13 +143,13 @@ export default function InventoryView({
         unit: held.unit ?? '-',
         quantity: Number(held.quantity ?? 0),
         minStock: Number(held.minStockAlert ?? 0),
-        priceMinor: Number(priceById[held.ingredientId]?.pricePerUnit ?? 0),
+        priceMinor: Number(held.ingredientPricePerUnit ?? 0),
         hasRecord: true,
         inactive: true,
       });
     });
     return rows;
-  }, [locationRows, activeIngredients, priceById]);
+  }, [locationRows, activeIngredients]);
 
   const query = search.trim().toLowerCase();
   const filteredRows = query
@@ -765,9 +782,9 @@ export default function InventoryView({
                   className="w-full bg-slate-950 text-slate-200 border border-slate-800 rounded-xl p-2.5 text-xs focus:outline-none focus:border-emerald-500"
                 >
                   <option value="">— Pilih bahan —</option>
-                  {activeIngredients.map((ing) => (
+                  {bahanMutasi.map((ing) => (
                     <option key={ing.id} value={ing.id}>
-                      {ing.name} ({ing.unit})
+                      {ing.name} ({ing.unit}){ing.inactive ? ' • nonaktif di master' : ''}
                     </option>
                   ))}
                 </select>

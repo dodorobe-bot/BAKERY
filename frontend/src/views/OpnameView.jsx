@@ -25,15 +25,34 @@ export default function OpnameView({
   const currentLocation = aktif.find((l) => l.id === Number(locationId));
   const rows = useMemo(() => {
     const held = new Map((stockByLocation?.[currentLocation?.id] ?? []).map((r) => [r.ingredientId, r]));
-    return (ingredients ?? [])
+    const dikenal = new Set();
+    const daftar = (ingredients ?? [])
       .filter((ing) => ing.isActive !== false)
-      .map((ing) => ({
-        ingredientId: ing.id,
-        name: ing.name,
-        unit: ing.unit ?? held.get(ing.id)?.unit ?? '-',
-        systemQty: Number(held.get(ing.id)?.quantity ?? 0),
-        minStock: Number(ing.minStock ?? ing.minStockAlert ?? 0),
-      }))
+      .map((ing) => {
+        dikenal.add(ing.id);
+        return {
+          ingredientId: ing.id,
+          name: ing.name,
+          unit: ing.unit ?? held.get(ing.id)?.unit ?? '-',
+          systemQty: Number(held.get(ing.id)?.quantity ?? 0),
+          minStock: Number(ing.minStock ?? ing.minStockAlert ?? 0),
+          inactive: false,
+        };
+      });
+    // Bahan yang sudah nonaktif di master tidak muncul di daftar bahan, tetapi stoknya di lokasi
+    // ini nyata. Tanpa baris ini, sisanya tidak bisa dihabiskan lewat opname.
+    held.forEach((r, ingredientId) => {
+      if (dikenal.has(ingredientId)) return;
+      daftar.push({
+        ingredientId,
+        name: r.ingredientName ?? `Bahan ${ingredientId}`,
+        unit: r.unit ?? '-',
+        systemQty: Number(r.quantity ?? 0),
+        minStock: Number(r.minStockAlert ?? 0),
+        inactive: true,
+      });
+    });
+    return daftar
       .filter((r) => !query.trim() || r.name.toLowerCase().includes(query.toLowerCase()))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [ingredients, stockByLocation, currentLocation, query]);
@@ -158,7 +177,7 @@ export default function OpnameView({
                       const d = selisih(r);
                       return (
                         <tr key={r.ingredientId} className="hover:bg-slate-800/40">
-                          <td className="py-3 px-4 font-semibold text-white">{r.name} <span className="text-slate-500">({r.unit})</span></td>
+                          <td className="py-3 px-4 font-semibold text-white">{r.name} <span className="text-slate-500">({r.unit}){r.inactive ? ' • nonaktif di master' : ''}</span></td>
                           <td className="py-3 px-4 text-right font-mono">{formatQty(r.systemQty)}</td>
                           <td className="py-3 px-4 text-right">
                             <input

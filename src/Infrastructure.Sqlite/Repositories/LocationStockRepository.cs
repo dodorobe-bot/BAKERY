@@ -46,7 +46,8 @@ public class LocationStockRepository : ILocationStockRepository
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
             SELECT ls.Id, ls.LocationId, ls.IngredientId, ls.Quantity,
-                   sl.Name AS LocationName, i.Name AS IngredientName, i.Unit, i.MinStockAlert
+                   sl.Name AS LocationName, i.Name AS IngredientName, i.Unit, i.MinStockAlert,
+                   i.PricePerUnit, i.IsActive
             FROM LocationStock ls
             JOIN StorageLocations sl ON ls.LocationId = sl.Id
             JOIN Ingredients i ON ls.IngredientId = i.Id
@@ -67,7 +68,9 @@ public class LocationStockRepository : ILocationStockRepository
                 LocationName = reader.GetString(4),
                 IngredientName = reader.GetString(5),
                 Unit = reader.GetString(6),
-                MinStockAlert = reader.GetDecimal(7)
+                MinStockAlert = reader.GetDecimal(7),
+                IngredientPricePerUnit = reader.GetInt64(8),
+                IngredientIsActive = reader.GetInt32(9) == 1
             });
         }
         return list;
