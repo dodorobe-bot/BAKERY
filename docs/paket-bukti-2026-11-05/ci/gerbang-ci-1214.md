@@ -263,9 +263,19 @@ Passed!  - Failed: 0, Passed: 171, Skipped: 0, Total: 171, Duration: 2 m 51 s - 
   `src/`, `frontend/`, `tests/` dan `docs/manual/`. Artinya **PDF buku petunjuk 7.785.633 bita dan
   `petunjuk.html` tidak dibandingkan byte-per-byte oleh CI** — yang mereka buktikan di CI hanya bahwa
   build dan tes pada pohon yang memuatnya hijau. Nama ketiga tes itu justru disimpan sebagai berkas bukti
-  baru, [`tes-nama-bahan-nonaktif.txt`](tes-nama-bahan-nonaktif.txt), sehingga run 6 dan seterusnya harus
-  menunjukkan **283 berkas** (naik satu dari 282) dan **304 lulus** — prediksi yang bisa dibuktikan salah
-  oleh run berikutnya, bukan angka yang diklaim sudah terjadi.
+  baru, [`tes-nama-bahan-nonaktif.txt`](tes-nama-bahan-nonaktif.txt), sehingga run berikutnya harus
+  menunjukkan **283 berkas** (naik satu dari 282) dan **304 lulus**. Prediksi itu sudah lebih dulu diuji
+  di mesin ini pada commit bukti ini, `scripts/uji-checkout-bukti.ps1`:
+
+  ```text
+  [MULAI] 283 berkas bukti dibandingkan byte-per-byte dengan blob
+  [OK] -text berlaku (contoh docs/paket-bukti-2026-11-01/uji-1212/run-sandbox.ps1)
+  [RINGKAS] 304 lulus, 0 gagal, 20 lewati (artefak .exe/.msi tidak dikomit) dari 5 manifest
+  ```
+
+  Naik tepat satu berkas dan tidak ada berkas lama yang berubah byte; `.txt` ikut terlindungi aturan
+  `docs/paket-bukti-*/** -text` (`git check-attr text` → `text: unset`), jadi `core.autocrlf=true`
+  tidak merusak barisnya. CI masih harus mengulangi angka yang sama di klon miliknya sendiri.
 
 ## Batas yang harus disebut
 

@@ -186,7 +186,9 @@ adalah `npm ci` + bundel desktop, `dotnet build -c Release`, `dotnet test -c Rel
   sedangkan berkas yang berubah ada di `src/`, `frontend/`, `tests/` dan `docs/manual/` — **PDF buku
   petunjuk 7.785.633 bita tidak dibandingkan byte-per-byte oleh CI**. Nama ketiga tes itu disimpan sebagai
   berkas bukti baru [`ci/tes-nama-bahan-nonaktif.txt`](paket-bukti-2026-11-05/ci/tes-nama-bahan-nonaktif.txt);
-  run berikutnya karena itu **harus** menunjukkan 283 berkas / 304 lulus — prediksi, bukan klaim.
+  run berikutnya karena itu **harus** menunjukkan 283 berkas / 304 lulus. Angka itu sudah diukur lebih dulu
+  di mesin ini dengan `scripts/uji-checkout-bukti.ps1` pada commit bukti ini: **283 dibandingkan, 304 lulus,
+  0 gagal, 20 lewati** — naik tepat satu berkas, tidak ada berkas lama yang berubah byte.
 
 Rincian baris log, tabel langkah, dan batas yang harus disebut ada di
 [`docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md`](paket-bukti-2026-11-05/ci/gerbang-ci-1214.md).
