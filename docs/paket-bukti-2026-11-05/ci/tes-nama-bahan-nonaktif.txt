@@ -1,0 +1,73 @@
+Bukti bernama: tiga tes regresi perbaikan bahan nonaktif
+=========================================================
+Tanggal   : 2026-11-05
+Commit    : ac8921775e507f5301ee314e4c746ee7da570ca2
+            "Stok bahan nonaktif: harga ikut baris stok, sisa bisa dihabiskan dari layar"
+Berkas tes: tests/UI.Tests/Tests/InactiveIngredientStockTests.cs
+Berkas produk yang diuji:
+  - src/Domain/Entities/Production.cs            (LocationStock.IngredientPricePerUnit / IngredientIsActive)
+  - src/Infrastructure.Sqlite/Repositories/LocationStockRepository.cs  (SELECT menambah i.PricePerUnit, i.IsActive)
+  - frontend/src/views/InventoryView.jsx          (bahanYatim masuk pilihan Formulir Mutasi Bahan)
+  - frontend/src/views/OpnameView.jsx             (baris yang dipegang tapi tak dikenal ikut ditawari)
+
+Kenapa berkas ini ada
+---------------------
+Log GitHub Actions hanya mencetak rekap per majelis ("Passed: 171"), bukan nama tes yang lulus.
+Run 5 (41972726233) therefore proves the COUNT grew from 168 to 171 but not WHICH tests.
+Nama-nama di bawah diambil dengan menjalankan kelasnya sendiri lewat penyaring, di mesin pengembang,
+pada biner Release yang sama dengan gerbang penuh.
+
+Perintah
+--------
+  dotnet test tests/UI.Tests/BakeryDesktop.UI.Tests.csproj -c Release --no-build \
+    --filter "FullyQualifiedName~InactiveIngredientStockTests" \
+    -l "console;verbosity=normal"
+
+Keluaran (dipotong ke baris yang berbukti)
+------------------------------------------
+  Test run for D:\bakery-desktop\tests\UI.Tests\bin\Release\net8.0\BakeryDesktop.UI.Tests.dll (.NETCoreApp,Version=v8.0)
+    Passed BakeryDesktop.UI.Tests.Tests.InactiveIngredientStockTests.BahanDinonaktifkan_BarisStoknyaTetapMembawaHargaMaster [1 s]
+    Passed BakeryDesktop.UI.Tests.Tests.InactiveIngredientStockTests.SisaStokBahanNonaktif_DapatDihabiskanLewatPenyetelanStok [304 ms]
+    Passed BakeryDesktop.UI.Tests.Tests.InactiveIngredientStockTests.LayarOpname_MenawarkanBahanNonaktifDanBolehDisetelNol [1 s]
+  Total tests: 3
+
+Arti tiap tes
+-------------
+1. BahanDinonaktifkan_BarisStoknyaTetapMembawaHargaMaster
+   Bahan Rp 1.000/kg dengan 5 kg di "Gudang Utama Bahan Baku" (satu-satunya lokasi bertipe Warehouse,
+   di-seed migrasi 003), lalu DELETE /api/ingredients/{id} (nonaktif).
+   Menuntut: master aktif tidak lagi memuatnya; baris stok TETAP ada dengan quantity 5,
+   ingredientIsActive false, dan ingredientPricePerUnit 100000 (unit minor).
+   Cacat lama: nilai stok bahan nonaktif menyurut jadi nol karena harga dibaca dari daftar bahan aktif.
+
+2. SisaStokBahanNonaktif_DapatDihabiskanLewatPenyetelanStok
+   POST /api/inventory/adjust {newQuantity: 0} pada bahan yang sudah nonaktif -> 200.
+   Menuntut: stok 0; buku mutasi memuat -5; dan entri jurnal (dicari dari keterangannya, karena
+   baris jurnal tidak menyimpan ingredientId) memberi akun 1-003 kredit tepat 500000 unit minor
+   dengan total debit = total kredit.
+   Ini membuktikan sisa bahan nonaktif keluar dari neraca, bukan diam-diam hilang.
+
+3. LayarOpname_MenawarkanBahanNonaktifDanBolehDisetelNol  (Playwright, peramban sungguhan)
+   Masuk ke menu "Pemeriksaan Fisik (Stok Opname)", pilih gudang, cari bahan nonaktif,
+   menuntut sel pertama berbunyi "nonaktif di master", isi "Jumlah fisik" = 0, tekan "Setel",
+   menunggu teks "stok disetel ke 0 kg", lalu memverifikasi stok via API.
+
+Kontrol negatif (dijalankan SEBELUM klaim hijau, di sesi yang sama)
+------------------------------------------------------------------
+A. SELECT repository dikembalikan ke bentuk lama (tanpa i.PricePerUnit, i.IsActive):
+     BahanDinonaktifkan_BarisStoknyaTetapMembawaHargaMaster gagal dengan
+       Expected … to be False, but found True
+   -> tes itu memang membaca kolom baru, bukan lulus karena kebetulan.
+B. Union di OpnameView.jsx dibuka dan bundel desktop dibangun ulang:
+     LayarOpname_MenawarkanBahanNonaktifDanBolehDisetelNol gagal dengan
+       TimeoutException  (baris bahan tidak pernah muncul di layar)
+   -> tes itu memang menguji layar, dan tes tidak bisa lulus bila bundel belum ikut diperbaiki.
+Keduanya dipulihkan (dicek dengan grep pada sumber) lalu seluruh gerbang Release dijalankan ulang:
+547 lulus / 0 gagal / 0 dilewati.
+
+Batas yang jujur
+----------------
+- Nama di atas dibuktikan di mesin pengembang; CI membuktikan jumlahnya (171), bukan namanya.
+- Ketiga tes memakai basis data sementara, bukan basis data pemilik.
+- Perbaikan ini BELUM masuk paket installer mana pun: desktop/ di-gitignore dan 1.2.14 sudah tercetak
+  sebelum commit ini. Butuh build-pro.ps1 pada pohon ini untuk mengemasnya.

@@ -4,6 +4,41 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
+## [Unreleased] — pasca-1.2.14, 5 November 2026
+
+Status: **belum dikemas**. Isi bagian ini ada di pohon kerja dan sudah hijau, tetapi **tidak ada di
+EXE/MSI 1.2.14** — paket itu tercetak sebelum perubahan ini dan bundel `desktop/` tidak ikut terkomit.
+
+- **Diperbaiki: nilai stok bahan yang sudah dinonaktifkan menyurut jadi nol.** Baris stok membaca harga
+  dari daftar bahan **aktif**, padahal `DELETE /api/ingredients/{id}` hanya menandai `IsActive = 0`
+  sementara barangnya masih ada di rak. `LocationStock` sekarang membawa
+  `IngredientPricePerUnit` + `IngredientIsActive` dan `LocationStockRepository.GetStockByLocationAsync`
+  ikut memilih `i.PricePerUnit, i.IsActive`, sehingga **Stok per Lokasi** tetap menilai bahan nonaktif
+  dengan harga master-nya sendiri. (commit `ac89217`)
+- **Diperbaiki: sisa stok bahan nonaktif bisa dihabiskan dari layar.** **Formulir Mutasi Bahan** dan
+  **Pemeriksaan Fisik (Stok Opname)** kini ikut menawarkan bahan yang dipegang tapi tidak ada di master
+  aktif, diberi akhiran **„• nonaktif di master"**; penyetelannya memakai jalur resmi
+  `/api/inventory/adjust` sehingga tetap tercatat di buku mutasi dan dijurnal (akun `1-003` dikredit
+  sebesar nilai bahan, debit = kredit). Tidak ada perubahan skema — jalur tulis memang tidak pernah
+  memfilter `IsActive`.
+- **Ditambah: tiga tes regresi** `tests/UI.Tests/Tests/InactiveIngredientStockTests.cs` (2 API + 1
+  Playwright yang benar-benar menekan **Setel** di layar opname). Keduanya sempat dibuktikan **MERAH**
+  pada kode/bundel lama sebelum dipercaya hijau. Gerbang Release penuh pada pohon ini: build 0 peringatan,
+  **547 tes lulus / 0 gagal / 0 dilewati** (Domain 83, Application 129, Infrastructure 164, UI 171).
+- **Ditambah: buku petunjuk ringkas gaya BAKAWAN** — `docs/manual/petunjuk.html` (957 baris), alat cetak
+  `docs/manual/cetak_petunjuk.py`, dan `docs/manual/Seruni22-Buku-Petunjuk-Pengguna.pdf`
+  **60 halaman / 45 gambar bercaption berurutan / 52 rujukan daftar isi**, 7.785.633 bita, stempel 1.2.14;
+  isinya diverifikasi dengan ekstraksi teks, bukan dengan membuka mata. Empat alur usang tentang bahan
+  nonaktif disapu dari naskah (3.2.15, 3.2.22, 3.2.23, 3.2.24). (commit `646c9cd`)
+- **CI (mesin kedua): empat run `success` beruntun.** `41948231824` dan `41949270292` mengulangi
+  **544 lulus** tanpa perubahan kode; `41972726233` di `646c9cd` adalah run pertama yang memuat perbaikan
+  ini dan menunjukkan **547 lulus** (UI 168 → 171 = tepat tiga tes baru), build 0 peringatan,
+  keter-reproduksian 282 berkas **303 lulus / 0 gagal / 20 lewati**. Batas yang dicatat jujur: penjaga
+  keter-reproduksian hanya memindai `docs/paket-bukti-*`, jadi PDF manual **tidak** dibandingkan
+  byte-per-byte oleh CI, dan CI tetap tidak membangun installer. Rincian:
+  `docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md` dan
+  `docs/paket-bukti-2026-11-05/ci/tes-nama-bahan-nonaktif.txt`.
+
 ## [1.2.14] — 2026-11-05
 
 Status: **NOT READY**. Paket installer sudah ada dan sudah terbukti di mesin bersih —

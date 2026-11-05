@@ -9,16 +9,33 @@ Seruni 22 Bakery 1.2.14. Angka di bawah dibaca ulang dari berkas laporan dan dar
 **NOT READY.** Semua yang bisa dibuktikan di mesin pengembang ini sudah dibuktikan dan seluruhnya
 hijau: gerbang Release, 544 tes, 169 pemeriksaan API, `build-pro`, validasi paket 393 berkas,
 kontrol negatif automasi 14/14, dan pasang/peningkatan/copot **1.2.13 → 1.2.14** di Windows Sandbox
-bersih **106/106**. CI juga sudah hijau di mesin kedua (run `41946780573`, commit `1861fb0`:
-544 tes lulus, build Release 0 peringatan/0 galat, keter-reproduksian berkas bukti lulus — lihat
-bagian "Gerbang CI"). Yang menahan putusan bukan mutu paket, melainkan empat hal yang tidak bisa
+bersih **106/106**. CI juga sudah hijau di mesin kedua — **empat run success beruntun**
+(`41946780573`, `41948231824`, `41949270292` masing-masing 544 tes; `41972726233` = **547 tes** setelah
+perbaikan bahan nonaktif masuk): build Release 0 peringatan/0 galat dan keter-reproduksian berkas bukti
+lulus — lihat bagian "Gerbang CI"). Yang menahan putusan bukan mutu paket, melainkan empat hal yang tidak bisa
 dikerjakan dari mesin ini — cetak pada printer kasir fisik, pemindai barcode fisik, laci uang, dan
 uji di Windows 10 — ditambah tanda tangan Authenticode yang sertifikatnya belum ada, dan perintah
 penambalan data warisan (`--rekonsiliasi-stok-bahan --terapkan`) yang menunggu persetujuan pemilik
 karena menyentuh saldo neraca.
 
-**Tidak ada cacat baru yang ditemukan pada siklus ini.** Empat blocker perangkat + Windows 10 itu
-sudah tercatat sejak 1.2.12 dan belum berubah statusnya.
+**Empat blocker perangkat + Windows 10 tidak berubah statusnya sejak 1.2.12.** Namun penyapuan naskah
+buku petunjuk pada hari yang sama menemukan **dua cacat nyata pada bahan nonaktif**, keduanya sudah
+diperbaiki dan diuji (`ac89217`, lihat bagian "Gerbang CI" run 5):
+
+1. **Nilai stok bahan nonaktif menyurut jadi nol.** Baris stok mengambil harga dari daftar bahan
+   **aktif**, padahal `DELETE /api/ingredients/{id}` hanya menandai `IsActive = 0` sementara barangnya
+   masih ada di rak. Perbaikan: `LocationStock` kini membawa `IngredientPricePerUnit` dan
+   `IngredientIsActive`, dan `LocationStockRepository.GetStockByLocationAsync` ikut membaca
+   `i.PricePerUnit, i.IsActive`.
+2. **Sisa stok bahan nonaktif tidak bisa dihabiskan dari layar mana pun.** **Formulir Mutasi Bahan**
+   dan **Pemeriksaan Fisik (Stok Opname)** hanya menawarkan master aktif, sehingga stok peninggalannya
+   terjebak. Perbaikan: kedua view menambahkan baris yang benar-benar dipegang tapi tidak dikenal
+   dengan akhiran **„• nonaktif di master"**. Jalur tulis tidak disentuh — `AdjustStockAsync`/
+   `TransferStockAsync`/`StockValueAsync` memang tidak pernah memfilter `IsActive`.
+
+**Yang wajib dibaca bersama perbaikan ini: kedua cacat itu ada di paket 1.2.14.** Paket tercetak
+sebelum `ac89217`, dan bundel `desktop/` tidak ikut terkomit (di-`.gitignore`), jadi EXE/MSI 1.2.14 yang
+beredar masih menampilkan perilaku lama sampai `scripts/build-pro.ps1` dijalankan pada pohon ini.
 
 ## Artefak
 
@@ -117,7 +134,7 @@ yang berbeda: satu digit pada nama merek uji yang memang saya bedakan antar run
 (`… Sandbox 1213` → `… Sandbox 1214`) dan lima byte cap waktu. Struktur byte struk identik,
 jadi jalur cetak tidak berubah bentuk antara kedua rilis.
 
-## Gerbang CI (mesin kedua) — run 1 merah, run 2 dan run 3 hijau
+## Gerbang CI (mesin kedua) — run 1 merah, run 2 sampai run 5 hijau
 
 Workflow [`/.github/workflows/gerbang.yml`](../.github/workflows/gerbang.yml) (`Gerbang build + tes`)
 berjalan di pelari `windows-latest` milik GitHub. Ia **tidak** membangun installer; yang diperiksa
@@ -151,6 +168,26 @@ adalah `npm ci` + bundel desktop, `dotnet build -c Release`, `dotnet test -c Rel
   303 lulus, 0 gagal, 20 lewati** — artinya berkas bukti ini sendiri terbukti tergandakan byte-per-byte
   di klon CI yang baru, bukan hanya di klon sekali-pakai lokal.
 
+- **Run 4 [`41949270292`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41949270292)** pada commit
+  `7103013`: **`success`**, 5 m 42 s (01:33:02Z → 01:38:44Z). Build Release 0 peringatan
+  (`Time Elapsed 00:01:16.00`), tes 83 + 129 + 164 + 168 = **544 lulus, 0 gagal, 0 dilewati** (UI 2 m 57 s),
+  keter-reproduksian **282 diperiksa, 303 lulus, 0 gagal, 20 lewati**. Ini hijau **ketiga** beruntun dan
+  yang diujinya adalah suntingan pada berkas bukti yang sudah ada — jumlah berkasnya sengaja tetap 282,
+  membuktikan penjaga membandingkan berkas, bukan jumlah komit.
+
+- **Run 5 [`41972726233`](https://github.com/dodorobe-bot/BAKERY/actions/runs/41972726233)** pada commit
+  `646c9cd`: **`success`**, 6 m 3 s (05:14:16Z → 05:20:19Z) — run pertama yang membawa **perbaikan kode
+  pasca-paket** (komit `ac89217` + `646c9cd` terdorong sekali lewat push). Build Release
+  `0 Warning(s) 0 Error(s)`, `Time Elapsed 00:01:45.40`; tes 83 + 129 + 164 + **171** =
+  **547 lulus / 0 gagal / 0 dilewati** (UI 2 m 51 s). UI naik tepat tiga = tiga tes
+  `InactiveIngredientStockTests`, jadi perbaikan stok bahan nonaktif terbukti berjalan di mesin kedua.
+  Keter-reproduksian tetap **282/303 lulus, 0 gagal, 20 lewati**: penjaga hanya memindai
+  `docs/paket-bukti-*` ([`scripts/uji-checkout-bukti.ps1:65`](../scripts/uji-checkout-bukti.ps1#L65)),
+  sedangkan berkas yang berubah ada di `src/`, `frontend/`, `tests/` dan `docs/manual/` — **PDF buku
+  petunjuk 7.785.633 bita tidak dibandingkan byte-per-byte oleh CI**. Nama ketiga tes itu disimpan sebagai
+  berkas bukti baru [`ci/tes-nama-bahan-nonaktif.txt`](paket-bukti-2026-11-05/ci/tes-nama-bahan-nonaktif.txt);
+  run berikutnya karena itu **harus** menunjukkan 283 berkas / 304 lulus — prediksi, bukan klaim.
+
 Rincian baris log, tabel langkah, dan batas yang harus disebut ada di
 [`docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md`](paket-bukti-2026-11-05/ci/gerbang-ci-1214.md).
 
@@ -165,6 +202,7 @@ Rincian baris log, tabel langkah, dan batas yang harus disebut ada di
 | Tanda tangan Authenticode | tidak ada sertifikat; semua paket dilaporkan apa adanya sebagai `NotSigned` | pemilik (keputusan biaya, tercatat ditunda sejak 1.2.4) |
 | Build installer di CI | workflow CI sengaja tidak menjalankan `build-pro.ps1`/Inno/WiX — yang dibuktikannya hanya build Release + tes + keter-reproduksian berkas | pemilik, bila ingin paket ikut terbangkitkan di cloud |
 | Penambalan data warisan di basis data nyata | `--rekonsiliasi-stok-bahan --terapkan` menyentuh saldo neraca pemilik; uji kering (tanpa `--terapkan`) tidak pernah dipakai di DB nyata | persetujuan pemilik |
+| Perbaikan bahan nonaktif **terpasang** di paket | kode + tes sudah hijau di mesin pengembang dan di CI run 5, tetapi paket 1.2.14 tercetak sebelumnya dan `desktop/` tidak terkomit — belum ada EXE/MSI yang memuatnya | `scripts/build-pro.ps1` pada pohon ini (butuh keputusan versi: 1.2.15) |
 
 ## Catatan keterbatasan
 
@@ -183,8 +221,12 @@ Rincian baris log, tabel langkah, dan batas yang harus disebut ada di
   `uji-1213-1214.ps1`, `hash-publish-1214.txt`, `port-kit-1214.py`, `KIT-SHA256SUMS.txt`.
   Kit itu sendiri dirakit di `C:\tmp\kit-uji-1213-1214` (paket `.exe`/`.msi` tidak dikomit).
 - `docs/paket-bukti-2026-11-05/kontrol-1214/uji-build-pro-rilis-1214.json`.
-- `docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md` — salinan baris log GitHub Actions kedua run
-  (`41944547594` merah, `41946780573` hijau). Log mentah CI tidak diunggah sebagai artefak karena
+- `docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md` — salinan baris log GitHub Actions **lima run**
+  (`41944547594` merah oleh harness; `41946780573`, `41948231824`, `41949270292` hijau 544 tes;
+  `41972726233` hijau **547 tes**). Log mentah CI tidak diunggah sebagai artefak karena
   langkah unggah berkondisi `if: failure()`; sumber resminya URL run di berkas itu.
+- `docs/paket-bukti-2026-11-05/ci/tes-nama-bahan-nonaktif.txt` — nama + durasi tiga tes
+  `InactiveIngredientStockTests` dari jalurnya sendiri (log CI hanya mencetak rekap per majelis),
+  beserta kedua kontrol negatif yang membuatnya tidak bisa lulus kebetulan.
 - `dist/verify/verify-20261105-064252.json` + `.test.log`, `dist/installer/BUILD-INFO.json`,
   `dist/installer/VERIFY-REPORT.json`, `dist/installer/SHA256SUMS.txt`.
