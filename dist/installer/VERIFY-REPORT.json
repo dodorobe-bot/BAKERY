@@ -1,8 +1,8 @@
 {
     "skema":  1,
     "alat":  "validate-paket.ps1",
-    "waktu":  "2026-11-03T17:41:45.3583651+07:00",
-    "versi":  "1.2.13",
+    "waktu":  "2026-11-05T06:53:03.9343849+07:00",
+    "versi":  "1.2.14",
     "installerDir":  "D:\\bakery-desktop\\dist\\installer",
     "publishDir":  "D:\\bakery-desktop\\dist\\publish-single",
     "manifestPath":  "D:\\bakery-desktop\\dist\\publish-single.manifest.txt",
@@ -13,21 +13,21 @@
     "peringatan":  0,
     "artefak":  [
                     {
-                        "Nama":  "Seruni22Bakery_Setup_v1.2.13.exe",
-                        "Ukuran":  42672292,
-                        "Sha256":  "c1a0af29bd8f5bf9c439cadef3c1d8c891da0c49a3271384192fd682c444ed9d"
+                        "Nama":  "Seruni22Bakery_Setup_v1.2.14.exe",
+                        "Ukuran":  42680006,
+                        "Sha256":  "f48442d54016841d0aa411dbb63103c59addebc54152cbb92001a5885a318e7c"
                     },
                     {
-                        "Nama":  "Seruni22Bakery_v1.2.13_x64.msi",
-                        "Ukuran":  50416132,
-                        "Sha256":  "eb3f40fb0fa2fe1fb7e09bee733db524a8b29fb55af367b1bd8d0df1f5afd132"
+                        "Nama":  "Seruni22Bakery_v1.2.14_x64.msi",
+                        "Ukuran":  50424324,
+                        "Sha256":  "a8d998a60268eb563a56bcd0a23ef31518b2121e81d33ef30c0649588fd91def"
                     }
                 ],
     "msi":  {
                 "productName":  "Seruni 22 Bakery",
-                "productCode":  "{CE68DB95-1278-4892-B835-7F875F0DAB63}",
+                "productCode":  "{75FF905B-6F22-4051-A437-5F9362F0EA2B}",
                 "upgradeCode":  "{B975F792-6F80-4D56-8A64-D274A044DCF1}",
-                "productVersion":  "1.2.13"
+                "productVersion":  "1.2.14"
             },
     "payload":  {
                     "Referensi":  393,
@@ -40,12 +40,12 @@
                         {
                             "Nama":  "artefak EXE tersedia",
                             "Status":  "PASS",
-                            "Detail":  "Seruni22Bakery_Setup_v1.2.13.exe"
+                            "Detail":  "Seruni22Bakery_Setup_v1.2.14.exe"
                         },
                         {
                             "Nama":  "artefak MSI tersedia",
                             "Status":  "PASS",
-                            "Detail":  "Seruni22Bakery_v1.2.13_x64.msi"
+                            "Detail":  "Seruni22Bakery_v1.2.14_x64.msi"
                         },
                         {
                             "Nama":  "SHA256SUMS memakai akhir baris LF",
@@ -60,12 +60,12 @@
                         {
                             "Nama":  "SHA256SUMS mencantumkan EXE",
                             "Status":  "PASS",
-                            "Detail":  "Seruni22Bakery_Setup_v1.2.13.exe"
+                            "Detail":  "Seruni22Bakery_Setup_v1.2.14.exe"
                         },
                         {
                             "Nama":  "SHA256SUMS mencantumkan MSI",
                             "Status":  "PASS",
-                            "Detail":  "Seruni22Bakery_v1.2.13_x64.msi"
+                            "Detail":  "Seruni22Bakery_v1.2.14_x64.msi"
                         },
                         {
                             "Nama":  "SHA256SUMS cocok dengan berkas",
@@ -75,7 +75,7 @@
                         {
                             "Nama":  "versi EXE sama dengan versi paket",
                             "Status":  "PASS",
-                            "Detail":  "1.2.13"
+                            "Detail":  "1.2.14"
                         },
                         {
                             "Nama":  "status tanda tangan EXE tercatat",
@@ -90,7 +90,7 @@
                         {
                             "Nama":  "versi MSI sama dengan versi paket",
                             "Status":  "PASS",
-                            "Detail":  "1.2.13"
+                            "Detail":  "1.2.14"
                         },
                         {
                             "Nama":  "identitas MSI (nama/pembuat)",
@@ -100,7 +100,7 @@
                         {
                             "Nama":  "ProductCode berbentuk GUID",
                             "Status":  "PASS",
-                            "Detail":  "{CE68DB95-1278-4892-B835-7F875F0DAB63}"
+                            "Detail":  "{75FF905B-6F22-4051-A437-5F9362F0EA2B}"
                         },
                         {
                             "Nama":  "UpgradeCode berbentuk GUID",
@@ -115,7 +115,7 @@
                         {
                             "Nama":  "UpgradeCode sama dengan paket lain",
                             "Status":  "PASS",
-                            "Detail":  "8 MSI pembanding"
+                            "Detail":  "9 MSI pembanding"
                         },
                         {
                             "Nama":  "payload MSI identik dengan manifest",

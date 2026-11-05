@@ -2,7 +2,8 @@
 
 Aplikasi desktop untuk toko dan pabrik roti: penjualan, produksi, pembelian, stok, jurnal keuangan, dan laporan — berjalan **sepenuhnya offline** di satu komputer toko.
 
-- Versi sumber dan paket terbaru: **1.2.13**, skema basis data **18**
+- Versi sumber dan paket terbaru: **1.2.14**, skema basis data **18**
+- Status 1.2.14: **NOT READY** — yang sudah terbukti di mesin ini: gerbang verifikasi konfigurasi Release **33 langkah lulus, 0 gagal, 0 SKIP**, **544 tes otomatis lulus / 0 gagal / 0 dilewati**, **169 pemeriksaan API** tanpa kegagalan, `build-pro` **12 langkah, 0 gagal, 1 peringatan** dengan **393/393** berkas payload terverifikasi pada EXE dan MSI, dan pasang/peningkatan/copot **1.2.13 → 1.2.14 di Windows Sandbox bersih lulus 106/106** (data utuh, tanpa migrasi baru, pagar turun versi dan kanal terbukti). Yang menahan: cetak ke printer fisik, pemindai fisik, laci uang, dan uji di Windows 10 belum dilakukan, paket masih `NotSigned`, dan bukti hijau CI belum ada karena commit CI belum di-push. Rincian: [docs/verifikasi-paket-1.2.14-2026-11-05.md](docs/verifikasi-paket-1.2.14-2026-11-05.md).
 - Status 1.2.13: **NOT READY** — gerbang verifikasi konfigurasi Release lulus penuh (32 langkah, 0 gagal, 0 SKIP; 523 tes otomatis; 169 pemeriksaan API), `build-pro` menghasilkan EXE+MSI dengan 393/393 berkas payload terverifikasi, dan pasang/peningkatan/copot di **Windows Sandbox bersih lulus 105/105** (1.2.12 → 1.2.13, data utuh, tanpa migrasi baru, pagar turun versi dan kanal terbukti), tetapi cetak ke printer fisik, pemindai fisik, laci uang, dan Windows 10 belum diuji, serta paket belum bertanda tangan.
 - Status 1.2.12: **NOT READY** — paket dibangun 2026-11-01 dan saat itu 489 tes lulus plus pasang/peningkatan/copot di Windows Sandbox bersih (1.2.9 → 1.2.12, 105/105), tetapi paket itu **tidak memuat** perbaikan 2–3 November (pagar loopback, nilai stok jadi, retensi backup, kunci idempotensi, muat bertahap daftar piutang/utang). Versi 1.2.11 tidak pernah diterbitkan.
 - Status 1.2.9: **READY FOR LIMITED PILOT** (uji pasang/peningkatan berdasarkan atestasi tertulis pemilik; berkas bukti mentah belum diterima)
@@ -158,6 +159,8 @@ Seruni22Bakery.exe --restore "C:\path\cadangan.db"
 "%ProgramFiles%\Seruni 22 Bakery\Seruni22Bakery.Host.exe" --backup
 "%ProgramFiles%\Seruni 22 Bakery\Seruni22Bakery.Host.exe" --restore "C:\path\cadangan.db"
 ```
+
+- Stok bahan warisan (diketik di **Bahan Baku** sebelum jalur itu ikut membukukan jurnal) ditambal dengan `--rekonsiliasi-stok-bahan`. Tanpa `--terapkan` perintah ini hanya mencetak daftar bahan, jumlah, dan nilainya; dengan `--terapkan` ia membuat cadangan `pra-rekonsiliasi` lebih dulu lalu menulis jurnal stok awal melawan **3-001 Modal**. Rinciannya di `docs/pemulihan-bencana.md`.
 
 Peluncur meneruskan argumen itu apa adanya ke host, menunggu selesai, lalu keluar dengan kode keluar host (`0` berhasil, `1` gagal dengan basis data dikembalikan, `2` argumen salah/berkas tidak ada, `3` aplikasi masih berjalan). Kedua jalur menerima `--Database:Path=...` untuk menunjuk basis data lain. Peluncur adalah program tanpa konsol, jadi skrip sebaiknya memakai `Seruni22Bakery.Host.exe`.
 

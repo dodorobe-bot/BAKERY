@@ -4,13 +4,21 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
-## [Belum dirilis] — pasca 1.2.13 (2026-11-04)
+## [1.2.14] — 2026-11-05
 
-Status: **NOT READY**. Belum ada paket installer yang memuat isi bagian ini — berkas terakhir yang
-terpasang di mesin toko tetap `Seruni22Bakery_Setup_v1.2.13.exe`. Angka bukti di bawah diambil dari
-`dotnet test BakeryDesktop.slnx -c Release` pada pohon kerja ini (di atas commit `ecaa41c`):
-**544 tes lulus, 0 gagal, 0 dilewati** (Domain 83, Application 129, Infrastructure 164, UI 168) —
-21 tes lebih banyak dari gerbang 1.2.13.
+Status: **NOT READY**. Paket installer sudah ada dan sudah terbukti di mesin bersih —
+`Seruni22Bakery_Setup_v1.2.14.exe` (42.680.006 bita, SHA-256 `f48442d5…`) dan
+`Seruni22Bakery_v1.2.14_x64.msi` (50.424.324 bita, SHA-256 `a8d998a6…`, ProductCode
+`{75FF905B-6F22-4051-A437-5F9362F0EA2B}`), keduanya `NotSigned`. Yang menahan status bukan
+kualitas build, melainkan empat hal di luar mesin pengembang ini: printer kasir fisik,
+pemindai barcode fisik, laci uang, dan uji di Windows 10 — ditambah tanda tangan
+Authenticode yang belum ada sertifikatnya. Angka bukti di bawah diambil dari paket yang
+sama (commit `94073a3`): gerbang `scripts/verify.ps1 -Configuration Release` **33 langkah
+lulus, 0 gagal, 0 SKIP**; `dotnet test BakeryDesktop.slnx -c Release` **544 tes lulus, 0
+gagal, 0 dilewati** (Domain 83, Application 129, Infrastructure 164, UI 168) — 21 tes lebih
+banyak dari gerbang 1.2.13; `scripts/build-pro.ps1` **12 langkah, 0 gagal, 0 dilewati, 1
+peringatan**; pasang/peningkatan/copot **1.2.13 → 1.2.14 di Windows Sandbox bersih lulus
+106/106, 0 gagal**. Rinciannya: `docs/verifikasi-paket-1.2.14-2026-11-05.md`.
 
 - **Jurnal stok layar Bahan Baku.** Stok yang diketik pada kolom **Stok Awal** di layar Bahan Baku
   sebelumnya mengubah angka stok tanpa pernah membuat jurnal, sehingga saldo `1-003 Persediaan Bahan
@@ -59,9 +67,32 @@ terpasang di mesin toko tetap `Seruni22Bakery_Setup_v1.2.13.exe`. Angka bukti di
 - **Buku manual.** Enam belas blok **Contoh** beserta tangkapan layar berisi ditambahkan per menu, peta
   urutan pengisian pertama (§0.6), dan rujukan silang yang sudah usang direnomor (gambar 1..57).
   Tabel **Yang berubah pada versi 1.2.14** ditambahkan dan daftar edisi 1.2.13 dipertahankan di
-  bawahnya. PDF dibangun ulang 2026-11-04: **128 halaman, 58 gambar, 45 entri daftar isi cocok
+  bawahnya. Baris **Peningkatan dari versi lama** (Bab 39) diperbarui setelah uji mesin bersih
+  1.2.13 → 1.2.14 lulus, dan peringatan batas pengujian perangkat (Bab 32) kini menyebut bahwa
+  byte ESC/POS juga sudah diperiksa dari biner hasil peningkatan, bukan hanya dari mesin
+  pengembang. PDF dibangun ulang: **128 halaman, 58 gambar, 45 entri daftar isi cocok
   sebaris**, kepala/kaki terverifikasi di halaman 2..128, dan versi tercetak diambil dari
   `<Version>` csproj lalu dicocokkan dengan judul naskah (keduanya 1.2.14).
+- **Peningkatan dibuktikan di mesin bersih.** Kit `docs/paket-bukti-2026-11-05/upgrade-1213-1214-sandbox/`
+  memasang MSI 1.2.13 di Windows Sandbox tanpa jaringan, mengisi sandi/produk/merek lewat API-nya
+  sendiri, meningkatkan ke 1.2.14 secara senyap, lalu memeriksa 106 hal dalam satu run: **106 lulus,
+  0 gagal**. `WIX_UPGRADE_DETECTED` memuat ProductCode 1.2.13 `{CE68DB95-…}`, `RemoveExistingProducts`
+  berjalan, tepat satu entri **Seruni 22 Bakery 1.2.14** tertinggal di Daftar Program, 393/393 berkas
+  payload cocok dengan manifes, `Seruni22Bakery.Host.dll` hasil pasang sama byte dengan manifes
+  publish (`f710ccc9…` — bukti perbaikan jurnal bahan benar-benar ikut terkemas), bundel
+  `index-BZfyiTsC.js` tergantikan `index-BmCxycbD.js`, skema tetap **18** dengan **0 migrasi baru**
+  (1.2.13 memang sudah memakai 18), sandi/produk/merek/logo pemilik bertahan, ESC/POS raw dari biner
+  hasil peningkatan diterima emulator 635 bita dengan `ESC @` di depan, `ESC d 3` di belakang, tanpa
+  `GS V` saat potong mati, dan pengaturan perangkat bertahan setelah host di-restart. Pagar turun
+  versi (MSI 1.2.13 di atas 1.2.14 → exit 1603), kanal EXE (EXE 1.2.13 di atas EXE 1.2.14 ditolak;
+  MSI 1.2.14 ditolak selama EXE ada) dan copot EXE yang tidak menghapus folder data pengguna juga
+  lulus. Nama berkas CSS sengaja tidak berubah antara 1.2.13 dan 1.2.14 karena isi CSS memang identik,
+  jadi bukti "aset lama tersapu" di jalur ini bertumpu pada bundel JS dan jumlah berkas aset, bukan
+  pada lenyapnya nama CSS. Semua konstanta kit dibaca ulang dari disk (hash+ukuran paket, tabel
+  `Property`/`File` MSI, manifes publish), bukan diketik dari ingatan.
+- **CI sebagai pagar kedua.** `.github/workflows/uji.yaml` menjalankan gerbang build+tes pada setiap
+  push dan pull request. Alur kerja ini belum punya bukti hijau karena belum ada push ke `origin/main`
+  dari sesi ini; ia dicatat sebagai pagar kedua, bukan sebagai pengganti gerbang lokal.
 
 ## [1.2.13] — 2026-11-03
 

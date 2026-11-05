@@ -3816,8 +3816,9 @@
   <div class="callout warn">
     <span class="label">Peringatan &mdash; batas pengujian perangkat</span>
     <p>
-      Pada versi 1.2.13, jalur ESC/POS baru terbukti terhadap emulasi di mesin pengembang dan
-      jalur driver baru diuji dengan pencetak virtual, belum pada printer kasir fisik.
+      Sampai versi 1.2.14, jalur ESC/POS terbukti terhadap emulator di mesin pengembang dan
+      pada biner hasil peningkatan di mesin uji bersih (byte struk diperiksa satu per satu),
+      tetapi belum pada printer kasir fisik. Jalur driver baru diuji dengan pencetak virtual.
       Pemindai juga baru diuji melalui simulasi. Uji printer, pemindai, dan kertas pada
       perangkat toko yang sebenarnya sebelum mengandalkannya saat jam sibuk.
     </p>
@@ -4340,8 +4341,8 @@
     </tr>
     <tr>
       <td><b>Peningkatan dari versi lama</b></td>
-      <td>Jalur peningkatan yang diuji untuk paket ini adalah 1.2.12 &rarr; 1.2.13. Lompatan langsung dari 1.2.9 atau 1.2.10 ke 1.2.13 belum diuji pada mesin uji.</td>
-      <td>Naiklah bertahap (misalnya 1.2.10 &rarr; 1.2.12 &rarr; 1.2.13) atau cadangkan basis data lebih dulu, lalu uji satu transaksi percobaan sesudah pemasangan.</td>
+      <td>Jalur peningkatan yang diuji untuk paket ini adalah <b>1.2.13 &rarr; 1.2.14</b> (mesin bersih, 106 pemeriksaan, tanpa migrasi baru karena 1.2.13 sudah memakai skema 18). Lompatan langsung dari 1.2.9, 1.2.10, atau 1.2.12 ke <b>1.2.14</b> belum diuji; yang sudah diuji pada mesin bersih adalah ketiganya naik ke <b>1.2.13</b>.</td>
+      <td>Dari 1.2.9/1.2.10/1.2.12: naiklah lebih dulu ke 1.2.13 (jalur itu terbukti), lalu ke 1.2.14. Apa pun jalurnya, cadangkan basis data lebih dulu, lalu uji satu transaksi percobaan sesudah pemasangan.</td>
     </tr>
     <tr>
       <td><b>Pemulihan data</b></td>
@@ -4670,8 +4671,9 @@
 
   <div class="end-note">
     Buku Manual Pengguna Seruni 22 Bakery &middot; Versi aplikasi 1.2.14 &middot;
-    Dokumen disusun 3 November 2026. Gambar diambil dari aplikasi 1.2.12 dengan basis data
-    sementara berisi data contoh.
+    Dokumen disusun 3 November 2026 dan diperbarui 5 November 2026 untuk versi 1.2.14.
+    Gambar diambil 4 November 2026 dari pohon sumber yang sama dengan paket 1.2.14, memakai
+    basis data sementara berisi data contoh.
   </div>
 </section>
 
