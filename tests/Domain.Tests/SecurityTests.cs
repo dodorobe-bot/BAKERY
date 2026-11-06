@@ -13,8 +13,20 @@ public class DocumentNumberTests
     [InlineData(DocumentKind.Order, "ORD")]
     [InlineData(DocumentKind.WorkOrder, "SPK")]
     [InlineData(DocumentKind.PurchaseOrder, "PO")]
+    [InlineData(DocumentKind.Return, "RTR")]
+    [InlineData(DocumentKind.SupplierReturn, "RTB")]
+    [InlineData(DocumentKind.SupplierPayment, "PPB")]
     public void Prefix_MengikutiJenisDokumen(DocumentKind kind, string expected) =>
         DocumentNumber.Prefix(kind).Should().Be(expected);
+
+    [Fact]
+    public void PrefixSetiapJenisTidakKembar()
+    {
+        // Nomor dokumen dibaca orang di buku besar dan di struk; dua jenis yang berbagi prefiks
+        // membuat "RTB-20261105-0001" tidak bisa dijelaskan tanpa membuka tabelnya.
+        var prefiks = Enum.GetValues<DocumentKind>().Select(DocumentNumber.Prefix).ToList();
+        prefiks.Should().OnlyHaveUniqueItems();
+    }
 
     [Fact]
     public void Format_MemakaiTanggalUtcDanUrutanEmpatDigit()
@@ -79,6 +91,8 @@ public class RolePoliciesTests
     [InlineData(RolePolicies.PurchasesReceive, UserRole.Dapur, true)]
     [InlineData(RolePolicies.PurchasesReceive, UserRole.Pegawai, false)]
     [InlineData(RolePolicies.PurchasesCancel, UserRole.Dapur, false)]
+    [InlineData(RolePolicies.PurchasesReturn, UserRole.Dapur, false)]
+    [InlineData(RolePolicies.PurchasesReturn, UserRole.Admin, true)]
     [InlineData(RolePolicies.MasterDataWrite, UserRole.Dapur, false)]
     [InlineData(RolePolicies.MasterDataWrite, UserRole.Pegawai, false)]
     [InlineData(RolePolicies.Administration, UserRole.Admin, false)]
@@ -108,7 +122,7 @@ public class RolePoliciesTests
             RolePolicies.FinanceRead, RolePolicies.FinanceWrite,
             RolePolicies.ProductionWrite, RolePolicies.ProductionCancel, RolePolicies.InventoryWrite,
             RolePolicies.InventoryRead, RolePolicies.PurchasesCreate, RolePolicies.PurchasesReceive,
-            RolePolicies.PurchasesCancel,
+            RolePolicies.PurchasesCancel, RolePolicies.PurchasesReturn,
             RolePolicies.MasterDataWrite, RolePolicies.SalesExport, RolePolicies.Administration,
         ]);
     }

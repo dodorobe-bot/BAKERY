@@ -520,6 +520,37 @@ export const api = {
     idempotensi: `batal-po-${id}`
   }),
 
+  // ── Hutang pemasok per struk penerimaan ───────────────────────────────
+  // Kredit 2-002 lahir saat barang diterima, jadi sisa hutang dibaca dan diturunkan per struk,
+  // bukan per PO: satu PO bisa punya beberapa struk dengan sisa yang berbeda-beda.
+  getPayables: (opsi = {}) =>
+    api.request(denganParam('/api/payables', {
+      includeLunas: opsi.includeLunas ? 'true' : undefined,
+      limit: opsi.limit
+    })),
+  // Satu struk beserta barisnya: dipakai dialog retur supaya "sudah diretur" dan harga terima
+  // berasal dari server, bukan dari hitungan peramban.
+  getPayable: (goodsReceiptId) => api.request(`/api/payables/${goodsReceiptId}`),
+  getSupplierReturns: (goodsReceiptId = null) =>
+    api.request(denganParam('/api/supplier-returns', { goodsReceiptId })),
+  getSupplierPayments: (goodsReceiptId = null) =>
+    api.request(denganParam('/api/supplier-payments', { goodsReceiptId })),
+  // Retur melepas hutang seharga struk dan mengeluarkan barang dari rak; pembayaran
+  // Dr 2-002 / Cr 1-001. Keduanya satu niat = satu kunci, dikirim dua lapis seperti pembayaran
+  // penjualan: body untuk jejak di kolom IdempotencyKey, header untuk gerbang anti-duplikat.
+  createSupplierReturn: (payload) =>
+    api.request('/api/supplier-returns', {
+      method: 'POST',
+      idempotensi: payload.idempotensi,
+      body: JSON.stringify(payload)
+    }),
+  createSupplierPayment: (payload) =>
+    api.request('/api/supplier-payments', {
+      method: 'POST',
+      idempotensi: payload.idempotensi,
+      body: JSON.stringify(payload)
+    }),
+
   // ── Export PDF/Excel ──────────────────────────────────────────────────
   downloadFile: async (endpoint, filename) => {
     const token = api.getToken();

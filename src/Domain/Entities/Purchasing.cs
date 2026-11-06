@@ -68,3 +68,60 @@ public class GoodsReceiptLine
     public string? BatchNumber { get; set; }
     public DateTime? ExpiryDate { get; set; }
 }
+
+/// <summary>
+/// Barang yang dikirim kembali ke pemasok. Tidak ada total di header: nilai hutang yang dilepas
+/// adalah jumlah dikali harga baris penerimaan, dan nilai yang keluar dari persediaan adalah nilai
+/// lapisan FIFO yang benar-benar habis — keduanya tercatat di jurnal dokumen ini, supaya tidak ada
+/// angka kedua yang bisa menyimpang dari barisnya.
+/// </summary>
+public class SupplierReturn
+{
+    public int Id { get; set; }
+    public string ReturnNumber { get; set; } = "";
+    /// <summary>Hutang lahir per struk penerimaan, jadi retur juga mengikat satu struk.</summary>
+    public int GoodsReceiptId { get; set; }
+    public int PurchaseOrderId { get; set; }
+    public string Reason { get; set; } = "";
+    public string? Notes { get; set; }
+    public DateTime ReturnedAt { get; set; } = DateTime.UtcNow;
+    public int? JournalEntryId { get; set; }
+    public string? IdempotencyKey { get; set; }
+    public int? CreatedByUserId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<SupplierReturnLine> Lines { get; set; } = new();
+}
+
+public class SupplierReturnLine
+{
+    public int Id { get; set; }
+    public int SupplierReturnId { get; set; }
+    public int GoodsReceiptLineId { get; set; }
+    public int IngredientId { get; set; }
+    public string? IngredientName { get; set; }
+    /// <summary>Lokasi tempat barang diambil kembali; menentukan akun persediaan yang dikredit.</summary>
+    public int LocationId { get; set; }
+    public decimal Quantity { get; set; }
+    /// <summary>Harga per unit dari baris penerimaan — dasar pelepasan hutang, bukan biaya lapisan.</summary>
+    public long UnitCostMinorUnits { get; set; }
+    public long ValueMinorUnits { get; set; }
+}
+
+/// <summary>
+/// Satu pembayaran untuk satu struk penerimaan. Nominalnya dikurangi dari kredit 2-002 struk itu,
+/// jadi struk (bukan PO) yang bisa diaudit: "sudah dibayar berapa, sisa berapa".
+/// </summary>
+public class SupplierPayment
+{
+    public int Id { get; set; }
+    public string PaymentNumber { get; set; } = "";
+    public int GoodsReceiptId { get; set; }
+    public long AmountMinorUnits { get; set; }
+    public string Method { get; set; } = "Tunai";
+    public string? Notes { get; set; }
+    public DateTime PaidAt { get; set; } = DateTime.UtcNow;
+    public int? JournalEntryId { get; set; }
+    public string? IdempotencyKey { get; set; }
+    public int? CreatedByUserId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}

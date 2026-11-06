@@ -247,6 +247,7 @@ public class DatabaseMigratorTests
         // Simulasi basis data dari versi aplikasi sebelumnya: migrasi berikutnya harus bisa
         // menutup kekurangan tanpa menyentuh baris yang sudah ada.
         using var db = new TempDatabase();
+        MigrationRollback.Run(db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
         MigrationRollback.Run(db, "019_CostLayersForInventory.down.sql");
         MigrationRollback.Run(db, "018_CostOfGoodsAndInventoryJournals.down.sql");
@@ -257,7 +258,7 @@ public class DatabaseMigratorTests
         MigrationRollback.Run013Down(db);
         MigrationRollback.Run012Down(db);
         MigrationRollback.Run011Down(db);
-        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20);");
+        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);");
 
         Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(10);
 
@@ -274,6 +275,7 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
+        MigrationRollback.Run(db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
         MigrationRollback.Run(db, "019_CostLayersForInventory.down.sql");
         MigrationRollback.Run(db, "018_CostOfGoodsAndInventoryJournals.down.sql");
@@ -298,6 +300,15 @@ public class DatabaseMigratorTests
             .Should().Be(0);
         Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='PrintJobs';"))
             .Should().Be(0);
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('SupplierReturns','SupplierReturnLines','SupplierPayments');"))
+            .Should().Be(0, "rollback 021 harus mencabut dokumen retur dan pembayaran pemasok");
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name LIKE 'trg_supplier%';"))
+            .Should().Be(0, "pemicu pagaran hutang pemasok ikut dicabut bersama tabelnya");
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_goodsreceiptlines_receipt';"))
+            .Should().Be(0, "021 menambah indeks di tabel lama, jadi indeks itu harus dicabut manual");
         Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Notifications';"))
             .Should().Be(0, "rollback 015 harus mencabut kotak notifikasi beserta indeksnya");
         Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('ProductTemplates') WHERE name='Barcode';"))

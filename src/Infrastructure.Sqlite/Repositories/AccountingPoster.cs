@@ -133,6 +133,34 @@ internal static class AccountingPoster
                 keterangan, "WorkOrder", workOrderId, userId);
     }
 
+    /// <summary>
+    /// Selisih penilaian barang yang balik ke pemasok. Hutang dilepas sebesar harga struk
+    /// penerimaan, sedangkan persediaan benar-benar berkurang sebesar lapisan FIFO yang habis —
+    /// keduanya berbeda kalau harga beli berubah di tengah jalan. Jurnal utama sudah meng kredit
+    /// akun persediaan sebesar harga struk, jadi selisih ini mengarahkan akun yang sama ke nilai
+    /// lapisan yang sebenarnya: positif berarti lapisan yang keluar lebih mahal.
+    /// </summary>
+    public static async Task WriteSupplierReturnVarianceAsync(
+        SqliteConnection conn, SqliteTransaction? tx, int returnId, string inventoryCode,
+        long selisih, int? userId)
+    {
+        if (selisih == 0 || inventoryCode == BebanSelisihPersediaanKode) return;
+
+        using var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = "SELECT ReturnNumber FROM SupplierReturns WHERE Id = @id;";
+        cmd.Parameters.AddWithValue("@id", returnId);
+        var nomor = (string?)await cmd.ExecuteScalarAsync() ?? $"#{returnId}";
+
+        var keterangan = $"Selisih nilai lapisan retur pemasok: {nomor}";
+        if (selisih > 0)
+            await WriteAsync(conn, tx, BebanSelisihPersediaanKode, inventoryCode, selisih,
+                keterangan, "SupplierReturn", returnId, userId);
+        else
+            await WriteAsync(conn, tx, inventoryCode, BebanSelisihPersediaanKode, -selisih,
+                keterangan, "SupplierReturn", returnId, userId);
+    }
+
     /// <summary>Transfer antar lokasi: Dr persediaan tujuan / Cr persediaan asal.</summary>
     public static async Task WriteTransferAsync(
         SqliteConnection conn, SqliteTransaction? tx,

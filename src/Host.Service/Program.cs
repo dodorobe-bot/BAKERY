@@ -204,9 +204,11 @@ try
     builder.Services.AddScoped<IBatchRepository, BatchRepository>();
     builder.Services.AddScoped<IQualityCheckRepository, QualityCheckRepository>();
     builder.Services.AddScoped<ISalesReturnRepository, SalesReturnRepository>();
+    builder.Services.AddScoped<ISupplierSettlementRepository, SupplierSettlementRepository>();
     builder.Services.AddScoped<IPrintJobRepository, PrintJobRepository>();
     builder.Services.AddScoped<PurchaseService>();
     builder.Services.AddScoped<SalesReturnService>();
+    builder.Services.AddScoped<SupplierSettlementService>();
     builder.Services.AddScoped<CostSummaryService>();
     builder.Services.AddScoped<PosDeviceService>();
 
@@ -1592,6 +1594,86 @@ try
         return Results.Ok();
     }).RequireAuthorization("purchases-cancel");
 
+    // ── Hutang pemasok: retur dan pembayaran ────────────────────────────────────
+    // Kredit 2-002 Utang Usaha lahir per struk penerimaan, jadi sisa hutang dibaca dan
+    // diturunkan per struk juga. Dua jalur turunnya: barang dikembalikan (retur, kebijakan
+    // purchases-return) atau uang dibayarkan (finance-write). Daftar hutangnya sendiri adalah
+    // angka buku besar, sehingga hanya peran yang boleh membaca buku yang bisa memuatnya.
+    app.MapGet("/api/payables", async (ISupplierSettlementRepository repo, bool? includeLunas, int? limit) =>
+        Results.Ok(await repo.GetPayablesAsync(
+            includeLunas ?? false, limit is > 0 and <= 500 ? limit.Value : 200)))
+        .RequireAuthorization("finance-read");
+
+    app.MapGet("/api/payables/{receiptId:int}", async (int receiptId, ISupplierSettlementRepository repo) =>
+    {
+        var struk = await repo.GetPayableAsync(receiptId);
+        return struk is null ? Results.NotFound() : Results.Ok(struk);
+    }).RequireAuthorization("finance-read");
+
+    app.MapGet("/api/supplier-returns", async (
+        ISupplierSettlementRepository repo, int? goodsReceiptId, int? limit) =>
+        Results.Ok(await repo.GetReturnsAsync(
+            goodsReceiptId, limit is > 0 and <= 500 ? limit.Value : 200)))
+        .RequireAuthorization("finance-read");
+
+    app.MapGet("/api/supplier-payments", async (
+        ISupplierSettlementRepository repo, int? goodsReceiptId, int? limit) =>
+        Results.Ok(await repo.GetPaymentsAsync(
+            goodsReceiptId, limit is > 0 and <= 500 ? limit.Value : 200)))
+        .RequireAuthorization("finance-read");
+
+    app.MapPost("/api/supplier-returns", async (
+        CreateSupplierReturnDto dto, SupplierSettlementService svc, NotificationService notif, HttpContext ctx) =>
+    {
+        var userId = int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var baris = dto.Lines?.Select(l => new ReturnSupplierLineRequest(
+            l.GoodsReceiptLineId, l.Quantity, l.LocationId)).ToList();
+        var result = await svc.ReturnAsync(dto.GoodsReceiptId,
+            new ReturnSupplierRequest(userId, dto.Reason, dto.Notes, baris, dto.IdempotencyKey));
+
+        if (result.Success)
+        {
+            await CatatNotifikasiAmanAsync(notif, () => notif.KirimKePeranAsync(
+                [UserRole.Owner, UserRole.Admin],
+                new KirimNotifikasi("transaction.supplier.return_created", NotificationSeverity.Warning,
+                    "Retur pemasok dicatat",
+                    $"Struk penerimaan #{dto.GoodsReceiptId}: {baris?.Count ?? 0} baris barang dikembalikan " +
+                    $"dan hutang terkait dilepas. Alasan: {dto.Reason}.",
+                    "SupplierReturn", result.Data, $"transaction.supplier.return_created:{result.Data}"), DateTime.UtcNow));
+            return Results.Created($"/api/supplier-returns/{result.Data}", new { id = result.Data });
+        }
+
+        var status = result.ErrorCode == ErrorCodes.NotFound
+            ? StatusCodes.Status404NotFound
+            : StatusCodes.Status400BadRequest;
+        return Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: status);
+    }).RequireAuthorization("purchases-return");
+
+    app.MapPost("/api/supplier-payments", async (
+        CreateSupplierPaymentDto dto, SupplierSettlementService svc, NotificationService notif, HttpContext ctx) =>
+    {
+        var userId = int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        var result = await svc.PayAsync(dto.GoodsReceiptId,
+            new PaySupplierRequest(userId, dto.Amount, dto.Method, dto.Notes, dto.IdempotencyKey));
+
+        if (result.Success)
+        {
+            await CatatNotifikasiAmanAsync(notif, () => notif.KirimKePeranAsync(
+                [UserRole.Owner, UserRole.Admin],
+                new KirimNotifikasi("transaction.supplier.payment_created", NotificationSeverity.Info,
+                    "Pembayaran pemasok dicatat",
+                    $"Struk penerimaan #{dto.GoodsReceiptId} dibayar {Money.Format(dto.Amount)} " +
+                    $"({dto.Method ?? "Tunai"}).",
+                    "SupplierPayment", result.Data, $"transaction.supplier.payment_created:{result.Data}"), DateTime.UtcNow));
+            return Results.Created($"/api/supplier-payments/{result.Data}", new { id = result.Data });
+        }
+
+        var status = result.ErrorCode == ErrorCodes.NotFound
+            ? StatusCodes.Status404NotFound
+            : StatusCodes.Status400BadRequest;
+        return Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: status);
+    }).RequireAuthorization("finance-write");
+
     // Journal / Finance
     // Rentang dimuat per halaman (terbaru dulu, keyset sebelum entri terakhir yang tampil).
     // Laporan laba rugi tetap tepat karena angkanya datang dari /api/journal/summary.
@@ -2243,6 +2325,11 @@ record CreatePurchaseLineDto(int IngredientId, decimal OrderedQty, long UnitCost
 record ReceiveGoodsRequestDto(string? Notes, List<ReceiveLineRequestDto> Lines);
 record ReceiveLineRequestDto(int PurchaseOrderLineId, int IngredientId, decimal ReceivedQty, long UnitCostMinorUnits, int LocationId, string? BatchNumber, string? ExpiryDate);
 record CatatLotDto(int IngredientId, string BatchNumber, string? ReceivedDate, string ExpiryDate, long UnitCostMinorUnits);
+record CreateSupplierReturnDto(
+    int GoodsReceiptId, string Reason, string? Notes,
+    List<SupplierReturnLineRequestDto>? Lines, string? IdempotencyKey);
+record SupplierReturnLineRequestDto(int GoodsReceiptLineId, decimal Quantity, int? LocationId);
+record CreateSupplierPaymentDto(int GoodsReceiptId, long Amount, string? Method, string? Notes, string? IdempotencyKey);
 record SalinCadanganDto(string Tujuan);
 record BuatPegawaiDto(string Username, string Password, string Role);
 record UbahPegawaiDto(string Role, bool? IsActive, string? PasswordSementara);

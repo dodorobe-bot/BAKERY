@@ -338,6 +338,80 @@ public class AccountingService
     }
 
     /// <summary>
+    /// Retur ke pemasok: Dr Utang Usaha, Cr persediaan sesuai lokasi barang diambil. Ini satu-satunya
+    /// jalur yang boleh menurunkan 2-002 selain pembayarannya, jadi nilai per lokasi dihitung dari
+    /// harga struk penerimaan — bukan harga master bahan yang bisa sudah berubah sejak barang datang.
+    /// Nilai lapisan FIFO yang benar-benar keluar bisa berbeda; selisihnya dibukukan terpisah oleh
+    /// AccountingPoster supaya saldo 1-003/1-004 tetap persis sama dengan lapisan di rak.
+    /// </summary>
+    public async Task<JournalEntry?> BuildSupplierReturnAsync(
+        string returnNumber, IReadOnlyDictionary<string, long> nilaiByLocationType, int userId)
+    {
+        var kreditPerAkun = new Dictionary<string, long>();
+        foreach (var (jenis, nilai) in nilaiByLocationType)
+        {
+            if (nilai <= 0) continue;
+            var kode = jenis switch
+            {
+                "Warehouse" => PersediaanBahanKode,
+                "Kitchen" => PersediaanDapurKode,
+                _ => throw new InvalidOperationException(
+                    $"Jenis lokasi retur pemasok tidak dikenal: {jenis}.")
+            };
+            kreditPerAkun[kode] = kreditPerAkun.GetValueOrDefault(kode) + nilai;
+        }
+
+        var totalAmount = kreditPerAkun.Values.Sum();
+        if (totalAmount <= 0) return null;
+
+        var utang = await AccountIdAsync(UtangUsahaKode);
+        var lines = new List<JournalLine> { new() { AccountId = utang, DebitAmount = totalAmount } };
+        foreach (var (kode, nilai) in kreditPerAkun.OrderBy(k => k.Key, StringComparer.Ordinal))
+            lines.Add(new() { AccountId = await AccountIdAsync(kode), CreditAmount = nilai });
+
+        return new JournalEntry
+        {
+            Description = $"Retur Pemasok: {returnNumber}",
+            TransactionDate = BusinessTime.Now(),
+            SourceDocumentType = "SupplierReturn",
+            PostedAt = DateTime.UtcNow,
+            PostedByUserId = userId,
+            Lines = lines
+        };
+    }
+
+    /// <summary>
+    /// Pembayaran hutang pemasok: Dr Utang Usaha, Cr Kas &amp; Bank. Metode pembayaran tidak
+    /// memindahkan akun karena kas fisik dan bank dicatat pada 1-001 yang sama; metode tetap
+    /// tertulis di dokumen pembayarannya.
+    /// </summary>
+    public async Task<JournalEntry?> BuildSupplierPaymentAsync(
+        string paymentNumber, string? supplierName, long amount, int userId)
+    {
+        if (amount <= 0) return null;
+
+        var utang = await AccountIdAsync(UtangUsahaKode);
+        var kas = await AccountIdAsync(KasKode);
+
+        var keterangan = $"Pembayaran Hutang Pemasok: {paymentNumber}";
+        if (!string.IsNullOrWhiteSpace(supplierName)) keterangan += $" · {supplierName.Trim()}";
+
+        return new JournalEntry
+        {
+            Description = keterangan,
+            TransactionDate = BusinessTime.Now(),
+            SourceDocumentType = "SupplierPayment",
+            PostedAt = DateTime.UtcNow,
+            PostedByUserId = userId,
+            Lines =
+            {
+                new() { AccountId = utang, DebitAmount = amount },
+                new() { AccountId = kas, CreditAmount = amount }
+            }
+        };
+    }
+
+    /// <summary>
     /// Pembalik seluruh entri yang sudah dibukukan untuk satu dokumen sumber.
     /// Semua kaki ditukar arah, jadi pembatalan mengembalikan saldo persis seperti semula.
     /// </summary>

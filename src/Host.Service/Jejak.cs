@@ -26,6 +26,8 @@ public static class Jejak
         ("/api/production/quality-checks", "QualityCheck"),
         ("/api/production/orders", "WorkOrder"),
         ("/api/returns", "SalesReturn"),
+        ("/api/supplier-returns", "SupplierReturn"),
+        ("/api/supplier-payments", "SupplierPayment"),
         ("/api/inventory/batches", "ItemBatch"),
         ("/api/inventory", "LocationStock"),
         ("/api/purchases", "PurchaseOrder"),

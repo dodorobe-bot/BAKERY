@@ -21,7 +21,6 @@ import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
 import {
   accountTypeLabel,
   orderStatusLabel,
-  purchaseStatusLabel,
 } from '../utils/enums';
 
 const SECTION_BY_MENU = {
@@ -83,13 +82,10 @@ export default function FinanceView({
   balances,
   orders,
   orderTotal,
-  purchases,
-  purchaseTotal,
   summary,
   loading,
   onRefresh,
   onLoadMoreOrders,
-  onLoadMorePurchases,
 }) {
   const section = SECTION_BY_MENU[view] ?? 'ledger';
   const [range, setRange] = useState({ from: firstOfMonthISO(), to: todayISO() });
@@ -104,8 +100,17 @@ export default function FinanceView({
   // Daftar piutang/utang dimuat bertahap dari server. Tanpa status ini, tombol "Muat lagi"
   // hanya menampilkan ulang baris yang sudah ada tanpa memberi tahu batas server.
   const [memuatPiutang, setMemuatPiutang] = useState(false);
-  const [memuatUtang, setMemuatUtang] = useState(false);
   const [muatLagiGalat, setMuatLagiGalat] = useState('');
+  // Utang pemasok dibaca per struk penerimaan, bukan dari daftar PO: kredit 2-002 memang lahir
+  // per struk, jadi hanya angka ini yang bisa jajar dengan saldo akun di atas.
+  const [utangStruk, setUtangStruk] = useState([]);
+  const [utangMemuat, setUtangMemuat] = useState(false);
+  const [utangGalat, setUtangGalat] = useState('');
+  const [utangTampilLunas, setUtangTampilLunas] = useState(false);
+  const [bayarForm, setBayarForm] = useState({ strukId: '', amount: '', method: 'Tunai', notes: '' });
+  const [bayarGalat, setBayarGalat] = useState('');
+  const [bayarKunci, setBayarKunci] = useState('');
+  const { sedangSimpan: bayarSaving, mulai: mulaiBayar, selesai: selesaiBayar } = useKunciSimpan();
   // Ringkasan seluruh rentang dari server (bukan dari entri yang kebetulan termuat) dan saldo
   // akun per akhir rentang untuk buku kas.
   const [ringkasJurnal, setRingkasJurnal] = useState(null);
@@ -150,6 +155,33 @@ export default function FinanceView({
       .catch(() => { if (!batal) setRingkasJurnal(null); });
     return () => { batal = true; };
   }, [applied.from, applied.to, sourceFilter, versiData]);
+
+  // Satu struk penerimaan = satu kartu hutang: nilainya datang dari jalur baca yang menghitung
+  // terima − retur − pembayaran dari dokumen yang sama, jadi kolom "Sisa hutang" tidak pernah
+  // dihitung ulang di peramban dengan hasil berbeda.
+  const muatUtangStruk = useCallback(async (tampilLunas) => {
+    setUtangMemuat(true);
+    setUtangGalat('');
+    try {
+      const daftar = await api.getPayables({ includeLunas: tampilLunas, limit: 300 });
+      setUtangStruk(Array.isArray(daftar) ? daftar : []);
+    } catch (err) {
+      setUtangGalat(err.message || 'Gagal memuat utang pemasok.');
+      setUtangStruk([]);
+    } finally {
+      setUtangMemuat(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (section === 'payables') muatUtangStruk(utangTampilLunas);
+  }, [section, versiData, utangTampilLunas, muatUtangStruk]);
+
+  // Satu kunci mewakili satu niat bayar: dibuat ulang setiap dokumen yang dipilih diganti atau
+  // setiap pembayaran berhasil, sehingga klik ganda tidak mengirim dua pembayaran.
+  useEffect(() => {
+    setBayarKunci(kunciBaru('bayar-pemasok'));
+  }, [bayarForm.strukId, versiData]);
 
   // Halaman berikutnya memakai kunci entri terakhir yang tampil, jadi entri baru yang masuk
   // tidak menggeser baris dan tidak ada entri yang terlewat.
@@ -285,7 +317,7 @@ export default function FinanceView({
     return mundur.reverse();
   }, [entries, balances, saldoAkhirRentang, cashClosing]);
 
-  // Piutang dari pesanan + pembayaran; utang dari saldo akun Utang Usaha dan baris PO.
+  // Piutang dari pesanan + pembayaran; utang dari struk penerimaan (lihat muatUtangStruk).
   const receivables = useMemo(() => {
     // Jadwal ambil dan "hari ini" sama-sama tanggal bisnis kalender toko; zona perangkat
     // tidak dipakai supaya status lewat tempo tidak bergeser sehari.
@@ -311,19 +343,17 @@ export default function FinanceView({
       .sort((a, b) => (b.overdue - a.overdue) || (b.remaining - a.remaining));
   }, [orders]);
 
-  const payables = useMemo(() => (purchases ?? []).map((po) => {
-    const linesOfPo = po.lines ?? [];
-    const receivedValue = linesOfPo.reduce(
-      (s, l) => s + Number(l.receivedQty ?? 0) * Number(l.unitCostMinorUnits ?? 0), 0
-    );
-    const orderedValue = linesOfPo.reduce(
-      (s, l) => s + Number(l.orderedQty ?? 0) * Number(l.unitCostMinorUnits ?? 0), 0
-    );
-    return {
-      id: po.id, poNumber: po.poNumber, supplier: po.supplierName ?? '-',
-      status: po.status, orderedValue, receivedValue, lineCount: linesOfPo.length,
-    };
-  }), [purchases]);
+  const payables = useMemo(() => (utangStruk ?? []).map((p) => ({
+    id: p.goodsReceiptId,
+    poNumber: p.poNumber ?? `PO-${p.purchaseOrderId}`,
+    supplier: p.supplierName ?? '-',
+    receivedAt: p.receivedAt,
+    receivedValue: Number(p.receivedValueMinorUnits ?? 0),
+    returnValue: Number(p.returnedValueMinorUnits ?? 0),
+    paidValue: Number(p.paidValueMinorUnits ?? 0),
+    balance: Number(p.balanceMinorUnits ?? 0),
+    lineCount: (p.lines ?? []).length,
+  })), [utangStruk]);
 
   // Buku kas, piutang, dan utang juga bisa berisi ratusan baris; digambar bertahap sambil
   // ringkasan saldo tetap dihitung dari seluruh data.
@@ -336,8 +366,6 @@ export default function FinanceView({
   // daftar tetap bisa dilanjutkan lewat tombol "Muat lagi".
   const jumlahPiutangServer = orderTotal !== null && orderTotal !== undefined ? Number(orderTotal) : receivables.length;
   const adaPiutangServer = receivables.length < jumlahPiutangServer;
-  const jumlahUtangServer = purchaseTotal !== null && purchaseTotal !== undefined ? Number(purchaseTotal) : payables.length;
-  const adaUtangServer = payables.length < jumlahUtangServer;
   const sisaPiutang = summary?.piutang != null
     ? Number(summary.piutang)
     : receivables.reduce((s, r) => s + r.remaining, 0);
@@ -348,13 +376,6 @@ export default function FinanceView({
     try { await onLoadMoreOrders(); }
     catch (err) { setMuatLagiGalat(err.message || 'Gagal memuat piutang berikutnya.'); }
     finally { setMemuatPiutang(false); }
-  };
-  const muatUtangLagi = async () => {
-    if (!onLoadMorePurchases) return;
-    setMemuatUtang(true); setMuatLagiGalat('');
-    try { await onLoadMorePurchases(); }
-    catch (err) { setMuatLagiGalat(err.message || 'Gagal memuat utang berikutnya.'); }
-    finally { setMemuatUtang(false); }
   };
 
   const receivableAccount = findAccount(balances, ACCOUNT_TYPE.ASSET, /piutang/i, '1-002');
@@ -425,6 +446,49 @@ export default function FinanceView({
       setExpenseError(err.message || 'Gagal mencatat pengeluaran.');
     } finally {
       selesaiBiaya();
+    }
+  };
+
+  // Pembayaran mengikat SATU struk penerimaan: server menolak nominal di atas sisa hutang struk
+  // itu, jadi batas ini hanya penghematan antrean — angka finally tetap dikatakan server.
+  const submitPembayaran = async (event) => {
+    event.preventDefault();
+    const struk = utangStruk.find((p) => p.goodsReceiptId === Number(bayarForm.strukId));
+    if (!struk) {
+      setBayarGalat('Pilih dokumen penerimaan yang akan dibayar.');
+      return;
+    }
+    const nominal = Number(bayarForm.amount);
+    if (!Number.isFinite(nominal) || nominal <= 0) {
+      setBayarGalat('Nominal harus angka lebih besar dari nol.');
+      return;
+    }
+    const sisa = Number(struk.balanceMinorUnits ?? 0);
+    if (toMinor(nominal) > sisa) {
+      setBayarGalat(`Melebihi sisa hutang struk ini (${formatMinor(sisa)}).`);
+      return;
+    }
+    if (!mulaiBayar()) return;
+    setBayarGalat('');
+    try {
+      await api.createSupplierPayment({
+        goodsReceiptId: struk.goodsReceiptId,
+        amount: toMinor(nominal),
+        method: bayarForm.method,
+        notes: bayarForm.notes || null,
+        // Kunci yang sama dua lapis: body menuliskannya ke kolom IdempotencyKey pada baris
+        // pembayaran (jejak di basis data), header lewat gerbang anti-duplikat sisi server.
+        idempotencyKey: bayarKunci,
+        idempotensi: bayarKunci,
+      });
+      setBayarForm({ strukId: '', amount: '', method: 'Tunai', notes: '' });
+      await loadJournal(applied.from, applied.to);
+      await onRefresh?.();
+      setVersiData((v) => v + 1);
+    } catch (err) {
+      setBayarGalat(err.message || 'Gagal mencatat pembayaran pemasok.');
+    } finally {
+      selesaiBayar();
     }
   };
 
@@ -912,8 +976,10 @@ export default function FinanceView({
               <div className="p-4 border-b border-slate-800">
                 <h2 className="text-base font-semibold text-white">Utang pemasok per dokumen</h2>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  sumber: PO yang belum diterima penuh (Draft/Terkirim/Sebagian) + barisnya; saldo akun {payableAccount?.code ?? '(belum ada)'} = {formatMinor(payableBalance)}
+                  sumber: struk penerimaan barang + kaki jurnal {payableAccount?.code ?? '2-002'}; satu baris = satu struk.
+                  Saldo akun {payableAccount?.code ?? '(belum ada)'} = {formatMinor(payableBalance)}
                 </p>
+                {utangGalat && <p className="text-[11px] text-rose-400 mt-1">{utangGalat}</p>}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-slate-300">
@@ -921,68 +987,129 @@ export default function FinanceView({
                     <tr>
                       <th className="py-3 px-4 font-semibold">Dokumen</th>
                       <th className="py-3 px-4 font-semibold">Pemasok</th>
-                      <th className="py-3 px-4 font-semibold text-right">Nilai pesanan</th>
                       <th className="py-3 px-4 font-semibold text-right">Nilai terima</th>
-                      <th className="py-3 px-4 font-semibold text-right">Baris</th>
+                      <th className="py-3 px-4 font-semibold text-right">Retur</th>
+                      <th className="py-3 px-4 font-semibold text-right">Dibayar</th>
+                      <th className="py-3 px-4 font-semibold text-right">Sisa hutang</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/60 font-mono">
                     {payables.length === 0 && (
-                      <tr><td colSpan={5} className="py-6 px-4 text-center text-slate-500 font-sans">Belum ada dokumen pembelian.</td></tr>
+                      <tr>
+                        <td colSpan={6} className="py-6 px-4 text-center text-slate-500 font-sans">
+                          {utangMemuat ? 'Memuat...' : 'Belum ada struk penerimaan dengan sisa hutang.'}
+                        </td>
+                      </tr>
                     )}
                     {barisUtang.tampil.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-800/40">
-                        <td className="py-3 px-4">
+                      <tr key={p.id} className={`hover:bg-slate-800/40 ${p.balance === 0 ? 'opacity-60' : ''}`}>
+                        <td className="py-3 px-4 whitespace-nowrap">
                           <div className="text-amber-400">{p.poNumber}</div>
-                          <div className="text-[10px] text-slate-500">{purchaseStatusLabel(p.status)}</div>
+                          <div className="text-[10px] text-slate-500">struk #{p.id} · diterima {formatDate(p.receivedAt)}</div>
                         </td>
                         <td className="py-3 px-4 font-sans text-white">{p.supplier}</td>
-                        <td className="py-3 px-4 text-right">{formatMinor(p.orderedValue)}</td>
-                        <td className="py-3 px-4 text-right text-white">{p.receivedValue > 0 ? formatMinor(p.receivedValue) : '-'}</td>
-                        <td className="py-3 px-4 text-right">{p.lineCount}</td>
+                        <td className="py-3 px-4 text-right whitespace-nowrap">{formatMinor(p.receivedValue)}</td>
+                        <td className="py-3 px-4 text-right whitespace-nowrap text-rose-300">{p.returnValue > 0 ? formatMinor(p.returnValue) : '-'}</td>
+                        <td className="py-3 px-4 text-right whitespace-nowrap">{p.paidValue > 0 ? formatMinor(p.paidValue) : '-'}</td>
+                        <td className={`py-3 px-4 text-right font-bold whitespace-nowrap ${p.balance > 0 ? 'text-white' : 'text-emerald-400'}`}>
+                          {formatMinor(p.balance)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              {(barisUtang.adaLagi || adaUtangServer) && (
-                <div className="px-4 py-2.5 border-t border-slate-800 text-center flex items-center justify-center gap-2 flex-wrap">
-                  {barisUtang.adaLagi && (
-                    <button
-                      onClick={barisUtang.tampilkanLagi}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
-                    >
-                      Tampilkan 100 dokumen berikutnya ({barisUtang.jumlah - barisUtang.tampil.length} tersisa)
-                    </button>
-                  )}
-                  {adaUtangServer && (
-                    <button
-                      onClick={muatUtangLagi}
-                      disabled={memuatUtang}
-                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-colors disabled:opacity-50"
-                    >
-                      {memuatUtang ? 'Memuat...' : `Muat ${jumlahUtangServer - payables.length} dokumen lagi`}
-                    </button>
-                  )}
+              {barisUtang.adaLagi && (
+                <div className="px-4 py-2.5 border-t border-slate-800 text-center">
+                  <button
+                    onClick={barisUtang.tampilkanLagi}
+                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
+                  >
+                    Tampilkan 100 struk berikutnya ({barisUtang.jumlah - barisUtang.tampil.length} tersisa)
+                  </button>
                 </div>
               )}
+              <div className="px-4 py-3 border-t border-slate-800 flex items-center justify-between gap-3 flex-wrap text-[11px] text-slate-500">
+                <span>
+                  Nilai terima = jumlah × harga satuan baris penerimaan. Retur dan pembayaran hanya menurunkan
+                  saldo struk yang sama, jadi sisa hutang tidak pernah bisa di bawah nol.
+                </span>
+                <label className="flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    checked={utangTampilLunas}
+                    onChange={(e) => setUtangTampilLunas(e.target.checked)}
+                    className="accent-amber-500"
+                  />
+                  tampilkan yang sudah lunas
+                </label>
+              </div>
 
-              <div className="p-4 border-t border-slate-800 space-y-3">
+              <form onSubmit={submitPembayaran} className="p-4 border-t border-slate-800 space-y-3">
                 <h3 className="text-sm font-semibold text-white">Catat pembayaran pemasok</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <select disabled className="bg-slate-950/60 text-slate-600 border border-slate-800 rounded-xl p-2.5 text-xs cursor-not-allowed">
-                    <option>— pilih dokumen —</option>
-                  </select>
-                  <input disabled placeholder="Nominal (Rp)" className="bg-slate-950/60 text-slate-600 border border-slate-800 rounded-xl p-2.5 text-xs cursor-not-allowed" />
+                  <div>
+                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Dokumen penerimaan *</label>
+                    <select
+                      value={bayarForm.strukId}
+                      onChange={(e) => setBayarForm((f) => ({ ...f, strukId: e.target.value }))}
+                      className="bg-slate-950/60 text-white border border-slate-700 rounded-xl p-2.5 text-xs w-full"
+                    >
+                      <option value="">— pilih dokumen —</option>
+                      {payables.filter((p) => p.balance > 0).map((p) => (
+                        <option key={p.id} value={p.id}>{p.poNumber} — sisa {formatMinor(p.balance)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Nominal (Rp) *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={bayarForm.amount}
+                      onChange={(e) => setBayarForm((f) => ({ ...f, amount: e.target.value }))}
+                      placeholder="Nominal (Rp)"
+                      className="bg-slate-950/60 text-white border border-slate-700 rounded-xl p-2.5 text-xs w-full"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      maksimum sisa hutang struk ini; lebih dari itu ditolak server
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Metode pembayaran *</label>
+                    <select
+                      value={bayarForm.method}
+                      onChange={(e) => setBayarForm((f) => ({ ...f, method: e.target.value }))}
+                      className="bg-slate-950/60 text-white border border-slate-700 rounded-xl p-2.5 text-xs w-full"
+                    >
+                      <option value="Tunai">Tunai</option>
+                      <option value="Transfer">Transfer</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Catatan</label>
+                    <input
+                      value={bayarForm.notes}
+                      onChange={(e) => setBayarForm((f) => ({ ...f, notes: e.target.value }))}
+                      placeholder="mis. bayar separuh, sisanya akhir minggu"
+                      className="bg-slate-950/60 text-white border border-slate-700 rounded-xl p-2.5 text-xs w-full"
+                    />
+                  </div>
                 </div>
-                <button disabled className="w-full px-4 py-2 bg-slate-800 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed">
-                  Simpan pembayaran
+                {bayarGalat && <p className="text-[11px] text-rose-400">{bayarGalat}</p>}
+                <button
+                  type="submit"
+                  disabled={bayarSaving || !bayarForm.strukId}
+                  className="w-full px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
+                >
+                  {bayarSaving ? 'Menyimpan...' : 'Simpan pembayaran'}
                 </button>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Sengaja dinonaktifkan: belum ada endpoint pembayaran pemasok, jadi tidak ada posting
-                  Dr Utang Usaha / Cr Kas. Nilai terima di atas baru memakai harga per baris PO.
+                  Dijournal: Dr {payableAccount?.code ?? '2-002'} Utang Usaha / Cr 1-001 Kas &amp; Bank sebanyak
+                  nominal. Retur barang dicatat dari layar Pembelian pada struk yang sama.
                 </p>
-              </div>
+              </form>
             </div>
           </div>
         </>

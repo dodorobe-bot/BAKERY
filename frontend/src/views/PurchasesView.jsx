@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Plus, X, ShoppingCart, Truck, Check, Ban, Edit2, PackageOpen, Download } from 'lucide-react';
+import { Plus, X, ShoppingCart, Truck, Check, Ban, Edit2, PackageOpen, Download, RotateCcw } from 'lucide-react';
 import { api } from '../services/api';
 import { purchaseStatusLabel, purchaseStatusName } from '../utils/enums';
 import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
@@ -40,9 +40,11 @@ export default function PurchasesView({
   onCancelPurchase,
   onCreateSupplier,
   onUpdateSupplier,
+  onCreateSupplierReturn,
   canWritePurchase = true,
   canReceivePurchase = true,
   canCancelPurchase = true,
+  canReturnPurchase = true,
   canExportPurchase = true,
   canManageSuppliers = true,
   initialTab = 'po',
@@ -111,6 +113,21 @@ export default function PurchasesView({
   const [receiveKunci, setReceiveKunci] = useState('');
   const [receiveGalat, setReceiveGalat] = useState('');
   const [loadingPoDetail, setLoadingPoDetail] = useState(false);
+
+  // Retur Modal
+  // Retur tidak dihitung dari PO: kredit 2-002 lahir per struk penerimaan, jadi dialog ini memuat
+  // daftar struk milik PO tersebut dari /api/payables dan memilih satu struk yang akan dikurangi.
+  const [returModalOpen, setReturModalOpen] = useState(false);
+  const [returPo, setReturPo] = useState(null);
+  const [returStruk, setReturStruk] = useState([]);
+  const [returStrukId, setReturStrukId] = useState('');
+  const [returLines, setReturLines] = useState([]);
+  const [returAlasan, setReturAlasan] = useState('');
+  const [returNotes, setReturNotes] = useState('');
+  const { sedangSimpan: returSubmitting, mulai: mulaiRetur, selesai: selesaiRetur } = useKunciSimpan();
+  const [returKunci, setReturKunci] = useState('');
+  const [returGalat, setReturGalat] = useState('');
+  const [returMemuat, setReturMemuat] = useState(false);
 
   // Supplier Modal
   const [supplierModalOpen, setSupplierModalOpen] = useState(false);
@@ -243,6 +260,106 @@ export default function PurchasesView({
       setReceiveGalat(err.message || 'Penerimaan barang gagal disimpan.');
     } finally {
       selesaiTerima();
+    }
+  };
+
+  // ── Retur Modal Handlers ───────────────────────────────────────────────────
+  // Baris retur diambil dari jalur baca buku besar (/api/payables/{struk}), bukan dari tabungan
+  // layar: "sudah diretur" dan harga terima harus sama dengan angka yang mengurangi hutang.
+  const barisReturDariStruk = (struk) =>
+    (struk?.lines ?? []).map((l) => ({
+      goodsReceiptLineId: l.goodsReceiptLineId,
+      ingredientName: l.ingredientName || `Bahan #${l.ingredientId}`,
+      unit: l.unit || '',
+      locationName: l.locationName || '',
+      receivedQty: Number(l.receivedQuantity ?? 0),
+      returnedQty: Number(l.returnedQuantity ?? 0),
+      unitCostMinorUnits: Number(l.unitCostMinorUnits ?? 0),
+      qty: '',
+    }));
+
+  const bukaReturModal = async (po) => {
+    setReturPo(po);
+    setReturStruk([]);
+    setReturStrukId('');
+    setReturLines([]);
+    setReturAlasan('');
+    setReturNotes('');
+    setReturGalat('');
+    setReturModalOpen(true);
+    setReturMemuat(true);
+    try {
+      // includeLunas=true supaya struk yang sudah lunas ikut tampil: pesannya harus jelas
+      // ("hutang struk ini sudah lunas"), bukan struk yang hilang dari pilihan.
+      const daftar = await api.getPayables({ includeLunas: true, limit: 500 });
+      const punyaPo = (Array.isArray(daftar) ? daftar : []).filter(
+        (s) => Number(s.purchaseOrderId) === Number(po.id)
+      );
+      setReturStruk(punyaPo);
+      if (punyaPo.length === 0) {
+        setReturGalat('PO ini belum punya struk penerimaan, jadi belum ada hutang yang bisa diretur.');
+        return;
+      }
+      const utama = punyaPo.find((s) => Number(s.balanceMinorUnits ?? 0) > 0) ?? punyaPo[0];
+      setReturStrukId(utama.goodsReceiptId);
+      setReturLines(barisReturDariStruk(utama));
+      setReturKunci(kunciBaru(`retur-struk-${utama.goodsReceiptId}`));
+    } catch (err) {
+      setReturGalat(err.message || 'Daftar struk penerimaan gagal dimuat. Tutup lalu coba lagi.');
+    } finally {
+      setReturMemuat(false);
+    }
+  };
+
+  // Pindah struk = niat baru: kunci lama sudah terikat pada dokumen retur yang lain, jadi
+  // angka yang diketik di struk sebelumnya dibuang bersama kuncinya.
+  const pilihReturStruk = (goodsReceiptId) => {
+    const struk = returStruk.find((s) => String(s.goodsReceiptId) === String(goodsReceiptId));
+    setReturStrukId(Number(goodsReceiptId));
+    setReturLines(barisReturDariStruk(struk));
+    setReturKunci(kunciBaru(`retur-struk-${goodsReceiptId}`));
+    setReturGalat('');
+  };
+
+  const updateReturLine = (idx, value) =>
+    setReturLines((prev) => prev.map((l, i) => (i === idx ? { ...l, qty: value } : l)));
+
+  const strukReturAktif = returStruk.find((s) => String(s.goodsReceiptId) === String(returStrukId)) ?? null;
+
+  // Nilai retur dihitung seperti server membulatnya: per baris, lalu dijumlahkan.
+  const nilaiRetur = returLines.reduce((total, l) => {
+    const q = parseFloat(l.qty);
+    return Number.isFinite(q) && q > 0 ? total + Math.round(q * l.unitCostMinorUnits) : total;
+  }, 0);
+
+  const submitRetur = async (e) => {
+    e.preventDefault();
+    const alasan = returAlasan.trim();
+    if (!alasan) { setReturGalat('Alasan retur wajib diisi.'); return; }
+    const dikirim = returLines.filter((l) => parseFloat(l.qty) > 0);
+    if (dikirim.length === 0) { setReturGalat('Isi jumlah unit pada minimal satu baris barang.'); return; }
+    if (!mulaiRetur()) return;
+    setReturGalat('');
+    try {
+      await onCreateSupplierReturn({
+        goodsReceiptId: Number(returStrukId),
+        reason: alasan,
+        notes: returNotes.trim() || null,
+        // Lokasi asal tidak dikirim: server memakainya dari baris struk, jadi barang keluar dari
+        // rak tempat ia benar-benar diterima dan akun persediaannya ikut benar.
+        lines: dikirim.map((l) => ({
+          goodsReceiptLineId: l.goodsReceiptLineId,
+          quantity: parseFloat(l.qty),
+        })),
+        idempotencyKey: returKunci,
+        idempotensi: returKunci,
+      });
+      setReturModalOpen(false);
+    } catch (err) {
+      // Modal tetap terbuka: struk terpilih dan angka yang diketik tidak boleh hilang.
+      setReturGalat(err.message || 'Retur pemasok gagal disimpan.');
+    } finally {
+      selesaiRetur();
     }
   };
 
@@ -411,6 +528,9 @@ export default function PurchasesView({
                     const status = purchaseStatusName(po.status ?? po.Status ?? 'Draft');
                     const canReceive = ['Draft', 'Sent', 'PartialReceived'].includes(status);
                     const canCancel = ['Draft', 'Sent'].includes(status);
+                    // Retur hanya masuk akal bila sudah ada struk penerimaan: hutang yang mau
+                    // dikurangi lahir di struk itu.
+                    const bisaRetur = ['Received', 'PartialReceived'].includes(status);
                     const total = calcPoTotal(po.lines || po.Lines || []);
                     const orderDate = po.orderDate || po.OrderDate;
                     const expectedDate = po.expectedDate || po.ExpectedDate;
@@ -448,6 +568,15 @@ export default function PurchasesView({
                               >
                                 <PackageOpen className="w-3 h-3" />
                                 Terima
+                              </button>
+                            )}
+                            {bisaRetur && canReturnPurchase && (
+                              <button
+                                onClick={() => bukaReturModal(po)}
+                                className="flex items-center gap-1 px-2 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 rounded-lg text-[10px] font-semibold transition-colors"
+                              >
+                                <RotateCcw className="w-3 h-3" />
+                                Retur
                               </button>
                             )}
                             {canCancel && canCancelPurchase && (
@@ -858,6 +987,212 @@ export default function PurchasesView({
                 >
                   <Check className="w-4 h-4" />
                   {receiveSubmitting ? 'Menyimpan...' : 'Simpan Penerimaan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal: Retur Pemasok ────────────────────────────────────────────────
+          Satu retur mengikat satu struk penerimaan: hutang yang dilepas adalah kredit 2-002 yang
+          lahir di struk itu, dan barang keluar dari rak tempat ia dicatat masuk. */}
+      {returModalOpen && returPo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="p-5 border-b border-slate-800 bg-slate-950/50 flex items-center justify-between shrink-0">
+              <div>
+                <h3 className="text-base font-bold text-white">Retur Pemasok</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  PO: <span className="text-amber-400 font-mono">{returPo.poNumber || returPo.PoNumber}</span>
+                </p>
+              </div>
+              <button onClick={() => setReturModalOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={submitRetur} className="flex flex-col overflow-hidden flex-1">
+              <div className="p-5 space-y-4 overflow-y-auto flex-1">
+                {returMemuat ? (
+                  <div className="text-center text-slate-400 text-sm py-8">Memuat struk penerimaan...</div>
+                ) : returStruk.length === 0 ? (
+                  <div className="text-center text-slate-400 text-sm py-8">
+                    Belum ada struk penerimaan untuk PO ini.
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 block mb-1.5">
+                        Struk penerimaan <span className="text-rose-400">*</span>
+                      </label>
+                      <select
+                        value={returStrukId}
+                        onChange={(e) => pilihReturStruk(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-rose-500/60 transition-colors"
+                      >
+                        {returStruk.map((s) => {
+                          const sisa = Number(s.balanceMinorUnits ?? 0);
+                          return (
+                            <option key={s.goodsReceiptId} value={s.goodsReceiptId}>
+                              {`struk #${s.goodsReceiptId} · ${fmtTanggal(s.receivedAt)} · sisa hutang ${fmt(sisa)}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed">
+                        Retur mengurangi hutang struk terpilih saja. Pembayaran hutang dicatat di
+                        menu Keuangan &rsaquo; Utang Pemasok.
+                      </p>
+                    </div>
+
+                    {strukReturAktif && (
+                      <div className="grid grid-cols-3 gap-3 text-xs">
+                        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3">
+                          <span className="block text-[10px] uppercase tracking-wider text-slate-500 mb-1">Nilai terima</span>
+                          <span className="font-mono text-slate-200">{fmt(strukReturAktif.receivedValueMinorUnits)}</span>
+                        </div>
+                        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3">
+                          <span className="block text-[10px] uppercase tracking-wider text-slate-500 mb-1">Sudah diretur</span>
+                          <span className="font-mono text-rose-300">{fmt(strukReturAktif.returnedValueMinorUnits)}</span>
+                        </div>
+                        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3">
+                          <span className="block text-[10px] uppercase tracking-wider text-slate-500 mb-1">Sisa hutang</span>
+                          <span className="font-mono text-white">{fmt(strukReturAktif.balanceMinorUnits)}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {returLines.length === 0 ? (
+                      <div className="text-center text-slate-400 text-sm py-6">
+                        Struk ini tidak punya baris barang, jadi tidak ada yang bisa diretur.
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {returLines.map((line, idx) => {
+                          const sisaJumlah = Math.max(0, line.receivedQty - line.returnedQty);
+                          const q = parseFloat(line.qty);
+                          const nilai = Number.isFinite(q) && q > 0
+                            ? Math.round(q * line.unitCostMinorUnits)
+                            : 0;
+                          return (
+                            <div key={line.goodsReceiptLineId} className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-semibold text-white">{line.ingredientName}</span>
+                                <span className="text-xs text-slate-400">{line.unit}</span>
+                              </div>
+                              <div className="grid grid-cols-4 gap-3 text-xs text-slate-400">
+                                <div>
+                                  <span className="block text-[10px] uppercase tracking-wider mb-0.5">Diterima</span>
+                                  <span className="font-mono text-slate-200">{line.receivedQty}</span>
+                                </div>
+                                <div>
+                                  <span className="block text-[10px] uppercase tracking-wider mb-0.5">Sudah diretur</span>
+                                  <span className="font-mono text-rose-300">{line.returnedQty}</span>
+                                </div>
+                                <div>
+                                  <span className="block text-[10px] uppercase tracking-wider mb-0.5">Bisa diretur</span>
+                                  <span className="font-mono text-amber-300">{sisaJumlah}</span>
+                                </div>
+                                <div>
+                                  <span className="block text-[10px] uppercase tracking-wider mb-0.5">Harga terima</span>
+                                  <span className="font-mono text-slate-200">{fmt(line.unitCostMinorUnits)}</span>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                  <label className="text-[10px] uppercase tracking-wider text-slate-400 block mb-1">
+                                    Jumlah unit
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="0.001"
+                                    value={line.qty}
+                                    onChange={(e) => updateReturLine(idx, e.target.value)}
+                                    className="w-full px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-rose-500/60 transition-colors"
+                                    placeholder="0"
+                                  />
+                                </div>
+                                <div>
+                                  <span className="text-[10px] uppercase tracking-wider text-slate-400 block mb-1">Nilai retur</span>
+                                  <span className="font-mono text-sm text-rose-300">{fmt(nilai)}</span>
+                                </div>
+                              </div>
+                              {line.locationName && (
+                                <p className="text-[10px] text-slate-500">
+                                  Barang keluar dari {line.locationName} pada lapisan FIFO tertua.
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 block mb-1.5">
+                        Alasan retur <span className="text-rose-400">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={300}
+                        value={returAlasan}
+                        onChange={(e) => setReturAlasan(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-rose-500/60 transition-colors"
+                        placeholder="mis. 3 kg tepung sudah dibuka dan berbau tengik"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 block mb-1.5">Catatan</label>
+                      <textarea
+                        value={returNotes}
+                        onChange={(e) => setReturNotes(e.target.value)}
+                        rows={2}
+                        className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-rose-500/60 transition-colors resize-none"
+                        placeholder="mis. pemasok setuju kirim pengganti minggu depan"
+                      />
+                    </div>
+
+                    <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3 space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-400">Nilai retur</span>
+                        <span className="font-mono text-rose-300">{fmt(nilaiRetur)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-400">Sisa hutang struk ini</span>
+                        <span className="font-mono text-white">{fmt(strukReturAktif?.balanceMinorUnits ?? 0)}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 leading-relaxed pt-1">
+                        Dijournal: Dr 2-002 Utang Usaha / Cr 1-003 Persediaan Bahan Baku (Gudang) atau
+                        1-004 Persediaan Dapur sebesar nilai retur di atas, plus satu mutasi stok
+                        berlabel "Retur Pemasok". Bila lapisan FIFO yang keluar harganya berbeda dari
+                        harga terima struk, selisihnya ditutup ke 5-006 Beban Selisih Persediaan.
+                      </p>
+                    </div>
+                  </>
+                )}
+                {returGalat && (
+                  <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs">{returGalat}</div>
+                )}
+              </div>
+
+              <div className="p-4 border-t border-slate-800 bg-slate-950/30 flex justify-end gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setReturModalOpen(false)}
+                  className="px-4 py-2 text-slate-400 hover:text-white text-sm font-medium transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={returSubmitting || returMemuat || returStruk.length === 0 || returLines.length === 0}
+                  className="flex items-center gap-2 px-5 py-2 bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold rounded-xl text-sm shadow-lg shadow-rose-500/20 transition-all disabled:opacity-50"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  {returSubmitting ? 'Menyimpan...' : 'Simpan Retur'}
                 </button>
               </div>
             </form>

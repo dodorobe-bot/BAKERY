@@ -330,6 +330,10 @@ public class CostLayerFifoTests
     [Fact]
     public void Migrasi019_BackfillLapisan_MempertahankanNilaiBukuSebelumnya()
     {
+        // migrator hanya menjalankan versi di atas MAX(SchemaVersion), jadi 021 harus dicabut
+        // lebih dulu — kalau tidak, penurunan ke 018 tampak berhasil tapi Migrate() di bawah
+        // tidak menaikkan apa pun dan tabel lapisan tetap hilang.
+        MigrationRollback.Run(_db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(_db, "020_DiscountTaxAndReceivables.down.sql");
         MigrationRollback.Run(_db, "019_CostLayersForInventory.down.sql");
         _db.Exec("INSERT INTO Ingredients (Name, Unit, PricePerUnit, CurrentStock, MinStockAlert, IsActive) " +

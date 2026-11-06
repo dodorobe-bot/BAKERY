@@ -1,7 +1,15 @@
 namespace Seruni22Bakery.Domain.Common;
 
 /// <summary>Dokumen yang dinomori harian oleh server, bukan oleh layar.</summary>
-public enum DocumentKind { Order, WorkOrder, PurchaseOrder, Return }
+public enum DocumentKind
+{
+    Order,
+    WorkOrder,
+    PurchaseOrder,
+    Return,
+    SupplierReturn,
+    SupplierPayment
+}
 
 /// <summary>
 /// Nomor dokumen tampil di cetak dan di laporan, jadi bentuknya tidak boleh berubah diam-diam:
@@ -15,6 +23,10 @@ public static class DocumentNumber
         DocumentKind.WorkOrder => "SPK",
         DocumentKind.PurchaseOrder => "PO",
         DocumentKind.Return => "RTR",
+        // RTB/PPB sengaja memakai huruf depan berbeda dari RTR supaya retur barang keluar ke
+        // pemasok tidak pernah tertukar dengan retur dari pelanggan saat dibaca di buku besar.
+        DocumentKind.SupplierReturn => "RTB",
+        DocumentKind.SupplierPayment => "PPB",
         _ => throw new ArgumentException($"Jenis dokumen tidak dikenal: {kind}")
     };
 

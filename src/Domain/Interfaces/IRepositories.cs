@@ -373,6 +373,65 @@ public interface IPurchaseOrderRepository
         GoodsReceipt receipt, IReadOnlyList<StockChange> stockChanges, JournalEntry? journal);
 }
 
+/// <summary>
+/// Satu baris penerimaan dilihat dari sisi hutang: berapa yang masih bisa diretur dan berapa
+/// nilai hutang yang lahir darinya. Layar retur dan sisi tulis mengambil angka yang sama dari
+/// sini, jadi "sisa" tidak pernah dihitung dua kali dengan hasil berbeda.
+/// </summary>
+public record PayableReceiptLineView(
+    int GoodsReceiptLineId, int IngredientId, string IngredientName, string Unit,
+    int LocationId, string LocationName, decimal ReceivedQuantity, decimal ReturnedQuantity,
+    long UnitCostMinorUnits, long ValueMinorUnits);
+
+/// <summary>
+/// Struk penerimaan beserta sisa hutangnya: nilai terima dikurangi seluruh retur lalu seluruh
+/// pembayaran. Hutang lahir per struk (bukan per PO), jadi struk inilah satuan yang bisa
+/// dijelaskan baris per baris di layar Utang Pemasok.
+/// </summary>
+public record SupplierPayableView(
+    int GoodsReceiptId, int PurchaseOrderId, string? PoNumber, int? SupplierId, string? SupplierName,
+    DateTime ReceivedAt, long ReceivedValueMinorUnits, long ReturnedValueMinorUnits,
+    long PaidValueMinorUnits, long BalanceMinorUnits, IReadOnlyList<PayableReceiptLineView> Lines);
+
+public record SupplierReturnLineView(
+    int GoodsReceiptLineId, int IngredientId, string? IngredientName, string Unit,
+    decimal Quantity, long UnitCostMinorUnits, long ValueMinorUnits);
+
+public record SupplierReturnView(
+    int Id, string ReturnNumber, int GoodsReceiptId, int PurchaseOrderId, string? PoNumber,
+    string? SupplierName, string Reason, string? Notes, long ValueMinorUnits, DateTime ReturnedAt,
+    string? CreatedByUsername, IReadOnlyList<SupplierReturnLineView> Lines);
+
+public record SupplierPaymentView(
+    int Id, string PaymentNumber, int GoodsReceiptId, int PurchaseOrderId, string? PoNumber,
+    string? SupplierName, long AmountMinorUnits, string Method, string? Notes, DateTime PaidAt,
+    string? CreatedByUsername);
+
+/// <summary>
+/// Jalur baca sekaligus tulis retur dan pembayaran pemasok. Keduanya mengikat satu struk
+/// penerimaan dan menulis dokumen + mutasi stok + jurnal dalam satu transaksi, sehingga hutang
+/// tidak pernah turun tanpa barang atau uang yang ikut bergerak.
+/// </summary>
+public interface ISupplierSettlementRepository
+{
+    /// <param name="includeLunas">false menyembunyikan struk yang sisa hutangnya sudah nol.</param>
+    Task<IReadOnlyList<SupplierPayableView>> GetPayablesAsync(bool includeLunas = false, int limit = 200);
+    Task<SupplierPayableView?> GetPayableAsync(int goodsReceiptId);
+    Task<IReadOnlyList<SupplierReturnView>> GetReturnsAsync(int? goodsReceiptId = null, int limit = 200);
+    Task<IReadOnlyList<SupplierPaymentView>> GetPaymentsAsync(int? goodsReceiptId = null, int limit = 200);
+    /// <summary>
+    /// Retur + stok keluar + jurnal tercatat bersama. Baris retur adalah sumber mutasi stoknya, jadi
+    /// tidak ada jalur lain yang boleh menggerakkan barang untuk dokumen ini. Nilai per baris dan
+    /// sisa hutang dihitung ulang dari struk di dalam transaksi, sehingga dua retur bersamaan tidak
+    /// bisa melepas hutang lebih besar daripada yang ada. Jurnalnya boleh kosong untuk retur barang
+    /// yang harganya nol di struk — tidak ada hutang yang dilepas, hanya lapisan yang keluar.
+    /// </summary>
+    Task<int> CreateReturnWithJournalAsync(SupplierReturn ret, JournalEntry? journal);
+
+    /// <summary>Pembayaran mengikat satu struk, sama seperti hutangnya lahir.</summary>
+    Task<int> CreatePaymentWithJournalAsync(SupplierPayment payment, JournalEntry journal);
+}
+
 public interface IDocumentSequenceRepository
 {
     /// <summary>

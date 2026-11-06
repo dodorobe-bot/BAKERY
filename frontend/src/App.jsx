@@ -621,10 +621,15 @@ export default function App() {
   const handleUpdateSupplier = async (id, payload) => {
     await api.updateSupplier(id, payload); await loadData();
   };
+  // Retur pemasok mengubah stok, hutang, dan jurnal sekaligus, jadi seluruh daftar dimuat ulang
+  // dari server alih-alih dikoreksi di peramban.
+  const handleCreateSupplierReturn = async (payload) => {
+    await api.createSupplierReturn(payload); await loadData();
+  };
 
-  // Layar keuangan menghitung piutang dan utang dari daftar yang dimuat. Tanpa halaman
-  // berikutnya, angka di kartu berhenti di 100/300 baris pertama dan tampak lebih kecil dari
-  // kenyataan. Kedua pemuat ini melanjutkan dari jumlah baris yang sudah tampil.
+  // Layar keuangan menghitung piutang dari daftar pesanan yang dimuat. Tanpa halaman berikutnya,
+  // angka di kartu berhenti di 100/300 baris pertama dan tampak lebih kecil dari kenyataan, jadi
+  // pemuat ini melanjutkan dari jumlah baris yang sudah tampil.
   const handleLoadMoreReceivables = async () => {
     const halaman = await api.getOrders({ outstanding: true, limit: 500, offset: orders.length });
     const baru = halaman?.items ?? [];
@@ -633,15 +638,6 @@ export default function App() {
       return [...(lama ?? []), ...baru.filter((o) => !ada.has(o.id))];
     });
     setOrderTotal(halaman?.total ?? null);
-  };
-  const handleLoadMorePayables = async () => {
-    const halaman = await api.getPurchases({ status: 'open', limit: 300, offset: purchases.length });
-    const baru = halaman?.items ?? [];
-    setPurchases((lama) => {
-      const ada = new Set((lama ?? []).map((p) => p.id));
-      return [...(lama ?? []), ...baru.filter((p) => !ada.has(p.id))];
-    });
-    setPurchaseTotal(halaman?.total ?? null);
   };
 
   // Pengaturan & hak akses: hasil dikembalikan ke layar (bukan alert) supaya modal/form
@@ -851,13 +847,10 @@ export default function App() {
             balances={balances}
             orders={orders}
             orderTotal={orderTotal}
-            purchases={purchases}
-            purchaseTotal={purchaseTotal}
             summary={dashboardData}
             loading={loading}
             onRefresh={loadData}
             onLoadMoreOrders={handleLoadMoreReceivables}
-            onLoadMorePurchases={handleLoadMorePayables}
           />
         );
 
@@ -906,9 +899,11 @@ export default function App() {
             onCancelPurchase={handleCancelPurchase}
             onCreateSupplier={handleCreateSupplier}
             onUpdateSupplier={handleUpdateSupplier}
+            onCreateSupplierReturn={handleCreateSupplierReturn}
             canWritePurchase={bolehAksi(user, 'purchases-create')}
             canReceivePurchase={bolehAksi(user, 'purchases-receive')}
             canCancelPurchase={bolehAksi(user, 'purchases-cancel')}
+            canReturnPurchase={bolehAksi(user, 'purchases-return')}
             canExportPurchase={bolehAksi(user, 'finance-read')}
             canManageSuppliers={bolehAksi(user, 'master-data-write')}
             initialTab={activeTab === 'suppliers' ? 'suppliers' : 'po'}

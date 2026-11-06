@@ -85,7 +85,9 @@ public class LocationStockRepository : ILocationStockRepository
         cmd.CommandText = @"
             SELECT m.Id, m.IngredientId, i.Name, i.Unit,
                    CASE WHEN m.MovementType = 'Adjustment' AND m.SourceType = 'LocationTransfer'
-                        THEN 'Transfer' ELSE m.MovementType END,
+                        THEN 'Transfer'
+                        WHEN m.SourceType = 'SupplierReturn' THEN 'Retur Pemasok'
+                        ELSE m.MovementType END,
                    m.Quantity,
                    m.LocationId, sl.Name, m.SourceType, m.SourceId, m.Notes, m.CreatedAt
             FROM StockMovements m

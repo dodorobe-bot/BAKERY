@@ -34,6 +34,9 @@ public static class RolePolicies
     public const string PurchasesCreate = "purchases-create";
     public const string PurchasesReceive = "purchases-receive";
     public const string PurchasesCancel = "purchases-cancel";
+    // Retur pemasok mengurangi stok DAN melepas utang, jadi ia menyentuh uang seperti pesanan,
+    // bukan sekadar memindahkan barang seperti penerimaan.
+    public const string PurchasesReturn = "purchases-return";
     public const string MasterDataWrite = "master-data-write";
     public const string SalesExport = "sales-export";
     public const string Administration = "administration";
@@ -60,6 +63,7 @@ public static class RolePolicies
             [PurchasesCreate] = [UserRole.Owner, UserRole.Admin],
             [PurchasesReceive] = [UserRole.Owner, UserRole.Admin, UserRole.Dapur],
             [PurchasesCancel] = [UserRole.Owner, UserRole.Admin],
+            [PurchasesReturn] = [UserRole.Owner, UserRole.Admin],
             [MasterDataWrite] = [UserRole.Owner, UserRole.Admin],
             [Administration] = [UserRole.Owner],
         };

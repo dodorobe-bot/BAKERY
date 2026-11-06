@@ -59,6 +59,9 @@ internal static class WriteTransaction
             return "SPK ini sudah diperiksa mutunya.";
         if (ex.Message.Contains("SalesReturns.ReturnNumber"))
             return "Nomor retur sudah dipakai oleh dokumen lain, perubahan dibatalkan.";
+        if (ex.Message.Contains("SupplierReturns.ReturnNumber") ||
+            ex.Message.Contains("SupplierPayments.PaymentNumber"))
+            return "Nomor dokumen pemasok sudah dipakai oleh dokumen lain, perubahan dibatalkan.";
 
         // Pemicu RAISE(ABORT, 'kalimat') muncul sebagai SQLite Error 19: 'kalimat'.
         var first = ex.Message.IndexOf('\'');

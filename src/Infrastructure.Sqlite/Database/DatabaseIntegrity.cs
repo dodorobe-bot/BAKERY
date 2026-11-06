@@ -41,6 +41,8 @@ public sealed class DatabaseIntegrity
             CekNilaiLapisanBahanSesuaiAkun(conn),
             CekJurnalStokLayarBahan(conn),
             CekStokMasterNonaktif(conn),
+            CekHutangPemasokTidakNegatif(conn),
+            CekDokumenPemasokBerjurnal(conn),
         ];
     }
 
@@ -121,7 +123,9 @@ public sealed class DatabaseIntegrity
             FROM JournalEntries je
             WHERE je.SourceDocumentId IS NOT NULL AND (
                   (je.SourceDocumentType = 'SalesOrder' AND NOT EXISTS (SELECT 1 FROM SalesOrders s WHERE s.Id = je.SourceDocumentId))
-               OR (je.SourceDocumentType = 'WorkOrder'  AND NOT EXISTS (SELECT 1 FROM WorkOrders w WHERE w.Id = je.SourceDocumentId)));");
+               OR (je.SourceDocumentType = 'WorkOrder'  AND NOT EXISTS (SELECT 1 FROM WorkOrders w WHERE w.Id = je.SourceDocumentId))
+               OR (je.SourceDocumentType = 'SupplierReturn'  AND NOT EXISTS (SELECT 1 FROM SupplierReturns r WHERE r.Id = je.SourceDocumentId))
+               OR (je.SourceDocumentType = 'SupplierPayment' AND NOT EXISTS (SELECT 1 FROM SupplierPayments p WHERE p.Id = je.SourceDocumentId)));");
         return baru("rujukan dokumen jurnal utuh", yatim.Count == 0,
             yatim.Count == 0 ? "setiap entri ber-id dokumen sumber menunjuk dokumen yang masih ada"
                              : $"{yatim.Count} entri menggantung: {Rangkai(yatim)}");
@@ -135,7 +139,11 @@ public sealed class DatabaseIntegrity
                 UNION ALL
                 SELECT 'SPK', OrderNumber, COUNT(*) FROM WorkOrders GROUP BY OrderNumber HAVING COUNT(*) > 1
                 UNION ALL
-                SELECT 'PO', PoNumber, COUNT(*) FROM PurchaseOrders GROUP BY PoNumber HAVING COUNT(*) > 1);");
+                SELECT 'PO', PoNumber, COUNT(*) FROM PurchaseOrders GROUP BY PoNumber HAVING COUNT(*) > 1
+                UNION ALL
+                SELECT 'RTB', ReturnNumber, COUNT(*) FROM SupplierReturns GROUP BY ReturnNumber HAVING COUNT(*) > 1
+                UNION ALL
+                SELECT 'PPB', PaymentNumber, COUNT(*) FROM SupplierPayments GROUP BY PaymentNumber HAVING COUNT(*) > 1);");
         return baru("nomor dokumen tidak ada yang kembar", dobel.Count == 0,
             dobel.Count == 0 ? "setiap nomor dokumen hanya muncul sekali"
                              : $"{dobel.Count} nomor kembar: {Rangkai(dobel)}");
@@ -152,7 +160,9 @@ public sealed class DatabaseIntegrity
             WITH docs AS (
                 SELECT 'Order'         AS kind, substr(OrderNumber, instr(OrderNumber, '-') + 1, 8) AS day FROM SalesOrders
                 UNION ALL SELECT 'WorkOrder',      substr(OrderNumber, instr(OrderNumber, '-') + 1, 8) FROM WorkOrders
-                UNION ALL SELECT 'PurchaseOrder',  substr(PoNumber,     instr(PoNumber, '-') + 1, 8)     FROM PurchaseOrders),
+                UNION ALL SELECT 'PurchaseOrder',  substr(PoNumber,     instr(PoNumber, '-') + 1, 8)     FROM PurchaseOrders
+                UNION ALL SELECT 'SupplierReturn', substr(ReturnNumber, instr(ReturnNumber, '-') + 1, 8) FROM SupplierReturns
+                UNION ALL SELECT 'SupplierPayment',substr(PaymentNumber,instr(PaymentNumber, '-') + 1, 8) FROM SupplierPayments),
             jumlah AS (
                 SELECT kind, day, COUNT(*) AS n FROM docs
                 WHERE day GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
@@ -374,6 +384,77 @@ public sealed class DatabaseIntegrity
                   "Formulir Mutasi Bahan atau Pemeriksaan Fisik (Stok Opname) supaya selisihnya " +
                   "ikut membukukan jurnal; setelah stok nol, laporan dan neraca menunjuk barang " +
                   "yang sama.");
+    }
+
+    /// <summary>
+    /// Hutang lahir per struk penerimaan, jadi turunnya juga harus bisa dijelaskan per struk.
+    /// Satu struk yang beban retur plus pembayarannya melampaui nilai terimanya berarti 2-002
+    /// pernah dikurang lebih dalam daripada yang pernah dikredit — saldo akun berubah menjadi
+    /// piutang padahal labelnya utang. Pemeriksaan ini hanya menilai dokumen yang dibuat jalur
+    /// retur/pembayaran, jadi basis data lama tanpa tabel baru tetap dilaporkan sehat.
+    /// </summary>
+    private static IntegrityCheck CekHutangPemasokTidakNegatif(SqliteConnection conn)
+    {
+        var bocor = Baris(conn, @"
+            SELECT 'GR#' || g.GoodsReceiptId || ': terima ' || g.nilai || ', retur ' ||
+                   COALESCE(r.v, 0) || ', bayar ' || COALESCE(p.v, 0)
+              FROM (SELECT GoodsReceiptId,
+                           SUM(CAST(ROUND(ReceivedQty * UnitCostMinorUnits) AS INTEGER)) AS nilai
+                      FROM GoodsReceiptLines GROUP BY GoodsReceiptId) g
+              LEFT JOIN (SELECT gl.GoodsReceiptId, SUM(l.ValueMinorUnits) AS v
+                           FROM SupplierReturnLines l
+                           JOIN GoodsReceiptLines gl ON gl.Id = l.GoodsReceiptLineId
+                          GROUP BY gl.GoodsReceiptId) r ON r.GoodsReceiptId = g.GoodsReceiptId
+              LEFT JOIN (SELECT GoodsReceiptId, SUM(Amount) AS v
+                           FROM SupplierPayments GROUP BY GoodsReceiptId) p ON p.GoodsReceiptId = g.GoodsReceiptId
+             WHERE COALESCE(r.v, 0) + COALESCE(p.v, 0) > g.nilai;");
+        var saldo = Skalar(conn, @"
+            SELECT COALESCE(SUM(jl.DebitAmount - jl.CreditAmount), 0)
+              FROM JournalLines jl
+              JOIN Accounts a ON a.Id = jl.AccountId
+              JOIN JournalEntries je ON je.Id = jl.JournalEntryId
+             WHERE a.Code = '2-002' AND je.Status IN ('Posted','Reversed');");
+        var struk = Skalar(conn, "SELECT COUNT(DISTINCT GoodsReceiptId) FROM GoodsReceiptLines;");
+        return baru("hutang pemasok per struk tidak pernah negatif", bocor.Count == 0,
+            bocor.Count == 0
+                ? $"{struk} struk penerimaan; retur plus pembayaran setiap struk tidak ada yang " +
+                  $"melampaui nilai terimanya. Saldo 2-002 = {saldo} sen (kredit positif = masih utang)."
+                : $"{bocor.Count} struk dibebani lebih besar daripada nilai barang yang diterima: " +
+                  $"{Rangkai(bocor)}. Saldo 2-002 saat ini {saldo} sen. Retur atau pembayaran ditulis " +
+                  "melewati jalur resmi (layar Retur Pemasok / Pembayaran Pemasok), bukan disisipkan " +
+                  "langsung ke tabel SupplierReturnLines atau SupplierPayments.");
+    }
+
+    /// <summary>
+    /// Retur dan pembayaran pemasok mengubah stok, hutang, dan kas sekaligus. Tanpa tautan jurnal,
+    /// pergerakannya hanya ada di tabel dokumen sehingga neraca tidak berubah dan tidak ada satu pun
+    /// baris buku besar yang bisa ditunjuk saat angka hutang dipertanyakan.
+    /// </summary>
+    private static IntegrityCheck CekDokumenPemasokBerjurnal(SqliteConnection conn)
+    {
+        var yatim = Baris(conn, @"
+            SELECT 'RTB ' || ReturnNumber || ' tanpa jurnal'
+              FROM SupplierReturns WHERE JournalEntryId IS NULL
+            UNION ALL
+            SELECT 'PPB ' || PaymentNumber || ' tanpa jurnal'
+              FROM SupplierPayments WHERE JournalEntryId IS NULL
+            UNION ALL
+            SELECT 'RTB ' || r.ReturnNumber || ' menunjuk jurnal #' || r.JournalEntryId || ' yang hilang'
+              FROM SupplierReturns r
+             WHERE r.JournalEntryId IS NOT NULL
+               AND NOT EXISTS (SELECT 1 FROM JournalEntries je WHERE je.Id = r.JournalEntryId)
+            UNION ALL
+            SELECT 'PPB ' || p.PaymentNumber || ' menunjuk jurnal #' || p.JournalEntryId || ' yang hilang'
+              FROM SupplierPayments p
+             WHERE p.JournalEntryId IS NOT NULL
+               AND NOT EXISTS (SELECT 1 FROM JournalEntries je WHERE je.Id = p.JournalEntryId);");
+        var total = Skalar(conn, @"
+            SELECT (SELECT COUNT(*) FROM SupplierReturns) + (SELECT COUNT(*) FROM SupplierPayments);");
+        return baru("retur dan pembayaran pemasok punya jurnal", yatim.Count == 0,
+            yatim.Count == 0
+                ? $"{total} dokumen retur/pembayaran pemasok, semuanya bertaut jurnal."
+                : $"{yatim.Count} dari {total} dokumen tidak bisa ditelusuri ke buku besar: {Rangkai(yatim)}. " +
+                  "Catat ulang dokumennya lewat layar; jangan menambal JournalEntryId dengan tangan.");
     }
 
     private static IntegrityCheck baru(string name, bool passed, string detail)
