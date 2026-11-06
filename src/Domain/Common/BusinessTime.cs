@@ -47,7 +47,15 @@ public static class BusinessTime
         }
     }
 
-    public static DateTime Now() => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _zone);
+    /// <summary>
+    /// Menerjemahkan cap waktu UTC ke waktu toko. Dipisah supaya batas hari bisa diuji dengan
+    /// waktu tetap: 23:59 dan 00:01 WIB harus jatuh ke tanggal yang berbeda walau UTC-nya
+    /// masih tanggal yang sama.
+    /// </summary>
+    public static DateTime DariUtc(DateTime utc) =>
+        TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utc, DateTimeKind.Utc), _zone);
+
+    public static DateTime Now() => DariUtc(DateTime.UtcNow);
 
     public static DateTime Today() => Now().Date;
 
