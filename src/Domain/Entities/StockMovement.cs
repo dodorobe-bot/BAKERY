@@ -77,3 +77,23 @@ public class FiscalPeriod
     public DateTime? ClosedAt { get; set; }
     public int? ClosedByUserId { get; set; }
 }
+
+/// <summary>
+/// Satu baris daftar periode buku. Selain isi tabel FiscalPeriods, baris ini membawa jumlah kaki
+/// jurnal yang jatuh di rentangnya: pengguna menutup periode justru setelah melihat isinya, dan
+/// bulan yang belum pernah disentuh sama sekali tetap harus muncul sebagai terbuka walaupun tidak
+/// ada barisnya di tabel.
+/// </summary>
+public class FiscalPeriodSummary
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string StartDate { get; set; } = string.Empty;
+    public string EndDate { get; set; } = string.Empty;
+    public string Status { get; set; } = "Open"; // Open, Closed, Locked
+    public bool IsCurrent { get; set; }
+    public int EntryCount { get; set; }
+    public long DebitTotalMinorUnits { get; set; }
+    public DateTime? ClosedAt { get; set; }
+    public string? ClosedByName { get; set; }
+}

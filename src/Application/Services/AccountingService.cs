@@ -183,9 +183,16 @@ public class AccountingService
         };
     }
 
-    /// <summary>Biaya: Dr akun beban sesuai kategori, Cr Kas. Entri null bila nominal nol.</summary>
+    /// <summary>
+    /// Biaya: Dr akun beban sesuai kategori, Cr Kas. Entri null bila nominal nol.
+    ///
+    /// Tanggal bisa dibawa pemilik dari nota yang baru masuk sore; tanpa parameter ini semua biaya
+    /// terpaksa mendarat di hari berjalan dan laporan bulan sebelumnya tidak pernah lengkap.
+    /// Batas apa yang boleh dipilih dijaga di sisi API, jadi pemanggil tetap harus mengirim tanggal
+    /// yang sudah divalidasi.
+    /// </summary>
     public async Task<JournalEntry?> BuildExpenseAsync(
-        string category, string description, long amount, int userId)
+        string category, string description, long amount, int userId, DateTime? transactionDate = null)
     {
         if (amount <= 0) return null;
 
@@ -201,7 +208,7 @@ public class AccountingService
         return new JournalEntry
         {
             Description = $"Biaya: {description}",
-            TransactionDate = BusinessTime.Now(),
+            TransactionDate = transactionDate ?? BusinessTime.Now(),
             SourceDocumentType = "Expense",
             PostedAt = DateTime.UtcNow,
             PostedByUserId = userId,
@@ -445,9 +452,10 @@ public class AccountingService
         await _journals.CreateAsync(entry);
     }
 
-    public async Task PostExpenseAsync(string category, string description, long amount, int userId)
+    public async Task PostExpenseAsync(
+        string category, string description, long amount, int userId, DateTime? transactionDate = null)
     {
-        var entry = await BuildExpenseAsync(category, description, amount, userId)
+        var entry = await BuildExpenseAsync(category, description, amount, userId, transactionDate)
             ?? throw new InvalidOperationException("Nominal biaya harus lebih besar dari nol.");
         await PostAsync(entry);
     }

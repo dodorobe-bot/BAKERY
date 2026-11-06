@@ -247,6 +247,7 @@ public class DatabaseMigratorTests
         // Simulasi basis data dari versi aplikasi sebelumnya: migrasi berikutnya harus bisa
         // menutup kekurangan tanpa menyentuh baris yang sudah ada.
         using var db = new TempDatabase();
+        MigrationRollback.Run(db, "022_PeriodCloseGuard.down.sql");
         MigrationRollback.Run(db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
         MigrationRollback.Run(db, "019_CostLayersForInventory.down.sql");
@@ -258,7 +259,7 @@ public class DatabaseMigratorTests
         MigrationRollback.Run013Down(db);
         MigrationRollback.Run012Down(db);
         MigrationRollback.Run011Down(db);
-        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);");
+        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22);");
 
         Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(10);
 
@@ -275,6 +276,7 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
+        MigrationRollback.Run(db, "022_PeriodCloseGuard.down.sql");
         MigrationRollback.Run(db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
         MigrationRollback.Run(db, "019_CostLayersForInventory.down.sql");
@@ -521,5 +523,81 @@ public class DatabaseMigratorTests
             $"INSERT INTO LocationStock (LocationId, IngredientId, Quantity) VALUES (1, {ingredientId}, -1);");
 
         act.Should().Throw<SqliteException>();
+    }
+
+    [Fact]
+    public void Migrasi022_PagarPeriodeTerpasangDiBasisData()
+    {
+        using var db = new TempDatabase();
+
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name IN (
+                'trg_journalentries_periode_insert', 'trg_journalentries_periode_update',
+                'trg_fiscalperiods_format');"))
+            .Should().Be(3, "pagar periode harus hidup di basis data, bukan hanya di layanan");
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_fiscalperiods_startdate';"))
+            .Should().Be(1, "satu rentang tanggal hanya boleh punya satu baris periode");
+
+        // Pemicu pembalik jurnal bekerja dengan UPDATE Status; kalau pemicu tanggal ikut memagari
+        // semua kolom, menutup bulan lama otomatis membuat seluruh pembatalan di bulan itu macet.
+        var updateHanyaStatus = (string)db.Scalar(
+            "SELECT sql FROM sqlite_master WHERE name='trg_journalentries_periode_update';")!;
+        updateHanyaStatus.Should().Contain("BEFORE UPDATE OF TransactionDate");
+    }
+
+    [Fact]
+    public void JurnalKePeriodeTertutup_DitolakPemicuTanpaMelewatAplikasi()
+    {
+        using var db = new TempDatabase();
+
+        // Entri Januari dibuat sebelum bulan itu ditutup: pemicu hanya menahan penulisan baru,
+        // riwayat yang sudah ada harus tetap ada dan bisa dibalik.
+        db.Exec("INSERT INTO JournalEntries (Description, TransactionDate, Status) " +
+                "VALUES ('Entri Januari lama', '2026-01-05', 'Posted');");
+        db.Exec("INSERT INTO FiscalPeriods (Name, StartDate, EndDate, Status, ClosedAt) " +
+                "VALUES ('Januari 2026', '2026-01-01', '2026-01-31', 'Closed', '2026-02-03 07:11:02');");
+
+        var tulisDiBulanTutup = () => db.Exec(
+            "INSERT INTO JournalEntries (Description, TransactionDate, Status) " +
+            "VALUES ('Sisipan mentah ke bulan tertutup', '2026-01-15', 'Posted');");
+        tulisDiBulanTutup.Should().Throw<SqliteException>()
+            .WithMessage("*Periode buku ini sudah ditutup*");
+
+        // Entri dari bulan yang masih terbuka boleh ada; memindah tanggalnya ke bulan tertutup
+        // adalah cara paling diam-diam untuk mengubah laba rugi yang sudah final.
+        db.Exec("INSERT INTO JournalEntries (Description, TransactionDate, Status) " +
+                "VALUES ('Entri Februari', '2026-02-10', 'Posted');");
+        var geserTanggal = () => db.Exec(
+            "UPDATE JournalEntries SET TransactionDate = '2026-01-20' WHERE TransactionDate = '2026-02-10';");
+        geserTanggal.Should().Throw<SqliteException>()
+            .WithMessage("*tidak boleh dipindah ke periode buku yang sudah ditutup*");
+
+        // Pembalik entri lama mengubah Status dan menambah entri baru bertanggal hari ini,
+        // jadi kolom lain selain tanggal harus tetap boleh ditulis di baris bulan tertutup.
+        db.Exec("UPDATE JournalEntries SET Status = 'Reversed' WHERE TransactionDate = '2026-01-05';");
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM JournalEntries WHERE TransactionDate = '2026-01-05' AND Status = 'Reversed';"))
+            .Should().Be(1, "menutup periode mengunci gerbang tulis, bukan menghapus riwayat yang ada");
+        db.Scalar("PRAGMA integrity_check;").Should().Be("ok");
+    }
+
+    [Fact]
+    public void PeriodeBuku_FormatTanggalSalahRentangTerbalikAtauDuplikat_DitolakPemicu()
+    {
+        using var db = new TempDatabase();
+
+        var formatSalah = () => db.Exec(
+            "INSERT INTO FiscalPeriods (Name, StartDate, EndDate) VALUES ('Buruk', '2026/01/01', '2026-01-31');");
+        formatSalah.Should().Throw<SqliteException>().WithMessage("*awal periode harus berformat yyyy-MM-dd*");
+
+        var rentangTerbalik = () => db.Exec(
+            "INSERT INTO FiscalPeriods (Name, StartDate, EndDate) VALUES ('Terbalik', '2026-03-31', '2026-03-01');");
+        rentangTerbalik.Should().Throw<SqliteException>().WithMessage("*Rentang periode buku tidak sah*");
+
+        db.Exec("INSERT INTO FiscalPeriods (Name, StartDate, EndDate) VALUES ('Maret 2026', '2026-03-01', '2026-03-31');");
+        var dobel = () => db.Exec(
+            "INSERT INTO FiscalPeriods (Name, StartDate, EndDate) VALUES ('Maret kembar', '2026-03-01', '2026-03-31');");
+        dobel.Should().Throw<SqliteException>();
     }
 }

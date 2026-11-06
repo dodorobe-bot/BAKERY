@@ -43,6 +43,7 @@ public sealed class DatabaseIntegrity
             CekStokMasterNonaktif(conn),
             CekHutangPemasokTidakNegatif(conn),
             CekDokumenPemasokBerjurnal(conn),
+            CekPeriodeTertutupMengunci(conn),
         ];
     }
 
@@ -455,6 +456,60 @@ public sealed class DatabaseIntegrity
                 ? $"{total} dokumen retur/pembayaran pemasok, semuanya bertaut jurnal."
                 : $"{yatim.Count} dari {total} dokumen tidak bisa ditelusuri ke buku besar: {Rangkai(yatim)}. " +
                   "Catat ulang dokumennya lewat layar; jangan menambal JournalEntryId dengan tangan.");
+    }
+
+    /// <summary>
+    /// Tutup periode hanya berarti kalau gerbang tulisnya masih ada dan benar-benar menahan. Dua
+    /// hal diuji sekaligus: pemicunya belum hilang (misalnya karena penurunan versi manual), dan
+    /// tidak ada satu baris jurnal pun yang tercatat SETELAH periodenya ditutup. Jurnal yang sudah
+    /// ada di dalam bulan tertutup sebelum penutupan adalah keadaan normal dan tidak dilaporkan
+    /// di sini — yang dilarang adalah mengisinya lagi setelah kunci dipasang.
+    /// </summary>
+    private static IntegrityCheck CekPeriodeTertutupMengunci(SqliteConnection conn)
+    {
+        var pemicu = Skalar(conn, @"
+            SELECT COUNT(*) FROM sqlite_master
+             WHERE type = 'trigger' AND name IN (
+                 'trg_journalentries_periode_insert', 'trg_journalentries_periode_update');");
+
+        // Kedua cap waktu dinormalisasi ke "yyyy-MM-dd HH:mm:ss" dulu: kolom lama ada yang ditulis
+        // datetime('now') (spasi, tanpa penanda zona) dan ada yang ToString("o") (T + 7 desimal),
+        // jadi membandingkan teks mentah-nya akan selalu menyebut yang berformat ISO lebih baru.
+        var bocor = Baris(conn, @"
+            SELECT 'jurnal #' || je.Id || ' bertanggal ' || je.TransactionDate ||
+                   ' ditulis ' || substr(replace(je.CreatedAt, 'T', ' '), 1, 19) ||
+                   ' ke periode ' || fp.Name || ' yang ditutup ' ||
+                   substr(replace(fp.ClosedAt, 'T', ' '), 1, 19)
+              FROM JournalEntries je
+              JOIN FiscalPeriods fp
+                ON fp.Status IN ('Closed', 'Locked')
+               AND fp.StartDate <= je.TransactionDate
+               AND fp.EndDate >= je.TransactionDate
+             WHERE fp.ClosedAt IS NOT NULL
+               AND substr(replace(je.CreatedAt, 'T', ' '), 1, 19)
+                   > substr(replace(fp.ClosedAt, 'T', ' '), 1, 19)
+             ORDER BY je.Id DESC LIMIT 8;");
+
+        var tertutup = Skalar(conn,
+            "SELECT COUNT(*) FROM FiscalPeriods WHERE Status IN ('Closed','Locked');");
+        var isi = Skalar(conn, @"
+            SELECT COUNT(*) FROM JournalEntries je
+              JOIN FiscalPeriods fp
+                ON fp.Status IN ('Closed','Locked')
+               AND fp.StartDate <= je.TransactionDate
+               AND fp.EndDate >= je.TransactionDate;");
+
+        var lolos = pemicu == "2" && bocor.Count == 0;
+        return baru("periode tertutup mengunci penulis jurnal", lolos, lolos
+            ? $"{tertutup} periode ditutup berisi {isi} kaki jurnal; pemicu pagar INSERT dan UPDATE " +
+              "aktif, dan tidak ada jurnal yang ditulis setelah penutupan."
+            : (pemicu != "2"
+                ? $"pemicu pagar periode hanya {pemicu} dari 2 yang diharapkan — tutup periode saat ini " +
+                  "tidak mengikat, jurnal mundur masih bisa ditulis. Bangun ulang skema (migrasi 022) " +
+                  "sebelum memakai fitur ini."
+                : $"{bocor.Count} jurnal masuk ke periode yang sudah lebih dulu ditutup: {Rangkai(bocor)}. " +
+                  "Pagar ditulis lewat jalur yang memutar aplikasi; periksa dari mana angka ini datang.") +
+              $" ({tertutup} periode tertutup, {isi} jurnal di dalamnya)");
     }
 
     private static IntegrityCheck baru(string name, bool passed, string detail)

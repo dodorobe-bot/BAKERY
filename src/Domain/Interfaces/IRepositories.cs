@@ -432,6 +432,24 @@ public interface ISupplierSettlementRepository
     Task<int> CreatePaymentWithJournalAsync(SupplierPayment payment, JournalEntry journal);
 }
 
+/// <summary>
+/// Pagar periode buku. Daftar dibaca dari isi jurnal, bukan dari tabel FiscalPeriods saja, supaya
+/// bulan yang sudah berisi transaksi tapi belum pernah disentuh tetap muncul dan bisa ditutup.
+/// Menutup dan membuka kembali hanya mengubah status: tidak ada satu baris jurnal pun yang
+/// dihapus atau dipindah, jadi riwayat tetap utuh apa pun keputusan pemilik.
+/// </summary>
+public interface IFiscalPeriodRepository
+{
+    Task<IReadOnlyList<FiscalPeriodSummary>> ListAsync();
+
+    /// <summary>
+    /// Menulis baris baru bila periodenya belum pernah ada, lalu mengubah statusnya. Rentang
+    /// dikirim apa adanya karena bulan yang sudah punya baris bisa saja berisi rentang yang tidak
+    /// sama dengan kalender; menutup ulang tidak boleh diam-diam memindah batas periode.
+    /// </summary>
+    Task UpsertStatusAsync(string name, string startDate, string endDate, string status, int userId);
+}
+
 public interface IDocumentSequenceRepository
 {
     /// <summary>

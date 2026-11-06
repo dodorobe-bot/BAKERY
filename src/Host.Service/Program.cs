@@ -206,9 +206,11 @@ try
     builder.Services.AddScoped<ISalesReturnRepository, SalesReturnRepository>();
     builder.Services.AddScoped<ISupplierSettlementRepository, SupplierSettlementRepository>();
     builder.Services.AddScoped<IPrintJobRepository, PrintJobRepository>();
+    builder.Services.AddScoped<IFiscalPeriodRepository, FiscalPeriodRepository>();
     builder.Services.AddScoped<PurchaseService>();
     builder.Services.AddScoped<SalesReturnService>();
     builder.Services.AddScoped<SupplierSettlementService>();
+    builder.Services.AddScoped<PeriodCloseService>();
     builder.Services.AddScoped<CostSummaryService>();
     builder.Services.AddScoped<PosDeviceService>();
 
@@ -341,6 +343,24 @@ try
 
         // Klien yang memutus koneksi bukan kegagalan server; jangan mencoba menulis jawaban.
         if (ctx.RequestAborted.IsCancellationRequested || ctx.Response.HasStarted) return;
+
+        // Pagar periode adalah penolakan yang diharapkan, bukan kerusakan mesin. Semua aksi tulis
+        // bermuara ke satu penulis jurnal, jadi jalur yang tidak punya penanganan sendiri —
+        // opname, mutasi, penyelesaian SPK — akan menjawab 500 generik tanpa nama bulan mana
+        // yang terkunci dan siapa yang menutupnya.
+        if (galat is PeriodClosedException)
+        {
+            Log.Warning(galat, "Penulisan jurnal ditolak pagar periode: {Jalur}", ctx.Request.Path);
+            ctx.Response.Clear();
+            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
+            ctx.Response.ContentType = "application/json; charset=utf-8";
+            await ctx.Response.WriteAsJsonAsync(new
+            {
+                errorCode = ErrorCodes.ValidationFailed,
+                errorMessage = galat.Message,
+            });
+            return;
+        }
 
         ctx.Response.Clear();
         ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -1698,9 +1718,15 @@ try
         if (MoneyRules.AmountError(dto.Amount, "Nominal biaya") is { } amountError)
             return Results.BadRequest(new { errorMessage = amountError });
 
+        // Tanggal ikut ditentukan di server, bukan dipercaya dari browser: layar boleh mengirim
+        // kosong (berarti hari bisnis hari ini) dan nilai yang tidak masuk akal ditolak dengan
+        // pesan yang menyebut batasnya, bukan diam-diam digeser ke tanggal lain.
+        if (!FiscalCalendar.TryExpenseDate(dto.TransactionDate, out var tanggalBiaya, out var galatTanggal))
+            return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galatTanggal });
+
         try
         {
-            await acct.PostExpenseAsync(dto.Category, dto.Description, dto.Amount, userId);
+            await acct.PostExpenseAsync(dto.Category, dto.Description, dto.Amount, userId, tanggalBiaya);
         }
         catch (InvalidOperationException ex)
         {
@@ -1708,6 +1734,50 @@ try
         }
         return Results.Ok();
     }).RequireAuthorization("finance-write");
+
+    // Periode buku (tutup bulan) — daftar untuk dibaca pemilik keuangan, aksi tutup/buka untuk Owner.
+    app.MapGet("/api/periods", async (PeriodCloseService svc) =>
+        Results.Ok(await svc.ListAsync())).RequireAuthorization("finance-read");
+
+    app.MapPost("/api/periods/close", async (
+        PeriodDto dto, PeriodCloseService svc, HttpContext ctx) =>
+    {
+        var userId = IdPengguna(ctx);
+        var sebelum = (await svc.ListAsync()).FirstOrDefault(p => Bulan(p.StartDate) == Bulan(dto.Month));
+        var result = await svc.CloseAsync(dto.Month, userId);
+        if (!result.Success)
+            return Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: StatusCodes.Status400BadRequest);
+
+        // Ditulis setelah status berubah: jejak harus memuat keadaan yang benar-benar berlaku,
+        // dan penutup periode adalah satu dari sedikit aksi yang mengubah hak tulis orang lain.
+        // Success selalu membawa ringkasannya; layanan gagal lebih dulu kalau barisnya tidak kembali.
+        var sesudah = result.Data!;
+        await Jejak.CatatDetilAsync(ctx, "tutup periode", "FiscalPeriod", sesudah.Id,
+            new { sebelum?.Status, sebelum?.ClosedAt },
+            new { sesudah.Status, sesudah.ClosedAt, Penutup = sesudah.ClosedByName });
+        return Results.Ok(sesudah);
+    }).RequireAuthorization("administration");
+
+    app.MapPost("/api/periods/reopen", async (
+        PeriodDto dto, PeriodCloseService svc, HttpContext ctx) =>
+    {
+        var userId = IdPengguna(ctx);
+        var sebelum = (await svc.ListAsync()).FirstOrDefault(p => Bulan(p.StartDate) == Bulan(dto.Month));
+        var result = await svc.ReopenAsync(dto.Month, userId);
+        if (!result.Success)
+        {
+            var status = result.ErrorCode == ErrorCodes.Forbidden
+                ? StatusCodes.Status403Forbidden
+                : StatusCodes.Status400BadRequest;
+            return Results.Json(new { result.ErrorCode, result.ErrorMessage }, statusCode: status);
+        }
+
+        var sesudah = result.Data!;
+        await Jejak.CatatDetilAsync(ctx, "buka periode", "FiscalPeriod", sesudah.Id,
+            new { sebelum?.Status, sebelum?.ClosedAt },
+            new { sesudah.Status, sesudah.ClosedAt });
+        return Results.Ok(sesudah);
+    }).RequireAuthorization("administration");
 
     // Users (Owner only)
     // Dikirim sebagai DTO terbatas: layar hanya butuh identitas dan status akun. Seluruh isi
@@ -2210,6 +2280,12 @@ static string? NormalisasiBarcode(string? barcode)
 static int IdPengguna(HttpContext ctx) =>
     int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
 
+// Kunci bulan (yyyy-MM) dari teks tanggal periode. Perbandingan dilakukan pada kunci ini, bukan
+// pada tanggal penuh, karena layar memilih bulan dan tidak pernah tahu tanggal berapa bulannya
+// mulai di basis data.
+static string Bulan(string? tanggal) =>
+    string.IsNullOrWhiteSpace(tanggal) || tanggal.Trim().Length < 7 ? string.Empty : tanggal.Trim()[..7];
+
 // Produk adalah data induk: nama kosong atau baris resep tak sah merusak katalog dan HPP tanpa
 // pesan. Periksa sebelum menyentuh basis data supaya jawabannya 400, bukan 500 dari referensi null.
 static string? GalatProduk(CreateProductDto dto)
@@ -2300,7 +2376,10 @@ record ChangePasswordDto(string CurrentPassword, string NewPassword);
 // mengenalnya, pembayaran dianggap pas dan tidak ada kembalian yang dilaporkan.
 record AddPaymentDto(long Amount, string Method, string? Notes, string? IdempotencyKey, long? TenderAmount = null);
 record UpdateStatusDto(string Status, string? CancelReason);
-record ExpenseDto(string Category, string Description, long Amount);
+record ExpenseDto(string Category, string Description, long Amount, string? TransactionDate = null);
+// Satu DTO untuk tutup dan buka kembali: isinya hanya bulan yang dituju, supaya layar tidak bisa
+// mengirim status sendiri dan memilih sendiri bulan mana yang boleh dibuka.
+record PeriodDto(string? Month);
 record CreateWorkOrderDto(int ProductTemplateId, int TargetQuantity, long LaborCost, long OverheadCost);
 record CompleteWorkOrderDto(int ActualGoodQty, int ActualFailedQty, List<WorkOrderMaterialDto> Materials, List<WorkOrderScrapDto> Scraps);
 record WorkOrderMaterialDto(int IngredientId, decimal ActualQty, long UnitCost);

@@ -364,6 +364,19 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(payload)
     }),
+  // Daftar periode dihitung server dari isi jurnal; tombol tutup/buka hanya mengubah status
+  // baris periode, jadi aksinya membawa kunci idempotensi agar klik ganda tidak menulis dua kali.
+  getPeriods: () => api.request('/api/periods'),
+  closePeriod: (month, kunci) =>
+    api.request('/api/periods/close', {
+      method: 'POST',
+      body: JSON.stringify({ month, idempotensi: kunci })
+    }),
+  reopenPeriod: (month, kunci) =>
+    api.request('/api/periods/reopen', {
+      method: 'POST',
+      body: JSON.stringify({ month, idempotensi: kunci })
+    }),
   // Merek toko harus bisa dibaca sebelum masuk, jadi endpoint ini tidak menuntut token dan
   // hanya mengembalikan nama, slogan, serta logo.
   getBrand: () => api.request('/api/brand'),

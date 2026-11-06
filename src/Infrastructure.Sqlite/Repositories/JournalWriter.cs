@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using Seruni22Bakery.Domain.Common;
 using Seruni22Bakery.Domain.Entities;
 
 namespace Seruni22Bakery.Infrastructure.Sqlite.Repositories;
@@ -29,6 +30,7 @@ internal static class JournalWriter
         }
 
         await EnsureAccountsUsableAsync(conn, tx, entry);
+        await EnsurePeriodOpenAsync(conn, tx, entry);
 
         var cmd = conn.CreateCommand();
         cmd.Transaction = tx;
@@ -97,6 +99,48 @@ internal static class JournalWriter
         update.CommandText = "UPDATE JournalEntries SET Status = 'Reversed' WHERE Id = @id;";
         update.Parameters.AddWithValue("@id", originalId);
         await update.ExecuteNonQueryAsync();
+    }
+
+    /// <summary>
+    /// Pagar periode ditanyakan di sini, di satu-satunya tempat jurnal ditulis, karena aksi yang
+    /// sama bisa datang dari layar Kasir, Pembelian, Produksi, Keuangan, maupun MCP. Kalau setiap
+    /// jalur yang memeriksa, satu layar yang lupa sudah cukup untuk membuat bulan tertutup kembali
+    /// bisa diisi. Pesan memuat nama penutup dan waktunya supaya pengguna tahu ke siapa harus
+    /// bertanya, bukan sekadar "ditolak".
+    /// </summary>
+    private static async Task EnsurePeriodOpenAsync(
+        SqliteConnection conn, SqliteTransaction? tx, JournalEntry entry)
+    {
+        var tanggal = entry.TransactionDate.ToString("yyyy-MM-dd");
+
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            SELECT fp.Name, fp.StartDate, fp.EndDate, fp.ClosedAt, u.Username
+              FROM FiscalPeriods fp
+              LEFT JOIN Users u ON u.Id = fp.ClosedByUserId
+             WHERE fp.Status IN ('Closed', 'Locked')
+               AND fp.StartDate <= @td AND fp.EndDate >= @td
+             ORDER BY fp.StartDate
+             LIMIT 1;";
+        cmd.Parameters.AddWithValue("@td", tanggal);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        if (!await reader.ReadAsync()) return;
+
+        var nama = reader.GetString(0);
+        var mulai = reader.GetString(1);
+        var akhir = reader.GetString(2);
+        var siapa = reader.IsDBNull(4) ? "pengguna yang sudah dihapus" : reader.GetString(4);
+        var kapan = reader.IsDBNull(3)
+            ? "waktu tidak tercatat"
+            : TimeZoneInfo.ConvertTimeFromUtc(BusinessTime.BacaCapWaktu(reader.GetString(3)), BusinessTime.Zone)
+                .ToString("yyyy-MM-dd HH:mm");
+
+        throw new PeriodClosedException(
+            $"Periode {nama} ({mulai} s/d {akhir}) sudah ditutup oleh {siapa} pada {kapan}, jadi jurnal " +
+            $"bertanggal {tanggal} tidak bisa ditulis. Catat pada periode yang masih terbuka, atau minta " +
+            "Owner membuka kembali periode itu lewat Keuangan › Laporan keuangan › Periode buku.");
     }
 
     // Foreign key menjaga akun tetap ada, tetapi tidak menjaga akun masih dipakai:

@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useBarisBertahap } from '../utils/bertahap';
-import { formatMinor, formatQty, formatDate, toMinor, tanggalTokoISO, selisihHariBisnis } from '../utils/money';
+import { formatMinor, formatQty, formatDate, formatInstantDate, toMinor, tanggalTokoISO, selisihHariBisnis } from '../utils/money';
 import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
 import {
   accountTypeLabel,
@@ -58,6 +58,20 @@ const EXPENSE_CATEGORIES = [
 // kemarin antara 00:00-06:59 WIB sehingga jurnal hari ini tidak ikut terpilih.
 const todayISO = () => tanggalTokoISO();
 const firstOfMonthISO = () => todayISO().slice(0, 8) + '01';
+
+const NAMA_BULAN = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+];
+const labelBulan = (tanggal) => {
+  const [tahun, bulan] = String(tanggal ?? '').slice(0, 7).split('-').map(Number);
+  return tahun && bulan ? `${NAMA_BULAN[bulan - 1]} ${tahun}` : '—';
+};
+
+// Sama dengan FiscalCalendar.MaxHistoryDays di server: layar hanya membatasi pilihan tanggal,
+// sedangkan penolakan sebenarnya tetap datang dari API.
+const BATAS_HARI_BIAYA = 366;
+const tanggalMundurISO = (hari) => tanggalTokoISO(new Date(Date.now() - hari * 86400000));
 
 const cashAccounts = (balances) =>
   (balances ?? []).filter(
@@ -117,10 +131,17 @@ export default function FinanceView({
   const [saldoAkhirRentang, setSaldoAkhirRentang] = useState(null);
   const [versiData, setVersiData] = useState(0);
   const [expenseOpen, setExpenseOpen] = useState(false);
-  const [expenseForm, setExpenseForm] = useState({ category: '', amount: '', description: '' });
+  const [expenseForm, setExpenseForm] = useState({
+    category: '', amount: '', description: '', transactionDate: todayISO(),
+  });
   const [expenseError, setExpenseError] = useState('');
   const { sedangSimpan: expenseSaving, mulai: mulaiBiaya, selesai: selesaiBiaya } = useKunciSimpan();
   const [expenseKunci, setExpenseKunci] = useState('');
+  // Daftar periode buku dibaca server dari isi jurnal; panel tutup/buka hanya memakai statusnya.
+  const [periode, setPeriode] = useState([]);
+  const [periodeMemuat, setPeriodeMemuat] = useState(false);
+  const [periodeGalat, setPeriodeGalat] = useState('');
+  const [periodeAksi, setPeriodeAksi] = useState('');
 
   const loadJournal = useCallback(async (from, to) => {
     setJournalLoading(true);
@@ -176,6 +197,46 @@ export default function FinanceView({
   useEffect(() => {
     if (section === 'payables') muatUtangStruk(utangTampilLunas);
   }, [section, versiData, utangTampilLunas, muatUtangStruk]);
+
+  // Panel periode hanya ada di tab laporan, jadi daftarnya dimuat saat tab itu dibuka dan
+  // dimuat ulang setiap aksi tutup/buka (versiData) supaya status yang tampil selalu yang berlaku.
+  const muatPeriode = useCallback(async () => {
+    setPeriodeMemuat(true);
+    setPeriodeGalat('');
+    try {
+      const daftar = await api.getPeriods();
+      setPeriode(Array.isArray(daftar) ? daftar : []);
+    } catch (err) {
+      setPeriodeGalat(err.message || 'Gagal memuat periode buku.');
+      setPeriode([]);
+    } finally {
+      setPeriodeMemuat(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (section === 'reports') muatPeriode();
+  }, [section, versiData, muatPeriode]);
+
+  // Satu klik = satu niat: kuncinya dibuat di sini, bukan di render, sehingga klik ganda pada
+  // tombol yang sama dikerjakan server satu kali saja.
+  const ubahPeriode = async (baris, aksi) => {
+    const bulan = String(baris.startDate ?? '').slice(0, 7);
+    if (!bulan) return;
+    setPeriodeAksi(bulan);
+    setPeriodeGalat('');
+    try {
+      const kunci = kunciBaru(aksi === 'close' ? 'tutup-periode' : 'buka-periode');
+      if (aksi === 'close') await api.closePeriod(bulan, kunci);
+      else await api.reopenPeriod(bulan, kunci);
+      await onRefresh?.();
+      setVersiData((v) => v + 1);
+    } catch (err) {
+      setPeriodeGalat(err.message || 'Periode buku gagal diubah.');
+    } finally {
+      setPeriodeAksi('');
+    }
+  };
 
   // Satu kunci mewakili satu niat bayar: dibuat ulang setiap dokumen yang dipilih diganti atau
   // setiap pembayaran berhasil, sehingga klik ganda tidak mengirim dua pembayaran.
@@ -417,6 +478,9 @@ export default function FinanceView({
     .filter((a) => !isType(a, ACCOUNT_TYPE.ASSET))
     .reduce((s, a) => s + Number(a.balance ?? 0), 0);
 
+  // Kartu ringkas pagar hanya menghitung bulan yang benar-benar dikunci server.
+  const periodeTertutup = periode.filter((p) => p.status === 'Closed' || p.status === 'Locked');
+
   const submitExpense = async (event) => {
     event.preventDefault();
     const nominal = Number(expenseForm.amount);
@@ -435,10 +499,11 @@ export default function FinanceView({
         category: expenseForm.category,
         description: expenseForm.description,
         amount: toMinor(nominal),
+        transactionDate: expenseForm.transactionDate,
         idempotensi: expenseKunci,
       });
       setExpenseOpen(false);
-      setExpenseForm({ category: '', amount: '', description: '' });
+      setExpenseForm({ category: '', amount: '', description: '', transactionDate: todayISO() });
       await loadJournal(applied.from, applied.to);
       await onRefresh?.();
       setVersiData((v) => v + 1);
@@ -531,7 +596,14 @@ export default function FinanceView({
             <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <button
-            onClick={() => { setExpenseError(''); setExpenseKunci(kunciBaru('biaya-baru')); setExpenseOpen(true); }}
+            onClick={() => {
+              setExpenseError('');
+              setExpenseKunci(kunciBaru('biaya-baru'));
+              // Tanggal ikut disegarkan saat form dibuka: aplikasi yang menyala berhari-hari tidak
+              // boleh menawarkan tanggal lama sebagai "hari ini".
+              setExpenseForm((f) => ({ ...f, transactionDate: todayISO() }));
+              setExpenseOpen(true);
+            }}
             className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-sm shadow-lg shadow-amber-500/20 transition-all"
           >
             <Plus className="w-4 h-4" />
@@ -1141,8 +1213,143 @@ export default function FinanceView({
             </div>
             <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
               <div className="text-xs font-medium text-slate-400">Pagar periode</div>
-              <div className="text-xl font-bold text-amber-400 mt-2 font-mono">belum ada</div>
-              <div className="text-[11px] text-slate-400 mt-1">FiscalPeriods belum punya endpoint, tanggal lama masih bisa diubah</div>
+              <div className="text-xl font-bold text-amber-400 mt-2 font-mono">
+                {periodeMemuat && periode.length === 0 ? 'memuat…' : `${periodeTertutup.length} tertutup`}
+              </div>
+              <div className="text-[11px] text-slate-400 mt-1">
+                {periodeGalat
+                  ? 'daftar periode gagal dimuat — lihat panel Periode buku di bawah'
+                  : periodeTertutup.length === 0
+                    ? 'belum ada periode tertutup — semua tanggal masih bisa diisi'
+                    : `${periodeTertutup.slice(0, 2).reverse().map((p) => p.name).join(' & ')} — jurnal bertanggal di dalamnya ditolak`}
+              </div>
+            </div>
+          </div>
+
+          {/* Panel periode buku: satu baris = satu bulan. Menutup hanya mengunci gerbang tulis,
+              jadi jurnal lama tetap terbaca dan tindakan ini selalu bisa dibatalkan. */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <div className="p-4 border-b border-slate-800 flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="text-base font-semibold text-white">Periode buku</h2>
+                <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                  Sumber: tabel FiscalPeriods dan jumlah kaki jurnal per rentang tanggal; satu baris = satu bulan.
+                  Bulan tanpa entri dianggap terbuka.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={muatPeriode}
+                disabled={periodeMemuat}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700/60 disabled:opacity-50"
+              >
+                <RotateCw className={`w-3.5 h-3.5 ${periodeMemuat ? 'animate-spin' : ''}`} />
+                <span>{periodeMemuat ? 'Memuat…' : 'Muat ulang'}</span>
+              </button>
+            </div>
+            {periodeGalat && (
+              <div className="m-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{periodeGalat}</span>
+              </div>
+            )}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs text-slate-300">
+                <thead className="bg-slate-950/60 uppercase text-[10px] tracking-wider text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th className="py-3 px-4 font-semibold">Periode</th>
+                    <th className="py-3 px-4 font-semibold">Rentang</th>
+                    <th className="py-3 px-4 font-semibold">Status</th>
+                    <th className="py-3 px-4 font-semibold text-right">Entri jurnal</th>
+                    <th className="py-3 px-4 font-semibold text-right">Total debit</th>
+                    <th className="py-3 px-4 font-semibold">Ditutup</th>
+                    <th className="py-3 px-4 font-semibold">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {periode.length === 0 && (
+                    <tr><td colSpan={7} className="py-6 px-4 text-center text-slate-500">
+                      {periodeMemuat ? 'Memuat periode buku…' : 'Belum ada periode buku yang bisa ditampilkan.'}
+                    </td></tr>
+                  )}
+                  {periode.map((p) => {
+                    const bulan = String(p.startDate ?? '').slice(0, 7);
+                    const sedangDiubah = periodeAksi === bulan;
+                    return (
+                      <tr key={bulan} className="hover:bg-slate-800/40">
+                        <td className="py-3 px-4 text-white">{p.name ?? labelBulan(p.startDate)}</td>
+                        <td className="py-3 px-4 font-mono text-slate-400">
+                          {formatDate(p.startDate)} – {formatDate(p.endDate)}
+                        </td>
+                        <td className="py-3 px-4">
+                          {p.isCurrent ? (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">berjalan</span>
+                          ) : p.status === 'Closed' ? (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/15 text-slate-300 border border-slate-500/30">tertutup</span>
+                          ) : p.status === 'Locked' ? (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30">terkunci</span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">terbuka</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-right font-mono">{p.entryCount ?? 0}</td>
+                        <td className="py-3 px-4 text-right font-mono">{formatMinor(p.debitTotalMinorUnits)}</td>
+                        <td className="py-3 px-4 text-slate-400">
+                          {p.closedByName
+                            ? `${p.closedByName} · ${formatInstantDate(p.closedAt)}`
+                            : <span className="text-slate-600">–</span>}
+                        </td>
+                        <td className="py-3 px-4">
+                          {p.status === 'Open' ? (
+                            p.isCurrent ? (
+                              <button
+                                type="button"
+                                disabled
+                                title="Bulan berjalan memuat hari bisnis hari ini, jadi belum bisa ditutup."
+                                className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-amber-500/20 text-amber-200/60 border border-amber-500/20 cursor-not-allowed"
+                              >
+                                Tutup periode
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => ubahPeriode(p, 'close')}
+                                disabled={sedangDiubah}
+                                className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors disabled:opacity-50"
+                              >
+                                {sedangDiubah ? 'Menutup…' : 'Tutup periode'}
+                              </button>
+                            )
+                          ) : p.status === 'Closed' ? (
+                            <button
+                              type="button"
+                              onClick={() => ubahPeriode(p, 'reopen')}
+                              disabled={sedangDiubah}
+                              className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors disabled:opacity-50"
+                            >
+                              {sedangDiubah ? 'Membuka…' : 'Buka kembali'}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled
+                              title="Status Locked tidak bisa dibuka kembali dari aplikasi."
+                              className="px-3 py-1.5 rounded-lg text-[11px] font-bold bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed"
+                            >
+                              Buka kembali
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="px-4 py-3 border-t border-slate-800 text-[11px] text-slate-500 leading-relaxed">
+              Bulan berjalan selalu tampil; bulan lain muncul bila punya kaki jurnal atau pernah ditutup.
+              Menutup periode tidak mengubah satu baris pun — hanya mengunci gerbang tulis, dan tindakan ini
+              tercatat di jejak audit (“tutup periode” / “buka periode”) beserta nama penutup dan waktunya.
             </div>
           </div>
 
@@ -1283,7 +1490,7 @@ export default function FinanceView({
               )}
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Kategori biaya</label>
+                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Kategori biaya *</label>
                 <select
                   value={expenseForm.category}
                   onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
@@ -1303,8 +1510,28 @@ export default function FinanceView({
                 </div>
               </div>
 
+              {/* Tanggal boleh mundur supaya nota yang baru sampai bisa dicatat di bulannya;
+                  batasnya sama dengan server, yang tetap memutuskan sendiri bila isian meleset. */}
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Nominal (Rp)</label>
+                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Tanggal biaya *</label>
+                <input
+                  type="date"
+                  value={expenseForm.transactionDate}
+                  min={tanggalMundurISO(BATAS_HARI_BIAYA)}
+                  max={todayISO()}
+                  onChange={(e) => setExpenseForm({ ...expenseForm, transactionDate: e.target.value })}
+                  className="w-full bg-slate-950 text-slate-200 border border-slate-800 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-500"
+                  required
+                />
+                <div className="text-[11px] text-slate-500 mt-1">
+                  Default hari bisnis hari ini. Biaya masuk ke{' '}
+                  <span className="text-slate-300">periode {labelBulan(expenseForm.transactionDate)}</span>;
+                  paling lama {BATAS_HARI_BIAYA} hari ke belakang dan tidak boleh ke masa depan.
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Nominal (Rp) *</label>
                 <input
                   type="number"
                   min="1"
@@ -1321,7 +1548,7 @@ export default function FinanceView({
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Keterangan</label>
+                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Keterangan *</label>
                 <input
                   type="text"
                   value={expenseForm.description}
