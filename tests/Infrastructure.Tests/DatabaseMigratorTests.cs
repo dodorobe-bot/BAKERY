@@ -239,6 +239,21 @@ public class DatabaseMigratorTests
         Convert.ToInt32(db.Scalar(
             "SELECT COUNT(*) FROM pragma_table_info('FinishedGoodsMovements') WHERE name='ValueMinorUnits';"))
             .Should().Be(1, "mutasi keluar produk jadi harus menyimpan nilai yang benar-benar keluar");
+
+        // Migrasi 023: faktor konversi per bahan dan satuan pada baris resep. Tanpa kolom ini,
+        // resep "250 g" pada bahan bersatuan kg tetap dibaca 250 kg (C7).
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='IngredientUnits';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar(
+            "SELECT COUNT(*) FROM pragma_table_info('RecipeLines') WHERE name='Unit';"))
+            .Should().Be(1);
+        Convert.ToInt32(db.Scalar(@"
+            SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name IN (
+                'trg_ingredientunits_format_insert', 'trg_ingredientunits_format_update',
+                'trg_ingredientunits_terpakai_delete', 'trg_recipelines_unit_insert',
+                'trg_recipelines_unit_update', 'trg_ingredients_unit_update');"))
+            .Should().Be(6, "tiga pemicu satuan tambahan, dua pemicu satuan baris resep, satu penjaga satuan stok");
     }
 
     [Fact]
@@ -247,6 +262,7 @@ public class DatabaseMigratorTests
         // Simulasi basis data dari versi aplikasi sebelumnya: migrasi berikutnya harus bisa
         // menutup kekurangan tanpa menyentuh baris yang sudah ada.
         using var db = new TempDatabase();
+        MigrationRollback.Run(db, "023_IngredientUnitConversion.down.sql");
         MigrationRollback.Run(db, "022_PeriodCloseGuard.down.sql");
         MigrationRollback.Run(db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
@@ -259,7 +275,7 @@ public class DatabaseMigratorTests
         MigrationRollback.Run013Down(db);
         MigrationRollback.Run012Down(db);
         MigrationRollback.Run011Down(db);
-        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22);");
+        db.Exec("DELETE FROM SchemaVersion WHERE Version IN (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);");
 
         Convert.ToInt32(db.Scalar("SELECT MAX(Version) FROM SchemaVersion;")).Should().Be(10);
 
@@ -276,6 +292,7 @@ public class DatabaseMigratorTests
     {
         using var db = new TempDatabase();
 
+        MigrationRollback.Run(db, "023_IngredientUnitConversion.down.sql");
         MigrationRollback.Run(db, "022_PeriodCloseGuard.down.sql");
         MigrationRollback.Run(db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(db, "020_DiscountTaxAndReceivables.down.sql");
@@ -320,6 +337,12 @@ public class DatabaseMigratorTests
         var mutasi = (string)db.Scalar("SELECT sql FROM sqlite_master WHERE name='FinishedGoodsMovements';")!;
         mutasi.Should().NotContain("'Return'");
         Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name LIKE 'FinishedGoods%';"))
+            .Should().Be(0);
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='IngredientUnits';"))
+            .Should().Be(0, "rollback 023 harus mencabut tabel faktor konversi");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('RecipeLines') WHERE name='Unit';"))
+            .Should().Be(0, "rollback 023 harus mengembalikan baris resep tanpa kolom satuan");
+        Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger' AND name IN ('trg_ingredients_unit_update','trg_recipelines_unit_insert','trg_recipelines_unit_update');"))
             .Should().Be(0);
         Convert.ToInt32(db.Scalar("SELECT COUNT(*) FROM pragma_table_info('SalesOrders') WHERE name='Quantity';"))
             .Should().Be(0);

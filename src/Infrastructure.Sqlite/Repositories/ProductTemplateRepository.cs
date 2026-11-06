@@ -15,36 +15,24 @@ public class ProductTemplateRepository : IProductTemplateRepository
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-            SELECT pt.*, rl.Id as RlId, rl.IngredientId, rl.Quantity,
+            SELECT pt.*, rl.Id as RlId, rl.IngredientId, rl.Quantity, rl.Unit as RlUnit,
                    i.Name as IngName, i.Unit as IngUnit, i.PricePerUnit
             FROM ProductTemplates pt
             LEFT JOIN RecipeLines rl ON pt.Id = rl.ProductTemplateId
             LEFT JOIN Ingredients i ON rl.IngredientId = i.Id
             WHERE pt.Id = @id AND pt.IsActive = 1;";
         cmd.Parameters.AddWithValue("@id", id);
-        using var r = await cmd.ExecuteReaderAsync();
         ProductTemplate? product = null;
-        while (r.Read())
+        using (var r = await cmd.ExecuteReaderAsync())
         {
-            if (product is null) product = MapProduct(r);
-            if (!r.IsDBNull(r.GetOrdinal("RlId")))
+            while (r.Read())
             {
-                product.RecipeLines.Add(new RecipeLine
-                {
-                    Id = r.GetInt32(r.GetOrdinal("RlId")),
-                    ProductTemplateId = id,
-                    IngredientId = r.GetInt32(r.GetOrdinal("IngredientId")),
-                    Quantity = r.GetDecimal(r.GetOrdinal("Quantity")),
-                    Ingredient = new Ingredient
-                    {
-                        Id = r.GetInt32(r.GetOrdinal("IngredientId")),
-                        Name = r.GetString(r.GetOrdinal("IngName")),
-                        Unit = r.GetString(r.GetOrdinal("IngUnit")),
-                        PricePerUnit = r.GetInt64(r.GetOrdinal("PricePerUnit"))
-                    }
-                });
+                if (product is null) product = MapProduct(r);
+                if (!r.IsDBNull(r.GetOrdinal("RlId")))
+                    product.RecipeLines.Add(MapLine(r, id));
             }
         }
+        if (product is not null) await LampirkanSatuanAsync(conn, [product]);
         return product;
     }
 
@@ -53,42 +41,77 @@ public class ProductTemplateRepository : IProductTemplateRepository
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-            SELECT pt.*, rl.Id as RlId, rl.IngredientId, rl.Quantity,
+            SELECT pt.*, rl.Id as RlId, rl.IngredientId, rl.Quantity, rl.Unit as RlUnit,
                    i.Name as IngName, i.Unit as IngUnit, i.PricePerUnit
             FROM ProductTemplates pt
             LEFT JOIN RecipeLines rl ON pt.Id = rl.ProductTemplateId
             LEFT JOIN Ingredients i ON rl.IngredientId = i.Id
             WHERE pt.IsActive = 1
             ORDER BY pt.Name;";
-        using var r = await cmd.ExecuteReaderAsync();
         var dict = new Dictionary<int, ProductTemplate>();
-        while (r.Read())
+        using (var r = await cmd.ExecuteReaderAsync())
         {
-            var productId = r.GetInt32(r.GetOrdinal("Id"));
-            if (!dict.TryGetValue(productId, out var product))
+            while (r.Read())
             {
-                product = MapProduct(r);
-                dict[productId] = product;
-            }
-            if (!r.IsDBNull(r.GetOrdinal("RlId")))
-            {
-                product.RecipeLines.Add(new RecipeLine
+                var productId = r.GetInt32(r.GetOrdinal("Id"));
+                if (!dict.TryGetValue(productId, out var product))
                 {
-                    Id = r.GetInt32(r.GetOrdinal("RlId")),
-                    ProductTemplateId = productId,
-                    IngredientId = r.GetInt32(r.GetOrdinal("IngredientId")),
-                    Quantity = r.GetDecimal(r.GetOrdinal("Quantity")),
-                    Ingredient = new Ingredient
-                    {
-                        Id = r.GetInt32(r.GetOrdinal("IngredientId")),
-                        Name = r.IsDBNull(r.GetOrdinal("IngName")) ? "" : r.GetString(r.GetOrdinal("IngName")),
-                        Unit = r.IsDBNull(r.GetOrdinal("IngUnit")) ? "" : r.GetString(r.GetOrdinal("IngUnit")),
-                        PricePerUnit = r.IsDBNull(r.GetOrdinal("PricePerUnit")) ? 0 : r.GetInt64(r.GetOrdinal("PricePerUnit"))
-                    }
-                });
+                    product = MapProduct(r);
+                    dict[productId] = product;
+                }
+                if (!r.IsDBNull(r.GetOrdinal("RlId")))
+                    product.RecipeLines.Add(MapLine(r, productId));
             }
         }
+        await LampirkanSatuanAsync(conn, dict.Values);
         return dict.Values.ToList();
+    }
+
+    private static RecipeLine MapLine(SqliteDataReader r, int productId) => new()
+    {
+        Id = r.GetInt32(r.GetOrdinal("RlId")),
+        ProductTemplateId = productId,
+        IngredientId = r.GetInt32(r.GetOrdinal("IngredientId")),
+        Quantity = r.GetDecimal(r.GetOrdinal("Quantity")),
+        Unit = r.IsDBNull(r.GetOrdinal("RlUnit")) ? null : r.GetString(r.GetOrdinal("RlUnit")),
+        Ingredient = new Ingredient
+        {
+            Id = r.GetInt32(r.GetOrdinal("IngredientId")),
+            Name = r.IsDBNull(r.GetOrdinal("IngName")) ? "" : r.GetString(r.GetOrdinal("IngName")),
+            Unit = r.IsDBNull(r.GetOrdinal("IngUnit")) ? "" : r.GetString(r.GetOrdinal("IngUnit")),
+            PricePerUnit = r.IsDBNull(r.GetOrdinal("PricePerUnit")) ? 0 : r.GetInt64(r.GetOrdinal("PricePerUnit"))
+        }
+    };
+
+    // Resep yang memakai satuan turunan butuh faktornya untuk menghitung BaseQuantity/HPP, jadi
+    // satuan dilampirkan ke salinan bahan di tiap baris (satu kueri untuk semua bahan).
+    private static async Task LampirkanSatuanAsync(SqliteConnection conn, IEnumerable<ProductTemplate> produk)
+    {
+        var bahan = produk.SelectMany(p => p.RecipeLines)
+            .Select(l => l.Ingredient)
+            .Where(i => i is not null)
+            .Select(i => i!)
+            .ToList();
+        if (bahan.Count == 0) return;
+
+        var perId = new Dictionary<int, List<IngredientUnit>>();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT IngredientId, Id, Unit, FactorToBase FROM IngredientUnits ORDER BY IngredientId, Unit;";
+        using (var r = await cmd.ExecuteReaderAsync())
+            while (await r.ReadAsync())
+            {
+                var iid = r.GetInt32(0);
+                if (!perId.TryGetValue(iid, out var list)) perId[iid] = list = new List<IngredientUnit>();
+                list.Add(new IngredientUnit
+                {
+                    Id = r.GetInt32(1),
+                    IngredientId = iid,
+                    Unit = r.GetString(2),
+                    FactorToBase = r.GetDecimal(3)
+                });
+            }
+        foreach (var b in bahan)
+            if (perId.TryGetValue(b.Id, out var list)) b.AdditionalUnits = list;
     }
 
     public async Task<int> CreateAsync(ProductTemplate template, IEnumerable<RecipeLine> lines)
@@ -112,15 +135,7 @@ public class ProductTemplateRepository : IProductTemplateRepository
             var id = Convert.ToInt32(await cmd.ExecuteScalarAsync());
 
             foreach (var line in lines)
-            {
-                var lCmd = conn.CreateCommand();
-                lCmd.Transaction = tx;
-                lCmd.CommandText = "INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity) VALUES (@pid, @iid, @q);";
-                lCmd.Parameters.AddWithValue("@pid", id);
-                lCmd.Parameters.AddWithValue("@iid", line.IngredientId);
-                lCmd.Parameters.AddWithValue("@q", line.Quantity);
-                await lCmd.ExecuteNonQueryAsync();
-            }
+                await SisipBarisAsync(conn, tx, id, line);
             tx.Commit();
             return id;
         }
@@ -152,15 +167,7 @@ public class ProductTemplateRepository : IProductTemplateRepository
             await del.ExecuteNonQueryAsync();
 
             foreach (var line in lines)
-            {
-                var lCmd = conn.CreateCommand();
-                lCmd.Transaction = tx;
-                lCmd.CommandText = "INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity) VALUES (@pid, @iid, @q);";
-                lCmd.Parameters.AddWithValue("@pid", template.Id);
-                lCmd.Parameters.AddWithValue("@iid", line.IngredientId);
-                lCmd.Parameters.AddWithValue("@q", line.Quantity);
-                await lCmd.ExecuteNonQueryAsync();
-            }
+                await SisipBarisAsync(conn, tx, template.Id, line);
             tx.Commit();
         }
         catch { tx.Rollback(); throw; }
@@ -203,6 +210,23 @@ public class ProductTemplateRepository : IProductTemplateRepository
         using var cmd = conn.CreateCommand();
         cmd.CommandText = "UPDATE ProductTemplates SET IsActive = 0 WHERE Id = @id;";
         cmd.Parameters.AddWithValue("@id", id);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    private static async Task SisipBarisAsync(
+        SqliteConnection conn, SqliteTransaction tx, int productId, RecipeLine line)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity, Unit)
+            VALUES (@pid, @iid, @q, @u);";
+        cmd.Parameters.AddWithValue("@pid", productId);
+        cmd.Parameters.AddWithValue("@iid", line.IngredientId);
+        cmd.Parameters.AddWithValue("@q", line.Quantity);
+        cmd.Parameters.AddWithValue("@u", string.IsNullOrWhiteSpace(line.Unit)
+            ? (object)DBNull.Value
+            : line.Unit.Trim());
         await cmd.ExecuteNonQueryAsync();
     }
 

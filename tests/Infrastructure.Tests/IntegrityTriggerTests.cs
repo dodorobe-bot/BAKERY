@@ -143,4 +143,80 @@ public class IntegrityTriggerTests
         ShouldBeRejected(db, $"INSERT INTO WorkOrders (OrderNumber, ProductTemplateId, TargetQuantity, LaborCost, OverheadCost) " +
                 $"VALUES ('SPK-ZERO', {productId}, 0, 0, 0);");
     }
+
+    private static int InsertUnit(TempDatabase db, int ingredientId, string unit, decimal factor) =>
+        Convert.ToInt32(ScalarWithInsert(db,
+            "INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) " +
+            $"VALUES ({ingredientId}, '{unit}', {factor.ToString(System.Globalization.CultureInfo.InvariantCulture)});"));
+
+    private static int InsertProduct(TempDatabase db, string name = "Roti") =>
+        Convert.ToInt32(ScalarWithInsert(db,
+            $"INSERT INTO ProductTemplates (Name, SellingPrice, IsActive) VALUES ('{name}', 2500000, 1);"));
+
+    [Fact]
+    public void Satuan_Tambahan_Tidak_Sah_Ditolak()
+    {
+        using var db = new TempDatabase();
+        var ingredientId = InsertIngredient(db);
+
+        // Faktor nol/negatif membuat konversi resep menjadi nol atau terbalik.
+        ShouldBeRejected(db, $"INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) VALUES ({ingredientId}, 'g', 0);");
+        ShouldBeRejected(db, $"INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) VALUES ({ingredientId}, 'g', -1);");
+        // Satuan yang sama dengan satuan stok membuat faktor mana yang dipakai tidak jelas.
+        ShouldBeRejected(db, $"INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) VALUES ({ingredientId}, 'KG', 1000);");
+
+        InsertUnit(db, ingredientId, "g", 0.001m);
+        // "g" dan "G" adalah satuan yang sama.
+        ShouldBeRejected(db, $"INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) VALUES ({ingredientId}, 'G', 0.001);");
+    }
+
+    [Fact]
+    public void Baris_Resep_Bersatuan_Tak_Terdaftar_Ditolak()
+    {
+        using var db = new TempDatabase();
+        var ingredientId = InsertIngredient(db);
+        var productId = InsertProduct(db);
+
+        ShouldBeRejected(db, "INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity, Unit) " +
+                $"VALUES ({productId}, {ingredientId}, 250, 'g');");
+
+        InsertUnit(db, ingredientId, "g", 0.001m);
+        var valid = () => db.Exec(
+            "INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity, Unit) " +
+            $"VALUES ({productId}, {ingredientId}, 250, 'g');");
+        valid.Should().NotThrow();
+
+        // Satuan stok sendiri selalu sah walau tidak punya baris turunan.
+        var baseUnit = () => db.Exec(
+            "INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity, Unit) " +
+            $"VALUES ({productId}, {ingredientId}, 1, 'kg');");
+        baseUnit.Should().NotThrow();
+    }
+
+    [Fact]
+    public void Satuan_Yang_Masih_Dipakai_Resep_Tidak_Boleh_Dihapus_Atau_Diganti()
+    {
+        using var db = new TempDatabase();
+        var ingredientId = InsertIngredient(db);
+        var productId = InsertProduct(db);
+        var unitId = InsertUnit(db, ingredientId, "g", 0.001m);
+        var lineId = Convert.ToInt32(ScalarWithInsert(db,
+            "INSERT INTO RecipeLines (ProductTemplateId, IngredientId, Quantity, Unit) " +
+            $"VALUES ({productId}, {ingredientId}, 250, 'g');"));
+
+        ShouldBeRejected(db, $"DELETE FROM IngredientUnits WHERE Id = {unitId};");
+        // Satuan stok "kg" belum disebut baris resep (yang dipakai "g"), jadi masih boleh diganti.
+        var gantiTanpaPemakai = () => db.Exec($"UPDATE Ingredients SET Unit = 'ons' WHERE Id = {ingredientId};");
+        gantiTanpaPemakai.Should().NotThrow();
+
+        // Setelah baris resep berpindah ke satuan stok baru, satuan itu terkunci.
+        var pindah = () => db.Exec($"UPDATE RecipeLines SET Unit = 'ons' WHERE Id = {lineId};");
+        pindah.Should().NotThrow();
+        ShouldBeRejected(db, $"UPDATE Ingredients SET Unit = 'gram' WHERE Id = {ingredientId};");
+
+        var hapusBaris = () => db.Exec($"DELETE FROM RecipeLines WHERE Id = {lineId};");
+        hapusBaris.Should().NotThrow();
+        var hapusSatuan = () => db.Exec($"DELETE FROM IngredientUnits WHERE Id = {unitId};");
+        hapusSatuan.Should().NotThrow();
+    }
 }

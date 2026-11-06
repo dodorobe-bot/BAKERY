@@ -886,6 +886,11 @@ try
             Unit = dto.Unit!.Trim(),
             PricePerUnit = dto.PricePerUnit ?? 0,
             MinStockAlert = dto.MinStockAlert ?? 0,
+            AdditionalUnits = (dto.Units ?? new()).Select(u => new IngredientUnit
+            {
+                Unit = u.Unit!.Trim(),
+                FactorToBase = u.FactorToBase!.Value
+            }).ToList()
         });
         if (id is null)
             return BahanKembar();
@@ -918,13 +923,37 @@ try
         var userId = int.TryParse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var uid) ? uid : (int?)null;
         // Nilai yang tidak dikirim berarti "jangan diubah", bukan nol. Formulir ubah harga tidak
         // mengirim stok; membaca ketiadaannya sebagai nol akan menghapus persediaan yang tercatat.
-        var lama = new { nama = sebelumnya.Name, hargaPerUnitMinor = sebelumnya.PricePerUnit, satuan = sebelumnya.Unit, minStok = sebelumnya.MinStockAlert };
+        var lama = new
+        {
+            nama = sebelumnya.Name, hargaPerUnitMinor = sebelumnya.PricePerUnit,
+            satuan = sebelumnya.Unit, minStok = sebelumnya.MinStockAlert,
+            satuanTambahan = SebutSatuanTambahan(sebelumnya)
+        };
         sebelumnya.Name = nama;
         sebelumnya.Brand = string.IsNullOrWhiteSpace(dto.Brand) ? null : dto.Brand.Trim();
         sebelumnya.Unit = dto.Unit!.Trim();
         sebelumnya.PricePerUnit = dto.PricePerUnit ?? sebelumnya.PricePerUnit;
         sebelumnya.MinStockAlert = dto.MinStockAlert ?? sebelumnya.MinStockAlert;
-        await repo.UpdateAsync(sebelumnya);
+        // Tidak mengirim "units" berarti jangan diubah; mengirim daftar kosong berarti menghapus
+        // semua satuan tambahan — dan pemicu menolak bila ada resep yang masih memakainya.
+        if (dto.Units is { } satuanBaru)
+            sebelumnya.AdditionalUnits = satuanBaru.Select(u => new IngredientUnit
+            {
+                Unit = u.Unit!.Trim(),
+                FactorToBase = u.FactorToBase!.Value
+            }).ToList();
+        try
+        {
+            await repo.UpdateAsync(sebelumnya);
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 19)
+        {
+            return Results.BadRequest(new
+            {
+                errorCode = ErrorCodes.ValidationFailed,
+                errorMessage = PesanPemicu(ex)
+            });
+        }
 
         // Angka di layar bahan baku adalah TOTAL stok; selisihnya dibukukan di gudang utama.
         if (dto.CurrentStock is { } stokBaru)
@@ -950,7 +979,12 @@ try
         // bisa dibaca balik di jejak audit.
         await Jejak.CatatDetilAsync(ctx, "ubah bahan baku", "Ingredient", id,
             lama,
-            new { nama = sebelumnya.Name, hargaPerUnitMinor = sebelumnya.PricePerUnit, satuan = sebelumnya.Unit, minStok = sebelumnya.MinStockAlert });
+            new
+            {
+                nama = sebelumnya.Name, hargaPerUnitMinor = sebelumnya.PricePerUnit,
+                satuan = sebelumnya.Unit, minStok = sebelumnya.MinStockAlert,
+                satuanTambahan = SebutSatuanTambahan(sebelumnya)
+            });
         return Results.Ok();
     }).RequireAuthorization("master-data-write");
 
@@ -1016,10 +1050,13 @@ try
         });
     }).RequireAuthorization();
 
-    app.MapPost("/api/products", async (CreateProductDto dto, IProductTemplateRepository repo, HttpContext ctx) =>
+    app.MapPost("/api/products", async (CreateProductDto dto, IProductTemplateRepository repo,
+        IIngredientRepository repoBahan, HttpContext ctx) =>
     {
         if (GalatProduk(dto) is { } galat)
             return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galat });
+        if (await GalatSatuanResepAsync(dto.Lines, repoBahan) is { } galatResep)
+            return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galatResep });
         var product = new Seruni22Bakery.Domain.Entities.ProductTemplate
         {
             Name = dto.Name,
@@ -1031,7 +1068,8 @@ try
         var lines = dto.Lines.Select(l => new Seruni22Bakery.Domain.Entities.RecipeLine
         {
             IngredientId = l.IngredientId,
-            Quantity = l.Quantity
+            Quantity = l.Quantity,
+            Unit = string.IsNullOrWhiteSpace(l.Unit) ? null : l.Unit.Trim()
         });
         int id;
         try
@@ -1042,19 +1080,24 @@ try
         {
             // Barcode adalah kode yang ditempel di kemasan; dua produk dengan kode sama membuat
             // hasil pindai tidak bisa ditentukan. Jawab sebagai konflik, bukan galat server.
-            return Results.Conflict(new
-            {
-                errorCode = ErrorCodes.DuplicateKey,
-                errorMessage = "Barcode itu sudah dipakai produk lain."
-            });
+            if (ex.Message.Contains("Barcode", StringComparison.OrdinalIgnoreCase))
+                return Results.Conflict(new
+                {
+                    errorCode = ErrorCodes.DuplicateKey,
+                    errorMessage = "Barcode itu sudah dipakai produk lain."
+                });
+            return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = PesanPemicu(ex) });
         }
         return Results.Ok(new { id });
     }).RequireAuthorization("master-data-write");
 
-    app.MapPut("/api/products/{id:int}", async (int id, CreateProductDto dto, IProductTemplateRepository repo, HttpContext ctx) =>
+    app.MapPut("/api/products/{id:int}", async (int id, CreateProductDto dto, IProductTemplateRepository repo,
+        IIngredientRepository repoBahan, HttpContext ctx) =>
     {
         if (GalatProduk(dto) is { } galat)
             return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galat });
+        if (await GalatSatuanResepAsync(dto.Lines, repoBahan) is { } galatResep)
+            return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = galatResep });
         var product = await repo.GetByIdWithRecipesAsync(id);
         if (product == null) return Results.NotFound();
         var hargaSebelum = product.SellingPrice;
@@ -1066,7 +1109,8 @@ try
         var lines = dto.Lines.Select(l => new Seruni22Bakery.Domain.Entities.RecipeLine
         {
             IngredientId = l.IngredientId,
-            Quantity = l.Quantity
+            Quantity = l.Quantity,
+            Unit = string.IsNullOrWhiteSpace(l.Unit) ? null : l.Unit.Trim()
         });
         try
         {
@@ -1074,17 +1118,27 @@ try
         }
         catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 19)
         {
-            return Results.Conflict(new
-            {
-                errorCode = ErrorCodes.DuplicateKey,
-                errorMessage = "Barcode itu sudah dipakai produk lain."
-            });
+            if (ex.Message.Contains("Barcode", StringComparison.OrdinalIgnoreCase))
+                return Results.Conflict(new
+                {
+                    errorCode = ErrorCodes.DuplicateKey,
+                    errorMessage = "Barcode itu sudah dipakai produk lain."
+                });
+            return Results.BadRequest(new { errorCode = ErrorCodes.ValidationFailed, errorMessage = PesanPemicu(ex) });
         }
         // Harga jual dan isi resep mengubah uang serta HPP, jadi nilai lamanya ikut tercatat:
         // "harga ini berubah kapan dan dari berapa" harus bisa dijawab setahun kemudian.
         await Jejak.CatatDetilAsync(ctx, "ubah produk", "ProductTemplate", id,
-            new { hargaJualMinor = hargaSebelum, barisResep = resepSebelum },
-            new { hargaJualMinor = dto.SellingPriceMinorUnits, barisResep = dto.Lines.Count });
+            new
+            {
+                hargaJualMinor = hargaSebelum, barisResep = resepSebelum,
+                barisBersatuan = product.RecipeLines.Count(l => !string.IsNullOrWhiteSpace(l.Unit))
+            },
+            new
+            {
+                hargaJualMinor = dto.SellingPriceMinorUnits, barisResep = dto.Lines.Count,
+                barisBersatuan = dto.Lines.Count(l => !string.IsNullOrWhiteSpace(l.Unit))
+            });
         return Results.Ok();
     }).RequireAuthorization("master-data-write");
 
@@ -1143,11 +1197,12 @@ try
             CreatedByUserId = userId
         };
 
+        // BaseQuantity sudah dalam satuan stok: 250 g pada bahan bersatuan kg menjadi 0,25 kg.
         var materials = product.RecipeLines.Select(r => new Seruni22Bakery.Domain.Entities.WorkOrderMaterial
         {
             IngredientId = r.IngredientId,
-            StandardQty = r.Quantity * dto.TargetQuantity,
-            ActualQty = r.Quantity * dto.TargetQuantity,
+            StandardQty = r.BaseQuantity * dto.TargetQuantity,
+            ActualQty = r.BaseQuantity * dto.TargetQuantity,
             UnitCost = r.Ingredient?.PricePerUnit ?? 0
         }).ToList();
 
@@ -2310,8 +2365,65 @@ static string? GalatBahan(IngredientDto dto)
     if (dto.PricePerUnit is < 0) return "Harga per satuan tidak boleh negatif.";
     if (dto.MinStockAlert is < 0) return "Batas minimum stok tidak boleh negatif.";
     if (dto.CurrentStock is < 0) return "Stok tidak boleh negatif.";
+    if (dto.Units is { } satuan)
+    {
+        // Satuan turunan hanya menerjemahkan jumlah di resep ke satuan stok. Duplikat dan
+        // satuan yang sama dengan satuan stok membuat faktor mana yang dipakai tidak jelas.
+        var dasar = dto.Unit!.Trim();
+        var terlihat = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var u in satuan)
+        {
+            if (string.IsNullOrWhiteSpace(u.Unit))
+                return "Nama satuan tambahan wajib diisi (mis. g, bks).";
+            var nama = u.Unit.Trim();
+            if (nama.Length > 20)
+                return $"Nama satuan tambahan \"{nama}\" terlalu panjang (maksimal 20 karakter).";
+            if (string.Equals(nama, dasar, StringComparison.OrdinalIgnoreCase))
+                return $"Satuan tambahan \"{nama}\" sama dengan satuan stok bahan; pakai nama yang berbeda.";
+            if (!terlihat.Add(nama))
+                return $"Satuan tambahan \"{nama}\" ditulis lebih dari sekali.";
+            if (u.FactorToBase is null or <= 0)
+                return $"Faktor satuan \"{nama}\" harus lebih dari nol (mis. 1 g = 0,001 kg).";
+        }
+    }
     return null;
 }
+
+// Satuan baris resep harus terdaftar pada bahan itu (satuan stok atau satuan turunannya). Tanpa
+// pemeriksaan ini salah ketik "grm" akan tersimpan dan dinilai dengan faktor 1 seperti kilogram.
+static async Task<string?> GalatSatuanResepAsync(
+    IEnumerable<RecipeLineDto> lines, IIngredientRepository bahan)
+{
+    var perId = new Dictionary<int, Ingredient?>();
+    foreach (var l in lines)
+    {
+        if (string.IsNullOrWhiteSpace(l.Unit)) continue;
+        if (!perId.TryGetValue(l.IngredientId, out var i))
+            perId[l.IngredientId] = i = await bahan.GetByIdAsync(l.IngredientId);
+        if (i is null)
+            return $"Baris resep memakai bahan #{l.IngredientId} yang tidak aktif atau tidak ada.";
+        if (!i.KnowsUnit(l.Unit))
+            return $"Satuan \"{l.Unit.Trim()}\" belum terdaftar untuk bahan \"{i.Name}\" " +
+                   $"(satuan stok {i.Unit}). Tambahkan satuan itu di master bahan lebih dulu.";
+    }
+    return null;
+}
+
+// Pesan pemicu basis data dibungkus "SQLite Error 19: '…'". Yang berguna bagi pengguna adalah
+// isi kutipnya; jawaban 500 dengan seluruh pesan SQL tidak menjelaskan kolom mana yang salah.
+static string PesanPemicu(Microsoft.Data.Sqlite.SqliteException ex)
+{
+    var pesan = ex.Message;
+    var awal = pesan.IndexOf('\'');
+    var akhir = pesan.LastIndexOf('\'');
+    return awal >= 0 && akhir > awal ? pesan[(awal + 1)..akhir] : pesan;
+}
+
+// Ringkasan satuan turunan untuk jejak audit, mis. "g=0,001 kg, bks=0,5 kg".
+static string? SebutSatuanTambahan(Ingredient bahan) =>
+    bahan.AdditionalUnits.Count == 0
+        ? null
+        : string.Join(", ", bahan.AdditionalUnits.Select(u => $"{u.Unit}={u.FactorToBase:0.####} {bahan.Unit}"));
 
 // Dua bahan bernama sama tidak bisa dibedakan di layar resep maupun di laporan pembelian.
 static IResult BahanKembar() => Results.Conflict(new
@@ -2370,7 +2482,9 @@ static IResult HasilPerangkat(string kode, string pesan, int? jobId = null)
 // ── DTOs ───────────────────────────────────────────────────────────────────────
 // Semua field opsional: nilainya null berarti "tidak dikirim". Endpoint ubah memakai arti itu
 // untuk mempertahankan nilai lama, bukan menimpanya dengan nol.
-record IngredientDto(string? Name, string? Brand, string? Unit, long? PricePerUnit, decimal? CurrentStock, decimal? MinStockAlert);
+record IngredientUnitDto(string? Unit, decimal? FactorToBase);
+record IngredientDto(string? Name, string? Brand, string? Unit, long? PricePerUnit,
+    decimal? CurrentStock, decimal? MinStockAlert, List<IngredientUnitDto>? Units = null);
 record ChangePasswordDto(string CurrentPassword, string NewPassword);
 // TenderAmount adalah uang yang diserahkan pelanggan. Boleh tidak dikirim — kalau layar belum
 // mengenalnya, pembayaran dianggap pas dan tidak ada kembalian yang dilaporkan.
@@ -2393,7 +2507,7 @@ record CreateQualityCheckDto(
 record CreateSalesReturnDto(
     int SalesOrderId, decimal Quantity, long Amount, string Reason,
     string? RefundMethod, string? IdempotencyKey);
-record RecipeLineDto(int IngredientId, decimal Quantity);
+record RecipeLineDto(int IngredientId, decimal Quantity, string? Unit = null);
 record CreateProductDto(string Name, string? Category, long SellingPriceMinorUnits, List<RecipeLineDto> Lines, string? Barcode = null);
 record CetakStrukDto(bool? CetakUlang);
 

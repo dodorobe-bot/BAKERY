@@ -20,8 +20,11 @@ public class IngredientRepository : IIngredientRepository
         var cmd = conn.CreateCommand();
         cmd.CommandText = $"SELECT i.*, {StockExpr} AS CurrentStock FROM Ingredients i WHERE i.Id = @id AND i.IsActive = 1;";
         cmd.Parameters.AddWithValue("@id", id);
-        using var r = await cmd.ExecuteReaderAsync();
-        return r.Read() ? Map(r) : null;
+        Ingredient? bahan;
+        using (var r = await cmd.ExecuteReaderAsync())
+            bahan = r.Read() ? Map(r) : null;
+        if (bahan is not null) await LampirkanSatuanAsync(conn, [bahan]);
+        return bahan;
     }
 
     public async Task<IReadOnlyList<Ingredient>> GetAllActiveAsync()
@@ -29,9 +32,10 @@ public class IngredientRepository : IIngredientRepository
         using var conn = _factory.CreateConnection();
         var cmd = conn.CreateCommand();
         cmd.CommandText = $"SELECT i.*, {StockExpr} AS CurrentStock FROM Ingredients i WHERE i.IsActive = 1 ORDER BY i.Name;";
-        using var r = await cmd.ExecuteReaderAsync();
         var list = new List<Ingredient>();
-        while (r.Read()) list.Add(Map(r));
+        using (var r = await cmd.ExecuteReaderAsync())
+            while (r.Read()) list.Add(Map(r));
+        await LampirkanSatuanAsync(conn, list);
         return list;
     }
 
@@ -43,9 +47,10 @@ public class IngredientRepository : IIngredientRepository
             SELECT i.*, {StockExpr} AS CurrentStock FROM Ingredients i
              WHERE i.IsActive = 1 OR {StockExpr} <> 0
              ORDER BY i.IsActive DESC, i.Name;";
-        using var r = await cmd.ExecuteReaderAsync();
         var list = new List<Ingredient>();
-        while (r.Read()) list.Add(Map(r));
+        using (var r = await cmd.ExecuteReaderAsync())
+            while (r.Read()) list.Add(Map(r));
+        await LampirkanSatuanAsync(conn, list);
         return list;
     }
 
@@ -57,10 +62,33 @@ public class IngredientRepository : IIngredientRepository
             SELECT i.*, {StockExpr} AS CurrentStock FROM Ingredients i
             WHERE i.IsActive = 1 AND {StockExpr} <= i.MinStockAlert
             ORDER BY i.Name;";
-        using var r = await cmd.ExecuteReaderAsync();
         var list = new List<Ingredient>();
-        while (r.Read()) list.Add(Map(r));
+        using (var r = await cmd.ExecuteReaderAsync())
+            while (r.Read()) list.Add(Map(r));
+        await LampirkanSatuanAsync(conn, list);
         return list;
+    }
+
+    // Tabel satuan turunan kecil (beberapa baris per bahan), jadi dibaca sekali untuk seluruh
+    // daftar. Baris resep memakai faktor ini agar "250 g" tidak lagi dibaca 250 kg.
+    private static async Task LampirkanSatuanAsync(SqliteConnection conn, IReadOnlyList<Ingredient> bahan)
+    {
+        if (bahan.Count == 0) return;
+        var perId = bahan.ToDictionary(b => b.Id);
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT Id, IngredientId, Unit, FactorToBase FROM IngredientUnits ORDER BY IngredientId, Unit;";
+        using var r = await cmd.ExecuteReaderAsync();
+        while (await r.ReadAsync())
+        {
+            if (!perId.TryGetValue(r.GetInt32(1), out var b)) continue;
+            b.AdditionalUnits.Add(new IngredientUnit
+            {
+                Id = r.GetInt32(0),
+                IngredientId = r.GetInt32(1),
+                Unit = r.GetString(2),
+                FactorToBase = r.GetDecimal(3)
+            });
+        }
     }
 
     public async Task<bool> IsNameTakenAsync(string name, int? exceptId = null)
@@ -115,6 +143,16 @@ public class IngredientRepository : IIngredientRepository
         cmd.Parameters.AddWithValue("@ms", i.MinStockAlert);
         cmd.Parameters.AddWithValue("@ua", DateTime.UtcNow.ToString("o"));
         var id = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        foreach (var satuan in i.AdditionalUnits)
+        {
+            var uCmd = conn.CreateCommand();
+            uCmd.Transaction = tx;
+            uCmd.CommandText = "INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) VALUES (@iid, @u, @f);";
+            uCmd.Parameters.AddWithValue("@iid", id);
+            uCmd.Parameters.AddWithValue("@u", satuan.Unit.Trim());
+            uCmd.Parameters.AddWithValue("@f", satuan.FactorToBase);
+            await uCmd.ExecuteNonQueryAsync();
+        }
         tx.Commit();
         return id;
     }
@@ -122,7 +160,12 @@ public class IngredientRepository : IIngredientRepository
     public async Task UpdateAsync(Ingredient i)
     {
         using var conn = _factory.CreateConnection();
+        using var tx = conn.BeginTransaction(deferred: false);
+
+        // Satuan stok diganti lebih dulu supaya pemicu trg_ingredients_unit_update bisa menolak
+        // perubahan yang membuat baris resep menyebut satuan yang tidak ada lagi.
         var cmd = conn.CreateCommand();
+        cmd.Transaction = tx;
         cmd.CommandText = @"
             UPDATE Ingredients SET Name=@n, Brand=@b, Unit=@u, PricePerUnit=@p,
                 MinStockAlert=@ms, IsActive=@active, UpdatedAt=@ua WHERE Id=@id;";
@@ -135,6 +178,60 @@ public class IngredientRepository : IIngredientRepository
         cmd.Parameters.AddWithValue("@ua", DateTime.UtcNow.ToString("o"));
         cmd.Parameters.AddWithValue("@id", i.Id);
         await cmd.ExecuteNonQueryAsync();
+
+        // Selisihkan, jangan hapus-semua-lalu-sisipkan: menghapus satuan yang masih dipakai
+        // baris resep ditolak pemicu, dan itu harus tetap berlaku walau faktornya tidak berubah.
+        var lama = new List<IngredientUnit>();
+        var baca = conn.CreateCommand();
+        baca.Transaction = tx;
+        baca.CommandText = "SELECT Id, Unit, FactorToBase FROM IngredientUnits WHERE IngredientId = @id ORDER BY Id;";
+        baca.Parameters.AddWithValue("@id", i.Id);
+        using (var r = await baca.ExecuteReaderAsync())
+            while (await r.ReadAsync())
+                lama.Add(new IngredientUnit
+                {
+                    Id = r.GetInt32(0),
+                    IngredientId = i.Id,
+                    Unit = r.GetString(1),
+                    FactorToBase = r.GetDecimal(2)
+                });
+
+        var baru = i.AdditionalUnits.ToList();
+        foreach (var satuan in lama)
+        {
+            var cocok = baru.FirstOrDefault(u =>
+                string.Equals(u.Unit.Trim(), satuan.Unit.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (cocok is null)
+            {
+                var hapus = conn.CreateCommand();
+                hapus.Transaction = tx;
+                hapus.CommandText = "DELETE FROM IngredientUnits WHERE Id = @id;";
+                hapus.Parameters.AddWithValue("@id", satuan.Id);
+                await hapus.ExecuteNonQueryAsync();
+            }
+            else if (cocok.FactorToBase != satuan.FactorToBase)
+            {
+                var ubah = conn.CreateCommand();
+                ubah.Transaction = tx;
+                ubah.CommandText = "UPDATE IngredientUnits SET FactorToBase = @f WHERE Id = @id;";
+                ubah.Parameters.AddWithValue("@f", cocok.FactorToBase);
+                ubah.Parameters.AddWithValue("@id", satuan.Id);
+                await ubah.ExecuteNonQueryAsync();
+            }
+        }
+        foreach (var satuan in baru)
+        {
+            if (lama.Any(l => string.Equals(l.Unit.Trim(), satuan.Unit.Trim(), StringComparison.OrdinalIgnoreCase)))
+                continue;
+            var sisip = conn.CreateCommand();
+            sisip.Transaction = tx;
+            sisip.CommandText = "INSERT INTO IngredientUnits (IngredientId, Unit, FactorToBase) VALUES (@iid, @u, @f);";
+            sisip.Parameters.AddWithValue("@iid", i.Id);
+            sisip.Parameters.AddWithValue("@u", satuan.Unit.Trim());
+            sisip.Parameters.AddWithValue("@f", satuan.FactorToBase);
+            await sisip.ExecuteNonQueryAsync();
+        }
+        tx.Commit();
     }
 
     public async Task DeleteAsync(int id)

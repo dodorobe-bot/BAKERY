@@ -12,8 +12,10 @@ public class ProductTemplate
     public bool IsActive { get; set; } = true;
     public List<RecipeLine> RecipeLines { get; set; } = new();
 
+    // Quantity ditulis dalam satuan baris (mis. 250 g); BaseQuantity menerjemahkannya ke satuan
+    // stok sebelum dikalikan harga, karena PricePerUnit selalu harga per satuan stok.
     public long CalculateHpp() =>
-        RecipeLines.Sum(r => (long)(r.Quantity * r.Ingredient?.PricePerUnit ?? 0));
+        RecipeLines.Sum(r => (long)(r.BaseQuantity * (r.Ingredient?.PricePerUnit ?? 0)));
 
     public decimal MarginPercent()
     {
@@ -28,6 +30,12 @@ public class RecipeLine
     public int Id { get; set; }
     public int ProductTemplateId { get; set; }
     public int IngredientId { get; set; }
+    /// <summary>Jumlah dalam Unit; kosong berarti satuan stok bahan (baris resep lama).</summary>
     public decimal Quantity { get; set; }
+    /// <summary>Satuan yang dipilih di resep, mis. "g". Null/kosong = satuan stok.</summary>
+    public string? Unit { get; set; }
     public Ingredient? Ingredient { get; set; }
+
+    public decimal BaseQuantity =>
+        Quantity * (Ingredient is null ? 1m : Ingredient.FactorToBase(Unit));
 }

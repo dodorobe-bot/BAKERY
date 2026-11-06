@@ -333,6 +333,7 @@ public class CostLayerFifoTests
         // migrator hanya menjalankan versi di atas MAX(SchemaVersion), jadi migrasi terbaru harus
         // dicabut lebih dulu — kalau tidak, penurunan ke 018 tampak berhasil tapi Migrate() di bawah
         // tidak menaikkan apa pun dan tabel lapisan tetap hilang.
+        MigrationRollback.Run(_db, "023_IngredientUnitConversion.down.sql");
         MigrationRollback.Run(_db, "022_PeriodCloseGuard.down.sql");
         MigrationRollback.Run(_db, "021_SupplierReturnsAndPayments.down.sql");
         MigrationRollback.Run(_db, "020_DiscountTaxAndReceivables.down.sql");

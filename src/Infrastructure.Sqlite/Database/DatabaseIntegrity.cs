@@ -44,6 +44,7 @@ public sealed class DatabaseIntegrity
             CekHutangPemasokTidakNegatif(conn),
             CekDokumenPemasokBerjurnal(conn),
             CekPeriodeTertutupMengunci(conn),
+            CekSatuanResepTerdaftar(conn),
         ];
     }
 
@@ -385,6 +386,34 @@ public sealed class DatabaseIntegrity
                   "Formulir Mutasi Bahan atau Pemeriksaan Fisik (Stok Opname) supaya selisihnya " +
                   "ikut membukukan jurnal; setelah stok nol, laporan dan neraca menunjuk barang " +
                   "yang sama.");
+    }
+
+    /// <summary>
+    /// Satuan baris resep harus satuan stok bahan atau satuan turunan yang terdaftar. Baris yang
+    /// menyebut satuan asing tidak bisa dihitung, dan kalau dihitung dengan faktor 1 HPP-nya
+    /// salah seratus kali lipat (250 g dibaca 250 kg). Pemicu menahan penulisan baru; pemeriksaan
+    /// ini menangkap data lama atau suntingan langsung ke basis data.
+    /// </summary>
+    private static IntegrityCheck CekSatuanResepTerdaftar(SqliteConnection conn)
+    {
+        var asing = Baris(conn, @"
+            SELECT pt.Name || ' / ' || i.Name || ' memakai ' || trim(rl.Unit)
+              FROM RecipeLines rl
+              JOIN ProductTemplates pt ON pt.Id = rl.ProductTemplateId
+              JOIN Ingredients i ON i.Id = rl.IngredientId
+             WHERE rl.Unit IS NOT NULL AND trim(rl.Unit) <> ''
+               AND lower(trim(rl.Unit)) <> lower(trim(i.Unit))
+               AND NOT EXISTS (SELECT 1 FROM IngredientUnits iu
+                                WHERE iu.IngredientId = rl.IngredientId
+                                  AND lower(trim(iu.Unit)) = lower(trim(rl.Unit)));");
+        var total = Skalar(conn,
+            "SELECT COUNT(*) FROM RecipeLines WHERE Unit IS NOT NULL AND trim(Unit) <> '';");
+        return baru("satuan baris resep terdaftar pada bahannya", asing.Count == 0,
+            asing.Count == 0
+                ? $"{total} baris resep memakai satuan; semuanya cocok dengan satuan stok atau satuan turunannya."
+                : $"{asing.Count} baris memakai satuan yang tidak terdaftar: {Rangkai(asing)}. " +
+                  "Tambahkan satuan itu lewat modal master Bahan Baku (Resep & BOM › Bahan Baku), " +
+                  "atau ubah baris resepnya ke satuan yang tersedia.");
     }
 
     /// <summary>

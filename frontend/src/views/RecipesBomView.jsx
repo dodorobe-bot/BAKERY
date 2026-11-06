@@ -7,13 +7,14 @@ import { kunciBaru, useKunciSimpan } from '../utils/idempotensi';
 const CATEGORIES = ['Roti', 'Kue', 'Minuman', 'Lainnya'];
 
 const calcHpp = (product) => {
-  // Try hpp field from GET /api/products/{id}; otherwise sum from recipeLines
+  // Try hpp field from GET /api/products/{id}; otherwise sum from recipeLines.
+  // baseQuantity sudah dikonversi server ke satuan stok (250 g -> 0,25 kg).
   if (typeof product.hpp === 'number') return product.hpp;
   if (typeof product.Hpp === 'number') return product.Hpp;
   const lines = product.recipeLines || product.RecipeLines || [];
   return lines.reduce((sum, l) => {
     const price = l.ingredient?.pricePerUnit ?? l.Ingredient?.PricePerUnit ?? 0;
-    const qty = l.quantity ?? l.Quantity ?? 0;
+    const qty = l.baseQuantity ?? l.BaseQuantity ?? l.quantity ?? l.Quantity ?? 0;
     return sum + qty * price;
   }, 0);
 };
@@ -29,7 +30,7 @@ const emptyForm = () => ({
   category: 'Roti',
   barcode: '',
   sellingPrice: '',
-  lines: [{ ingredientId: '', quantity: '' }],
+  lines: [{ ingredientId: '', quantity: '', unit: '' }],
 });
 
 const emptyBahan = () => ({
@@ -39,6 +40,7 @@ const emptyBahan = () => ({
   pricePerUnit: '',
   currentStock: '0',
   minStockAlert: '0',
+  units: [],
 });
 
 export default function RecipesBomView({
@@ -117,6 +119,7 @@ export default function RecipesBomView({
     const lines = (sumber.recipeLines || sumber.RecipeLines || []).map((l) => ({
       ingredientId: String(l.ingredientId ?? l.IngredientId ?? ''),
       quantity: String(l.quantity ?? l.Quantity ?? ''),
+      unit: l.unit ?? l.Unit ?? '',
     }));
     setEditId(productId);
     setForm({
@@ -125,7 +128,7 @@ export default function RecipesBomView({
       barcode: sumber.barcode ?? sumber.Barcode ?? '',
       sellingPrice: String(fromMinor(sumber.sellingPriceMinorUnits ?? sumber.SellingPriceMinorUnits
         ?? sumber.sellingPrice ?? sumber.SellingPrice ?? 0)),
-      lines: lines.length > 0 ? lines : [{ ingredientId: '', quantity: '' }],
+      lines: lines.length > 0 ? lines : [{ ingredientId: '', quantity: '', unit: '' }],
     });
     setFormError(peringatan);
     setShowModal(true);
@@ -139,16 +142,61 @@ export default function RecipesBomView({
 
   // ── Line item helpers ─────────────────────────────────────────────────────────
   const addLine = () =>
-    setForm((f) => ({ ...f, lines: [...f.lines, { ingredientId: '', quantity: '' }] }));
+    setForm((f) => ({ ...f, lines: [...f.lines, { ingredientId: '', quantity: '', unit: '' }] }));
 
   const removeLine = (idx) =>
     setForm((f) => ({ ...f, lines: f.lines.filter((_, i) => i !== idx) }));
 
+  // Ganti bahan berarti satuan lama belum tentu ada di bahan baru; kembali ke satuan stok.
   const updateLine = (idx, field, value) =>
     setForm((f) => {
-      const lines = f.lines.map((l, i) => (i === idx ? { ...l, [field]: value } : l));
+      const lines = f.lines.map((l, i) => {
+        if (i !== idx) return l;
+        return field === 'ingredientId'
+          ? { ...l, ingredientId: value, unit: '' }
+          : { ...l, [field]: value };
+      });
       return { ...f, lines };
     });
+
+  // Satuan yang boleh dipilih untuk satu bahan: satuan stok + satuan turunannya.
+  const daftarSatuan = (ingredientId) => {
+    const b = (ingredients || []).find(
+      (i) => String(i.id ?? i.Id ?? '') === String(ingredientId)
+    );
+    if (!b) return [];
+    const dasar = b.unit ?? b.Unit ?? '';
+    const hasil = dasar ? [{ nama: dasar, faktor: 1 }] : [];
+    for (const u of b.additionalUnits ?? b.AdditionalUnits ?? []) {
+      const nama = u.unit ?? u.Unit ?? '';
+      if (!nama || hasil.some((h) => h.nama.toLowerCase() === nama.toLowerCase())) continue;
+      hasil.push({ nama, faktor: Number(u.factorToBase ?? u.FactorToBase ?? 0) });
+    }
+    return hasil;
+  };
+
+  // Teks konversi + HPP baris, supaya "250 g" terlihat sebagai 0,25 kg sebelum disimpan.
+  const infoBaris = (line) => {
+    const b = (ingredients || []).find(
+      (i) => String(i.id ?? i.Id ?? '') === String(line.ingredientId)
+    );
+    if (!b) return null;
+    const dasar = b.unit ?? b.Unit ?? '';
+    const pilihan = daftarSatuan(line.ingredientId);
+    const dipilih = line.unit
+      ? pilihan.find((s) => s.nama.toLowerCase() === line.unit.trim().toLowerCase())
+      : pilihan[0];
+    const qty = parseFloat(line.quantity);
+    if (!dipilih || !(qty > 0)) return null;
+    const jumlahDasar = qty * dipilih.faktor;
+    const harga = b.pricePerUnit ?? b.PricePerUnit ?? 0;
+    return {
+      konversi: dipilih.faktor === 1
+        ? `${formatQty(qty)} ${dipilih.nama}`
+        : `${formatQty(qty)} ${dipilih.nama} = ${formatQty(jumlahDasar)} ${dasar}`,
+      hpp: Math.round(jumlahDasar * harga),
+    };
+  };
 
   // ── Submit ─────────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
@@ -167,6 +215,7 @@ export default function RecipesBomView({
         .map((l) => ({
           ingredientId: parseInt(l.ingredientId, 10),
           quantity: parseFloat(l.quantity),
+          unit: l.unit?.trim() || null,
         })),
       idempotensi: formKunci,
     };
@@ -220,6 +269,10 @@ export default function RecipesBomView({
       // Stok yang tampil adalah total semua lokasi; mengubahnya mencatat penyesuaian di gudang.
       currentStock: String(bahan.currentStock ?? bahan.CurrentStock ?? 0),
       minStockAlert: String(bahan.minStockAlert ?? bahan.MinStockAlert ?? 0),
+      units: (bahan.additionalUnits ?? bahan.AdditionalUnits ?? []).map((u) => ({
+        unit: u.unit ?? u.Unit ?? '',
+        factor: String(u.factorToBase ?? u.FactorToBase ?? ''),
+      })),
     });
     setErrorBahan('');
     setShowBahan(true);
@@ -242,6 +295,31 @@ export default function RecipesBomView({
     const minimum = parseFloat(formBahan.minStockAlert);
     if (isNaN(minimum) || minimum < 0) { setErrorBahan('Batas minimum stok tidak valid.'); return; }
 
+    // Satuan tambahan: "1 g = 0,001 kg". Faktor harus positif dan namanya unik per bahan.
+    const satuanDasar = formBahan.unit.trim().toLowerCase();
+    const namaSatuan = new Set();
+    const units = [];
+    for (const u of formBahan.units) {
+      const nama = (u.unit || '').trim();
+      const faktor = parseFloat(u.factor);
+      if (!nama && !String(u.factor ?? '').trim()) continue; // baris kosong diabaikan
+      if (!nama) { setErrorBahan('Nama satuan tambahan wajib diisi.'); return; }
+      if (nama.toLowerCase() === satuanDasar) {
+        setErrorBahan(`Satuan tambahan "${nama}" sama dengan satuan stok bahan.`);
+        return;
+      }
+      if (namaSatuan.has(nama.toLowerCase())) {
+        setErrorBahan(`Satuan tambahan "${nama}" ditulis lebih dari sekali.`);
+        return;
+      }
+      if (isNaN(faktor) || faktor <= 0) {
+        setErrorBahan(`Faktor satuan "${nama}" harus lebih dari nol.`);
+        return;
+      }
+      namaSatuan.add(nama.toLowerCase());
+      units.push({ unit: nama, factorToBase: faktor });
+    }
+
     const payload = {
       name: formBahan.name.trim(),
       brand: formBahan.brand.trim() || null,
@@ -249,6 +327,7 @@ export default function RecipesBomView({
       pricePerUnit: toMinor(harga),
       currentStock: stok,
       minStockAlert: minimum,
+      units,
     };
 
     if (savingBahan) return;
@@ -267,6 +346,18 @@ export default function RecipesBomView({
       setSavingBahan(false);
     }
   };
+
+  const addSatuan = () =>
+    setFormBahan((f) => ({ ...f, units: [...f.units, { unit: '', factor: '' }] }));
+
+  const removeSatuan = (idx) =>
+    setFormBahan((f) => ({ ...f, units: f.units.filter((_, i) => i !== idx) }));
+
+  const updateSatuan = (idx, field, value) =>
+    setFormBahan((f) => ({
+      ...f,
+      units: f.units.map((u, i) => (i === idx ? { ...u, [field]: value } : u)),
+    }));
 
   const handleHapusBahan = async (bahan) => {
     const nama = bahan.name ?? bahan.Name ?? 'bahan ini';
@@ -657,44 +748,67 @@ export default function RecipesBomView({
                 </div>
 
                 <div className="space-y-2">
-                  {form.lines.map((line, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <select
-                        value={line.ingredientId}
-                        onChange={(e) => updateLine(idx, 'ingredientId', e.target.value)}
-                        className="flex-1 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
-                      >
-                        <option value="">— Pilih Bahan —</option>
-                        {(ingredients || []).map((ing) => {
-                          const ingId = ing.id ?? ing.Id;
-                          const ingName = ing.name ?? ing.Name ?? '-';
-                          const ingUnit = ing.unit ?? ing.Unit ?? '';
-                          return (
-                            <option key={ingId} value={ingId}>
-                              {ingName} {ingUnit ? `(${ingUnit})` : ''}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <input
-                        type="number"
-                        min="0"
-                        step="any"
-                        value={line.quantity}
-                        onChange={(e) => updateLine(idx, 'quantity', e.target.value)}
-                        placeholder="Qty"
-                        className="w-24 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeLine(idx)}
-                        disabled={form.lines.length === 1}
-                        className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
+                  {form.lines.map((line, idx) => {
+                    const satuan = daftarSatuan(line.ingredientId);
+                    const info = infoBaris(line);
+                    return (
+                      <div key={idx} className="rounded-xl border border-slate-800 bg-slate-950/40 p-2 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={line.ingredientId}
+                            onChange={(e) => updateLine(idx, 'ingredientId', e.target.value)}
+                            className="flex-1 min-w-0 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
+                          >
+                            <option value="">— Pilih Bahan —</option>
+                            {(ingredients || []).map((ing) => {
+                              const ingId = ing.id ?? ing.Id;
+                              const ingName = ing.name ?? ing.Name ?? '-';
+                              const ingUnit = ing.unit ?? ing.Unit ?? '';
+                              return (
+                                <option key={ingId} value={ingId}>
+                                  {ingName} {ingUnit ? `(${ingUnit})` : ''}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <select
+                            value={line.unit || satuan[0]?.nama || ''}
+                            onChange={(e) => updateLine(idx, 'unit', e.target.value)}
+                            disabled={satuan.length === 0}
+                            title="Satuan jumlah bahan pada baris ini"
+                            className="w-20 px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors disabled:opacity-40"
+                          >
+                            {satuan.map((s) => (
+                              <option key={s.nama} value={s.nama}>{s.nama}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="number"
+                            min="0"
+                            step="any"
+                            value={line.quantity}
+                            onChange={(e) => updateLine(idx, 'quantity', e.target.value)}
+                            placeholder="Qty"
+                            className="w-20 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeLine(idx)}
+                            disabled={form.lines.length === 1}
+                            className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        {info && (
+                          <div className="flex items-center justify-between px-1 text-[10px] text-slate-500">
+                            <span>{info.konversi}</span>
+                            <span className="font-mono">HPP baris {formatMinor(info.hpp)}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
                 {ingredients && ingredients.length === 0 && (
                   <p className="text-[10px] text-amber-400 mt-1">
@@ -812,6 +926,65 @@ export default function RecipesBomView({
                 <p className="text-[10px] text-slate-500 mt-1">
                   Rupiah penuh per satu satuan. Nilai ini menjadi dasar HPP setiap produk yang memakainya.
                 </p>
+              </div>
+
+              {/* Satuan tambahan: resep boleh menulis 250 g walau stok bahan dihitung per kg. */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-semibold text-slate-400">Satuan tambahan</label>
+                  <button
+                    type="button"
+                    onClick={addSatuan}
+                    className="flex items-center gap-1 px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg border border-slate-700 transition-colors"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Tambah satuan
+                  </button>
+                </div>
+                <p className="text-[10px] text-slate-500 mb-2">
+                  Faktor = berapa {formBahan.unit.trim() || 'satuan stok'} dalam 1 satuan ini.
+                  Contoh: 1 g = 0,001 kg, 1 bks = 0,5 kg.
+                </p>
+                {formBahan.units.length === 0 ? (
+                  <p className="text-[10px] text-slate-500">
+                    Belum ada. Resep tetap bisa memakai satuan stok {formBahan.unit.trim() || 'bahan ini'}.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {formBahan.units.map((u, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={u.unit}
+                          onChange={(e) => updateSatuan(idx, 'unit', e.target.value)}
+                          placeholder="cth. g"
+                          className="flex-1 min-w-0 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
+                        />
+                        <span className="text-[10px] text-slate-500 whitespace-nowrap">1 {u.unit.trim() || 'satuan'} =</span>
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={u.factor}
+                          onChange={(e) => updateSatuan(idx, 'factor', e.target.value)}
+                          placeholder="0,001"
+                          className="w-24 px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 transition-colors"
+                        />
+                        <span className="text-[10px] text-slate-400 w-10 truncate">
+                          {formBahan.unit.trim() || 'stok'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removeSatuan(idx)}
+                          className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                          title="Hapus satuan"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
