@@ -19,8 +19,11 @@ migrasi (019–023), sehingga jalur peningkatan benar-benar menjalankan migrasi.
 itu memeriksa migrasi **x5**, bukan x0, dan memastikan data, sandi, merek, serta 393 berkas payload
 tetap utuh sesudahnya.
 
-CI **belum** dijalankan untuk 1.2.15: commit `a43ca84` belum di-push. Semua angka di dokumen ini
-berasal dari mesin pengembang.
+CI `Gerbang build + tes` di GitHub Actions menjalankan pohon ini pada commit `0482e51`
+(pohon sama dengan artefak; bedanya hanya dokumen dan PDF): **`success`** dalam 4m28s,
+**679 tes lulus, 0 gagal, 0 dilewati**, keter-reproduksian **363 lulus, 0 gagal, 24 lewati**
+dari 6 manifest ([run 42198387598](https://github.com/dodorobe-bot/BAKERY/actions/runs/42198387598)).
+Angka lain di dokumen ini berasal dari mesin pengembang.
 
 ## Artefak
 
@@ -69,6 +72,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-pro.ps1 -Sinkr
 | Publish bebas berkas terlarang | lulus — tidak ada basis data, kunci JWT, kredensial, atau berkas debug | `VERIFY-REPORT.json` |
 | Kontrol negatif automasi (`uji-build-pro.ps1 -Version 1.2.15`) | **14/14 lulus, 0 gagal, 0 dilewati** pada paket hari ini pukul 16:14 — baseline hijau sebelum dan sesudah sabotase, penjaga versi terbit menolak build ulang 1.2.15 (pemicu: artefak di folder keluaran) dan tidak menghapus laporan yang ada | [`docs/paket-bukti-2026-11-06/kontrol-1215/uji-build-pro-rilis-1215.json`](paket-bukti-2026-11-06/kontrol-1215/uji-build-pro-rilis-1215.json) |
 | Pasang/peningkatan/copot **1.2.14 → 1.2.15** di Windows Sandbox bersih | **107 lulus, 0 gagal** dalam satu run (15:40–16:04), tanpa jaringan, tamu 1.536 MB | [`docs/paket-bukti-2026-11-06/upgrade-1214-1215-sandbox/run2/status.txt`](paket-bukti-2026-11-06/upgrade-1214-1215-sandbox/run2/status.txt) |
+| CI `Gerbang build + tes` (mesin kedua) | **`success`** pada commit `0482e51`, 4m28s — **679 tes lulus, 0 gagal, 0 dilewati**; keter-reproduksian **363 lulus, 0 gagal, 24 lewati** dari 6 manifest | [run 42198387598](https://github.com/dodorobe-bot/BAKERY/actions/runs/42198387598) |
 
 ## Sandbox 1.2.14 → 1.2.15: dua run, satu di antaranya merah karena harness
 
@@ -125,7 +129,6 @@ mencatat aksi harness (menghentikan host). Tidak ada `FAIL`, tidak ada `SKIP`.
 | Uji di Windows 10 | mesin ini Windows 11; tidak ada VM Windows 10 yang bisa dijalankan dari sesi ini | pemilik / mesin kedua |
 | Tanda tangan Authenticode | tidak ada sertifikat; semua paket dilaporkan `NotSigned` | pemilik (keputusan biaya, ditunda sejak 1.2.4) |
 | Build installer di CI | workflow CI sengaja tidak menjalankan `build-pro.ps1`/Inno/WiX | pemilik, bila ingin paket terbangkitkan di cloud |
-| Gerbang CI untuk 1.2.15 | commit `a43ca84` belum di-push; CI tidak bisa membaca pohon ini | setelah push disetujui pemilik |
 | Penambalan data warisan di basis data nyata | `--rekonsiliasi-stok-bahan --terapkan` menyentuh saldo neraca pemilik; uji kering tidak pernah dipakai di DB nyata | persetujuan pemilik |
 | Jalur peningkatan dari 1.2.9/1.2.10/1.2.12 langsung ke 1.2.15 | yang diuji di mesin bersih adalah 1.2.14 → 1.2.15; lompatan lama belum diuji dengan migrasi 019–023 | pemilik, bila diperlukan — naik berurutan lebih aman |
 

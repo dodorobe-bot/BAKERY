@@ -18,7 +18,10 @@ bukti **304 lulus, 0 gagal, 20 lewati**. Jalur peningkatan **1.2.14 → 1.2.15 d
 bersih lulus 107/107** — skema 18 → **23**, lima migrasi 019–023 dijalankan, data/sandi/merek
 utuh, aset web lama tersapu. Empat blocker lama tetap: printer kasir fisik, pemindai barcode
 fisik, laci uang, dan uji Windows 10; ditambah Authenticode yang belum ada sertifikatnya. CI
-**belum** dijalankan untuk 1.2.15 karena commit ini belum di-push. Rincian:
+`Gerbang build + tes` run [`42198387598`](https://github.com/dodorobe-bot/BAKERY/actions/runs/42198387598)
+pada commit `0482e51` (pohon sama dengan artefak; bedanya hanya dokumen) **`success`** dalam
+4m28s: **679 tes lulus, 0 gagal, 0 dilewati** (Domain 136, Application 139, Infrastructure 207,
+UI 197) dan keter-reproduksian **363 lulus, 0 gagal, 24 lewati** dari 6 manifest. Rincian:
 `docs/verifikasi-paket-1.2.15-2026-11-06.md`.
 
 - **Skema 23 — kampanye uji angka A–G.** Sebanyak 61 kasus angka dijawab dengan hasil terukur
