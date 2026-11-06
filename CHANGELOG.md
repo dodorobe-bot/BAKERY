@@ -4,11 +4,76 @@ Semua perubahan penting aplikasi Seruni 22 Bakery. Versi terbaru di atas.
 Bukti mentah tiap rilis ada di `docs/verifikasi-paket-<versi>-<tanggal>.md` dan
 `docs/paket-bukti-<tanggal>/`.
 
-## [Unreleased] — pasca-1.2.14, 5 November 2026
+## [1.2.15] — 2026-11-06
 
-Status: **belum dikemas**. Isi bagian ini ada di pohon kerja dan sudah hijau, tetapi **tidak ada di
-EXE/MSI 1.2.14** — paket itu tercetak sebelum perubahan ini dan bundel `desktop/` tidak ikut terkomit.
+Status: **NOT READY**. Paket dibangun dari commit `a43ca84` pada pohon bersih dan sudah dibuktikan:
+`Seruni22Bakery_Setup_v1.2.15.exe` (42.742.848 bita, SHA-256 `99f6b7a4…`) dan
+`Seruni22Bakery_v1.2.15_x64.msi` (50.485.764 bita, SHA-256 `77f36f55…`, ProductCode
+`{B217D2A7-FA77-4273-8B74-DB8760518A2F}`), keduanya `NotSigned`. Gerbang
+`scripts/verify.ps1 -Configuration Release` **33 langkah lulus, 0 gagal, 0 SKIP** (361,8 s);
+`dotnet test -c Release` **679 tes lulus, 0 gagal, 0 dilewati** (Domain 136, Application 139,
+Infrastructure 207, UI 197); `build-pro` **12 langkah, 0 gagal, 1 peringatan** (timpa ulang
+artefak yang diminta), validasi paket **19/19**, payload **393/393**; keter-reproduksian berkas
+bukti **304 lulus, 0 gagal, 20 lewati**. Jalur peningkatan **1.2.14 → 1.2.15 di Windows Sandbox
+bersih lulus 107/107** — skema 18 → **23**, lima migrasi 019–023 dijalankan, data/sandi/merek
+utuh, aset web lama tersapu. Empat blocker lama tetap: printer kasir fisik, pemindai barcode
+fisik, laci uang, dan uji Windows 10; ditambah Authenticode yang belum ada sertifikatnya. CI
+**belum** dijalankan untuk 1.2.15 karena commit ini belum di-push. Rincian:
+`docs/verifikasi-paket-1.2.15-2026-11-06.md`.
 
+- **Skema 23 — kampanye uji angka A–G.** Sebanyak 61 kasus angka dijawab dengan hasil terukur
+  (bukan asumsi), satu commit per batch: A+B `9c08329`, C `8d23aed`, D `bc0f611`, E `7fc0cd1`,
+  F `c1c9ea3`, G `a43ca84`. Lima migrasi baru masuk: **019** lapisan biaya FIFO, **020** diskon/
+  PPN/piutang, **021** retur & pembayaran pemasok, **022** pagar tutup periode, **023** satuan
+  turunan per bahan.
+- **Lapisan biaya FIFO (migrasi 019).** HPP bahan dan produk jadi diambil dari lapisan biaya
+  yang benar-benar masuk, bukan harga terakhir di master; penyerahan, retur, dan opname membalik
+  biaya yang sama dengan yang dibukukan saat barang datang. Rincian struk ikut memakai lapisan
+  itu.
+- **Diskon, PPN, dan piutang usaha (migrasi 020).** Server menghitung nilai barang, diskon, PPN
+  (eksklusif maupun sudah termasuk), uang diterima, dan kembalian; angkanya disnapshot per
+  pesanan sehingga tarif bulan depan tidak mengoreksi struk lama. Diskon menjadi kapabilitas
+  sendiri (`sales-discount`). Struk mencetak **Nilai Barang**, **Diskon**, **PPN 11%** (atau
+  **PPN 11% (termasuk)**), **Total**, **Tunai Diterima**, **Kembalian**, **Sisa Tagihan**, dan
+  **LUNAS**; cetak ulang diberi penanda. Dashboard kini memisahkan **Piutang Usaha** (akun
+  `1-002`, lahir saat penyerahan) dari **Sisa Tagihan Pesanan** (semua yang belum lunas).
+- **Retur pemasok dan pembayaran hutang (migrasi 021).** Hutang `2-002` sebelumnya hanya bisa
+  bertambah. Dokumen **RTB** (retur) dan **PPB** (pembayaran) kini menurunkannya, dengan pemicu
+  yang menjaga saldo struk tidak pernah negatif. Retur melepas hutang seharga struk dan
+  mengeluarkan barang lewat lapisan FIFO tertua; selisih harga ditutup ke `5-006`. Jalur baca
+  baru `GET /api/payables` melaporkan sisa hutang **per struk penerimaan**; periksa-diri menambah
+  dua pemeriksaan (saldo struk non-negatif dan setiap retur/pembayaran punya kaki jurnal).
+  Layar **Pembelian** mendapat aksi **Retur** + dialog **Retur Pemasok**; **Utang & Piutang
+  Usaha** mendapat panel **Utang pemasok per dokumen** dan form **Catat pembayaran pemasok**
+  (lawan dari peringatan lama yang menyebut tombol itu masih dinonaktifkan).
+- **Tutup periode buku dan tanggal biaya (migrasi 022).** Pemicu menahan INSERT/UPDATE jurnal ke
+  periode **tertutup**/**terkunci**; `JournalWriter` melempar `PeriodClosedException` yang
+  dijawab 400. `GET /api/periods` terbuka untuk `finance-read`; tutup/buka hanya **Owner**,
+  bulan berjalan dan bulan depan ditolak, status **terkunci** tidak bisa dibuka, dan setiap aksi
+  menulis jejak audit `FiscalPeriod`. Layar **Catat Pengeluaran Kas** mendapat kolom
+  **Tanggal biaya \*** (kosong = hari bisnis hari ini); masa depan dan tanggal lebih tua dari
+  366 hari ditolak dengan pesan yang menyebut batasnya.
+- **Satuan turunan per bahan (migrasi 023).** Resep 250 g dari bahan Rp 12.000/kg dulu dibaca
+  250 kg sehingga HPP Rp 3.000.000. Tabel `IngredientUnits` + `RecipeLines.Unit` membuat server
+  mengonversi ke satuan stok sebelum menghitung HPP, rencana SPK, dan pemakaian. Satuan asing
+  ditolak 400, satuan yang masih dipakai resep tidak bisa dihapus, dan periksa-diri menangkap
+  baris resep bersatuan tak terdaftar. Form bahan di **Resep & Daftar Bahan Baku** mendapat
+  **Satuan tambahan** dengan keterangan **Faktor = berapa … dalam 1 satuan ini**.
+- **Hapus master hanya setelah raknya kosong.** Menonaktifkan bahan atau produk yang masih
+  berstok membuat laporan dan neraca menunjuk barang yang tidak ada di daftar. `DeleteAsync`
+  sekarang menolak dan menyebut lokasi, jumlah, serta cara menghabiskan stoknya; endpoint
+  menerjemahkannya menjadi **400 + banner alasan** (sebelumnya 200 walau baris ditolak).
+  Pemeriksaan ke-12 **stok master nonaktif sudah habis** menandai sisa warisan; ekspor stok dan
+  jalur baca produk jadi ikut membawa baris nonaktif berstok.
+- **Validasi jumlah pesanan (Batch F).** `Quantity` wajib dikirim, harus bilangan bulat, dan
+  lebih dari nol — tidak lagi diam-diam dibaca satu unit. `POST /api/purchases` tanpa `lines`
+  menjawab **400**, bukan membuat PO kosong.
+- **Batas tengah malam toko bisa diuji (Batch G).** `BusinessTime.DariUtc` menerima waktu tetap
+  sehingga hari bisnis 16:59Z = 23:59 dan 17:01Z = 00:01 diuji sebagai dua tanggal berbeda,
+  bukan lewat asumsi zona waktu.
+- **PPN kosong tidak lagi menggagalkan penyimpanan Pengaturan.** Form berhenti mengirim
+  `tax_rate_percent: ''` saat PPN belum pernah dinyalakan; server menolak nilai kosong dan
+  seluruh penyimpanan — termasuk nama toko dan logo — ikut gagal.
 - **Diperbaiki: nilai stok bahan yang sudah dinonaktifkan menyurut jadi nol.** Baris stok membaca harga
   dari daftar bahan **aktif**, padahal `DELETE /api/ingredients/{id}` hanya menandai `IsActive = 0`
   sementara barangnya masih ada di rak. `LocationStock` sekarang membawa
@@ -24,18 +89,25 @@ EXE/MSI 1.2.14** — paket itu tercetak sebelum perubahan ini dan bundel `deskto
 - **Ditambah: tiga tes regresi** `tests/UI.Tests/Tests/InactiveIngredientStockTests.cs` (2 API + 1
   Playwright yang benar-benar menekan **Setel** di layar opname). Keduanya sempat dibuktikan **MERAH**
   pada kode/bundel lama sebelum dipercaya hijau. Gerbang Release penuh pada pohon ini: build 0 peringatan,
-  **547 tes lulus / 0 gagal / 0 dilewati** (Domain 83, Application 129, Infrastructure 164, UI 171).
+  **679 tes lulus / 0 gagal / 0 dilewati** (Domain 136, Application 139, Infrastructure 207, UI 197).
 - **Ditambah: buku petunjuk ringkas gaya BAKAWAN** — `docs/manual/petunjuk.html` (957 baris), alat cetak
   `docs/manual/cetak_petunjuk.py`, dan `docs/manual/Seruni22-Buku-Petunjuk-Pengguna.pdf`
-  **60 halaman / 45 gambar bercaption berurutan / 52 rujukan daftar isi**, 7.785.633 bita, stempel 1.2.14;
+  **60 halaman / 45 gambar bercaption berurutan / 52 rujukan daftar isi**, 7.785.632 bita, stempel 1.2.15;
   isinya diverifikasi dengan ekstraksi teks, bukan dengan membuka mata. Empat alur usang tentang bahan
   nonaktif disapu dari naskah (3.2.15, 3.2.22, 3.2.23, 3.2.24). (commit `646c9cd`)
-- **CI (mesin kedua): empat run `success` beruntun.** `41948231824` dan `41949270292` mengulangi
-  **544 lulus** tanpa perubahan kode; `41972726233` di `646c9cd` adalah run pertama yang memuat perbaikan
-  ini dan menunjukkan **547 lulus** (UI 168 → 171 = tepat tiga tes baru), build 0 peringatan,
-  keter-reproduksian 282 berkas **303 lulus / 0 gagal / 20 lewati**. Batas yang dicatat jujur: penjaga
-  keter-reproduksian hanya memindai `docs/paket-bukti-*`, jadi PDF manual **tidak** dibandingkan
-  byte-per-byte oleh CI, dan CI tetap tidak membangun installer. Rincian:
+- **Naskah dan PDF distempel ulang ke 1.2.15.** `manual.html` dan `petunjuk.html` kini menyebut versi
+  1.2.15; kedua PDF dibangun ulang dari sumber itu dan diverifikasi sendiri oleh alat cetaknya.
+  Manual **131 halaman / 58 gambar / 45 entri daftar isi**, 12.997.441 bita; petunjuk **60 halaman /
+  45 gambar**. Bagian baru: retur pemasok (18.3), pembayaran hutang per dokumen (27.2), periode buku
+  (28.4), **Tanggal biaya \***, **Satuan tambahan**, dan label Dasbor 1.2.15. Gambar tetap dari
+  tangkapan 4 November 2026 (sumber 1.2.14); keterangan itu tercetak jujur di metadata dan kaki
+  halaman, dan tabel per bab yang berlaku.
+- **CI (mesin kedua, untuk 1.2.14): empat run `success` beruntun.** `41948231824` dan `41949270292`
+  mengulangi **544 lulus** tanpa perubahan kode; `41972726233` di `646c9cd` adalah run pertama yang
+  memuat perbaikan bahan nonaktif dan menunjukkan **547 lulus** (UI 168 → 171 = tepat tiga tes baru),
+  build 0 peringatan, keter-reproduksian 282 berkas **303 lulus / 0 gagal / 20 lewati**. Batas yang
+  dicatat jujur: penjaga keter-reproduksian hanya memindai `docs/paket-bukti-*`, jadi PDF manual
+  **tidak** dibandingkan byte-per-byte oleh CI, dan CI tetap tidak membangun installer. Rincian:
   `docs/paket-bukti-2026-11-05/ci/gerbang-ci-1214.md` dan
   `docs/paket-bukti-2026-11-05/ci/tes-nama-bahan-nonaktif.txt`.
 
