@@ -532,7 +532,12 @@ function Pengaturan({ settings, selfCheck, loading, onRefresh, onSaveSettings })
     setPesan('');
     setSedangSimpan(true);
     try {
-      const hasil = await onSaveSettings(form);
+      // Tarif PPN hanya berarti saat PPN dinyalakan; selama belum pernah diisi, kuncinya tidak
+      // ikut dikirim. Tanpa ini server menolak isian kosong dan seluruh pengaturan — termasuk
+      // nama toko — gagal disimpan pada basis data yang belum pernah memakai PPN.
+      const dikirim = { ...form };
+      if (!ppnHidup(form) && String(form.tax_rate_percent).trim() === '') delete dikirim.tax_rate_percent;
+      const hasil = await onSaveSettings(dikirim);
       setPesan(
         `Tersimpan (${hasil?.diterapkan ?? 0} kunci berubah).` +
         (hasil?.peringatan ? ` Perhatian: ${hasil.peringatan}` : '')
