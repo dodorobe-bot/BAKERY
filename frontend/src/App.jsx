@@ -976,7 +976,7 @@ export default function App() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl shadow-lg">
                 <div className="flex items-center justify-between text-slate-400 text-xs">
-                  <span>Penerimaan Kasir Hari Ini</span>
+                  <span>Kas Masuk Hari Ini</span>
                   <ShoppingBag className="w-4 h-4 text-amber-400" />
                 </div>
                 <div className="text-2xl font-black text-white mt-2 font-mono">
@@ -986,7 +986,7 @@ export default function App() {
                 </div>
                 <div className="text-xs text-slate-400 mt-1">
                   {dashboardData != null
-                    ? `Kas: ${formatMinor(dashboardData.kasBalance)}`
+                    ? `Arus kas masuk · saldo Kas & Bank (1-001): ${formatMinor(dashboardData.kasBalance)}`
                     : 'Memuat data...'}
                 </div>
               </div>
@@ -1032,7 +1032,7 @@ export default function App() {
 
               <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl shadow-lg">
                 <div className="flex items-center justify-between text-slate-400 text-xs">
-                  <span>Piutang Belum Lunas</span>
+                  <span>Sisa Tagihan Pesanan</span>
                   <Sparkles className="w-4 h-4 text-emerald-400" />
                 </div>
                 <div className="text-2xl font-black text-emerald-400 mt-2 font-mono">
@@ -1041,11 +1041,18 @@ export default function App() {
                     : '-'}
                 </div>
                 <div className="text-xs text-slate-400 mt-1">
-                  {dashboardData?.alerts?.filter(a => a.type === 'payment').length > 0
-                    ? `${dashboardData.alerts.filter(a => a.type === 'payment').length} tagihan terlewat`
-                    : dashboardData != null ? 'Tidak ada piutang jatuh tempo' : 'Memuat data...'}
+                  {dashboardData != null
+                    ? `${dashboardData.alerts?.filter(a => a.type === 'payment').length > 0
+                        ? `${dashboardData.alerts.filter(a => a.type === 'payment').length} tagihan terlewat · `
+                        : ''}Akun 1-002: ${formatMinor(dashboardData.piutangUsaha)}`
+                    : 'Memuat data...'}
                 </div>
               </div>
+            </div>
+
+            <div className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-[11px] text-slate-500">
+              Sisa tagihan pesanan menghitung semua pesanan aktif, termasuk yang belum diserahkan.
+              Akun 1-002 Piutang Usaha baru bertambah saat pesanan diserahkan, jadi angkanya bisa lebih kecil.
             </div>
 
             {/* Smart Alerts */}

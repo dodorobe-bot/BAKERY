@@ -63,6 +63,7 @@ for (let i = 0; i < 300; i++) {
     pickupDate: '2030-04-04T09:00:00',
     totalAmount: 250_000,
     downPayment: 0,
+    quantity: 1,
   });
   if (r.status !== 201) gagalSeed++;
 }

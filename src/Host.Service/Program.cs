@@ -625,9 +625,10 @@ try
             // Yang diuji di sini harga barang, bukan tagihan akhir: TotalAmount permintaan adalah
             // nilai barang sebelum diskon dan sebelum PPN, sehingga membandingkannya dengan harga
             // katalog tetap tidak memberi kasir ruang untuk menulis harga sendiri.
-            var seharusnya = produk.SellingPrice * req.Quantity;
             if (req.Quantity is > 0 and <= OrderService.MaxOrderQuantity)
             {
+                var jumlah = req.Quantity.Value;
+                var seharusnya = produk.SellingPrice * jumlah;
                 if (seharusnya != Math.Truncate(seharusnya) || seharusnya > long.MaxValue)
                     return Results.BadRequest(new
                     {
@@ -638,7 +639,7 @@ try
                     return Results.BadRequest(new
                     {
                         errorCode = ErrorCodes.ValidationFailed,
-                        errorMessage = $"Total pesanan harus {Money.Format((long)seharusnya)} ({produk.Name} × {req.Quantity:0.###}). "
+                        errorMessage = $"Total pesanan harus {Money.Format((long)seharusnya)} ({produk.Name} × {jumlah:0.###}). "
                                        + "Perubahan harga hanya bisa dilakukan Admin lewat katalog produk."
                     });
             }
@@ -1536,6 +1537,14 @@ try
         IIngredientRepository ingredients, IDocumentSequenceRepository documents, HttpContext ctx) =>
     {
         var userId = int.Parse(ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+        // Body tanpa "lines" membuat LINQ melempar NullReferenceException dan jawabannya 500.
+        // Ini kesalahan masukan, bukan kerusakan server, jadi diperiksa sebelum dipetakan.
+        if (dto.Lines is null || dto.Lines.Count == 0)
+            return Results.BadRequest(new
+            {
+                errorCode = ErrorCodes.ValidationFailed,
+                errorMessage = "PO harus punya minimal satu baris bahan."
+            });
         // Tanggal dari layar bisa berupa string apa pun; Parse yang melempar akan jadi 500.
         DateTime? expectedDate = null;
         if (!string.IsNullOrWhiteSpace(dto.ExpectedDate))

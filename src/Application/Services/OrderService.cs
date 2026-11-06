@@ -9,9 +9,9 @@ public record CreateOrderRequest(
     DateTime PickupDate, long TotalAmount, long DownPayment,
     int? ProductTemplateId, string? Notes, int CreatedByUserId,
     string? IdempotencyKey = null,
-    // Jumlah unit: ditambahkan paling belakang agar permintaan lama tanpa field ini tetap sah
-    // dan terbaca sebagai satu unit, sama seperti baris lama di basis data.
-    decimal Quantity = 1,
+    // Jumlah unit wajib dikirim. Nilai kosong tidak lagi dibaca sebagai satu unit secara diam-diam,
+    // karena pesanan yang jumlahnya tidak diketahui bisa memotong stok produk jadi sebanyak 1.
+    decimal? Quantity = null,
     // Diskon ditambahkan paling belakang untuk alasan yang sama. TotalAmount di atas berarti
     // nilai barang (harga × jumlah); total tagihan dihitung server dari diskon + pengaturan PPN.
     long? DiscountAmount = null,
@@ -62,11 +62,19 @@ public class OrderService
         if (string.IsNullOrWhiteSpace(req.CustomerName))
             return Result<int>.Fail(ErrorCodes.ValidationFailed, "Nama pelanggan wajib diisi.");
 
+        // Jumlah pesanan adalah satuan barang jadi, bukan berat. Pecahan seperti 0,5 unit tidak
+        // pernah dijual dan membuat stok produk jadi bergerak setengah unit tanpa alasannya.
+        if (req.Quantity is null)
+            return Result<int>.Fail(ErrorCodes.ValidationFailed, "Jumlah pesanan wajib diisi.");
+        var jumlahPesanan = req.Quantity.Value;
+        if (jumlahPesanan <= 0)
+            return Result<int>.Fail(ErrorCodes.ValidationFailed, "Jumlah pesanan harus lebih dari nol.");
+        if (jumlahPesanan != decimal.Truncate(jumlahPesanan))
+            return Result<int>.Fail(ErrorCodes.ValidationFailed,
+                "Jumlah pesanan harus bilangan bulat (tidak boleh pecahan).");
         // Sama seperti pagaran nominal: jumlah di luar ini hampir selalu salah ketik, dan
         // stok etalase akan terpotong sebanyak angka tersebut saat status berubah.
-        if (req.Quantity <= 0)
-            return Result<int>.Fail(ErrorCodes.ValidationFailed, "Jumlah pesanan harus lebih dari nol.");
-        if (req.Quantity > MaxOrderQuantity)
+        if (jumlahPesanan > MaxOrderQuantity)
             return Result<int>.Fail(ErrorCodes.ValidationFailed,
                 $"Jumlah pesanan melebihi batas {MaxOrderQuantity:N0} unit.");
 
@@ -110,7 +118,7 @@ public class OrderService
             TaxAmount = harga.Tax,
             TotalAmount = harga.Total,
             DownPayment = req.DownPayment,
-            Quantity = req.Quantity,
+            Quantity = jumlahPesanan,
             Status = req.DownPayment >= harga.Total ? OrderStatus.Paid : OrderStatus.Pending,
             Notes = req.Notes,
             CreatedAt = DateTime.UtcNow,

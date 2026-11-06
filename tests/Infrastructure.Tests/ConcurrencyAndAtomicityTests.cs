@@ -115,10 +115,10 @@ public class ConcurrencyAndAtomicityTests
         var hasil = await Task.WhenAll(
             _orderService.CreateOrderAsync(new CreateOrderRequest(
                 "Pelanggan A", telepon, "Uji serentak", DateTime.UtcNow.AddDays(1),
-                1_000_000, 0, null, null, Pengguna)),
+                1_000_000, 0, null, null, Pengguna, null, 1m)),
             _orderService.CreateOrderAsync(new CreateOrderRequest(
                 "Pelanggan B", telepon, "Uji serentak", DateTime.UtcNow.AddDays(1),
-                2_000_000, 0, null, null, Pengguna)));
+                2_000_000, 0, null, null, Pengguna, null, 1m)));
 
         hasil.Should().OnlyContain(r => r.Success,
             "nomor telepon yang sama tidak boleh membuat pesanan kedua gagal karena UNIQUE");

@@ -28,18 +28,25 @@ export default function AnalyticsView({ analytics, loading, onRefresh }) {
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            <Kpi icon={TrendingUp} label="Pendapatan" nilai={formatMinor(a.totalPendapatan)} nada="emerald" />
-            <Kpi icon={Wallet} label="Beban" nilai={formatMinor(a.totalBeban)} nada="rose" />
+            <Kpi icon={TrendingUp} label="Pendapatan" nilai={formatMinor(a.totalPendapatan)} sub="jurnal diakui" nada="emerald" />
+            <Kpi icon={Wallet} label="Beban" nilai={formatMinor(a.totalBeban)} sub="jurnal diakui" nada="rose" />
             <Kpi icon={TrendingUp} label="Selisih Pendapatan − Beban" nilai={formatMinor(a.labaKotor)} nada={a.labaKotor >= 0 ? 'emerald' : 'rose'} />
             <Kpi icon={Percent} label="Rasio Selisih" nilai={margin === null ? '-' : `${margin}%`} nada="amber" />
-            <Kpi icon={Receipt} label="Pesanan" nilai={`${a.jumlahPesanan}`} sub={a.jumlahPesananBatal ? `${a.jumlahPesananBatal} batal` : 'tanpa pembatalan'} />
-            <Kpi icon={Receipt} label="Rata-rata Pesanan" nilai={formatMinor(a.rataRataNilaiPesanan)} />
+            <Kpi icon={Receipt} label="Pesanan" nilai={`${a.jumlahPesanan}`} sub={a.jumlahPesananBatal ? `${a.jumlahPesananBatal} batal` : 'semua tidak batal'} />
+            <Kpi icon={Receipt} label="Nilai Pesanan" nilai={formatMinor(a.totalNilaiPesanan)} sub={`rata-rata ${formatMinor(a.rataRataNilaiPesanan)}/pesanan`} />
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-3 text-[11px] text-slate-400">
-            Selisih dihitung dari seluruh pendapatan jurnal dikurangi seluruh beban jurnal, termasuk
-            tenaga kerja dan overhead produksi. Penjualan belum dibebani harga pokok penjualan, jadi
-            angka ini bukan laba kotor akuntansi dan tidak bisa dipakai sebagai margin kotor.
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-3 text-[11px] text-slate-400 space-y-1">
+            <p>
+              Pendapatan, beban, dan selisih berasal dari jurnal yang sudah diakui. Pesanan, nilai pesanan,
+              grafik nilai pesanan, dan tabel produk menghitung semua pesanan tidak batal, termasuk yang
+              belum lunas; karena itu Nilai Pesanan bisa lebih besar dari Pendapatan.
+            </p>
+            <p>
+              Selisih dihitung dari seluruh pendapatan jurnal dikurangi seluruh beban jurnal, termasuk
+              tenaga kerja dan overhead produksi. Penjualan belum dibebani harga pokok penjualan, jadi
+              angka ini bukan laba kotor akuntansi dan tidak bisa dipakai sebagai margin kotor.
+            </p>
           </div>
 
           <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
@@ -57,11 +64,15 @@ export default function AnalyticsView({ analytics, loading, onRefresh }) {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <TabelJudul judul="Produk terlaris" kosong="Belum ada produk terjual pada rentang ini.">
+            <TabelJudul
+              judul="Produk terlaris"
+              catatan="Semua pesanan tidak batal, termasuk yang belum lunas · nilai = TotalAmount pesanan"
+              kosong="Belum ada produk terjual pada rentang ini."
+            >
               {a.produk.length === 0 ? null : (
                 <table className="w-full text-left text-xs">
                   <thead className="text-[10px] uppercase tracking-wider text-slate-500">
-                    <tr><th className="py-2">Produk</th><th className="py-2 text-right">Unit</th><th className="py-2 text-right">Nilai</th></tr>
+                    <tr><th className="py-2">Produk</th><th className="py-2 text-right">Unit</th><th className="py-2 text-right">Nilai pesanan</th></tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/60">
                     {a.produk.map((p, i) => (
@@ -132,11 +143,12 @@ function GrafikBar({ data }) {
   );
 }
 
-function TabelJudul({ judul, kosong, children }) {
+function TabelJudul({ judul, catatan, kosong, children }) {
   return (
     <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
       <div className="p-4 border-b border-slate-800">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">{judul}</h3>
+        {catatan && <p className="text-[10.5px] text-slate-500 mt-1">{catatan}</p>}
       </div>
       <div className="p-4">
         {children ?? <p className="text-xs text-slate-400">{kosong}</p>}

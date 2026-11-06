@@ -120,19 +120,19 @@ catat('stok awal dapur diisi', isiDapur.status === 200, pesan(isiDapur));
 // ── Pagar nominal pesanan ───────────────────────────────────────────────────
 const rp0 = await api('POST', '/api/orders', {
   customerName: 'Uji Nol', phone: '08000000001', description: 'd', pickupDate: '2026-11-01',
-  totalAmount: 0, downPayment: 0, productTemplateId: productId,
+  totalAmount: 0, downPayment: 0, productTemplateId: productId, quantity: 1,
 });
 catat('pesanan bernilai 0 ditolak', rp0.status === 400, pesan(rp0));
 
 const dpLebih = await api('POST', '/api/orders', {
   customerName: 'Uji DP', phone: '08000000002', description: 'd', pickupDate: '2026-11-01',
-  totalAmount: 200000, downPayment: 300000, productTemplateId: productId,
+  totalAmount: 200000, downPayment: 300000, productTemplateId: productId, quantity: 1,
 });
 catat('uang muka melebihi nilai pesanan ditolak', dpLebih.status === 400, pesan(dpLebih));
 
 const nominalGila = await api('POST', '/api/orders', {
   customerName: 'Uji Besar', phone: '08000000003', description: 'd', pickupDate: '2026-11-01',
-  totalAmount: 9_000_000_000_000, downPayment: 0, productTemplateId: productId,
+  totalAmount: 9_000_000_000_000, downPayment: 0, productTemplateId: productId, quantity: 1,
 });
 catat('nominal menembus atap ditolak', nominalGila.status === 400, pesan(nominalGila));
 
@@ -141,7 +141,7 @@ const sebelumDp = await totalJurnal();
 const pesanan = await api('POST', '/api/orders', {
   customerName: 'Bu Sari', phone: '081234567890', description: 'Roti uji 20 pcs',
   pickupDate: '2026-11-05', totalAmount: 200000, downPayment: 50000,
-  productTemplateId: productId, idempotencyKey: 'batch2-dp-001',
+  productTemplateId: productId, quantity: 1, idempotencyKey: 'batch2-dp-001',
 });
 const orderId = pesanan.json?.id;
 const sesudahDp = await totalJurnal();
@@ -304,7 +304,7 @@ catat('total debit = total kredit di seluruh jurnal', saldo.debit === saldo.kred
 // ── Status: potong stok, lalu batal + pembalik ───────────────────────────────
 const pesanan2 = await api('POST', '/api/orders', {
   customerName: 'Pak Devi', phone: '081234567891', description: 'Roti uji 4 pcs',
-  pickupDate: '2026-11-06', totalAmount: 100000, downPayment: 20000, productTemplateId: productId,
+  pickupDate: '2026-11-06', totalAmount: 100000, downPayment: 20000, productTemplateId: productId, quantity: 1,
 });
 const order2Id = pesanan2.json?.id;
 const stokSebelum = await stokProduk(display.id, productId);
@@ -351,7 +351,7 @@ const produkStokHabis = await api('POST', '/api/products', {
 const produkHabisId = produkStokHabis.json?.id || produkStokHabis.json;
 const pesanan3 = await api('POST', '/api/orders', {
   customerName: 'Uji Stok Habis', phone: '081234567892', description: 'kue keju',
-  pickupDate: '2026-11-07', totalAmount: 800000, downPayment: 0, productTemplateId: produkHabisId,
+  pickupDate: '2026-11-07', totalAmount: 800000, downPayment: 0, productTemplateId: produkHabisId, quantity: 1,
 });
 const order3Id = pesanan3.json?.id;
 const jurnalSebelumGagal = await totalJurnal();

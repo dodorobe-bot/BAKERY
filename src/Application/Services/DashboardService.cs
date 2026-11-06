@@ -5,12 +5,14 @@ namespace Seruni22Bakery.Application.Services;
 
 /// <param name="KasBalance">Saldo Kas &amp; Bank (1-001) pada arah normalnya, unit minor.</param>
 /// <param name="Piutang">Sisa bayar seluruh pesanan aktif termasuk yang belum jatuh tempo, unit minor.</param>
+/// <param name="PiutangUsaha">Saldo akun 1-002 Piutang Usaha, hanya berisi pendapatan yang sudah diakui saat penyerahan.</param>
 /// <param name="Revenue">Kas masuk hari bisnis ini, unit minor.</param>
 /// <param name="Expense">Kas keluar hari bisnis ini, unit minor.</param>
 /// <param name="NetProfit">Selisih kas masuk-keluar hari ini, unit minor.</param>
 public record DashboardSummary(
     long KasBalance,
     long Piutang,
+    long PiutangUsaha,
     long Revenue,
     long Expense,
     long NetProfit,
@@ -24,6 +26,7 @@ public record UpcomingOrder(int Id, string OrderNumber, string CustomerName, str
 public class DashboardService
 {
     private const string CashAccountCode = "1-001";
+    private const string ReceivableAccountCode = "1-002";
 
     private readonly ISalesOrderRepository _orders;
     private readonly IIngredientRepository _ingredients;
@@ -43,6 +46,9 @@ public class DashboardService
         // Semua angka KPI dihitung di SQL. Dashboard tidak lagi memuat semua pesanan belum lunas
         // beserta pembayarannya, jadi waktu buka tetap datar walau riwayat transaksi bertahun-tahun.
         var kas = await _journals.GetAccountBalanceAsync(CashAccountCode);
+        // Piutang akun dan sisa tagihan pesanan sengaja ditampilkan berdampingan: 1-002 baru
+        // bertambah saat pesanan diserahkan, sedangkan kartu pesanan menghitung semua yang belum lunas.
+        var piutangUsaha = await _journals.GetAccountBalanceAsync(ReceivableAccountCode);
 
         // "Hari ini" di kartu KPI berarti arus kas pada tanggal bisnis, bukan saldo sepanjang masa.
         var cashFlow = await _journals.GetCashFlowAsync(today, CashAccountCode);
@@ -76,7 +82,7 @@ public class DashboardService
             o.Id, o.OrderNumber ?? $"#{o.Id}", o.CustomerNameSnapshot,
             o.Description, o.PickupDate, o.Status.ToString())).ToList();
 
-        return new DashboardSummary(kas, piutang, cashIn, cashOut, cashIn - cashOut,
+        return new DashboardSummary(kas, piutang, piutangUsaha, cashIn, cashOut, cashIn - cashOut,
             outstanding.Jumlah, alerts, upcomingList);
     }
 }

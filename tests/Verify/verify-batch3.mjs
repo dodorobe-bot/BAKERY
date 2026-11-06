@@ -169,6 +169,7 @@ catat('data dasar untuk uji peran siap', !!ingredientId && !!productId && !!supp
 const pesananInti = (nomor, orang, total = 100000) => ({
   customerName: `Uji ${orang} ${nomor}`, phone: '081234567890', description: 'roti uji',
   pickupDate: '2026-11-10', totalAmount: total, downPayment: 0, productTemplateId: productId,
+  quantity: 1,
 });
 
 async function ujiPeran(nama, token, method, path, body, boleh) {

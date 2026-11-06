@@ -582,6 +582,7 @@ public sealed class Batch7ApiTests : IClassFixture<PlaywrightFixture>
             pickupDate = "2029-12-31T10:00:00",
             totalAmount = 1_200_000,
             downPayment = dibayar,
+            quantity = 1,
         };
 
         var namaLunas = $"Lunas {Guid.NewGuid():N}"[..24];
@@ -661,6 +662,7 @@ public sealed class Batch7ApiTests : IClassFixture<PlaywrightFixture>
             pickupDate = "2030-09-09T10:00:00",
             totalAmount = 2_000_000,
             downPayment = 0,
+            quantity = 1,
         };
 
         var jawaban = await Task.WhenAll(
@@ -692,6 +694,7 @@ public sealed class Batch7ApiTests : IClassFixture<PlaywrightFixture>
             pickupDate = "2030-09-09T10:00:00",
             totalAmount = 1_500_000,
             downPayment = 0,
+            quantity = 1,
         });
         var teks = await buat.Content.ReadAsStringAsync();
         buat.StatusCode.Should().Be(HttpStatusCode.Created, teks);

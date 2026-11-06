@@ -230,6 +230,7 @@ public sealed class RbacApiTests : IClassFixture<PlaywrightFixture>
             pickupDate = "2030-04-04T09:00:00",
             totalAmount = 7_777_00,
             downPayment = 0,
+            quantity = 1,
         });
         khusus.StatusCode.Should().Be(HttpStatusCode.Created, await khusus.Content.ReadAsStringAsync());
     }
@@ -492,6 +493,7 @@ public sealed class RbacApiTests : IClassFixture<PlaywrightFixture>
             pickupDate = "2030-07-07T09:00:00",
             totalAmount = 200_000L,
             downPayment = 0,
+            quantity = 1,
         });
         buatOwner.StatusCode.Should().Be(HttpStatusCode.Created, await buatOwner.Content.ReadAsStringAsync());
 

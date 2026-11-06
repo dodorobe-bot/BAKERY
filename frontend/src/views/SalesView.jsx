@@ -297,7 +297,7 @@ export default function SalesView({
 
   const hitungTotalKatalog = (productId, qty) => {
     const produk = (products || []).find((p) => String(p.id) === String(productId));
-    const jumlah = parseFloat(qty || '1');
+    const jumlah = parseFloat(qty);
     if (!produk || isNaN(jumlah) || jumlah <= 0) return '';
     return String(Math.round(fromMinor(produk.sellingPrice) * jumlah));
   };
@@ -471,8 +471,15 @@ export default function SalesView({
     }
     if (isNaN(dp) || dp < 0) { setOrderError('DP tidak valid.'); return; }
     if (dp > fromMinor(pratinjau.total)) { setOrderError('DP tidak boleh melebihi total tagihan.'); return; }
-    const jumlah = parseFloat(orderForm.qty || '1');
-    if (isNaN(jumlah) || jumlah <= 0) { setOrderError('Qty harus lebih dari 0.'); return; }
+    const jumlah = parseFloat(orderForm.qty);
+    if (String(orderForm.qty).trim() === '' || isNaN(jumlah) || jumlah <= 0) {
+      setOrderError('Qty harus lebih dari 0.');
+      return;
+    }
+    if (!Number.isInteger(jumlah)) {
+      setOrderError('Qty harus bilangan bulat (tidak boleh pecahan).');
+      return;
+    }
 
     // Kunci diambil setelah validasi agar form yang masih salah isi tidak terkunci, dan
     // ditahan di ref sinkron supaya klik kedua pada tick yang sama tidak ikut berangkat.
@@ -1323,6 +1330,7 @@ export default function SalesView({
                   <input
                     type="number"
                     min={1}
+                    step={1}
                     value={orderForm.qty}
                     onChange={(e) => {
                       const qty = e.target.value;

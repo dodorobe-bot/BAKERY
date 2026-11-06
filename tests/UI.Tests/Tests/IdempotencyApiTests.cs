@@ -41,6 +41,7 @@ public sealed class IdempotencyApiTests : IClassFixture<PlaywrightFixture>
         pickupDate = "2030-03-03T10:00:00",
         totalAmount = 2_000_000,
         downPayment = 500_000,
+        quantity = 1,
     };
 
     [Fact]
@@ -74,7 +75,7 @@ public sealed class IdempotencyApiTests : IClassFixture<PlaywrightFixture>
 
         // Nominal nol ditolak validasi sisi server.
         var ditolak = await KirimAsync(http, "/api/orders",
-            new { customerName = nama, description = "x", pickupDate = "2030-03-03T10:00:00", totalAmount = 0, downPayment = 0 }, kunci);
+            new { customerName = nama, description = "x", pickupDate = "2030-03-03T10:00:00", totalAmount = 0, downPayment = 0, quantity = 1 }, kunci);
         ditolak.Kode.Should().Be(HttpStatusCode.BadRequest);
 
         var berhasil = await KirimAsync(http, "/api/orders", PesananBaru(nama), kunci);
